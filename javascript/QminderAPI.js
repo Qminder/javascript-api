@@ -13,6 +13,13 @@ function QminderAPI() {
 		}
 	};
 	
+	this.tickets = {
+		call: function(lines, user, callback) {
+			var data = "lines=" + lines + "&user=" + user;
+			QminderAPI.createRequest("tickets/call", data, callback);
+		}	
+	};
+	
 	// Private
 	
 	this.createRequest = function(url, data, callback) {
