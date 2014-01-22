@@ -17,13 +17,16 @@ function QminderAPI() {
 		call: function(lines, user, callback) {
 			var data = "lines=" + lines + "&user=" + user;
 			QminderAPI.createRequest("tickets/call", data, callback);
-		}	
+		},
+		
+		details: function(id, callback) {
+			QminderAPI.createRequest("tickets/" + id, null, callback);
+		}
 	};
 	
 	// Private
 	
 	this.createRequest = function(url, data, callback) {
-        
 		var method = "GET";
 		if (data) {
 			method = "POST";
@@ -35,7 +38,12 @@ function QminderAPI() {
 		request.onload = function() {
 			var responseText = request.responseText;
 			var response = JSON.parse(responseText);
-            callback(response);
+			if (callback) {
+				callback(response);
+			}
+			else {
+				console.log("No callback function specified");
+			}
 		};
                 
         request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
