@@ -18,6 +18,6 @@ function QminderBridge() {
 	this.onLoad = function(callback) {
 		this.onLoadCallback = callback;
 	};
-};
+}
 
 var QminderBridge = new QminderBridge();
