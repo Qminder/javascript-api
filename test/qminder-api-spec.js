@@ -18,7 +18,7 @@ describe("Qminder API", function() {
     
     waitsFor(function() {
       return response !== null;
-    }, "API call did not return in time", 1000);
+    }, "API call did not return in time", 10000);
     
     runs(function() {
       expect(response.statusCode).toBe(200);
