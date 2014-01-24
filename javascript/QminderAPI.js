@@ -10,6 +10,10 @@ function QminderAPI() {
 		
 		list: function(callback) {
 			QminderAPI.createRequest("locations/", null, callback);
+		},
+		
+		lines: function(location, callback) {
+			QminderAPI.createRequest("locations/" + location + "/lines", null, callback);
 		}
 	};
 	
@@ -34,7 +38,7 @@ function QminderAPI() {
 
 		var request = this.createCORSRequest(method, this.BASE_URL + url);
 		request.setRequestHeader("X-Qminder-REST-API-Key", this.secretKey);
-                
+
 		request.onload = function() {
 			var responseText = request.responseText;
 			var response = JSON.parse(responseText);
@@ -45,28 +49,27 @@ function QminderAPI() {
 				console.log("No callback function specified");
 			}
 		};
-                
-        request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-        request.send(data);
+
+		request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+		request.send(data);
 	};
 
 	this.createCORSRequest = function(method, url) {
 		var request = new XMLHttpRequest();
 		if ("withCredentials" in request) {
-        	request.open(method, url, true);
+			request.open(method, url, true);
 		}
 		else if (typeof XDomainRequest != "undefined") {
 			request = new XDomainRequest();
 			request.open(method, url);
 		}
-        else {
+		else {
 			request = null;
 		}
 
-          
+
 		return request;
 	};
-};
+}
 
 var QminderAPI = new QminderAPI();
-
