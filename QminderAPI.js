@@ -1,4 +1,8 @@
+/*jslint browser: true */
+
 function QminderAPI() {
+
+	"use strict";
 
 	this.BASE_URL = "https://api.qminderapp.com/v1/";
 	
