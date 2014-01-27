@@ -4,44 +4,50 @@ function QminderAPI() {
 
 	"use strict";
 
-	this.BASE_URL = "https://api.qminderapp.com/v1/";
+	var BASE_URL = "https://api.qminderapp.com/v1/";
+	var secretKey = null;
 	
 	this.setSecretKey = function(key) {
-		this.secretKey = key;
+		secretKey = key;
 	};
 	
 	this.locations = {
 		
 		list: function(callback) {
-			QminderAPI.createRequest("locations/", null, callback);
+			createRequest("locations/", null, callback);
+		},
+		
+		details: function(id, callback) {
+			createRequest("locations/" + id, null, callback);
 		},
 		
 		lines: function(location, callback) {
-			QminderAPI.createRequest("locations/" + location + "/lines", null, callback);
+			createRequest("locations/" + location + "/lines", null, callback);
 		}
 	};
 	
 	this.tickets = {
 		call: function(lines, user, callback) {
 			var data = "lines=" + lines + "&user=" + user;
-			QminderAPI.createRequest("tickets/call", data, callback);
+			createRequest("tickets/call", data, callback);
 		},
 		
 		details: function(id, callback) {
-			QminderAPI.createRequest("tickets/" + id, null, callback);
+			createRequest("tickets/" + id, null, callback);
 		}
 	};
 	
 	// Private
 	
-	this.createRequest = function(url, data, callback) {
+	var createRequest = function(url, data, callback) {
 		var method = "GET";
 		if (data) {
 			method = "POST";
 		}
 
-		var request = this.createCORSRequest(method, this.BASE_URL + url);
-		request.setRequestHeader("X-Qminder-REST-API-Key", this.secretKey);
+		var request = createCORSRequest(method, BASE_URL + url);
+
+		request.setRequestHeader("X-Qminder-REST-API-Key", secretKey);
 
 		request.onload = function() {
 			var responseText = request.responseText;
@@ -58,7 +64,7 @@ function QminderAPI() {
 		request.send(data);
 	};
 
-	this.createCORSRequest = function(method, url) {
+	var createCORSRequest = function(method, url) {
 		var request = new XMLHttpRequest();
 		if ("withCredentials" in request) {
 			request.open(method, url, true);
