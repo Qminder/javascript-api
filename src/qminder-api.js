@@ -14,37 +14,72 @@ function QminderAPI() {
 	this.locations = {
 		
 		list: function(callback) {
-			createRequest("locations/", null, callback);
+			get("locations/", callback);
 		},
 		
 		details: function(id, callback) {
-			createRequest("locations/" + id, null, callback);
+			get("locations/" + id, callback);
 		},
 		
 		lines: function(location, callback) {
-			createRequest("locations/" + location + "/lines", null, callback);
+			get("locations/" + location + "/lines", callback);
+		},
+		
+		createLine: function(location, name, callback) {
+      var data = "name=" + encodeURIComponent(name);
+			postData("locations/" + location + "/lines", data, callback);
 		}
+	};
+	
+	this.lines = {
+    delete: function(line, callback) {
+      deleteRequest("lines/" + line, callback);
+    },
+    
+    reset: function(line, callback) {
+      post("lines/" + line + "/reset", callback);
+    },
+    
+    notificationSettings: function(line, callback) {
+      get("lines/" + line + "/settings/notifications/waiting", callback);
+    },
+    
+    updateNotificationSettings: function(line, pattern, callback) {
+      var data = "pattern=" + encodeURIComponent(pattern);
+      postData("lines/" + line + "/settings/notifications/waiting", data, callback);
+    }
 	};
 	
 	this.tickets = {
 		call: function(lines, user, callback) {
 			var data = "lines=" + lines + "&user=" + user;
-			createRequest("tickets/call", data, callback);
+			postData("POST", "tickets/call", data, callback);
 		},
 		
 		details: function(id, callback) {
-			createRequest("tickets/" + id, null, callback);
+			get("GET", "tickets/" + id, callback);
 		}
 	};
 	
 	// Private
 	
-	var createRequest = function(url, data, callback) {
-		var method = "GET";
-		if (data) {
-			method = "POST";
-		}
-
+	var get = function(url, callback) {
+    request("GET", url, null, callback);
+	};
+	
+	var post = function(url, callback) {
+    request("POST", url, null, callback);
+	};
+	
+	var postData = function(url, data, callback) {
+    request("POST", url, data, callback);
+	};
+	
+	var deleteRequest = function(url, callback) {
+    request("DELETE", url, null, callback);
+	};
+	
+	var request = function(method, url, data, callback) {
 		var request = createCORSRequest(method, BASE_URL + url);
 
 		request.setRequestHeader("X-Qminder-REST-API-Key", secretKey);
