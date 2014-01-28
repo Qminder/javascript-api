@@ -13,6 +13,7 @@ deploy:
     secure: ZN9BIDPaEqlOHFc80WDKdbXCZ1mq64TPnfhgGaPvCGr/Qv6dBj+RraCs5wGj96wKmP8WxLqQPlT7yrqDD5gZm3tU/gKaWj+eJxWT0QRFCwjOB8HbrT5XvOrOFmhYzibxGs/r7FnAhqxWGm3V9N73Nkk2nLJTPgNDRox1uUhW6tQ=
   bucket: static.qminderapp.com
   region: eu-west-1
+  skip_cleanup: true
   local-dir: dist
   upload-dir: api
   on:
