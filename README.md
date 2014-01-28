@@ -9,7 +9,7 @@ Javascript wrapper for Qminder REST API.
 Qminder.setKey(key);
 ```
 
-### Location
+### Locations
 
 #### [List of locations](http://www.qminderapp.com/docs/api/locations/#list)
 ```js
@@ -29,6 +29,27 @@ Qminder.locations.lines(locationId, callback);
 #### [Creating a line](http://www.qminderapp.com/docs/api/locations/#newline)
 ```js
 Qminder.locations.createLine(locationId, name, callback);
+```
+
+### Lines
+
+#### [Resetting number sequence](http://www.qminderapp.com/docs/api/lines/#resetting)
+```js
+Qminder.lines.reset(lineId, callback);
+```
+#### [Deleting a line](http://www.qminderapp.com/docs/api/lines/#deleting)
+```js
+Qminder.lines.delete(lineId, [callback]);
+```
+
+#### [Notification settings](http://www.qminderapp.com/docs/api/lines/#notification-settings)
+```js
+Qminder.lines.notificationSettings(lineId, callback);
+```
+
+#### [Updating notification settings](http://www.qminderapp.com/docs/api/lines/#update-notification-settings)
+```js
+Qminder.lines.updateNotificationSettings(lineId, pattern, callback);
 ```
 
 ## Questions?
