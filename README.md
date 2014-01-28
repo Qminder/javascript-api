@@ -11,6 +11,26 @@ Qminder.setKey(key);
 
 ### Location
 
+#### [List of locations](http://www.qminderapp.com/docs/api/locations/#list)
+```js
+Qminder.locations.list(callback);
+```
+
+#### [Location details](http://www.qminderapp.com/docs/api/locations/#details)
+```js
+Qminder.locations.details(locationId, callback);
+```
+
+#### [List of lines](http://www.qminderapp.com/docs/api/locations/#lines)
+```js
+Qminder.locations.lines(locationId, callback);
+```
+
+#### [Creating a line](http://www.qminderapp.com/docs/api/locations/#newline)
+```js
+Qminder.locations.createLine(locationId, name, callback);
+```
+
 ## Questions?
 
 If you have any questions, please feel free to contact
