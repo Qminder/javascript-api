@@ -11,6 +11,7 @@ deploy:
   access_key_id: AKIAIQUGTISWEPXK52LA
   secret_access_key:
     secure: ZN9BIDPaEqlOHFc80WDKdbXCZ1mq64TPnfhgGaPvCGr/Qv6dBj+RraCs5wGj96wKmP8WxLqQPlT7yrqDD5gZm3tU/gKaWj+eJxWT0QRFCwjOB8HbrT5XvOrOFmhYzibxGs/r7FnAhqxWGm3V9N73Nkk2nLJTPgNDRox1uUhW6tQ=
+  bucket: static.qminderapp.com
   endpoint: static.qminderapp.com.s3-eu-west-1.amazonaws.com
   skip_cleanup: true
   local-dir: dist
