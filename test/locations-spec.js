@@ -4,6 +4,12 @@ describe("Locations", function() {
     Qminder.setKey(QMINDER_SECRET_KEY);
   });
   
+  // http://www.qminderapp.com/docs/api/locations/#list
+  it("should throw exception for missing callback in list call", function() {
+    
+    expect(Qminder.locations.list).toThrow("Callback function not provided");
+
+  });
 
   // http://www.qminderapp.com/docs/api/locations/#list
   it("should list all locations", function() {
@@ -29,6 +35,24 @@ describe("Locations", function() {
         expect(location.name).not.toBe(null);
       });
     });
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#details
+  it("should throw exception for missing id in details call", function() {
+    
+    expect(Qminder.locations.details).toThrow("Location ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#details
+  it("should throw exception for missing callback in details call", function() {
+  
+    var call = function() {
+      Qminder.locations.details(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
 
   });
   
@@ -59,7 +83,25 @@ describe("Locations", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#details
+  // http://www.qminderapp.com/docs/api/locations/#lines
+  it("should throw exception for missing id in line list call", function() {
+    
+    expect(Qminder.locations.lines).toThrow("Location ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#lines
+  it("should throw exception for missing callback in line list call", function() {
+  
+    var call = function() {
+      Qminder.locations.lines(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#lines
   it("should list all lines", function() {
   
     var response = null;
@@ -87,6 +129,35 @@ describe("Locations", function() {
         expect(location.name).not.toBe(null);
       });
     });
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#newline
+  it("should throw exception for missing id in line creation call", function() {
+    
+    expect(Qminder.locations.createLine).toThrow("Location ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#newline
+  it("should throw exception for missing name in line creation call", function() {
+  
+    var call = function() {
+      Qminder.locations.createLine(123);
+    };
+    
+    expect(call).toThrow("Name not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#newline
+  it("should throw exception for missing callback in line creation call", function() {
+  
+    var call = function() {
+      Qminder.locations.createLine(123, "New Service");
+    };
+    
+    expect(call).toThrow("Callback function not provided");
 
   });
   

@@ -13,18 +13,29 @@ function Qminder() {
 	this.locations = {
 		
 		list: function(callback) {
+      assertNotNull(callback, "Callback function not provided");
 			get("locations/", callback);
 		},
 		
 		details: function(id, callback) {
+      assertNotNull(id, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
 			get("locations/" + id, callback);
 		},
 		
-		lines: function(location, callback) {
-			get("locations/" + location + "/lines", callback);
+		lines: function(id, callback) {
+      assertNotNull(id, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+
+			get("locations/" + id + "/lines", callback);
 		},
 		
 		createLine: function(location, name, callback) {
+      assertNotNull(location, "Location ID not provided");
+      assertNotNull(name, "Name not provided");
+      assertNotNull(callback, "Callback function not provided");
+		
       var data = "name=" + encodeURIComponent(name);
 			postData("locations/" + location + "/lines", data, callback);
 		}
@@ -96,6 +107,12 @@ function Qminder() {
 	
 	// Private
 	
+	var assertNotNull = function(value, message) {
+    if (typeof value === "undefined" || value === null) {
+      throw message;
+    }
+	};
+	
 	var get = function(url, callback) {
     request("GET", url, null, callback);
 	};
@@ -114,6 +131,10 @@ function Qminder() {
 	
 	var request = function(method, url, data, callback) {
 		var request = createCORSRequest(method, BASE_URL + url);
+		
+		if (!apiKey) {
+      throw "Key not set. Please call Qminder.setKey before calling any other methods";
+		}
 
 		request.setRequestHeader("X-Qminder-REST-API-Key", apiKey);
 
