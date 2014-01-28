@@ -1,5 +1,7 @@
 describe("Tickets", function() {
 
+  "use strict";
+
   var line = null;
 
   beforeEach(function() {
@@ -106,15 +108,16 @@ describe("Tickets", function() {
   it("should create a ticket with extra parameters", function() {
   
     var extra = [
-    {
-      "title": "ID Code",
-      "value": "1234567890"
-    },
-    {
-      "title":  "Website",
-      "value":  "CNN website",
-      "url":  "http://edition.cnn.com"
-    }];
+      {
+        "title": "ID Code",
+        "value": "1234567890"
+      },
+      {
+        "title":  "Website",
+        "value":  "CNN website",
+        "url":  "http://edition.cnn.com"
+      }
+    ];
     
     createTicket({"extra": extra}, function(response) {
       expect(response.extra).not.toBe(null);
@@ -160,7 +163,6 @@ describe("Tickets", function() {
       
     runs(function() {
       searchTickets({"location": location.id}, function(response) {
-        done = true;
         expect(response.data.length).toBeGreaterThan(0);
       });
     });
@@ -172,7 +174,6 @@ describe("Tickets", function() {
       
     runs(function() {
       searchTickets({"line": line}, function(response) {
-        done = true;
         expect(response.data.length).toBeGreaterThan(0);
       });
     });
@@ -185,7 +186,6 @@ describe("Tickets", function() {
       
     runs(function() {
       searchTickets({"status": "NEW"}, function(response) {
-        done = true;
         expect(response.data.length).toBeGreaterThan(0);
       });
     });
@@ -197,7 +197,6 @@ describe("Tickets", function() {
 
     runs(function() {
       searchTickets({"line": line, "status": "CALLED"}, function(response) {
-        done = true;
         expect(response.data.length).toBe(0);
       });
     });
@@ -238,7 +237,7 @@ describe("Tickets", function() {
   };
   
   var searchTickets = function(parameters, callback) {
-    createTicket(null, function(r) {
+    createTicket(null, function() {
       var response = null;
   
       runs(function() {

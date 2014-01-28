@@ -1,5 +1,7 @@
 describe("Locations", function() {
 
+  "use strict";
+
   beforeEach(function() {
     Qminder.setKey(QMINDER_SECRET_KEY);
   });

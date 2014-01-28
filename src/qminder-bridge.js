@@ -1,5 +1,7 @@
 function QminderBridge() {
 
+  "use strict";
+
 	var receiveMessage = function(event) {
 		if (event.data.secretKey) {
 			QminderBridge.secretKey = event.data.secretKey;

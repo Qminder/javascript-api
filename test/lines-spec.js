@@ -1,5 +1,7 @@
 describe("Lines", function() {
 
+  "use strict";
+
   var line = null;
 
   beforeEach(function() {
