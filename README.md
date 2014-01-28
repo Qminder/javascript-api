@@ -1,7 +1,20 @@
-# qminder-api
+# Qminder Javascript API
 [![Build Status](https://travis-ci.org/Qminder/qminder-api.png?branch=master)](https://travis-ci.org/Qminder/qminder-api)
 
 Javascript wrapper for Qminder REST API.
+
+## Methods
+
+```js
+Qminder.setKey(key);
+```
+
+### Location
+
+## Questions?
+
+If you have any questions, please feel free to contact
+[Qminder Support](mailto:support@qminderapp.com).
 
 
 ## LICENSE
