@@ -51,13 +51,47 @@ function QminderAPI() {
 	};
 	
 	this.tickets = {
+	
+    create: function(line, parameters, callback) {
+    
+      var data = null;
+    
+      if (parameters) {
+        for (var key in parameters) {
+          var value = parameters[key];
+          data += "&" + key + "=";
+          
+          if (key == "extra") {
+            data += JSON.stringify(value);
+          }
+          else {
+            data += encodeURIComponent(value);
+          }
+        }
+      }
+    
+      postData("lines/" + line + "/ticket", data, callback);
+    },
+    
+    search: function(parameters, callback) {
+      var url = "tickets/search?";
+      
+      if (parameters) {
+        for (var key in parameters) {
+          url += "&" + key + "=" + encodeURIComponent(parameters[key]);
+        }
+      }
+      
+      get(url, callback);
+    },
+	
 		call: function(lines, user, callback) {
 			var data = "lines=" + lines + "&user=" + user;
-			postData("POST", "tickets/call", data, callback);
+			postData("tickets/call", data, callback);
 		},
 		
 		details: function(id, callback) {
-			get("GET", "tickets/" + id, callback);
+			get("tickets/" + id, callback);
 		}
 	};
 	
