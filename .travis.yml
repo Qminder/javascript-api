@@ -6,3 +6,14 @@ before_script:
 env:
   global:
     secure: izX4VGp9sLy61aEEfBF8gfFXMHP917cKMWUO5p9Ka3DpeTHpKfZYWD5rEYbkVQ+wb40zi27gydy5StuQSmvyc5jbZWWkBSBVOslHfrZebl5ZewnBzQqkBdV//7imrP9Yk1P8jCWziIYRmpYUGKRScUKVEzEBlgHB+nhs90sq9z0=
+deploy:
+  provider: s3
+  access_key_id: AKIAIQUGTISWEPXK52LA
+  secret_access_key:
+    secure: ZN9BIDPaEqlOHFc80WDKdbXCZ1mq64TPnfhgGaPvCGr/Qv6dBj+RraCs5wGj96wKmP8WxLqQPlT7yrqDD5gZm3tU/gKaWj+eJxWT0QRFCwjOB8HbrT5XvOrOFmhYzibxGs/r7FnAhqxWGm3V9N73Nkk2nLJTPgNDRox1uUhW6tQ=
+  bucket: static.qminderapp.com
+  local-dir: dist
+  upload-dir: api
+  on:
+    repo: Qminder/qminder-api
+    branch: master
