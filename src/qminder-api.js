@@ -52,14 +52,23 @@ function Qminder() {
     },
   
     delete: function(line, callback) {
+      assertNotNull(line, "Line ID not provided");
+      
       deleteRequest("lines/" + line, callback);
     },
     
     notificationSettings: function(line, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
       get("lines/" + line + "/settings/notifications/waiting", callback);
     },
     
     updateNotificationSettings: function(line, pattern, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(pattern, "Pattern not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
       var data = "pattern=" + encodeURIComponent(pattern);
       postData("lines/" + line + "/settings/notifications/waiting", data, callback);
     }
