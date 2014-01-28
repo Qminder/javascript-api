@@ -3,14 +3,14 @@ describe("Lines", function() {
   var line = null;
 
   beforeEach(function() {
-    QminderAPI.setSecretKey(QMINDER_SECRET_KEY);
+    Qminder.setKey(QMINDER_SECRET_KEY);
     line = null;
     
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         var location = r.data[0];
         
-        QminderAPI.locations.createLine(location.id, "Temp Line", function(r) {
+        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
           line = r.id;
         });
       });
@@ -27,7 +27,7 @@ describe("Lines", function() {
     var response = null;
     
     runs(function() {
-      QminderAPI.lines.delete(line, function(r) {
+      Qminder.lines.delete(line, function(r) {
         response = r;
       });
     });
@@ -46,7 +46,7 @@ describe("Lines", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.lines.reset(line, function(r) {
+      Qminder.lines.reset(line, function(r) {
         response = r;
       });
     });
@@ -68,7 +68,7 @@ describe("Lines", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.lines.notificationSettings(line, function(r) {
+      Qminder.lines.notificationSettings(line, function(r) {
         response = r;
       });
     });
@@ -91,7 +91,7 @@ describe("Lines", function() {
     var pattern = "1-5,10,15,20,30-50";
   
     runs(function() {
-      QminderAPI.lines.updateNotificationSettings(line, pattern, function(r) {
+      Qminder.lines.updateNotificationSettings(line, pattern, function(r) {
         response = r;
       });
     });

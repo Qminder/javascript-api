@@ -3,14 +3,14 @@ describe("Tickets", function() {
   var line = null;
 
   beforeEach(function() {
-    QminderAPI.setSecretKey(QMINDER_SECRET_KEY);
+    Qminder.setKey(QMINDER_SECRET_KEY);
     line = null;
     
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         var location = r.data[0];
         
-        QminderAPI.locations.createLine(location.id, "Temp Line", function(r) {
+        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
           line = r.id;
         });
       });
@@ -27,7 +27,7 @@ describe("Tickets", function() {
     var response = null;
     
     runs(function() {
-      QminderAPI.lines.delete(line, function(r) {
+      Qminder.lines.delete(line, function(r) {
         response = r;
       });
     });
@@ -46,7 +46,7 @@ describe("Tickets", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.tickets.create(line, null, function(r) {
+      Qminder.tickets.create(line, null, function(r) {
         response = r;
       });
     });
@@ -148,7 +148,7 @@ describe("Tickets", function() {
     var location = null;
   
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         location = r.data[0];
       });
     });
@@ -211,10 +211,10 @@ describe("Tickets", function() {
     var detailsResponse = null;
   
     runs(function() {
-      QminderAPI.tickets.create(line, parameters, function(r) {
+      Qminder.tickets.create(line, parameters, function(r) {
         createResponse = r;
         
-        QminderAPI.tickets.details(createResponse.id, function(r) {
+        Qminder.tickets.details(createResponse.id, function(r) {
           detailsResponse = r;
         });
       });
@@ -242,7 +242,7 @@ describe("Tickets", function() {
       var response = null;
   
       runs(function() {
-        QminderAPI.tickets.search(parameters, function(r2) {
+        Qminder.tickets.search(parameters, function(r2) {
           response = r2;
         });
       });

@@ -1,7 +1,7 @@
 describe("Locations", function() {
 
   beforeEach(function() {
-    QminderAPI.setSecretKey(QMINDER_SECRET_KEY);
+    Qminder.setKey(QMINDER_SECRET_KEY);
   });
   
 
@@ -11,7 +11,7 @@ describe("Locations", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         response = r;
       });
     });
@@ -38,10 +38,10 @@ describe("Locations", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         var location = r.data[0];
         
-        QminderAPI.locations.details(location.id, function(r) {
+        Qminder.locations.details(location.id, function(r) {
           response = r;
         });
       });
@@ -65,10 +65,10 @@ describe("Locations", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         var location = r.data[0];
         
-        QminderAPI.locations.lines(location.id, function(r) {
+        Qminder.locations.lines(location.id, function(r) {
           response = r;
         });
       });
@@ -97,10 +97,10 @@ describe("Locations", function() {
     var response = null;
   
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         var location = r.data[0];
         
-        QminderAPI.locations.createLine(location.id, "1234567890123456789012345678901", function(r) {
+        Qminder.locations.createLine(location.id, "1234567890123456789012345678901", function(r) {
           response = r;
         });
       });
@@ -126,13 +126,13 @@ describe("Locations", function() {
     var deleteResponse = null;
   
     runs(function() {
-      QminderAPI.locations.list(function(r) {
+      Qminder.locations.list(function(r) {
         var location = r.data[0];
         
-        QminderAPI.locations.createLine(location.id, "Danger Mice & CO", function(r) {
+        Qminder.locations.createLine(location.id, "Danger Mice & CO", function(r) {
           createResponse = r;
           
-          QminderAPI.lines.delete(createResponse.id, function(r2) {
+          Qminder.lines.delete(createResponse.id, function(r2) {
             deleteResponse = r2;
           });
         });

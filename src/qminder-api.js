@@ -1,14 +1,13 @@
-/*jslint browser: true */
 
-function QminderAPI() {
+function Qminder() {
 
 	"use strict";
 
 	var BASE_URL = "https://api.qminderapp.com/v1/";
 	var secretKey = null;
 	
-	this.setSecretKey = function(key) {
-		secretKey = key;
+	this.setKey = function(key) {
+		apiKey = key;
 	};
 	
 	this.locations = {
@@ -116,7 +115,7 @@ function QminderAPI() {
 	var request = function(method, url, data, callback) {
 		var request = createCORSRequest(method, BASE_URL + url);
 
-		request.setRequestHeader("X-Qminder-REST-API-Key", secretKey);
+		request.setRequestHeader("X-Qminder-REST-API-Key", apiKey);
 
 		request.onload = function() {
 			var responseText = request.responseText;
@@ -151,4 +150,4 @@ function QminderAPI() {
 	};
 }
 
-var QminderAPI = new QminderAPI();
+var Qminder = new Qminder();
