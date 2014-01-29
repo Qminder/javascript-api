@@ -77,18 +77,27 @@ function Qminder() {
   this.tickets = {
   
     create: function(line, parameters, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertTrue(typeof parameters == "object", "Parameter has to be an object");
+      assertNotNull(callback, "Callback function not provided");
     
       var data = null;
+      var validParameters = ["phoneNumber", "sendTextMessage", "firstName", "lastName", "extra"];
     
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
           continue;
+        }
+        if (validParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
         }
           
         var value = parameters[key];
         data += "&" + key + "=";
           
         if (key == "extra") {
+          assertExtraParameters(value);
+
           data += JSON.stringify(value);
         }
         else {
@@ -100,31 +109,75 @@ function Qminder() {
     },
     
     search: function(parameters, callback) {
+      assertTrue(typeof parameters == "object", "Parameter has to be an object");
+      assertNotNull(callback, "Callback function not provided");
+      
       var url = "tickets/search?";
       
+      var validParameters = ["location", "line", "status", "minCreated", "maxCreated"];
+      
       for (var key in parameters) {
-        if (parameters.hasOwnProperty(key)) {
-          url += "&" + key + "=" + encodeURIComponent(parameters[key]);
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
         }
+        if (validParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
+        }
+        url += "&" + key + "=" + encodeURIComponent(parameters[key]);
       }
       
       get(url, callback);
     },
   
     call: function(lines, user, callback) {
+      assertNotNull(lines, "List of lines not provided");
+      assertNotNull(user, "User ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
       var data = "lines=" + lines + "&user=" + user;
       postData("tickets/call", data, callback);
     },
     
     details: function(id, callback) {
+      assertNotNull(id, "Ticket ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+
       get("tickets/" + id, callback);
     }
   };
   
   // Private
   
+  var assertExtraParameters = function(parameters) {
+    assertTrue(parameters instanceof Array, "Extra parameter has to be an array");
+    
+    var validFields = ["title", "value", "url"];
+    
+    parameters.forEach(function(extraParameter) {
+      assertTrue(typeof extraParameter === "object", "All extra parameters have to be objects");
+      for (var key in extraParameter) {
+        if (!extraParameter.hasOwnProperty(key)) {
+          continue;
+        }
+        
+        if (validFields.indexOf(key) == -1) {
+          throw "Extra parameter field \"" + key + "\" is unknown and should not be used. Valid fields: " + JSON.stringify(validFields);
+        }
+      }
+    });
+    
+  };
+  
+  // Common
+  
   var assertNotNull = function(value, message) {
     if (typeof value === "undefined" || value === null) {
+      throw message;
+    }
+  };
+  
+  var assertTrue = function(value, message) {
+    if (!value) {
       throw message;
     }
   };

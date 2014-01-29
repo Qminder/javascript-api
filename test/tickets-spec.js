@@ -8,23 +8,13 @@ describe("Tickets", function() {
     Qminder.setKey(QMINDER_SECRET_KEY);
     line = null;
     
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
-        
-        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
-          line = r.id;
-        });
-      });
-    });
-    
-    waitsFor(function() {
-      return line !== null;
-    }, "API call did not return in time", 10000);
-    
   });
   
   afterEach(function() {
+  
+    if (!line) {
+      return;
+    }
     
     var response = null;
     
@@ -40,11 +30,83 @@ describe("Tickets", function() {
     
   });
 
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for missing id in create ticket call", function() {
+    
+    expect(Qminder.tickets.create).toThrow("Line ID not provided");
+
+  });
   
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for missing callback in create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, null);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for invalid parameter in create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, {"name": "Maali"}, function() {});
+    };
+    
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"phoneNumber\",\"sendTextMessage\",\"firstName\",\"lastName\",\"extra\"]");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for invalid parameter type in create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, "Maali", function() {});
+    };
+    
+    expect(call).toThrow("Parameter has to be an object");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for invalid extra parameter type in create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, {"extra": "Madli"}, function() {});
+    };
+    
+    expect(call).toThrow("Extra parameter has to be an array");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for invalid extra parameter in create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, {"extra": ["Peeter"]}, function() {});
+    };
+    
+    expect(call).toThrow("All extra parameters have to be objects");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for invalid extra parameter field in create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, {"extra": [{"name": "Meeli"}]}, function() {});
+    };
+    
+    expect(call).toThrow("Extra parameter field \"name\" is unknown and should not be used. Valid fields: [\"title\",\"value\",\"url\"]");
+
+  });
 
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket", function() {
   
+    createLine();
     var response = null;
   
     runs(function() {
@@ -67,6 +129,7 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket with phone number", function() {
   
+    createLine();
     var number = 123456;
     createTicket({"phoneNumber": number}, function(response) {
       expect(response.phoneNumber).toBe(number);
@@ -77,6 +140,7 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket with first name", function() {
   
+    createLine();
     var name = "Good Guy Greg";
     createTicket({"firstName": name}, function(response) {
       expect(response.firstName).toBe(name);
@@ -87,6 +151,7 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket with both names", function() {
   
+    createLine();
     createTicket({"firstName": "Milli", "lastName": "Mallikas"}, function(response) {
       expect(response.firstName).toBe("Milli");
       expect(response.lastName).toBe("Mallikas");
@@ -97,6 +162,7 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket with last name", function() {
   
+    createLine();
     var name = "Scumbag Steve";
     createTicket({"lastName": name}, function(response) {
       expect(response.lastName).toBe(name);
@@ -107,6 +173,8 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket with extra parameters", function() {
   
+    createLine();
+    
     var extra = [
       {
         "title": "ID Code",
@@ -135,10 +203,45 @@ describe("Tickets", function() {
     });
 
   });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#search
+  it("should throw exception for missing callback in search call", function() {
+  
+    var call = function() {
+      Qminder.tickets.search(null);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#search
+  it("should throw exception for invalid parameter type in search call", function() {
+  
+    var call = function() {
+      Qminder.tickets.search("Juuli");
+    };
+    
+    expect(call).toThrow("Parameter has to be an object");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#search
+  it("should throw exception for invalid parameter in search call", function() {
+  
+    var call = function() {
+      Qminder.tickets.search({"name": "Tuuli"}, function() {});
+    };
+    
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"location\",\"line\",\"status\",\"minCreated\",\"maxCreated\"]");
+
+  });
 
   // http://www.qminderapp.com/docs/api/tickets/#search
   it("should search tickets with no filters", function() {
   
+    createLine();
+    
     searchTickets(null, function(response) {
       expect(response.data.length).toBeGreaterThan(0);
     });
@@ -148,6 +251,8 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#search
   it("should search tickets from location", function() {
   
+    createLine();
+    
     var location = null;
   
     runs(function() {
@@ -171,7 +276,9 @@ describe("Tickets", function() {
   
   // http://www.qminderapp.com/docs/api/tickets/#search
   it("should search tickets from line", function() {
-      
+    
+    createLine();
+    
     runs(function() {
       searchTickets({"line": line}, function(response) {
         expect(response.data.length).toBeGreaterThan(0);
@@ -183,7 +290,9 @@ describe("Tickets", function() {
   
   // http://www.qminderapp.com/docs/api/tickets/#search
   it("should search new tickets", function() {
-      
+    
+    createLine();
+    
     runs(function() {
       searchTickets({"status": "NEW"}, function(response) {
         expect(response.data.length).toBeGreaterThan(0);
@@ -194,7 +303,9 @@ describe("Tickets", function() {
   
   // http://www.qminderapp.com/docs/api/tickets/#search
   it("should search called tickets", function() {
-
+    
+    createLine();
+    
     runs(function() {
       searchTickets({"line": line, "status": "CALLED"}, function(response) {
         expect(response.data.length).toBe(0);
@@ -203,7 +314,100 @@ describe("Tickets", function() {
     
   });
   
+  // http://www.qminderapp.com/docs/api/tickets/#calling
+  it("should throw exception for missing lines in calling call", function() {
+    
+    expect(Qminder.tickets.call).toThrow("List of lines not provided");
+
+  });
   
+  // http://www.qminderapp.com/docs/api/tickets/#calling
+  it("should throw exception for missing user id in calling call", function() {
+  
+    var call = function() {
+      Qminder.tickets.call(1);
+    };
+    
+    expect(call).toThrow("User ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#calling
+  it("should throw exception for missing callback in calling call", function() {
+  
+    var call = function() {
+      Qminder.tickets.call(1, 123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // TODO: Ticket calling. There is no way of getting user ID at the moment
+  
+  
+  // http://www.qminderapp.com/docs/api/tickets/#details
+  it("should throw exception for missing user id in details call", function() {
+    
+    expect(Qminder.tickets.details).toThrow("Ticket ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#details
+  it("should throw exception for missing callback in details call", function() {
+  
+    var call = function() {
+      Qminder.tickets.details(1);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#details
+  it("should find ticket details", function() {
+    
+    createLine();
+    
+    var response = null;
+    
+    createTicket(null, function(r) {
+      Qminder.tickets.details(r.id, function(r) {
+        response = r;
+      });
+    });
+    
+    waitsFor(function() {
+      return response !== null;
+    }, "API call did not return in time", 10000);
+  
+    runs(function() {
+      expect(response.statusCode).toBe(200);
+      expect(response.id).not.toBe(null);
+      expect(response.number).not.toBe(null);
+      expect(response.status).not.toBe(null);
+      expect(response.line).not.toBe(null);
+    });
+    
+  });
+
+  
+  
+  var createLine = function() {
+    runs(function() {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
+          line = r.id;
+        });
+      });
+    });
+    
+    waitsFor(function() {
+      return line !== null;
+    }, "API call did not return in time", 10000);
+  };
   
   var createTicket = function(parameters, callback) {
     var createResponse = null;
