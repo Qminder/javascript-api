@@ -24,3 +24,4 @@ connection = S3Connection(aws_access_key_id, aws_secret_access_key)
 bucket = connection.get_bucket('static.qminderapp.com')
 
 uploadFile('dist/qminder-api.min.js', 'api/qminder-api.min.js')
+uploadFile('dist/qminder-bridge.min.js', 'api/qminder-bridge.min.js')
