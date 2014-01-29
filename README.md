@@ -66,6 +66,28 @@ Qminder.lines.notificationSettings(lineId, callback);
 Qminder.lines.updateNotificationSettings(lineId, pattern, callback);
 ```
 
+### Tickets
+
+#### [Creating a ticket](http://www.qminderapp.com/docs/api/tickets/#creating)
+```js
+Qminder.tickets.create(line, parameters, callback);
+```
+
+#### [Searching tickets](http://www.qminderapp.com/docs/api/tickets/#search)
+```js
+Qminder.tickets.search(parameters, callback);
+```
+
+#### [Calling a ticket](http://www.qminderapp.com/docs/api/tickets/#calling)
+```js
+Qminder.tickets.call(lines, user, callback);
+```
+
+#### [Ticket status](http://www.qminderapp.com/docs/api/tickets/#status)
+```js
+Qminder.tickets.details(id, callback);
+```
+
 ## Questions?
 
 If you have any questions, please feel free to contact
