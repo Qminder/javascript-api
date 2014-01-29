@@ -3,6 +3,13 @@
 
 Javascript wrapper for Qminder REST API.
 
+## Installation
+
+Add to your webpage: [http://static.qminderapp.com/api/qminder-api.min.js](http://static.qminderapp.com/api/qminder-api.min.js)
+```js
+<script src="http://static.qminderapp.com/api/qminder-api.min.js" type="text/javascript"></script>
+```
+
 ## Methods
 
 ```js
