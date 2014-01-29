@@ -5,12 +5,19 @@ Javascript wrapper for Qminder REST API.
 
 ## Installation
 
-Add to your webpage: [http://static.qminderapp.com/api/qminder-api.min.js](http://static.qminderapp.com/api/qminder-api.min.js)
+Add to your webpage:
+
+[http://static.qminderapp.com/api/qminder-api.min.js](http://static.qminderapp.com/api/qminder-api.min.js)
 ```js
 <script src="http://static.qminderapp.com/api/qminder-api.min.js" type="text/javascript"></script>
 ```
 
-## Methods
+[http://static.qminderapp.com/api/qminder-bridge.min.js](http://static.qminderapp.com/api/qminder-bridge.min.js)
+```js
+<script src="http://static.qminderapp.com/api/qminder-bridge.min.js" type="text/javascript"></script>
+```
+
+## API Methods
 
 ```js
 Qminder.setKey(key);
