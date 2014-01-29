@@ -5,18 +5,8 @@ before_script:
 - npm install -g grunt-cli
 env:
   global:
-    secure: izX4VGp9sLy61aEEfBF8gfFXMHP917cKMWUO5p9Ka3DpeTHpKfZYWD5rEYbkVQ+wb40zi27gydy5StuQSmvyc5jbZWWkBSBVOslHfrZebl5ZewnBzQqkBdV//7imrP9Yk1P8jCWziIYRmpYUGKRScUKVEzEBlgHB+nhs90sq9z0=
-deploy:
-  provider: s3
-  access_key_id: AKIAIQUGTISWEPXK52LA
-  secret_access_key:
-    secure: ZN9BIDPaEqlOHFc80WDKdbXCZ1mq64TPnfhgGaPvCGr/Qv6dBj+RraCs5wGj96wKmP8WxLqQPlT7yrqDD5gZm3tU/gKaWj+eJxWT0QRFCwjOB8HbrT5XvOrOFmhYzibxGs/r7FnAhqxWGm3V9N73Nkk2nLJTPgNDRox1uUhW6tQ=
-  bucket: static.qminderapp.com
-  region: eu-west-1
-  endpoint: s3-eu-west-1.amazonaws.com
-  skip_cleanup: true
-  local-dir: dist
-  upload-dir: api
-  on:
-    repo: Qminder/qminder-api
-    branch: master
+  - secure: izX4VGp9sLy61aEEfBF8gfFXMHP917cKMWUO5p9Ka3DpeTHpKfZYWD5rEYbkVQ+wb40zi27gydy5StuQSmvyc5jbZWWkBSBVOslHfrZebl5ZewnBzQqkBdV//7imrP9Yk1P8jCWziIYRmpYUGKRScUKVEzEBlgHB+nhs90sq9z0=
+  - secure: Ldvmyn+hQ+JotPiyqbIn8Bit/UuGNIensVbo5DllhVxOh7T2iiKJQuTz2ckX6TsfS/EYtxZ+r1MigCYQAM821vF1gRZ8lNfgzL0/1ZxfHspSStpxuEuScwzZ3e4Wa88M6y5HG0z4qkmaEIZf0zOHDs28WzQfg7fm061Trc0CVQQ=
+  - secure: gapYCGZpsVmoZsPVKHm9BASm6d2d+8jnF4VL85m4r7QkyH8M0FLHBfH7c5IQ30O4MQ3FmJwZHWmtWwa0FVuCrYFFOvsiqQCPpuVpMiebptiD6jhi+eH5gCP94g/M5A72mNBtNsmSw12Lopllu5GKwvPb2sE44RnkJTX1LkelcGI=
+after_success:
+- test ${TRAVIS_BRANCH} = master && python deploy_s3.py
