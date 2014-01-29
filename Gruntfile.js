@@ -43,7 +43,7 @@ module.exports = function(grunt) {
         src: "src/**/*.js",
         options: {
           specs: "test/*.js",
-          helpers: ["src/*.js", "temp-secret.js"]
+          helpers: ["dist/*.js", "temp-secret.js"]
         }
       }
     },
