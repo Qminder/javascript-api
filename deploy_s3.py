@@ -3,8 +3,9 @@ from boto.s3.key import Key
 import sys, os
 
 def uploadFile(source, destination):
-	obj = bucket.new_key(destination)
-	obj.set_contents_from_filename(source)
+  print 'Uploading ' + source
+  obj = bucket.new_key(destination)
+  obj.set_contents_from_filename(source)
 
 
 
