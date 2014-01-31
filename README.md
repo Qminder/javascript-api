@@ -40,6 +40,11 @@ Qminder.locations.details(locationId, callback);
 Qminder.locations.lines(locationId, callback);
 ```
 
+#### [List of users](http://www.qminderapp.com/docs/api/locations/#users)
+```js
+Qminder.locations.users(locationId, callback);
+```
+
 #### [Creating a line](http://www.qminderapp.com/docs/api/locations/#newline)
 ```js
 Qminder.locations.createLine(locationId, name, callback);
