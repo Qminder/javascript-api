@@ -47,6 +47,15 @@ module.exports = function(grunt) {
         }
       }
     },
+    watch: {
+      scripts: {
+        files: ["src/*.js", "test/*.js"],
+        tasks: ["jshint", "uglify", "jasmine"],
+        options: {
+          spawn: false,
+        },
+      },
+    },
     clean: ["temp-secret.js"]
   });
 
@@ -54,6 +63,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks("grunt-contrib-jshint");
   grunt.loadNpmTasks("grunt-contrib-jasmine");
   grunt.loadNpmTasks("grunt-contrib-clean");
+  grunt.loadNpmTasks("grunt-contrib-watch");
   
   grunt.file.write("temp-secret.js", "QMINDER_SECRET_KEY=\"" + process.env.QMINDER_SECRET_KEY + "\";");
 
