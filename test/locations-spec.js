@@ -134,6 +134,58 @@ describe("Locations", function() {
 
   });
   
+  // http://www.qminderapp.com/docs/api/locations/#users
+  it("should throw exception for missing id in users list call", function() {
+    
+    expect(Qminder.locations.users).toThrow("Location ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#users
+  it("should throw exception for missing callback in users list call", function() {
+  
+    var call = function() {
+      Qminder.locations.users(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/locations/#users
+  it("should list all users", function() {
+  
+    var response = null;
+  
+    runs(function() {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          response = r;
+        });
+      });
+    });
+    
+    waitsFor(function() {
+      return response !== null;
+    }, "API call did not return in time", 10000);
+    
+    runs(function() {
+      expect(response.statusCode).toBe(200);
+      expect(response.data).not.toBe(null);
+      expect(response.data.length).toBeGreaterThan(0);
+      response.data.forEach(function(user) {
+        expect(user.id).not.toBe(null);
+        expect(user.email).not.toBe(null);
+        expect(user.firstName).not.toBe(null);
+        expect(user.lastName).not.toBe(null);
+      });
+    });
+
+  });
+
+  
   // http://www.qminderapp.com/docs/api/locations/#newline
   it("should throw exception for missing id in line creation call", function() {
     

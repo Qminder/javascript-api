@@ -32,6 +32,13 @@ function Qminder() {
       get("locations/" + id + "/lines", callback);
     },
     
+    users: function(id, callback) {
+      assertNotNull(id, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+
+      get("locations/" + id + "/users", callback);
+    },
+    
     createLine: function(location, name, callback) {
       assertNotNull(location, "Location ID not provided");
       assertNotNull(name, "Name not provided");
