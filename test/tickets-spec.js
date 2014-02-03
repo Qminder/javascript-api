@@ -233,7 +233,7 @@ describe("Tickets", function() {
       Qminder.tickets.search({"name": "Tuuli"}, function() {});
     };
     
-    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"location\",\"line\",\"status\",\"minCreated\",\"maxCreated\"]");
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"location\",\"line\",\"status\",\"minCreated\",\"maxCreated\",\"limit\",\"order\"]");
 
   });
 
@@ -314,6 +314,43 @@ describe("Tickets", function() {
     
   });
   
+  // http://www.qminderapp.com/docs/api/tickets/#search
+  it("should search tickets with limit", function() {
+  
+    createLine();
+    
+    runs(function() {
+      searchTickets({"limit": 2}, function(response) {
+        expect(response.data.length).toBe(2);
+      });
+    });
+    
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#search
+  it("should search tickets ordered by id desc", function() {
+  
+    createLine();
+    
+    runs(function() {
+      searchTickets({"order": "id DESC"}, function(response) {
+      
+        var id = null;
+        response.data.forEach(function(ticket) {
+          if (id === null) {
+            id = ticket.id;
+          }
+          else {
+            expect(id).toBeGreaterThan(ticket.id);
+            id = ticket.id;
+          }
+        });
+      });
+    });
+    
+  });
+
+
   // http://www.qminderapp.com/docs/api/tickets/#calling
   it("should throw exception for missing lines in calling call", function() {
     

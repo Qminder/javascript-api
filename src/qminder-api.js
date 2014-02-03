@@ -121,7 +121,7 @@ function Qminder() {
       
       var url = "tickets/search?";
       
-      var validParameters = ["location", "line", "status", "minCreated", "maxCreated"];
+      var validParameters = ["location", "line", "status", "minCreated", "maxCreated", "limit", "order"];
       
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
