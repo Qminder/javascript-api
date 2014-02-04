@@ -51,6 +51,18 @@ function Qminder() {
   
   this.lines = {
   
+    watchCalled: function(line, lastKnownTicket, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      var url = "lines/" + line + "/watch/called";
+      if (lastKnownTicket !== null) {
+        url += "?lastKnownTicket=" + lastKnownTicket;
+      }
+      
+      get(url, callback);
+    },
+  
     reset: function(line, callback) {
       assertNotNull(line, "Line ID not provided");
       assertNotNull(callback, "Callback function not provided");

@@ -7,24 +7,13 @@ describe("Lines", function() {
   beforeEach(function() {
     Qminder.setKey(QMINDER_SECRET_KEY);
     line = null;
-    
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
-        
-        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
-          line = r.id;
-        });
-      });
-    });
-    
-    waitsFor(function() {
-      return line !== null;
-    }, "API call did not return in time", 10000);
-    
   });
   
   afterEach(function() {
+  
+    if (line === null) {
+      return;
+    }
     
     var response = null;
     
@@ -38,6 +27,13 @@ describe("Lines", function() {
       return response !== null;
     }, "API call did not return in time", 10000);
     
+  });
+  
+  // http://www.qminderapp.com/docs/api/lines/#watchcalled
+  it("should throw exception for missing id in call watching call", function() {
+    
+    expect(Qminder.lines.watchCalled).toThrow("Line ID not provided");
+
   });
 
   // http://www.qminderapp.com/docs/api/lines/#resetting
@@ -60,6 +56,8 @@ describe("Lines", function() {
   
   // http://www.qminderapp.com/docs/api/lines/#resetting
   it("should reset sequence", function() {
+  
+    createLine();
   
     var response = null;
   
@@ -90,10 +88,15 @@ describe("Lines", function() {
   // http://www.qminderapp.com/docs/api/lines/#deleting
   it("should delete a line", function() {
   
-    var response = null;
+    createLine();
   
-    Qminder.lines.delete(line, function(r) {
-      response = r;
+    var response = null;
+    
+    runs(function() {
+      Qminder.lines.delete(line, function(r) {
+        response = r;
+        line = null;
+      });
     });
     
     waitsFor(function() {
@@ -125,6 +128,8 @@ describe("Lines", function() {
   
   // http://www.qminderapp.com/docs/api/lines/#notification-settings
   it("should get notification settings", function() {
+  
+    createLine();
   
     var response = null;
   
@@ -177,6 +182,8 @@ describe("Lines", function() {
   // http://www.qminderapp.com/docs/api/lines/#update-notification-settings
   it("should update notification settings", function() {
   
+    createLine();
+  
     var response = null;
     var pattern = "1-5,10,15,20,30-50";
   
@@ -196,5 +203,21 @@ describe("Lines", function() {
     });
 
   });
+  
+  var createLine = function() {
+    runs(function() {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
+          line = r.id;
+        });
+      });
+    });
+    
+    waitsFor(function() {
+      return line !== null;
+    }, "API call did not return in time", 10000);
+  };
   
 });
