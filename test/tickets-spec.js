@@ -233,7 +233,7 @@ describe("Tickets", function() {
       Qminder.tickets.search({"name": "Tuuli"}, function() {});
     };
     
-    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"location\",\"line\",\"status\",\"minCreated\",\"maxCreated\",\"limit\",\"order\"]");
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"location\",\"line\",\"status\",\"minCreated\",\"maxCreated\",\"minCalled\",\"maxCalled\",\"limit\",\"order\"]");
 
   });
 
