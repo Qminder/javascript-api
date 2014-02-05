@@ -1,25 +1,26 @@
 function QminderBridge() {
 
   "use strict";
+  
+  var onLoadCallback = null;
 
-	var receiveMessage = function(event) {
-		if (event.data.secretKey) {
-			QminderBridge.secretKey = event.data.secretKey;
-			if (QminderBridge.onLoadCallback) {
-				QminderBridge.onLoadCallback();
-			}
-		}
-	};
+  var receiveMessage = function(event) {
+    if (event.data.secretKey) {
+      if (onLoadCallback) {
+        onLoadCallback(event.data.secretKey);
+      }
+    }
+  };
 
-	window.addEventListener("message", receiveMessage, false);
-	
-	this.getApiSecretKey = function() {
-		return this.secretKey;
-	};
-	
-	this.onLoad = function(callback) {
-		this.onLoadCallback = callback;
-	};
+  window.addEventListener("message", receiveMessage, false);
+  
+  this.onLoad = function(callback) {
+    onLoadCallback = callback;
+  };
+  
+  this.playAlertSound = function() {
+    console.log("Should play alert sound");
+  };
 }
 
 var QminderBridge = new QminderBridge();
