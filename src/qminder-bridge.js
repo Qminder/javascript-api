@@ -19,7 +19,7 @@ function QminderBridge() {
   };
   
   this.playAlertSound = function() {
-    console.log("TODO: Should play alert sound");
+    parent.postMessage({"command": "playAlertSound"}, "*");
   };
 }
 
