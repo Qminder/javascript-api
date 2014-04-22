@@ -1,171 +1,10 @@
-/*jshint undef:true */
-
-function Qminder() {
+/* exported Qminder */
+var Qminder = (function() {
 
   "use strict";
 
   var BASE_URL = "https://api.qminderapp.com/v1/";
   var apiKey = null;
-  
-  this.setKey = function(key) {
-    apiKey = key;
-  };
-  
-  this.locations = {
-    
-    list: function(callback) {
-      assertNotNull(callback, "Callback function not provided");
-      get("locations/", callback);
-    },
-    
-    details: function(id, callback) {
-      assertNotNull(id, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-      
-      get("locations/" + id, callback);
-    },
-    
-    lines: function(id, callback) {
-      assertNotNull(id, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-
-      get("locations/" + id + "/lines", callback);
-    },
-    
-    users: function(id, callback) {
-      assertNotNull(id, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-
-      get("locations/" + id + "/users", callback);
-    },
-    
-    createLine: function(location, name, callback) {
-      assertNotNull(location, "Location ID not provided");
-      assertNotNull(name, "Name not provided");
-      assertNotNull(callback, "Callback function not provided");
-    
-      var data = "name=" + encodeURIComponent(name);
-      postData("locations/" + location + "/lines", data, callback);
-    }
-  };
-  
-  this.lines = {
-  
-    watchCalled: function(line, lastKnownTicket, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-      
-      var url = "lines/" + line + "/watch/called";
-      if (lastKnownTicket !== null) {
-        url += "?lastKnownTicket=" + lastKnownTicket;
-      }
-      
-      get(url, callback);
-    },
-  
-    reset: function(line, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-      
-      post("lines/" + line + "/reset", callback);
-    },
-  
-    delete: function(line, callback) {
-      assertNotNull(line, "Line ID not provided");
-      
-      deleteRequest("lines/" + line, callback);
-    },
-    
-    notificationSettings: function(line, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-      
-      get("lines/" + line + "/settings/notifications/waiting", callback);
-    },
-    
-    updateNotificationSettings: function(line, pattern, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(pattern, "Pattern not provided");
-      assertNotNull(callback, "Callback function not provided");
-      
-      var data = "pattern=" + encodeURIComponent(pattern);
-      postData("lines/" + line + "/settings/notifications/waiting", data, callback);
-    }
-  };
-  
-  this.tickets = {
-  
-    create: function(line, parameters, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertTrue(typeof parameters == "object", "Parameter has to be an object");
-      assertNotNull(callback, "Callback function not provided");
-    
-      var data = null;
-      var validParameters = ["phoneNumber", "sendTextMessage", "firstName", "lastName", "extra"];
-    
-      for (var key in parameters) {
-        if (!parameters.hasOwnProperty(key)) {
-          continue;
-        }
-        if (validParameters.indexOf(key) == -1) {
-          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
-        }
-          
-        var value = parameters[key];
-        data += "&" + key + "=";
-          
-        if (key == "extra") {
-          assertExtraParameters(value);
-
-          data += JSON.stringify(value);
-        }
-        else {
-          data += encodeURIComponent(value);
-        }
-      }
-    
-      postData("lines/" + line + "/ticket", data, callback);
-    },
-    
-    search: function(parameters, callback) {
-      assertTrue(typeof parameters == "object", "Parameter has to be an object");
-      assertNotNull(callback, "Callback function not provided");
-      
-      var url = "tickets/search?";
-      
-      var validParameters = ["location", "line", "status", "minCreated", "maxCreated", "minCalled", "maxCalled", "limit", "order"];
-      
-      for (var key in parameters) {
-        if (!parameters.hasOwnProperty(key)) {
-          continue;
-        }
-        if (validParameters.indexOf(key) == -1) {
-          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
-        }
-        url += "&" + key + "=" + encodeURIComponent(parameters[key]);
-      }
-      
-      get(url, callback);
-    },
-  
-    call: function(lines, user, callback) {
-      assertNotNull(lines, "List of lines not provided");
-      assertNotNull(user, "User ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-      
-      var data = "lines=" + lines + "&user=" + user;
-      postData("tickets/call", data, callback);
-    },
-    
-    details: function(id, callback) {
-      assertNotNull(id, "Ticket ID not provided");
-      assertNotNull(callback, "Callback function not provided");
-
-      get("tickets/" + id, callback);
-    }
-  };
-  
-  // Private
   
   var assertExtraParameters = function(parameters) {
     assertTrue(parameters instanceof Array, "Extra parameter has to be an array");
@@ -257,6 +96,170 @@ function Qminder() {
 
     return request;
   };
-}
+  
+  
+  // Public
+  
+  var exports = {};
+  
+  exports.setKey = function(key) {
+    apiKey = key;
+  };
+  
+  exports.locations = {
+    
+    list: function(callback) {
+      assertNotNull(callback, "Callback function not provided");
+      get("locations/", callback);
+    },
+    
+    details: function(id, callback) {
+      assertNotNull(id, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      get("locations/" + id, callback);
+    },
+    
+    lines: function(id, callback) {
+      assertNotNull(id, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
 
-var Qminder = new Qminder();
+      get("locations/" + id + "/lines", callback);
+    },
+    
+    users: function(id, callback) {
+      assertNotNull(id, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+
+      get("locations/" + id + "/users", callback);
+    },
+    
+    createLine: function(location, name, callback) {
+      assertNotNull(location, "Location ID not provided");
+      assertNotNull(name, "Name not provided");
+      assertNotNull(callback, "Callback function not provided");
+    
+      var data = "name=" + encodeURIComponent(name);
+      postData("locations/" + location + "/lines", data, callback);
+    }
+  };
+  
+  exports.lines = {
+  
+    watchCalled: function(line, lastKnownTicket, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      var url = "lines/" + line + "/watch/called";
+      if (lastKnownTicket !== null) {
+        url += "?lastKnownTicket=" + lastKnownTicket;
+      }
+      
+      get(url, callback);
+    },
+  
+    reset: function(line, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      post("lines/" + line + "/reset", callback);
+    },
+  
+    delete: function(line, callback) {
+      assertNotNull(line, "Line ID not provided");
+      
+      deleteRequest("lines/" + line, callback);
+    },
+    
+    notificationSettings: function(line, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      get("lines/" + line + "/settings/notifications/waiting", callback);
+    },
+    
+    updateNotificationSettings: function(line, pattern, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertNotNull(pattern, "Pattern not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      var data = "pattern=" + encodeURIComponent(pattern);
+      postData("lines/" + line + "/settings/notifications/waiting", data, callback);
+    }
+  };
+  
+  exports.tickets = {
+  
+    create: function(line, parameters, callback) {
+      assertNotNull(line, "Line ID not provided");
+      assertTrue(typeof parameters == "object", "Parameter has to be an object");
+      assertNotNull(callback, "Callback function not provided");
+    
+      var data = null;
+      var validParameters = ["phoneNumber", "sendTextMessage", "firstName", "lastName", "extra"];
+    
+      for (var key in parameters) {
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
+        }
+        if (validParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
+        }
+          
+        var value = parameters[key];
+        data += "&" + key + "=";
+          
+        if (key == "extra") {
+          assertExtraParameters(value);
+
+          data += JSON.stringify(value);
+        }
+        else {
+          data += encodeURIComponent(value);
+        }
+      }
+    
+      postData("lines/" + line + "/ticket", data, callback);
+    },
+    
+    search: function(parameters, callback) {
+      assertTrue(typeof parameters == "object", "Parameter has to be an object");
+      assertNotNull(callback, "Callback function not provided");
+      
+      var url = "tickets/search?";
+      
+      var validParameters = ["location", "line", "status", "minCreated", "maxCreated", "minCalled", "maxCalled", "limit", "order"];
+      
+      for (var key in parameters) {
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
+        }
+        if (validParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
+        }
+        url += "&" + key + "=" + encodeURIComponent(parameters[key]);
+      }
+      
+      get(url, callback);
+    },
+  
+    call: function(lines, user, callback) {
+      assertNotNull(lines, "List of lines not provided");
+      assertNotNull(user, "User ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      var data = "lines=" + lines + "&user=" + user;
+      postData("tickets/call", data, callback);
+    },
+    
+    details: function(id, callback) {
+      assertNotNull(id, "Ticket ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+
+      get("tickets/" + id, callback);
+    }
+  };
+  
+  return exports;
+  
+}());

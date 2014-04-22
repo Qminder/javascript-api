@@ -1,0 +1,3 @@
+Running tests:
+=================================
+$ QMINDER_SECRET_KEY=XXX grunt tests --verbose

@@ -68,7 +68,8 @@ module.exports = function(grunt) {
   grunt.file.write("temp-secret.js", "QMINDER_SECRET_KEY=\"" + process.env.QMINDER_SECRET_KEY + "\";");
 
 
-  grunt.registerTask("travis", ["jshint", "uglify", "jasmine", "clean"]);
+  grunt.registerTask("tests", ["jshint", "uglify", "jasmine", "clean"]);
+  grunt.registerTask("travis", ["tests"]);
   grunt.registerTask("default", ["jshint"]);
 
 };
