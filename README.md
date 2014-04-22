@@ -52,6 +52,14 @@ Qminder.locations.createLine(locationId, name, callback);
 
 ### Lines
 
+#### [Watching for last created ticket](http://www.qminderapp.com/docs/api/lines/#watchcreated)
+```js
+Qminder.lines.watchCreated(lineId, [lastKnownTicketId,] callback);
+```
+#### [Watching for last called ticket](http://www.qminderapp.com/docs/api/lines/#watchcalled)
+```js
+Qminder.lines.watchCalled(lineId, [lastKnownTicketId,] callback);
+```
 #### [Resetting number sequence](http://www.qminderapp.com/docs/api/lines/#resetting)
 ```js
 Qminder.lines.reset(lineId, callback);
