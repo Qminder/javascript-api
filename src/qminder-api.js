@@ -272,6 +272,122 @@ var Qminder = (function() {
     }
   };
   
+  
+  // Events
+  
+  exports.events = (function() {
+    
+    var connectionOpen = false;
+    var openingConnection = false;
+
+    var socket = null;
+    var messageQueue = [];
+    var callbackMap = {};
+    
+    var createId = function() {
+      var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var text = "";
+      
+      for (var i=0; i<30; i++) {
+        text += possible.charAt(Math.floor(Math.random() * possible.length));
+      }
+      return text;
+    };
+    
+    var sendMessage = function(message, callback) {
+      callbackMap[message.id] = callback;
+      socket.send(JSON.stringify(message));
+    };
+    
+    var openSocket = function() {
+      
+      if (!apiKey) {
+        throw "Key not set. Please call Qminder.setKey before calling any other methods";
+      }
+      
+      openingConnection = true;
+      socket = new WebSocket("wss://api.qminderapp.com//events?rest-api-key=" + apiKey);
+      
+      socket.onopen = function() {
+        connectionOpen = true;
+        
+        while (messageQueue.length > 0) {
+          var queueItem = messageQueue.pop();
+          sendMessage(queueItem.message, queueItem.callback);
+        }
+      };
+      
+      socket.onclose = function() {
+        console.log("Connection closed");
+      };
+      
+      socket.onerror = function(error) {
+        console.log("Error: ", error);
+      };
+      
+      socket.onmessage = function(rawMessage) {
+        var message = JSON.parse(rawMessage.data);
+        var callback = callbackMap[message.subscriptionId];
+        callback(message.data);
+      };
+      
+    };
+    
+    var subscribe = function(a, b, eventName) {
+      var filter = a;
+      var callback = b;
+      
+      if (typeof callback === "undefined") {
+        callback = a;
+        filter = null;
+      }
+      
+      var message = {
+          id: createId(),
+          subscribe : eventName,
+        };
+
+      if (filter !== null) {
+        if (typeof filter.line !== "undefined") {
+          message.line = filter.line;
+        }
+        else if (typeof filter.location !== "undefined") {
+          message.location = filter.location;
+        }
+      }
+      
+      if (!connectionOpen) {
+        messageQueue.push({message: message, callback: callback});
+        if (!openingConnection) {
+          openSocket();
+        }
+      }
+    };
+    
+    var exports = {};
+    
+    exports.onError = function() {
+    };
+    
+    // filter, callback
+    exports.onTicketCreated = function(a, b) {
+      subscribe(a, b, "TICKET_CREATED");
+    };
+    
+    // filter, callback
+    exports.onTicketCalled = function(a, b) {
+      subscribe(a, b, "TICKET_CALLED");
+    };
+    
+    // filter, callback
+    exports.onTicketCancelled = function(a, b) {
+      subscribe(a, b, "TICKET_CANCELLED");
+    };
+    
+    return exports;
+    
+  }());
+  
   return exports;
   
 }());
