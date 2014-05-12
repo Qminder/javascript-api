@@ -314,7 +314,12 @@ var Qminder = (function() {
       }
       
       openingConnection = true;
-      socket = new WebSocket("wss://api.qminderapp.com//events?rest-api-key=" + apiKey);
+      
+      // Samsung Smart-TVs (2013) crashes with SSL
+      var supportsSSL = navigator.userAgent.match(/SMART-TV/i) === null;
+      
+      var protocol = supportsSSL ? "wss" : "ws";
+      socket = new WebSocket(protocol + "://api.qminderapp.com//events?rest-api-key=" + apiKey);
       
       socket.onopen = function() {
         console.log("Connection opened");
