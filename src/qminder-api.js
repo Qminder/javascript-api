@@ -282,8 +282,12 @@ var Qminder = (function() {
     var pingInterval = null;
 
     var socket = null;
+    var messageHistory = [];
     var messageQueue = [];
     var callbackMap = {};
+    
+    var onConnectedCallback = null;
+    var onDisconnectedCallback = null;
     
     var createId = function() {
       var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -296,7 +300,9 @@ var Qminder = (function() {
     };
     
     var sendMessage = function(message, callback) {
-      callbackMap[message.id] = callback;
+      if (typeof callback !== "undefined") {
+        callbackMap[message.id] = callback;
+      }
       console.log("Sending: " + JSON.stringify(message));
       socket.send(JSON.stringify(message));
     };
@@ -314,18 +320,26 @@ var Qminder = (function() {
         console.log("Connection opened");
         connectionOpen = true;
         
+        messageHistory.forEach(function(message) {
+          sendMessage(message);
+        });
+        
         while (messageQueue.length > 0) {
           var queueItem = messageQueue.pop();
           sendMessage(queueItem.message, queueItem.callback);
+          messageHistory.push(queueItem.message);
         }
         
         pingInterval = setInterval(function(){
           socket.send("PING");
         }, 10000);
+        
+        if (onConnectedCallback !== null) {
+          onConnectedCallback();
+        }
       };
       
       socket.onclose = function() {
-        console.log("Connection closed");
         connectionOpen = false;
         openingConnection = false;
         
@@ -334,8 +348,12 @@ var Qminder = (function() {
           pingInterval = null;
         }
         
-        console.log("Trying to reconnect in 5 seconds");
+        console.log("Connection closed, Trying to reconnect in 5 seconds");
         setTimeout(openSocket, 5000);
+        
+        if (onDisconnectedCallback !== null) {
+          onDisconnectedCallback();
+        }
       };
       
       socket.onerror = function(error) {
@@ -373,7 +391,11 @@ var Qminder = (function() {
         }
       }
       
-      if (!connectionOpen) {
+      if (connectionOpen) {
+        sendMessage(message, callback);
+        messageHistory.push(message);
+      }
+      else {
         messageQueue.push({message: message, callback: callback});
         if (!openingConnection) {
           openSocket();
@@ -383,7 +405,12 @@ var Qminder = (function() {
     
     var exports = {};
     
-    exports.onError = function() {
+    exports.onConnected = function(callback) {
+      onConnectedCallback = callback;
+    };
+    
+    exports.onDisconnected = function(callback) {
+      onDisconnectedCallback = callback;
     };
     
     // filter, callback
