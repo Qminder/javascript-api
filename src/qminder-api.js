@@ -279,6 +279,7 @@ var Qminder = (function() {
     
     var connectionOpen = false;
     var openingConnection = false;
+    var pingInterval = null;
 
     var socket = null;
     var messageQueue = [];
@@ -296,6 +297,7 @@ var Qminder = (function() {
     
     var sendMessage = function(message, callback) {
       callbackMap[message.id] = callback;
+      console.log("Sending: " + JSON.stringify(message));
       socket.send(JSON.stringify(message));
     };
     
@@ -309,16 +311,31 @@ var Qminder = (function() {
       socket = new WebSocket("wss://api.qminderapp.com//events?rest-api-key=" + apiKey);
       
       socket.onopen = function() {
+        console.log("Connection opened");
         connectionOpen = true;
         
         while (messageQueue.length > 0) {
           var queueItem = messageQueue.pop();
           sendMessage(queueItem.message, queueItem.callback);
         }
+        
+        pingInterval = setInterval(function(){
+          socket.send("PING");
+        }, 10000);
       };
       
       socket.onclose = function() {
         console.log("Connection closed");
+        connectionOpen = false;
+        openingConnection = false;
+        
+        if (pingInterval !== null) {
+          clearInterval(pingInterval);
+          pingInterval = null;
+        }
+        
+        console.log("Trying to reconnect in 5 seconds");
+        setTimeout(openSocket, 5000);
       };
       
       socket.onerror = function(error) {
