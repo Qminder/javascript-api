@@ -429,6 +429,11 @@ var Qminder = (function() {
     };
     
     // filter, callback
+    exports.onTicketRecalled = function(a, b) {
+      subscribe(a, b, "TICKET_RECALLED");
+    };
+    
+    // filter, callback
     exports.onTicketCancelled = function(a, b) {
       subscribe(a, b, "TICKET_CANCELLED");
     };
