@@ -1,3 +1,4 @@
 Running tests:
 =================================
+$ npm install
 $ QMINDER_SECRET_KEY=XXX grunt tests --verbose
