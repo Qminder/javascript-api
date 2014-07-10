@@ -30,7 +30,7 @@ function QminderBridge() {
     variables.forEach(function(variable) {
       var pair = variable.split("=");
       var id = pair[0];
-      var value = pair[1];
+      var value = decodeURIComponent(pair[1]);
       
       if (typeof result[id] == "undefined") {
         result[id] = value;
