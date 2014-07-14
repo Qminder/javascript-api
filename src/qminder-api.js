@@ -3,7 +3,8 @@ var Qminder = (function() {
 
   "use strict";
 
-  var BASE_URL = "https://api.qminderapp.com/v1/";
+  var SERVER = "api.qminderapp.com";
+  var BASE_URL = "https://" + SERVER + "/v1/";
   var apiKey = null;
   var sslEnabled = true;
   
@@ -108,8 +109,9 @@ var Qminder = (function() {
   };
   
   // Normally should not be used
-  exports.setBaseUrl = function(url) {
-    BASE_URL = url;
+  exports.setServer = function(newServer) {
+    BASE_URL = "https://" + newServer + "/v1/";
+    SERVER = newServer;
   };
   
   exports.setSslEnabled = function(enabled) {
@@ -329,7 +331,7 @@ var Qminder = (function() {
       var supportsSSL = navigator.userAgent.match(/SMART-TV/i) === null;
       
       var protocol = sslEnabled && supportsSSL ? "wss" : "ws";
-      socket = new WebSocket(protocol + "://api.qminderapp.com//events?rest-api-key=" + apiKey);
+      socket = new WebSocket(protocol + "://" + SERVER + "/events?rest-api-key=" + apiKey);
       
       socket.onopen = function() {
         console.log("Connection opened");
