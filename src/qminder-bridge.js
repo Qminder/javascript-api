@@ -48,4 +48,3 @@ function QminderBridge() {
 }
 
 var QminderBridge = new QminderBridge();
-
