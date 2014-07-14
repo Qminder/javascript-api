@@ -373,6 +373,19 @@ var Qminder = (function() {
       
     };
     
+    var send = function(message, callback) {
+      if (connectionOpen) {
+        sendMessage(message, callback);
+        messageHistory.push(message);
+      }
+      else {
+        messageQueue.push({message: message, callback: callback});
+        if (!openingConnection) {
+          openSocket();
+        }
+      }
+    };
+    
     var subscribe = function(a, b, eventName) {
       var filter = a;
       var callback = b;
@@ -396,16 +409,7 @@ var Qminder = (function() {
         }
       }
       
-      if (connectionOpen) {
-        sendMessage(message, callback);
-        messageHistory.push(message);
-      }
-      else {
-        messageQueue.push({message: message, callback: callback});
-        if (!openingConnection) {
-          openSocket();
-        }
-      }
+      send(message, callback);
     };
     
     var exports = {};
@@ -436,6 +440,18 @@ var Qminder = (function() {
     // filter, callback
     exports.onTicketCancelled = function(a, b) {
       subscribe(a, b, "TICKET_CANCELLED");
+    };
+    
+    // id, callback
+    exports.onOverviewMonitorChange = function(monitorId, callback) {
+    
+      var message = {
+          id: createId(),
+          subscribe : "OVERVIEW_MONITOR_CHANGE",
+          parameters: {id: monitorId}
+        };
+
+      send(message, callback);
     };
     
     return exports;
