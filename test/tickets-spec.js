@@ -477,6 +477,7 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
+          console.log("Calling ticket");
           Qminder.tickets.call([line, 123, 234, 453], userId, function(r) {
             response = r;
           });
