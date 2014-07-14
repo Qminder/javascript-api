@@ -106,6 +106,11 @@ var Qminder = (function() {
     apiKey = key;
   };
   
+  // Normally should not be used
+  exports.setBaseUrl = function(url) {
+    BASE_URL = url;
+  };
+  
   exports.locations = {
     
     list: function(callback) {
