@@ -5,6 +5,7 @@ var Qminder = (function() {
 
   var BASE_URL = "https://api.qminderapp.com/v1/";
   var apiKey = null;
+  var sslEnabled = true;
   
   var assertExtraParameters = function(parameters) {
     assertTrue(parameters instanceof Array, "Extra parameter has to be an array");
@@ -109,6 +110,10 @@ var Qminder = (function() {
   // Normally should not be used
   exports.setBaseUrl = function(url) {
     BASE_URL = url;
+  };
+  
+  exports.setSslEnabled = function(enabled) {
+    sslEnabled = enabled;
   };
   
   exports.locations = {
@@ -323,7 +328,7 @@ var Qminder = (function() {
       // Samsung Smart-TVs (2013) crashes with SSL
       var supportsSSL = navigator.userAgent.match(/SMART-TV/i) === null;
       
-      var protocol = supportsSSL ? "wss" : "ws";
+      var protocol = sslEnabled && supportsSSL ? "wss" : "ws";
       socket = new WebSocket(protocol + "://api.qminderapp.com//events?rest-api-key=" + apiKey);
       
       socket.onopen = function() {
