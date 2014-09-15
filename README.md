@@ -69,15 +69,6 @@ Qminder.lines.reset(lineId, callback);
 Qminder.lines.delete(lineId, [callback]);
 ```
 
-#### [Notification settings](http://www.qminderapp.com/docs/api/lines/#notification-settings)
-```js
-Qminder.lines.notificationSettings(lineId, callback);
-```
-
-#### [Updating notification settings](http://www.qminderapp.com/docs/api/lines/#update-notification-settings)
-```js
-Qminder.lines.updateNotificationSettings(lineId, pattern, callback);
-```
 
 ### Tickets
 
