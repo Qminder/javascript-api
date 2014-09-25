@@ -341,7 +341,7 @@ describe("Tickets", function() {
             id = ticket.id;
           }
           else {
-            expect(id).toBeGreaterThan(ticket.id);
+            expect(parseInt(id)).toBeGreaterThan(parseInt(ticket.id));
             id = ticket.id;
           }
         });
