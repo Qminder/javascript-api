@@ -110,7 +110,8 @@ var Qminder = (function() {
   
   // Normally should not be used
   exports.setServer = function(newServer) {
-    BASE_URL = "https://" + newServer + "/v1/";
+    var protocol = sslEnabled ? "https" : "http";
+    BASE_URL = protocol + "://" + newServer + "/v1/";
     SERVER = newServer;
   };
   
