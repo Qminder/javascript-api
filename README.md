@@ -92,6 +92,13 @@ Qminder.tickets.call(lines, user, callback);
 Qminder.tickets.details(id, callback);
 ```
 
+### Devices
+
+#### [List of devices](http://qminderapp.com/docs/api/devices/)
+```js
+Qminder.devices.list(location, callback);
+```
+
 ## Questions?
 
 If you have any questions, please feel free to contact
