@@ -269,6 +269,15 @@ var Qminder = (function() {
     }
   };
   
+  exports.devices = {
+    list: function(location, callback) {
+      assertNotNull(location, "Location ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      get("locations/" + location + "/devices", callback);
+    }
+  };
+  
   
   // Events
   
