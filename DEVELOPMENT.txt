@@ -1,4 +1,6 @@
 Running tests:
 =================================
+$ brew install node
+$ npm install -g grunt-cli
 $ npm install
 $ QMINDER_SECRET_KEY=XXX grunt tests --verbose
