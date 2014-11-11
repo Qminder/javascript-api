@@ -261,6 +261,15 @@ var Qminder = (function() {
       postData("tickets/call", data, callback);
     },
     
+    cancel: function(id, user, callback) {
+      assertNotNull(id, "Ticket ID not provided");
+      assertNotNull(user, "User ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+
+      var data = "user=" + user;
+      postData("tickets/" + id + "/cancel", data, callback);
+    },
+    
     details: function(id, callback) {
       assertNotNull(id, "Ticket ID not provided");
       assertNotNull(callback, "Callback function not provided");

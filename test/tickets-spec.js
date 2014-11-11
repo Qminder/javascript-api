@@ -498,8 +498,74 @@ describe("Tickets", function() {
 
   });
   
+  // http://qminderapp.com/docs/api/tickets/#cancelling
+  it("should throw exception for missing ticket id in cancellation call", function() {
+    
+    expect(Qminder.tickets.cancel).toThrow("Ticket ID not provided");
+
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#cancelling
+  it("should throw exception for missing user id in cancellation call", function() {
+    
+    var call = function() {
+      Qminder.tickets.cancel(1);
+    };
+    
+    expect(call).toThrow("User ID not provided");
+
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#cancelling
+  it("should throw exception for missing callback function in cancellation call", function() {
+    
+    var call = function() {
+      Qminder.tickets.cancel(1, 2);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#cancelling
+  it("should cancel a ticket", function() {
+  
+    createLine();
+    var response = null;
+    var ticketId = null;
+    
+    createTicket(null, function(r) {
+      ticketId = r.id;
+    });
+  
+    runs(function() {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var userId = usersResponse.data[0].id;
+          
+          Qminder.tickets.cancel(ticketId, userId, function(r) {
+            response = r;
+          });
+        });
+      });
+    });
+    
+    waitsFor(function() {
+      return response !== null;
+    }, "API call did not return in time", 10000);
+    
+    
+    runs(function() {
+      expect(response.result).toBe("success");
+    });
+
+  });
+  
   // http://www.qminderapp.com/docs/api/tickets/#details
-  it("should throw exception for missing user id in details call", function() {
+  it("should throw exception for missing ticket id in details call", function() {
     
     expect(Qminder.tickets.details).toThrow("Ticket ID not provided");
 
