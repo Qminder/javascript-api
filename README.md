@@ -85,7 +85,12 @@ Qminder.tickets.search(parameters, callback);
 #### [Calling a ticket](http://www.qminderapp.com/docs/api/tickets/#calling)
 ```js
 Qminder.tickets.call(lines, user, callback);
-```
+
+
+#### [Cancelling a ticket](http://qminderapp.com/docs/api/tickets/#cancelling)
+```js
+Qminder.tickets.cancel(id, user, callback);
+``````
 
 #### [Ticket status](http://www.qminderapp.com/docs/api/tickets/#status)
 ```js
