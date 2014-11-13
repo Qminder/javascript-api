@@ -252,13 +252,34 @@ var Qminder = (function() {
       get(url, callback);
     },
   
-    call: function(lines, user, callback) {
-      assertNotNull(lines, "List of lines not provided");
-      assertNotNull(user, "User ID not provided");
+    callNext: function(parameters, callback) {
+      assertNotNull(parameters, "Parameters not provided");
+      assertNotNull(parameters.lines, "List of lines not provided");
+      assertNotNull(parameters.user, "User ID not provided");
       assertNotNull(callback, "Callback function not provided");
       
-      var data = "lines=" + lines + "&user=" + user;
+      var data = "lines=" + parameters.lines + "&user=" + parameters.user;
+      
+      if (typeof parameters.desk != "undefined") {
+        data += "&desk=" + parameters.desk;
+      }
+      
       postData("tickets/call", data, callback);
+    },
+    
+    call: function(parameters, callback) {
+      assertNotNull(parameters, "Parameters not provided");
+      assertNotNull(parameters.id, "Ticket ID not provided");
+      assertNotNull(parameters.user, "User ID not provided");
+      assertNotNull(callback, "Callback function not provided");
+      
+      var data = "user=" + parameters.user;
+      
+      if (typeof parameters.desk != "undefined") {
+        data += "&desk=" + parameters.desk;
+      }
+      
+      postData("tickets/" + parameters.id + "/call", data, callback);
     },
     
     cancel: function(id, user, callback) {
