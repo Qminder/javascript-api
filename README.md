@@ -92,6 +92,16 @@ Qminder.tickets.callNext(parameters, callback);
 Qminder.tickets.call(parameters, callback);
 ```
 
+#### [Recalling a ticket](http://qminderapp.com/docs/api/tickets/#recalling)
+```js
+Qminder.tickets.recall(id, callback);
+```
+
+#### [Marking ticket served](http://qminderapp.com/docs/api/tickets/#marking-served)
+```js
+Qminder.tickets.markServed(id, callback);
+```
+
 #### [Cancelling a ticket](http://qminderapp.com/docs/api/tickets/#cancelling)
 ```js
 Qminder.tickets.cancel(id, user, callback);
