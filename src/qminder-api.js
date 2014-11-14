@@ -28,6 +28,16 @@ var Qminder = (function() {
     
   };
   
+  var ERRORS = {
+    CALLBACK: "Callback function not provided",
+    LOCATION: "Location ID not provided",
+    LINE: "Line ID not provided",
+    PARAMETEROBJECT: "Parameter has to be an object",
+    PARAMETERS: "Parameters not provided",
+    USER: "User ID not provided",
+    TICKET: "Ticket ID not provided"
+  };
+  
   // Common
   
   var assertNotNull = function(value, message) {
@@ -122,35 +132,35 @@ var Qminder = (function() {
   exports.locations = {
     
     list: function(callback) {
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(callback, ERRORS.CALLBACK);
       get("locations/", callback);
     },
     
     details: function(id, callback) {
-      assertNotNull(id, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.LOCATION);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       get("locations/" + id, callback);
     },
     
     lines: function(id, callback) {
-      assertNotNull(id, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.LOCATION);
+      assertNotNull(callback, ERRORS.CALLBACK);
 
       get("locations/" + id + "/lines", callback);
     },
     
     users: function(id, callback) {
-      assertNotNull(id, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.LOCATION);
+      assertNotNull(callback, ERRORS.CALLBACK);
 
       get("locations/" + id + "/users", callback);
     },
     
     createLine: function(location, name, callback) {
-      assertNotNull(location, "Location ID not provided");
+      assertNotNull(location, ERRORS.LOCATION);
       assertNotNull(name, "Name not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(callback, ERRORS.CALLBACK);
     
       var data = "name=" + encodeURIComponent(name);
       postData("locations/" + location + "/lines", data, callback);
@@ -160,8 +170,8 @@ var Qminder = (function() {
   exports.lines = {
   
     watchCreated: function(line, lastKnownTicket, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(line, ERRORS.LINE);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       var url = "lines/" + line + "/watch/created";
       if (lastKnownTicket !== null) {
@@ -172,8 +182,8 @@ var Qminder = (function() {
     },
   
     watchCalled: function(line, lastKnownTicket, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(line, ERRORS.LINE);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       var url = "lines/" + line + "/watch/called";
       if (lastKnownTicket !== null) {
@@ -184,14 +194,14 @@ var Qminder = (function() {
     },
   
     reset: function(line, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(line, ERRORS.LINE);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       post("lines/" + line + "/reset", callback);
     },
   
     delete: function(line, callback) {
-      assertNotNull(line, "Line ID not provided");
+      assertNotNull(line, ERRORS.LINE);
       
       deleteRequest("lines/" + line, callback);
     }
@@ -200,9 +210,9 @@ var Qminder = (function() {
   exports.tickets = {
   
     create: function(line, parameters, callback) {
-      assertNotNull(line, "Line ID not provided");
-      assertTrue(typeof parameters == "object", "Parameter has to be an object");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(line, ERRORS.LINE);
+      assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
+      assertNotNull(callback, ERRORS.CALLBACK);
     
       var data = null;
       var validParameters = ["phoneNumber", "sendTextMessage", "firstName", "lastName", "extra"];
@@ -232,8 +242,8 @@ var Qminder = (function() {
     },
     
     search: function(parameters, callback) {
-      assertTrue(typeof parameters == "object", "Parameter has to be an object");
-      assertNotNull(callback, "Callback function not provided");
+      assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       var url = "tickets/search?";
       
@@ -253,10 +263,10 @@ var Qminder = (function() {
     },
   
     callNext: function(parameters, callback) {
-      assertNotNull(parameters, "Parameters not provided");
+      assertNotNull(parameters, ERRORS.PARAMETERS);
       assertNotNull(parameters.lines, "List of lines not provided");
-      assertNotNull(parameters.user, "User ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(parameters.user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       var data = "lines=" + parameters.lines + "&user=" + parameters.user;
       
@@ -268,10 +278,10 @@ var Qminder = (function() {
     },
     
     call: function(parameters, callback) {
-      assertNotNull(parameters, "Parameters not provided");
-      assertNotNull(parameters.id, "Ticket ID not provided");
-      assertNotNull(parameters.user, "User ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(parameters, ERRORS.PARAMETERS);
+      assertNotNull(parameters.id, ERRORS.TICKET);
+      assertNotNull(parameters.user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       var data = "user=" + parameters.user;
       
@@ -283,31 +293,31 @@ var Qminder = (function() {
     },
     
     recall: function(id, callback) {
-      assertNotNull(id, "Ticket ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
 
       post("tickets/" + id + "/recall", callback);
     },
     
     markServed: function(id, callback) {
-      assertNotNull(id, "Ticket ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
 
       post("tickets/" + id + "/markserved", callback);
     },
     
     cancel: function(id, user, callback) {
-      assertNotNull(id, "Ticket ID not provided");
-      assertNotNull(user, "User ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
 
       var data = "user=" + user;
       postData("tickets/" + id + "/cancel", data, callback);
     },
     
     details: function(id, callback) {
-      assertNotNull(id, "Ticket ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
 
       get("tickets/" + id, callback);
     }
@@ -315,8 +325,8 @@ var Qminder = (function() {
   
   exports.devices = {
     list: function(location, callback) {
-      assertNotNull(location, "Location ID not provided");
-      assertNotNull(callback, "Callback function not provided");
+      assertNotNull(location, ERRORS.LOCATION);
+      assertNotNull(callback, ERRORS.CALLBACK);
       
       get("locations/" + location + "/devices", callback);
     }
