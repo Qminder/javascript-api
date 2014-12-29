@@ -253,7 +253,7 @@ var Qminder = (function() {
       postData("lines/" + line + "/ticket", data, callback);
     },
     
-    search: function(parameters, callback) {
+    search: function(parameters, callback, errorCallback) {
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
       assertNotNull(callback, ERRORS.CALLBACK);
       
@@ -271,7 +271,7 @@ var Qminder = (function() {
         url += "&" + key + "=" + encodeURIComponent(parameters[key]);
       }
       
-      get(url, callback);
+      get(url, callback, errorCallback);
     },
   
     callNext: function(parameters, callback) {

@@ -249,6 +249,20 @@ describe("Tickets", function() {
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
+  it("should search tickets with no filters and with error callback", function() {
+  
+    createLine();
+    
+    searchTickets(null, function(response) {
+      expect(response.data.length).toBeGreaterThan(0);
+    },
+    function() {
+      
+    });
+    
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#search
   it("should search tickets from location", function() {
   
     createLine();
