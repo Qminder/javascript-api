@@ -52,23 +52,23 @@ var Qminder = (function() {
     }
   };
   
-  var get = function(url, callback) {
-    request("GET", url, null, callback);
+  var get = function(url, callback, errorCallback) {
+    request("GET", url, null, callback, errorCallback);
   };
   
-  var post = function(url, callback) {
-    request("POST", url, null, callback);
+  var post = function(url, callback, errorCallback) {
+    request("POST", url, null, callback, errorCallback);
   };
   
-  var postData = function(url, data, callback) {
-    request("POST", url, data, callback);
+  var postData = function(url, data, callback, errorCallback) {
+    request("POST", url, data, callback, errorCallback);
   };
   
-  var deleteRequest = function(url, callback) {
-    request("DELETE", url, null, callback);
+  var deleteRequest = function(url, callback, errorCallback) {
+    request("DELETE", url, null, callback, errorCallback);
   };
   
-  var request = function(method, url, data, callback) {
+  var request = function(method, url, data, callback, errorCallback) {
     var request = createCORSRequest(method, BASE_URL + url);
     
     if (!apiKey) {
@@ -85,6 +85,18 @@ var Qminder = (function() {
       }
       else {
         console.log("No callback function specified");
+      }
+    };
+
+
+    request.onerror = function(error) {
+      if (typeof errorCallback != "undefined") {
+        
+        if (request.status === 0) {
+          error = "Network error";
+        }
+        
+        errorCallback(error);
       }
     };
 
@@ -324,11 +336,11 @@ var Qminder = (function() {
   };
   
   exports.devices = {
-    list: function(location, callback) {
+    list: function(location, callback, errorCallback) {
       assertNotNull(location, ERRORS.LOCATION);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      get("locations/" + location + "/devices", callback);
+      get("locations/" + location + "/devices", callback, errorCallback);
     }
   };
   

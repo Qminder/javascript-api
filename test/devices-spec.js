@@ -46,4 +46,31 @@ describe("Devices", function() {
     });
     
   });
+  
+  // http://qminderapp.com/docs/api/devices/
+  it("should list devices with error handler", function() {
+    
+    var response = null;
+    
+    runs(function() {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.devices.list(location.id, function(r) {
+            response = r;
+          });
+      }, function() {
+        
+      });
+    });
+    
+    waitsFor(function() {
+      return response !== null;
+    }, "API call did not return in time", 10000);
+
+    runs(function() {
+      expect(response.statusCode).toBe(200);
+    });
+    
+  });
 });
