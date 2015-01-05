@@ -212,7 +212,7 @@ var Qminder = (function() {
       post("lines/" + line + "/reset", callback);
     },
   
-    delete: function(line, callback) {
+    "delete": function(line, callback) {
       assertNotNull(line, ERRORS.LINE);
       
       deleteRequest("lines/" + line, callback);
@@ -469,7 +469,7 @@ var Qminder = (function() {
       
       var message = {
           id: createId(),
-          subscribe : eventName,
+          subscribe : eventName
         };
 
       if (filter !== null) {
