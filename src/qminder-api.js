@@ -337,6 +337,16 @@ var Qminder = (function() {
       postData("tickets/" + id + "/labels/add", data, callback);
     },
     
+    removeLabel: function(id, value, user, callback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(value, "Value not provided");
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      var data = "user=" + user + "&value=" + encodeURIComponent(value);
+      postData("tickets/" + id + "/labels/remove", data, callback);
+    },
+    
     details: function(id, callback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
@@ -522,6 +532,11 @@ var Qminder = (function() {
     // filter, callback
     exports.onTicketCancelled = function(a, b) {
       subscribe(a, b, "TICKET_CANCELLED");
+    };
+    
+    // filter, callback
+    exports.onTicketChanged = function(a, b) {
+      subscribe(a, b, "TICKET_CHANGED");
     };
     
     // id, callback
