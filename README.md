@@ -107,6 +107,16 @@ Qminder.tickets.markServed(id, callback);
 Qminder.tickets.cancel(id, user, callback);
 ```
 
+#### [Labelling a ticket](http://qminderapp.com/docs/api/tickets/#labelling)
+```js
+Qminder.tickets.addLabel(id, value, user, callback);
+```
+
+#### [Removing a label](http://qminderapp.com/docs/api/tickets/#removing-label)
+```js
+Qminder.tickets.removeLabel(id, value, user, callback);
+```
+
 #### [Ticket status](http://www.qminderapp.com/docs/api/tickets/#status)
 ```js
 Qminder.tickets.details(id, callback);
