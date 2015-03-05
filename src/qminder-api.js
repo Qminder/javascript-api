@@ -227,7 +227,7 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
     
       var data = null;
-      var validParameters = ["phoneNumber", "sendTextMessage", "firstName", "lastName", "extra"];
+      var validParameters = ["phoneNumber", "firstName", "lastName", "extra"];
     
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
@@ -309,6 +309,36 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
 
       post("tickets/" + id + "/recall", callback);
+    },
+    
+    edit: function(id, parameters, user, callback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(parameters, ERRORS.PARAMETERS);
+      assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      var data = "user=" + user;
+      var validParameters = ["phoneNumber", "firstName", "lastName"];
+    
+      for (var key in parameters) {
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
+        }
+        if (validParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
+        }
+          
+        var value = parameters[key];
+        if (typeof value == "undefined") {
+          continue;
+        }
+        
+        data += "&" + key + "=";
+        data += encodeURIComponent(value);
+      }
+    
+      postData("tickets/" + id + "/edit", data, callback);
     },
     
     markServed: function(id, callback) {
