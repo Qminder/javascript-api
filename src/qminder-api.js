@@ -181,6 +181,7 @@ var Qminder = (function() {
   
   exports.lines = {
   
+    // DEPRECATED
     watchCreated: function(line, lastKnownTicket, callback) {
       assertNotNull(line, ERRORS.LINE);
       assertNotNull(callback, ERRORS.CALLBACK);
@@ -193,6 +194,7 @@ var Qminder = (function() {
       get(url, callback);
     },
   
+    // DEPRECATED
     watchCalled: function(line, lastKnownTicket, callback) {
       assertNotNull(line, ERRORS.LINE);
       assertNotNull(callback, ERRORS.CALLBACK);
@@ -216,6 +218,13 @@ var Qminder = (function() {
       assertNotNull(line, ERRORS.LINE);
       
       deleteRequest("lines/" + line, callback);
+    },
+    
+    estimatedTime: function(line, callback) {
+      assertNotNull(line, ERRORS.LINE);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      get("lines/" + line + "/estimated-time", callback);
     }
   };
   

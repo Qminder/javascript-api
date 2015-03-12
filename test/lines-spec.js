@@ -115,6 +115,49 @@ describe("Lines", function() {
     });
   });
   
+  // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
+  it("should throw exception for missing id in estimated time call", function() {
+    
+    expect(Qminder.lines.estimatedTime).toThrow("Line ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
+  it("should throw exception for missing callback in estimated time call", function() {
+  
+    var call = function() {
+      Qminder.lines.estimatedTime(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
+  it("should get estimated time of service", function() {
+  
+    createLine();
+  
+    var response = null;
+    
+    runs(function() {
+      Qminder.lines.estimatedTime(line, function(r) {
+        response = r;
+      });
+    });
+    
+    waitsFor(function() {
+      return response !== null;
+    }, "API call did not return in time", 10000);
+  
+    runs(function() {
+      expect(response.statusCode).toBe(200);
+      expect(response.estimatedTimeOfService).not.toBe(null);
+      expect(response.estimatedPeopleWaiting).not.toBe(null);
+    });
+  });
+
+  
   var createLine = function() {
     runs(function() {
       Qminder.locations.list(function(r) {
