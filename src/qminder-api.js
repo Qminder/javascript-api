@@ -590,6 +590,18 @@ var Qminder = (function() {
       send(message, callback);
     };
     
+    exports.onLinesChanged = function(locationId, callback) {
+      var message = {
+          id: createId(),
+          subscribe : "LINES_CHANGED",
+          parameters: {id: locationId}
+        };
+
+      send(message, function(response) {
+        callback(response.lines);
+      });
+    };
+    
     return exports;
     
   }());
