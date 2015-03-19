@@ -74,7 +74,7 @@ Qminder.lines.delete(lineId, [callback]);
 
 #### [Creating a ticket](http://www.qminderapp.com/docs/api/tickets/#creating)
 ```js
-Qminder.tickets.create(line, parameters, callback);
+Qminder.tickets.create(line, parameters, callback, [errorCallback]);
 ```
 
 #### [Searching tickets](http://www.qminderapp.com/docs/api/tickets/#search)
