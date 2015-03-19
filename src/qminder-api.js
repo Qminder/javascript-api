@@ -236,7 +236,8 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
     
       var data = null;
-      var validParameters = ["phoneNumber", "firstName", "lastName", "extra"];
+      var validParameters = ["source", "phoneNumber", "firstName", "lastName", "extra"];
+      var validSources = ["IPHONE", "ANDROID", "MANUAL", "NAME", "PRINTER"];
     
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
@@ -247,6 +248,11 @@ var Qminder = (function() {
         }
           
         var value = parameters[key];
+        
+        if (key == "source" && validSources.indexOf(value) == -1) {
+          throw "Source is invalid. Valid values: " + JSON.stringify(validSources);
+        }
+        
         data += "&" + key + "=";
           
         if (key == "extra") {

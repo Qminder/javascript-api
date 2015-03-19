@@ -55,7 +55,7 @@ describe("Tickets", function() {
       Qminder.tickets.create(123, {"name": "Maali"}, function() {});
     };
     
-    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"source\",\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
 
   });
   
@@ -102,6 +102,17 @@ describe("Tickets", function() {
     expect(call).toThrow("Extra parameter field \"name\" is unknown and should not be used. Valid fields: [\"title\",\"value\",\"url\"]");
 
   });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should throw exception for invalid source create ticket call", function() {
+  
+    var call = function() {
+      Qminder.tickets.create(123, {"source": "WINDOWSPHONE"}, function() {});
+    };
+    
+    expect(call).toThrow("Source is invalid. Valid values: [\"IPHONE\",\"ANDROID\",\"MANUAL\",\"NAME\",\"PRINTER\"]");
+
+  });
 
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should create a ticket", function() {
@@ -122,6 +133,17 @@ describe("Tickets", function() {
     runs(function() {
       expect(response.statusCode).toBe(200);
       expect(response.id).not.toBe(null);
+    });
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#creating
+  it("should create a ticket with source", function() {
+  
+    createLine();
+    var source = "NAME";
+    createTicket({"source": source}, function(response) {
+      expect(response.source).toBe(source);
     });
 
   });
