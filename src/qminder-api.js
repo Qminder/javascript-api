@@ -99,6 +99,12 @@ var Qminder = (function() {
         errorCallback(error);
       }
     };
+    
+    if (typeof errorCallback != "undefined") {
+      request.ontimeout = function() {
+        errorCallback("timeout");
+      };
+    }
 
     request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
     request.send(data);
@@ -230,7 +236,7 @@ var Qminder = (function() {
   
   exports.tickets = {
   
-    create: function(line, parameters, callback) {
+    create: function(line, parameters, callback, errorCallback) {
       assertNotNull(line, ERRORS.LINE);
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
       assertNotNull(callback, ERRORS.CALLBACK);
@@ -265,7 +271,7 @@ var Qminder = (function() {
         }
       }
     
-      postData("lines/" + line + "/ticket", data, callback);
+      postData("lines/" + line + "/ticket", data, callback, errorCallback);
     },
     
     search: function(parameters, callback, errorCallback) {
