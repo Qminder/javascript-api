@@ -14,21 +14,9 @@ describe("Locations", function() {
   });
 
   // http://www.qminderapp.com/docs/api/locations/#list
-  it("should list all locations", function() {
+  it("should list all locations", function(done) {
   
-    var response = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        response = r;
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    runs(function() {
+    Qminder.locations.list(function(response) {
       expect(response.statusCode).toBe(200);
       expect(response.data).not.toBe(null);
       expect(response.data.length).toBeGreaterThan(0);
@@ -36,8 +24,8 @@ describe("Locations", function() {
         expect(location.id).not.toBe(null);
         expect(location.name).not.toBe(null);
       });
+      done();
     });
-
   });
   
   // http://www.qminderapp.com/docs/api/locations/#details
@@ -59,28 +47,17 @@ describe("Locations", function() {
   });
   
   // http://www.qminderapp.com/docs/api/locations/#details
-  it("should return location details", function() {
+  it("should return location details", function(done) {
   
-    var response = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
         
-        Qminder.locations.details(location.id, function(r) {
-          response = r;
-        });
+      Qminder.locations.details(location.id, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        expect(response.name).not.toBe(null);
+        done();
       });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.id).not.toBe(null);
-      expect(response.name).not.toBe(null);
     });
 
   });
@@ -104,34 +81,22 @@ describe("Locations", function() {
   });
   
   // http://www.qminderapp.com/docs/api/locations/#lines
-  it("should list all lines", function() {
+  it("should list all lines", function(done) {
   
-    var response = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
         
-        Qminder.locations.lines(location.id, function(r) {
-          response = r;
+      Qminder.locations.lines(location.id, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.data).not.toBe(null);
+        expect(response.data.length).toBeGreaterThan(0);
+        response.data.forEach(function(location) {
+          expect(location.id).not.toBe(null);
+          expect(location.name).not.toBe(null);
         });
+        done();
       });
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.data).not.toBe(null);
-      expect(response.data.length).toBeGreaterThan(0);
-      response.data.forEach(function(location) {
-        expect(location.id).not.toBe(null);
-        expect(location.name).not.toBe(null);
-      });
-    });
-
   });
   
   // http://www.qminderapp.com/docs/api/locations/#users
@@ -153,36 +118,24 @@ describe("Locations", function() {
   });
   
   // http://www.qminderapp.com/docs/api/locations/#users
-  it("should list all users", function() {
+  it("should list all users", function(done) {
   
-    var response = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
         
-        Qminder.locations.users(location.id, function(r) {
-          response = r;
+      Qminder.locations.users(location.id, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.data).not.toBe(null);
+        expect(response.data.length).toBeGreaterThan(0);
+        response.data.forEach(function(user) {
+          expect(user.id).not.toBe(null);
+          expect(user.email).not.toBe(null);
+          expect(user.firstName).not.toBe(null);
+          expect(user.lastName).not.toBe(null);
         });
+        done();
       });
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.data).not.toBe(null);
-      expect(response.data.length).toBeGreaterThan(0);
-      response.data.forEach(function(user) {
-        expect(user.id).not.toBe(null);
-        expect(user.email).not.toBe(null);
-        expect(user.firstName).not.toBe(null);
-        expect(user.lastName).not.toBe(null);
-      });
-    });
-
   });
 
   
@@ -217,63 +170,36 @@ describe("Locations", function() {
   
   
   // http://www.qminderapp.com/docs/api/locations/#newline
-  it("should not create a line with too long name", function() {
+  it("should not create a line with too long name", function(done) {
   
-    var response = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
         
-        Qminder.locations.createLine(location.id, "1234567890123456789012345678901", function(r) {
-          response = r;
-        });
+      Qminder.locations.createLine(location.id, "1234567890123456789012345678901", function(response) {
+        expect(response.statusCode).toBe(400);
+        expect(response.attribute).toBe("name");
+        expect(response.message).toBe("Parameter \"name\" is too long");
+        expect(response.developerMessage).toBe("Maximum length is 30");
+        done();
       });
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    runs(function() {
-      expect(response.statusCode).toBe(400);
-      expect(response.attribute).toBe("name");
-      expect(response.message).toBe("Parameter \"name\" is too long");
-      expect(response.developerMessage).toBe("Maximum length is 30");
-    });
-
   });
   
   // http://www.qminderapp.com/docs/api/locations/#newline
-  it("should create and delete a line", function() {
+  it("should create and delete a line", function(done) {
   
-    var createResponse = null;
-    var deleteResponse = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
         
-        Qminder.locations.createLine(location.id, "Danger Mice & CO", function(r) {
-          createResponse = r;
+      Qminder.locations.createLine(location.id, "Danger Mice & CO", function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
           
-          Qminder.lines.delete(createResponse.id, function(r2) {
-            deleteResponse = r2;
-          });
+        Qminder.lines.delete(response.id, function(response) {
+          expect(response.statusCode).toBe(200);
+          done();
         });
       });
     });
-    
-    waitsFor(function() {
-      return deleteResponse !== null;
-    }, "API call did not return in time", 10000);
-    
-    runs(function() {
-      expect(createResponse.statusCode).toBe(200);
-      expect(createResponse.id).not.toBe(null);
-      
-      expect(deleteResponse.statusCode).toBe(200);
-    });
-
   });
 });

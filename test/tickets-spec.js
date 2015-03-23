@@ -4,35 +4,36 @@ describe("Tickets", function() {
 
   var line = null;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     Qminder.setKey(QMINDER_SECRET_KEY);
     line = null;
     
-  });
-  
-  afterEach(function() {
-  
-    if (!line) {
-      return;
-    }
-    
-    var response = null;
-    
-    runs(function() {
-      Qminder.lines.delete(line, function(r) {
-        response = r;
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+          
+      Qminder.locations.createLine(location.id, "Temp Line", function(response) {
+        line = response.id;
+        done();
       });
     });
     
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
+  });
+  
+  afterEach(function(done) {
+  
+    if (!line) {
+      done();
+      return;
+    }
+
+    Qminder.lines.delete(line, function() {
+      done();
+    });
   });
 
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should throw exception for missing id in create ticket call", function() {
-    
+
     expect(Qminder.tickets.create).toThrow("Line ID not provided");
 
   });
@@ -115,88 +116,64 @@ describe("Tickets", function() {
   });
 
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket", function() {
-  
-    createLine();
-    var response = null;
-  
-    runs(function() {
-      Qminder.tickets.create(line, null, function(r) {
-        response = r;
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-  
-    runs(function() {
+  it("should create a ticket", function(done) {
+    Qminder.tickets.create(line, null, function(response) {
       expect(response.statusCode).toBe(200);
       expect(response.id).not.toBe(null);
+      done();
     });
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket with source", function() {
-  
-    createLine();
+  it("should create a ticket with source", function(done) {
     var source = "NAME";
     createTicket({"source": source}, function(response) {
       expect(response.source).toBe(source);
+      done();
     });
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket with phone number", function() {
-  
-    createLine();
+  it("should create a ticket with phone number", function(done) {
     var number = 123456;
     createTicket({"phoneNumber": number}, function(response) {
       expect(response.phoneNumber).toBe(number);
+      done();
     });
 
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket with first name", function() {
-  
-    createLine();
+  it("should create a ticket with first name", function(done) {
     var name = "Good Guy Greg";
     createTicket({"firstName": name}, function(response) {
       expect(response.firstName).toBe(name);
+      done();
     });
 
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket with both names", function() {
-  
-    createLine();
+  it("should create a ticket with both names", function(done) {
     createTicket({"firstName": "Milli", "lastName": "Mallikas"}, function(response) {
       expect(response.firstName).toBe("Milli");
       expect(response.lastName).toBe("Mallikas");
+      done();
     });
 
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket with last name", function() {
-  
-    createLine();
+  it("should create a ticket with last name", function(done) {
     var name = "Scumbag Steve";
     createTicket({"lastName": name}, function(response) {
       expect(response.lastName).toBe(name);
+      done();
     });
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#creating
-  it("should create a ticket with extra parameters", function() {
-  
-    createLine();
-    
+  it("should create a ticket with extra parameters", function(done) {
     var extra = [
       {
         "title": "ID Code",
@@ -222,8 +199,8 @@ describe("Tickets", function() {
       expect(website.title).toBe("Website");
       expect(website.value).toBe("CNN website");
       expect(website.url).toBe("http://edition.cnn.com");
+      done();
     });
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
@@ -260,137 +237,96 @@ describe("Tickets", function() {
   });
 
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search tickets with no filters", function() {
-  
-    createLine();
-    
+  it("should search tickets with no filters", function(done) {
+
     searchTickets(null, function(response) {
       expect(response.data.length).toBeGreaterThan(0);
+      done();
     });
     
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search tickets with no filters and with error callback", function() {
-  
-    createLine();
+  it("should search tickets with no filters and with error callback", function(done) {
     
     searchTickets(null, function(response) {
       expect(response.data.length).toBeGreaterThan(0);
+      done();
     },
     function() {
-      
     });
     
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search tickets from location", function() {
+  it("should search tickets from location", function(done) {
   
-    createLine();
-    
-    var location = null;
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        location = r.data[0];
-      });
-    });
-    
-    waitsFor(function() {
-        return location !== null;
-      }, "API call did not return in time", 10000);
-      
-      
-    runs(function() {
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
       searchTickets({"location": location.id}, function(response) {
         expect(response.data.length).toBeGreaterThan(0);
+        done();
       });
     });
-    
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search tickets from line", function() {
-    
-    createLine();
-    
-    runs(function() {
-      searchTickets({"line": line}, function(response) {
-        expect(response.data.length).toBeGreaterThan(0);
-      });
+  it("should search tickets from line", function(done) {
+    searchTickets({"line": line}, function(response) {
+      expect(response.data.length).toBeGreaterThan(0);
+      done();
     });
-    
   });
   
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search new tickets", function() {
-    
-    createLine();
-    
-    runs(function() {
-      searchTickets({"status": "NEW"}, function(response) {
-        expect(response.data.length).toBeGreaterThan(0);
-      });
+  it("should search new tickets", function(done) {
+    searchTickets({"status": "NEW"}, function(response) {
+      expect(response.data.length).toBeGreaterThan(0);
+      done();
     });
-    
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search called tickets", function() {
-    
-    createLine();
-    
-    runs(function() {
-      searchTickets({"line": line, "status": "CALLED"}, function(response) {
-        expect(response.data.length).toBe(0);
-      });
+  it("should search called tickets", function(done) {
+    searchTickets({"line": line, "status": "CALLED"}, function(response) {
+      expect(response.data.length).toBe(0);
+      done();
     });
-    
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search tickets with limit", function() {
-  
-    createLine();
-    
-    runs(function() {
-      searchTickets({"limit": 2}, function(response) {
-        expect(response.data.length).toBeLessThan(3);
-      });
+  it("should search tickets with limit", function(done) {
+    searchTickets({"limit": 2}, function(response) {
+      expect(response.data.length).toBeLessThan(3);
+      done();
     });
-    
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#search
-  it("should search tickets ordered by id desc", function() {
+  it("should search tickets ordered by id desc", function(done) {
   
-    createLine();
-    
-    runs(function() {
-      searchTickets({"order": "id DESC"}, function(response) {
+    searchTickets({"order": "id DESC"}, function(response) {
       
-        var id = null;
-        response.data.forEach(function(ticket) {
-          if (id === null) {
-            id = ticket.id;
-          }
-          else {
-            expect(parseInt(id)).toBeGreaterThan(parseInt(ticket.id));
-            id = ticket.id;
-          }
-        });
+      var id = null;
+      response.data.forEach(function(ticket) {
+        if (id === null) {
+          id = ticket.id;
+        }
+        else {
+          expect(parseInt(id)).toBeGreaterThan(parseInt(ticket.id));
+          id = ticket.id;
+        }
       });
+      
+      done();
     });
-    
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
   it("should throw exception for missing parameters in calling next ticket", function() {
     
     expect(Qminder.tickets.callNext).toThrow("Parameters not provided");
-
   });
 
 
@@ -402,7 +338,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("List of lines not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
@@ -413,7 +348,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("User ID not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
@@ -424,16 +358,29 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
-  it("should call a ticket - no tickets to call", function() {
+  it("should call a ticket - no tickets to call", function(done) {
   
-    createLine();
-    var response = null;
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+        
+      Qminder.locations.users(location.id, function(response) {
+        var userId = response.data[0].id;
+        Qminder.tickets.callNext({"lines":line, "user":userId}, function(response) {
+          expect(response.statusCode).toBe(200);
+          expect(response.id).not.toBeDefined();
+          done();
+        });
+      });
+    });
+  });
   
-    runs(function() {
+  // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
+  it("should call next ticket", function(done) {
+    
+    var search = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -441,82 +388,26 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          Qminder.tickets.callNext({"lines":line, "user":userId}, function(r) {
-            response = r;
+          Qminder.tickets.callNext({"lines":line, "user":userId}, function(response) {
+            expect(response.statusCode).toBe(200);
+            expect(response.id).toBeDefined();
+            expect(response.id).toBe(ticketId);
+            done();
           });
         });
       });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.id).not.toBeDefined();
-    });
-
-  });
-  
-  // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
-  it("should call next ticket", function() {
-  
-    createLine();
-    var response = null;
-    var ticketId = null;
+    };
     
     createTicket(null, function(r) {
-      ticketId = r.id;
-      Qminder.tickets.details(r.id, function(r) {
-        response = r;
-      });
-    });
-  
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
-        
-        Qminder.locations.users(location.id, function(r) {
-          var usersResponse = r;
-          var userId = usersResponse.data[0].id;
-          
-          Qminder.tickets.callNext({"lines":line, "user":userId}, function(r) {
-            response = r;
-          });
-        });
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.id).toBeDefined();
-      expect(response.id).toBe(ticketId);
+      search(r.id);
     });
 
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#calling-from-list
-  it("should call a ticket from list of lines", function() {
-  
-    createLine();
-    var response = null;
-    var ticketId = null;
+  it("should call a ticket from list of lines", function(done) {
     
-    createTicket(null, function(r) {
-      ticketId = r.id;
-      Qminder.tickets.details(r.id, function(r) {
-        response = r;
-      });
-    });
-  
-    runs(function() {
+    var search = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -524,32 +415,25 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          console.log("Calling ticket");
-          Qminder.tickets.callNext({"lines":[line, 123, 234, 453], "user":userId}, function(r) {
-            response = r;
+          Qminder.tickets.callNext({"lines":[line], "user":userId}, function(response) {
+            expect(response.statusCode).toBe(200);
+            expect(response.id).toBeDefined();
+            expect(response.id).toBe(ticketId);
+            done();
           });
         });
       });
+    };
+    
+    createTicket(null, function(r) {
+      search(r.id);
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.id).toBeDefined();
-      expect(response.id).toBe(ticketId);
-    });
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#calling
   it("should throw exception for missing parameters in calling ticket", function() {
     
     expect(Qminder.tickets.call).toThrow("Parameters not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#calling
@@ -560,7 +444,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#calling
@@ -571,7 +454,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("User ID not provided");
-
   });
 
   // http://www.qminderapp.com/docs/api/tickets/#calling
@@ -582,21 +464,12 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#calling
-  it("should call ticket", function() {
-  
-    createLine();
-    var response = null;
-    var ticketId = null;
+  it("should call ticket", function(done) {
     
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var call = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -604,31 +477,25 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          Qminder.tickets.call({"id":ticketId, "user":userId}, function(r) {
-            response = r;
+          Qminder.tickets.call({"id":ticketId, "user":userId}, function(response) {
+            expect(response.statusCode).toBe(200);
+            expect(response.id).toBeDefined();
+            expect(response.id).toBe(ticketId);
+            done();
           });
         });
       });
+    };
+    
+    createTicket(null, function(r) {
+      call(r.id);
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.id).toBeDefined();
-      expect(response.id).toBe(ticketId);
-    });
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#recalling
   it("should throw exception for missing ticket id in recalling call", function() {
     
     expect(Qminder.tickets.recall).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#recalling
@@ -639,21 +506,12 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#recalling
-  it("should recall ticket", function() {
+  it("should recall ticket", function(done) {
   
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var call = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -662,22 +520,18 @@ describe("Tickets", function() {
           var userId = usersResponse.data[0].id;
           
           Qminder.tickets.call({"id":ticketId, "user":userId}, function(r) {
-            Qminder.tickets.recall(r.id, function(r2) {
-              response = r2;
+            Qminder.tickets.recall(r.id, function(response) {
+              expect(response.statusCode).toBe(200);
+              expect(response.result).toBe("success");
+              done();
             });
           });
         });
       });
-    });
+    };
     
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.result).toBe("success");
+    createTicket(null, function(r) {
+      call(r.id);
     });
 
   });
@@ -687,7 +541,6 @@ describe("Tickets", function() {
   it("should throw exception for missing ticket id in editing call", function() {
     
     expect(Qminder.tickets.edit).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#editing
@@ -698,7 +551,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Parameters not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#editing
@@ -709,7 +561,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("User ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#editing
@@ -720,7 +571,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#editing
@@ -731,7 +581,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"phoneNumber\",\"firstName\",\"lastName\"]");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#editing
@@ -746,17 +595,9 @@ describe("Tickets", function() {
   });
   
   // http://qminderapp.com/docs/api/tickets/#editing
-  it("should edit a ticket", function() {
-  
-    createLine();
-    var response = null;
-    var ticketId = null;
+  it("should edit a ticket", function(done) {
     
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var edit = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -764,22 +605,17 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          Qminder.tickets.edit(ticketId, {"firstName": "Madli"}, userId, function(r) {
-            response = r;
+          Qminder.tickets.edit(ticketId, {"firstName": "Madli"}, userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
           });
         });
       });
+    };
+    
+    createTicket(null, function(r) {
+      edit(r.id);
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.result).toBe("success");
-    });
-
   });
   
   
@@ -787,7 +623,6 @@ describe("Tickets", function() {
   it("should throw exception for missing ticket id in marking served call", function() {
     
     expect(Qminder.tickets.markServed).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#marking-served
@@ -798,21 +633,12 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#marking-served
-  it("should mark ticket as served", function() {
+  it("should mark ticket as served", function(done) {
   
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var markServed = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -821,22 +647,18 @@ describe("Tickets", function() {
           var userId = usersResponse.data[0].id;
           
           Qminder.tickets.call({"id":ticketId, "user":userId}, function(r) {
-            Qminder.tickets.markServed(r.id, function(r2) {
-              response = r2;
+            Qminder.tickets.markServed(r.id, function(response) {
+              expect(response.statusCode).toBe(200);
+              expect(response.result).toBe("success");
+              done();
             });
           });
         });
       });
-    });
+    };
     
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.result).toBe("success");
+    createTicket(null, function(r) {
+      markServed(r.id);
     });
 
   });
@@ -845,7 +667,6 @@ describe("Tickets", function() {
   it("should throw exception for missing ticket id in cancellation call", function() {
     
     expect(Qminder.tickets.cancel).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#cancelling
@@ -856,7 +677,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("User ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#cancelling
@@ -867,21 +687,12 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#cancelling
-  it("should cancel a ticket", function() {
+  it("should cancel a ticket", function(done) {
   
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var cancel = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -889,29 +700,23 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          Qminder.tickets.cancel(ticketId, userId, function(r) {
-            response = r;
+          Qminder.tickets.cancel(ticketId, userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
           });
         });
       });
+    };
+    
+    createTicket(null, function(r) {
+      cancel(r.id);
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.result).toBe("success");
-    });
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#labelling
   it("should throw exception for missing ticket id in labelling call", function() {
     
     expect(Qminder.tickets.addLabel).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#labelling
@@ -922,7 +727,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Value not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#labelling
@@ -933,7 +737,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("User ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#labelling
@@ -944,21 +747,12 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#labelling
-  it("should add a label to a ticket", function() {
+  it("should add a label to a ticket", function(done) {
   
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var addLabel = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -966,36 +760,24 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          Qminder.tickets.addLabel(ticketId, "Important & Awsome", userId, function(r) {
-            response = r;
+          Qminder.tickets.addLabel(ticketId, "Important & Awsome", userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
           });
         });
       });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.result).toBe("success");
+    };
+
+    createTicket(null, function(r) {
+      addLabel(r.id);
     });
 
   });
   
   // http://qminderapp.com/docs/api/tickets/#labelling
-  it("should not add label twice", function() {
-  
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+  it("should not add label twice", function(done) {
+
+    var addLabel = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -1004,23 +786,18 @@ describe("Tickets", function() {
           var userId = usersResponse.data[0].id;
           
           Qminder.tickets.addLabel(ticketId, "VIP", userId, function() {
-            Qminder.tickets.addLabel(ticketId, "VIP", userId, function(r) {
-              response = r;
+            Qminder.tickets.addLabel(ticketId, "VIP", userId, function(response) {
+              expect(response.result).toBe("no action");
+              done();
             });
           });
         });
       });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.result).toBe("no action");
-    });
+    };
 
+    createTicket(null, function(r) {
+      addLabel(r.id);
+    });
   });
   
   
@@ -1028,7 +805,6 @@ describe("Tickets", function() {
   it("should throw exception for missing ticket id in removing label call", function() {
     
     expect(Qminder.tickets.removeLabel).toThrow("Ticket ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#removing-label
@@ -1039,7 +815,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Value not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#removing-label
@@ -1050,7 +825,6 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("User ID not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#removing-label
@@ -1061,21 +835,12 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#removing-label
-  it("should remove a non-existing label from a ticket", function() {
+  it("should remove a non-existing label from a ticket", function(done) {
   
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var removeLabel = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -1083,36 +848,23 @@ describe("Tickets", function() {
           var usersResponse = r;
           var userId = usersResponse.data[0].id;
           
-          Qminder.tickets.removeLabel(ticketId, "Important & Awsome", userId, function(r) {
-            response = r;
+          Qminder.tickets.removeLabel(ticketId, "Important & Awsome", userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
           });
         });
       });
+    };
+    
+    createTicket(null, function(r) {
+      removeLabel(r.id);
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.result).toBe("success");
-    });
-
   });
   
   // http://qminderapp.com/docs/api/tickets/#removing-label
-  it("should remove a label from a ticket", function() {
+  it("should remove a label from a ticket", function(done) {
   
-    createLine();
-    var response = null;
-    var ticketId = null;
-    
-    createTicket(null, function(r) {
-      ticketId = r.id;
-    });
-  
-    runs(function() {
+    var removeLabel = function(ticketId) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -1121,23 +873,18 @@ describe("Tickets", function() {
           var userId = usersResponse.data[0].id;
           
           Qminder.tickets.addLabel(ticketId, "VIP", userId, function() {
-            Qminder.tickets.removeLabel(ticketId, "VIP", userId, function(r) {
-              response = r;
+            Qminder.tickets.removeLabel(ticketId, "VIP", userId, function(response) {
+              expect(response.result).toBe("success");
+              done();
             });
           });
         });
       });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-    
-    
-    runs(function() {
-      expect(response.result).toBe("success");
-    });
+    };
 
+    createTicket(null, function(r) {
+      removeLabel(r.id);
+    });
   });
 
   
@@ -1145,7 +892,6 @@ describe("Tickets", function() {
   it("should throw exception for missing ticket id in details call", function() {
     
     expect(Qminder.tickets.details).toThrow("Ticket ID not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#details
@@ -1156,100 +902,42 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Callback function not provided");
-
   });
   
   // http://www.qminderapp.com/docs/api/tickets/#details
-  it("should find ticket details", function() {
-    
-    createLine();
-    
-    var response = null;
+  it("should find ticket details", function(done) {
     
     createTicket(null, function(r) {
-      Qminder.tickets.details(r.id, function(r) {
-        response = r;
+      Qminder.tickets.details(r.id, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        expect(response.number).not.toBe(null);
+        expect(response.status).not.toBe(null);
+        expect(response.line).not.toBe(null);
+        done();
       });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-  
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-      expect(response.id).not.toBe(null);
-      expect(response.number).not.toBe(null);
-      expect(response.status).not.toBe(null);
-      expect(response.line).not.toBe(null);
-    });
-    
+    }); 
   });
-
-  
-  
-  var createLine = function() {
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
-        
-        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
-          line = r.id;
-        });
-      });
-    });
-    
-    waitsFor(function() {
-      return line !== null;
-    }, "API call did not return in time", 10000);
-  };
   
   var createTicket = function(parameters, callback) {
-    var createResponse = null;
-    var detailsResponse = null;
   
-    runs(function() {
-      Qminder.tickets.create(line, parameters, function(r) {
-        createResponse = r;
+    Qminder.tickets.create(line, parameters, function(response) {
+      expect(response.statusCode).toBe(200);
+      expect(response.id).not.toBe(null);
         
-        Qminder.tickets.details(createResponse.id, function(r) {
-          detailsResponse = r;
-        });
+      Qminder.tickets.details(response.id, function(detailsResponse) {
+        expect(detailsResponse.statusCode).toBe(200);
+        expect(detailsResponse.id).toBe(response.id);
+        expect(detailsResponse.status).toBe("NEW");
+        expect(detailsResponse.created.date).not.toBe(null);
+        callback(detailsResponse);
       });
     });
-    
-    waitsFor(function() {
-      return detailsResponse !== null;
-    }, "API call did not return in time", 10000);
-  
-    runs(function() {
-      expect(createResponse.statusCode).toBe(200);
-      expect(createResponse.id).not.toBe(null);
-      
-      expect(detailsResponse.statusCode).toBe(200);
-      expect(detailsResponse.id).toBe(createResponse.id);
-      expect(detailsResponse.status).toBe("NEW");
-      expect(detailsResponse.created.date).not.toBe(null);
-      callback(detailsResponse);
-    });
-
   };
   
   var searchTickets = function(parameters, callback) {
     createTicket(null, function() {
-      var response = null;
-  
-      runs(function() {
-        Qminder.tickets.search(parameters, function(r2) {
-          response = r2;
-        });
-      });
-      
-      waitsFor(function() {
-        return response !== null;
-      }, "API call did not return in time", 10000);
-    
-      runs(function() {
+      Qminder.tickets.search(parameters, function(response) {
         expect(response.statusCode).toBe(200);
         callback(response);
       });

@@ -4,28 +4,30 @@ describe("Lines", function() {
 
   var line = null;
 
-  beforeEach(function() {
+  beforeEach(function(done) {
     Qminder.setKey(QMINDER_SECRET_KEY);
     line = null;
+    
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+        
+      Qminder.locations.createLine(location.id, "Temp Line", function(r) {
+        line = r.id;
+        done();
+      });
+    });
   });
   
-  afterEach(function() {
+  afterEach(function(done) {
   
     if (line === null) {
+      done();
       return;
     }
     
-    var response = null;
-    
-    runs(function() {
-      Qminder.lines.delete(line, function(r) {
-        response = r;
-      });
+    Qminder.lines.delete(line, function() {
+      done();
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
     
   });
   
@@ -62,27 +64,13 @@ describe("Lines", function() {
   });
   
   // http://www.qminderapp.com/docs/api/lines/#resetting
-  it("should reset sequence", function() {
+  it("should reset sequence", function(done) {
   
-    createLine();
-  
-    var response = null;
-  
-    runs(function() {
-      Qminder.lines.reset(line, function(r) {
-        response = r;
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-  
-    runs(function() {
+    Qminder.lines.reset(line, function(response) {
       expect(response.statusCode).toBe(200);
       expect(response.result).toBe("success");
+      done();
     });
-
   });
   
   // http://www.qminderapp.com/docs/api/lines/#resetting
@@ -93,25 +81,12 @@ describe("Lines", function() {
   });
   
   // http://www.qminderapp.com/docs/api/lines/#deleting
-  it("should delete a line", function() {
+  it("should delete a line", function(done) {
   
-    createLine();
-  
-    var response = null;
-    
-    runs(function() {
-      Qminder.lines.delete(line, function(r) {
-        response = r;
-        line = null;
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-  
-    runs(function() {
+    Qminder.lines.delete(line, function(response) {
       expect(response.statusCode).toBe(200);
+      line = null;
+      done();
     });
   });
   
@@ -134,44 +109,13 @@ describe("Lines", function() {
   });
   
   // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
-  it("should get estimated time of service", function() {
+  it("should get estimated time of service", function(done) {
   
-    createLine();
-  
-    var response = null;
-    
-    runs(function() {
-      Qminder.lines.estimatedTime(line, function(r) {
-        response = r;
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-  
-    runs(function() {
+    Qminder.lines.estimatedTime(line, function(response) {
       expect(response.statusCode).toBe(200);
       expect(response.estimatedTimeOfService).not.toBe(null);
       expect(response.estimatedPeopleWaiting).not.toBe(null);
+      done();
     });
   });
-
-  
-  var createLine = function() {
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
-        
-        Qminder.locations.createLine(location.id, "Temp Line", function(r) {
-          line = r.id;
-        });
-      });
-    });
-    
-    waitsFor(function() {
-      return line !== null;
-    }, "API call did not return in time", 10000);
-  };
-  
 });

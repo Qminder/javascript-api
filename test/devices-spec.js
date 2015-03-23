@@ -23,54 +23,29 @@ describe("Devices", function() {
   });
   
   // http://qminderapp.com/docs/api/devices/
-  it("should list devices", function() {
+  it("should list devices", function(done) {
     
-    var response = null;
-    
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
         
-        Qminder.devices.list(location.id, function(r) {
-            response = r;
-          });
-      });
+      Qminder.devices.list(location.id, function(response) {
+          expect(response.statusCode).toBe(200);
+          done();
+        });
     });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
-
-    runs(function() {
-      expect(response.statusCode).toBe(200);
-    });
-    
   });
   
   // http://qminderapp.com/docs/api/devices/
-  it("should list devices with error handler", function() {
-    
-    var response = null;
-    
-    runs(function() {
-      Qminder.locations.list(function(r) {
-        var location = r.data[0];
-        
-        Qminder.devices.list(location.id, function(r) {
-            response = r;
-          });
-      }, function() {
-        
-      });
-    });
-    
-    waitsFor(function() {
-      return response !== null;
-    }, "API call did not return in time", 10000);
+  it("should list devices with error handler", function(done) {
 
-    runs(function() {
-      expect(response.statusCode).toBe(200);
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+        
+      Qminder.devices.list(location.id, function(response) {
+          expect(response.statusCode).toBe(200);
+          done();
+        });
+    }, function() {  
     });
-    
   });
 });
