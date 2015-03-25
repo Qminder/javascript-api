@@ -5,6 +5,10 @@ Javascript wrapper for Qminder REST API.
 
 ## Installation
 
+You can install this package either manually or with `bower`.
+
+### Manually
+
 Add to your webpage:
 
 [http://static.qminderapp.com/api/qminder-api.min.js](http://static.qminderapp.com/api/qminder-api.min.js)
@@ -15,6 +19,12 @@ Add to your webpage:
 [http://static.qminderapp.com/api/qminder-bridge.min.js](http://static.qminderapp.com/api/qminder-bridge.min.js)
 ```js
 <script src="http://static.qminderapp.com/api/qminder-bridge.min.js" type="text/javascript"></script>
+```
+
+### bower
+
+```shell
+bower install qminder-api
 ```
 
 ## API Methods
