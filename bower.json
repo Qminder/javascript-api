@@ -6,7 +6,7 @@
     "Qminder"
   ],
   "description": "Qminder API",
-  "main": "qminder-api.js",
+  "main": "src/qminder-api.js",
   "moduleType": [
     "amd"
   ],
@@ -16,6 +16,7 @@
   ],
   "license": "Apache",
   "ignore": [
+    "*",
     "**/.*",
     "node_modules",
     "bower_components",
