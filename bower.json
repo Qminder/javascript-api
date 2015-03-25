@@ -1,0 +1,27 @@
+{
+  "name": "qminder-api",
+  "version": "0.1.0",
+  "homepage": "https://github.com/Qminder/qminder-api",
+  "authors": [
+    "Qminder"
+  ],
+  "description": "Qminder API",
+  "main": "qminder-api.js",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "Queue",
+    "Qminder"
+  ],
+  "license": "Apache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "dist",
+    "examples"
+  ]
+}
