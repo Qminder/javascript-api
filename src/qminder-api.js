@@ -586,6 +586,11 @@ var Qminder = (function() {
     };
     
     // filter, callback
+    exports.onTicketServed = function(a, b) {
+      subscribe(a, b, "TICKET_SERVED");
+    };
+    
+    // filter, callback
     exports.onTicketChanged = function(a, b) {
       subscribe(a, b, "TICKET_CHANGED");
     };
