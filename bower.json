@@ -5,7 +5,10 @@
     "Qminder"
   ],
   "description": "Qminder API",
-  "main": "src/qminder-api.js",
+  "main": [
+    "src/qminder-api.js",
+    "src/qminder-bridge.js"
+  ],
   "moduleType": [
     "amd"
   ],
