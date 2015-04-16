@@ -112,6 +112,11 @@ Qminder.tickets.recall(id, callback);
 Qminder.tickets.markServed(id, callback);
 ```
 
+#### [Marking ticket no show](http://qminderapp.com/docs/api/tickets/#marking-noshow)
+```js
+Qminder.tickets.markNoShow(id, callback);
+```
+
 #### [Cancelling a ticket](http://qminderapp.com/docs/api/tickets/#cancelling)
 ```js
 Qminder.tickets.cancel(id, user, callback);
@@ -147,7 +152,7 @@ If you have any questions, please feel free to contact
 
 ## LICENSE
 
-Copyright 2014 Qminder Limited.
+Copyright 2015 Qminder Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
