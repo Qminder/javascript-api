@@ -369,6 +369,13 @@ var Qminder = (function() {
       post("tickets/" + id + "/markserved", callback);
     },
     
+    markNoShow: function(id, callback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      post("tickets/" + id + "/marknoshow", callback);
+    },
+    
     cancel: function(id, user, callback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(user, ERRORS.USER);

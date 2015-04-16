@@ -663,6 +663,50 @@ describe("Tickets", function() {
 
   });
   
+  // http://qminderapp.com/docs/api/tickets/#marking-noshow
+  it("should throw exception for missing ticket id in marking no show call", function() {
+    
+    expect(Qminder.tickets.markNoShow).toThrow("Ticket ID not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#marking-noshow
+  it("should throw exception for missing callback function in marking no show call", function() {
+    
+    var call = function() {
+      Qminder.tickets.markNoShow(1);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#marking-noshow
+  it("should mark ticket as no show", function(done) {
+  
+    var markServed = function(ticketId) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var userId = usersResponse.data[0].id;
+          
+          Qminder.tickets.call({"id":ticketId, "user":userId}, function(r) {
+            Qminder.tickets.markNoShow(r.id, function(response) {
+              expect(response.statusCode).toBe(200);
+              expect(response.result).toBe("success");
+              done();
+            });
+          });
+        });
+      });
+    };
+    
+    createTicket(null, function(r) {
+      markServed(r.id);
+    });
+
+  });
+  
   // http://qminderapp.com/docs/api/tickets/#cancelling
   it("should throw exception for missing ticket id in cancellation call", function() {
     
