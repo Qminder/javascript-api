@@ -44,34 +44,6 @@ describe("Lines", function() {
     expect(Qminder.lines.watchCalled).toThrow("Line ID not provided");
 
   });
-
-  // http://www.qminderapp.com/docs/api/lines/#resetting
-  it("should throw exception for missing id in resetting call", function() {
-    
-    expect(Qminder.lines.reset).toThrow("Line ID not provided");
-
-  });
-  
-  // http://www.qminderapp.com/docs/api/lines/#resetting
-  it("should throw exception for missing callback in resetting call", function() {
-  
-    var call = function() {
-      Qminder.lines.reset(123);
-    };
-    
-    expect(call).toThrow("Callback function not provided");
-
-  });
-  
-  // http://www.qminderapp.com/docs/api/lines/#resetting
-  it("should reset sequence", function(done) {
-  
-    Qminder.lines.reset(line, function(response) {
-      expect(response.statusCode).toBe(200);
-      expect(response.result).toBe("success");
-      done();
-    });
-  });
   
   // http://www.qminderapp.com/docs/api/lines/#resetting
   it("should throw exception for missing id in delete call", function() {

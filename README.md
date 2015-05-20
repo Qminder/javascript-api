@@ -70,10 +70,6 @@ Qminder.lines.watchCreated(lineId, [lastKnownTicketId,] callback);
 ```js
 Qminder.lines.watchCalled(lineId, [lastKnownTicketId,] callback);
 ```
-#### [Resetting number sequence](http://www.qminderapp.com/docs/api/lines/#resetting)
-```js
-Qminder.lines.reset(lineId, callback);
-```
 #### [Deleting a line](http://www.qminderapp.com/docs/api/lines/#deleting)
 ```js
 Qminder.lines.delete(lineId, [callback]);

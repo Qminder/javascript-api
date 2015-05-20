@@ -213,13 +213,6 @@ var Qminder = (function() {
       get(url, callback);
     },
   
-    reset: function(line, callback) {
-      assertNotNull(line, ERRORS.LINE);
-      assertNotNull(callback, ERRORS.CALLBACK);
-      
-      post("lines/" + line + "/reset", callback);
-    },
-  
     "delete": function(line, callback) {
       assertNotNull(line, ERRORS.LINE);
       
