@@ -1,7 +1,9 @@
 {
   "name": "qminder-api",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.1.2",
+  "description": "Qminder API",
+  "homepage": "http://www.qminderapp.com",
+  "main": "src/qminder-api.js"
   "scripts": {
     "test": "grunt travis --verbose"
   },
