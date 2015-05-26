@@ -3,7 +3,11 @@
   "version": "0.1.2",
   "description": "Qminder API",
   "homepage": "http://www.qminderapp.com",
-  "main": "src/qminder-api.js"
+  "main": "src/qminder-api.js",
+  "repository": {
+    "type": "git",
+    "url":  "git://github.com/Qminder/qminder-api.git"
+  },
   "scripts": {
     "test": "grunt travis --verbose"
   },
