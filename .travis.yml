@@ -14,3 +14,5 @@ deploy:
   email: info@qminderapp.com
   api_key:
     secure: DQQ3KlqEZBihvuF8YtazVSuMmQq6VzV7l7o4lOixCThHeW8Iqal5g4FUz4quArxoNuUsk1O+FLmhm9OGTR2/oDVcBeGhUtEV1UbFUTYmumuxstfJjWbCDTG5icxjUpC3v+DVF+VBTf+0bZ48QL/PabvedLlZS5Zkah7YOQTba7o=
+  on:
+    tags: true
