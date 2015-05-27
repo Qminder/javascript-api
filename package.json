@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Qminder API",
   "homepage": "http://www.qminderapp.com",
   "main": "src/qminder-api.js",
@@ -10,6 +10,9 @@
   },
   "scripts": {
     "test": "grunt travis --verbose"
+  },
+  "dependencies": {
+    "xhr2": "^0.1.2"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

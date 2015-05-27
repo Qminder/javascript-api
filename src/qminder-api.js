@@ -1,3 +1,8 @@
+// Nodejs support
+if (typeof XMLHttpRequest == "undefined" && typeof require != "undefined") {
+  var XMLHttpRequest = require("xhr2");
+}
+
 /* exported Qminder */
 var Qminder = (function() {
 
@@ -120,7 +125,7 @@ var Qminder = (function() {
       request.open(method, url);
     }
     else {
-      request = null;
+      request.open(method, url, true);
     }
 
 
@@ -627,6 +632,7 @@ var Qminder = (function() {
   
 }());
 
+// Nodejs support
 if (typeof module != "undefined") {
   module.exports = exports = Qminder;
 }
