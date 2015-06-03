@@ -1,5 +1,7 @@
 # Qminder Javascript API
 [![Build Status](https://travis-ci.org/Qminder/qminder-api.svg?branch=master)](https://travis-ci.org/Qminder/qminder-api) [![Dependency Status](https://gemnasium.com/Qminder/qminder-api.svg)](https://gemnasium.com/Qminder/qminder-api)
+[![npm](https://img.shields.io/npm/v/qminder-api.svg)](https://www.npmjs.com/package/qminder-api)
+[![Bower](https://img.shields.io/bower/v/qminder-api.svg)](http://bower.io/search/?q=qminder-api)
 
 Javascript wrapper for Qminder REST API.
 
@@ -131,6 +133,13 @@ Qminder.tickets.removeLabel(id, value, user, callback);
 #### [Ticket status](http://www.qminderapp.com/docs/api/tickets/#status)
 ```js
 Qminder.tickets.details(id, callback);
+```
+
+### Users
+
+#### [Creating a users](http://www.qminderapp.com/docs/api/users/#creating)
+```js
+Qminder.users.create(parameters, callback);
 ```
 
 ### Devices
