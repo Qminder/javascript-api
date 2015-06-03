@@ -30,7 +30,7 @@ module.exports = function(grunt) {
         unused: true,
         strict: true,
         trailing: true,
-        maxdepth: 2,
+        maxdepth: 3,
         globals: {
           console: true,
           XMLHttpRequest: true,

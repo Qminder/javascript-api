@@ -411,6 +411,61 @@ var Qminder = (function() {
     }
   };
   
+  exports.users = {
+  
+    create: function(parameters, callback) {
+      assertNotNull(parameters, "Parameters not provided");
+      assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      var requiredParameters = ["email", "firstName", "lastName", "roles"];
+      var data = null;
+      
+      for (var key in parameters) {
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
+        }
+
+        if (requiredParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(requiredParameters);
+        }
+        
+        data += "&" + key + "=";
+        var value = parameters[key];
+        
+        if (key == "roles") {
+          data += JSON.stringify(value);
+        }
+        else {
+          data += encodeURIComponent(value);
+        }
+      }
+      
+      requiredParameters.forEach(function(parameter) {
+      
+        var found = false;
+      
+        for (key in parameters) {
+          if (!parameters.hasOwnProperty(key)) {
+            continue;
+          }
+          
+          if (key == parameter) {
+            found = true;
+            break;
+          }
+        }
+        
+        if (!found) {
+          throw "Parameter \"" + parameter + "\" is mandatory.";
+        }
+      });
+      
+      postData("users", data, callback);
+    
+    }
+  };
+  
   exports.devices = {
     list: function(location, callback, errorCallback) {
       assertNotNull(location, ERRORS.LOCATION);
