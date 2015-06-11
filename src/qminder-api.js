@@ -192,32 +192,6 @@ var Qminder = (function() {
   
   exports.lines = {
   
-    // DEPRECATED
-    watchCreated: function(line, lastKnownTicket, callback) {
-      assertNotNull(line, ERRORS.LINE);
-      assertNotNull(callback, ERRORS.CALLBACK);
-      
-      var url = "lines/" + line + "/watch/created";
-      if (lastKnownTicket !== null) {
-        url += "?lastKnownTicket=" + lastKnownTicket;
-      }
-      
-      get(url, callback);
-    },
-  
-    // DEPRECATED
-    watchCalled: function(line, lastKnownTicket, callback) {
-      assertNotNull(line, ERRORS.LINE);
-      assertNotNull(callback, ERRORS.CALLBACK);
-      
-      var url = "lines/" + line + "/watch/called";
-      if (lastKnownTicket !== null) {
-        url += "?lastKnownTicket=" + lastKnownTicket;
-      }
-      
-      get(url, callback);
-    },
-  
     "delete": function(line, callback) {
       assertNotNull(line, ERRORS.LINE);
       

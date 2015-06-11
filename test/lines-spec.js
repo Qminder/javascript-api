@@ -31,20 +31,6 @@ describe("Lines", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#watchcreated
-  it("should throw exception for missing id in creation watching call", function() {
-    
-    expect(Qminder.lines.watchCreated).toThrow("Line ID not provided");
-
-  });
-  
-  // http://www.qminderapp.com/docs/api/lines/#watchcalled
-  it("should throw exception for missing id in call watching call", function() {
-    
-    expect(Qminder.lines.watchCalled).toThrow("Line ID not provided");
-
-  });
-  
   // http://www.qminderapp.com/docs/api/lines/#resetting
   it("should throw exception for missing id in delete call", function() {
     
