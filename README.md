@@ -134,6 +134,16 @@ Qminder.tickets.details(id, callback);
 Qminder.users.create(parameters, callback);
 ```
 
+#### [User details](http://qminderapp.com/docs/api/users/#details)
+```js
+Qminder.users.details(id, callback);
+```
+
+#### [Deleting a users](http://qminderapp.com/docs/api/users/#deleting)
+```js
+Qminder.users.delete(id, callback);
+```
+
 ### Devices
 
 #### [List of devices](http://qminderapp.com/docs/api/devices/)
