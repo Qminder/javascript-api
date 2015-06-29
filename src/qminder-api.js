@@ -437,6 +437,11 @@ var Qminder = (function() {
       
       postData("users", data, callback);
     
+    },
+    
+    "delete": function(user, callback) {
+      assertNotNull(user, "User ID not provided");
+      deleteRequest("users/" + user, callback);
     }
   };
   

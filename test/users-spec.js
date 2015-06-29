@@ -2,6 +2,21 @@ describe("Users", function() {
 
   "use strict";
   
+  var user = null;
+  
+  afterEach(function(done) {
+  
+    if (user === null) {
+      done();
+      return;
+    }
+    
+    Qminder.users.delete(user, function() {
+      done();
+    });
+    
+  });
+  
   // http://www.qminderapp.com/docs/api/users/#creating
   it("should throw exception for missing parameters in create user call", function() {
 
@@ -103,6 +118,7 @@ describe("Users", function() {
       Qminder.users.create(parameters, function(response) {
         expect(response.statusCode).toBe(200);
         expect(response.id).not.toBe(null);
+        user = response.id;
         done();
       });
     };
@@ -112,5 +128,49 @@ describe("Users", function() {
       create(location);
     });
   });
+  
+  // http://www.qminderapp.com/docs/api/users/#resetting
+  it("should throw exception for missing id in delete call", function() {
+    
+    expect(Qminder.users.delete).toThrow("User ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#deleting
+  it("should delete a user", function(done) {
+  
+    var deleteUser = function() {
+      Qminder.users.delete(user, function(response) {
+        expect(response.statusCode).toBe(200);
+        user = null;
+        done();
+      });
+    };
+  
+    var create = function(location) {
+      var parameters = {
+        "email": "user@example.com",
+        "firstName": "Stewart",
+        "lastName": "Little",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        user = response.id;
+        deleteUser();
+      });
+    };
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+      create(location);
+    });
+  });
+
 
 });
