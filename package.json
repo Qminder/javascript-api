@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Qminder API",
   "homepage": "http://www.qminderapp.com",
   "main": "src/qminder-api.js",
