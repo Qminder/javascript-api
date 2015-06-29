@@ -440,8 +440,15 @@ var Qminder = (function() {
     },
     
     "delete": function(user, callback) {
-      assertNotNull(user, "User ID not provided");
+      assertNotNull(user, ERRORS.USER);
       deleteRequest("users/" + user, callback);
+    },
+    
+    details: function(user, callback) {
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      get("users/" + user, callback);
     }
   };
   

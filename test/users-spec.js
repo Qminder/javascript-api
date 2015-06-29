@@ -172,5 +172,62 @@ describe("Users", function() {
     });
   });
 
+  // http://www.qminderapp.com/docs/api/users/#details
+  it("should throw exception for missing id in details call", function() {
+    
+    expect(Qminder.users.details).toThrow("User ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#details
+  it("should throw exception for missing callback in details call", function() {
+  
+    var call = function() {
+      Qminder.users.details(1, null);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#details
+  it("should get user details", function(done) {
+  
+    var getDetails = function() {
+      Qminder.users.details(user, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        expect(response.email).not.toBe(null);
+        expect(response.firstName).not.toBe(null);
+        expect(response.lastName).not.toBe(null);
+        done();
+      });
+    };
+  
+    var create = function(location) {
+      var parameters = {
+        "email": "user@example.com",
+        "firstName": "Stewart",
+        "lastName": "Little",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        user = response.id;
+        getDetails();
+      });
+    };
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+      create(location);
+    });
+  });
+
 
 });
