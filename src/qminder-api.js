@@ -8,7 +8,7 @@ var Qminder = (function() {
 
   "use strict";
 
-  var SERVER = "api.qminderapp.com";
+  var SERVER = "local.api.qminderapp.com";
   var BASE_URL = "https://" + SERVER + "/v1/";
   var apiKey = null;
   var sslEnabled = true;
@@ -312,7 +312,7 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
       
       var data = "user=" + user;
-      var validParameters = ["phoneNumber", "firstName", "lastName"];
+      var validParameters = ["phoneNumber", "firstName", "lastName", "extra"];
     
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
@@ -328,7 +328,15 @@ var Qminder = (function() {
         }
         
         data += "&" + key + "=";
-        data += encodeURIComponent(value);
+        
+        if (key == "extra") {
+          assertExtraParameters(value);
+
+          data += JSON.stringify(value);
+        }
+        else {
+          data += encodeURIComponent(value);
+        }
       }
     
       postData("tickets/" + id + "/edit", data, callback);

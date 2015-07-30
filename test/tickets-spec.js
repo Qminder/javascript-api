@@ -580,8 +580,9 @@ describe("Tickets", function() {
       Qminder.tickets.edit(123, {"name": "Tuuli"}, 2, function() {});
     };
     
-    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"phoneNumber\",\"firstName\",\"lastName\"]");
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
   });
+  
   
   // http://www.qminderapp.com/docs/api/tickets/#editing
   it("should throw exception for invalid parameter type in editing call", function() {
@@ -591,6 +592,39 @@ describe("Tickets", function() {
     };
     
     expect(call).toThrow("Parameter has to be an object");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#editing
+  it("should throw exception for invalid extra parameter type in editing call", function() {
+  
+    var call = function() {
+      Qminder.tickets.edit(123, {"extra": "Madli"}, 3, function() {});
+    };
+    
+    expect(call).toThrow("Extra parameter has to be an array");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#editing
+  it("should throw exception for invalid extra parameter in editing call", function() {
+  
+    var call = function() {
+      Qminder.tickets.edit(123, {"extra": ["Peeter"]}, 3, function() {});
+    };
+    
+    expect(call).toThrow("All extra parameters have to be objects");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#editing
+  it("should throw exception for invalid extra parameter field in editing call", function() {
+  
+    var call = function() {
+      Qminder.tickets.edit(123, {"extra": [{"name": "Meeli"}]}, 3, function() {});
+    };
+    
+    expect(call).toThrow("Extra parameter field \"name\" is unknown and should not be used. Valid fields: [\"title\",\"value\",\"url\"]");
 
   });
   
@@ -606,6 +640,31 @@ describe("Tickets", function() {
           var userId = usersResponse.data[0].id;
           
           Qminder.tickets.edit(ticketId, {"firstName": "Madli"}, userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
+          });
+        });
+      });
+    };
+    
+    createTicket(null, function(r) {
+      edit(r.id);
+    });
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#editing
+  it("should edit a tickets extra fields", function(done) {
+    
+    var edit = function(ticketId) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var userId = usersResponse.data[0].id;
+          
+          var parameters = {"firstName": "Madli", "extra": [{"title": "Email", "value": "user@example.com"}, {"title": "Address", "value": "Tartu, Estonia"}]};
+          Qminder.tickets.edit(ticketId, parameters, userId, function(response) {
             expect(response.result).toBe("success");
             done();
           });
