@@ -236,7 +236,7 @@ var Qminder = (function() {
         if (key == "extra") {
           assertExtraParameters(value);
 
-          data += JSON.stringify(value);
+          data += encodeURIComponent(JSON.stringify(value));
         }
         else {
           data += encodeURIComponent(value);
@@ -332,7 +332,7 @@ var Qminder = (function() {
         if (key == "extra") {
           assertExtraParameters(value);
 
-          data += JSON.stringify(value);
+          data += encodeURIComponent(JSON.stringify(value));
         }
         else {
           data += encodeURIComponent(value);
@@ -416,7 +416,7 @@ var Qminder = (function() {
         var value = parameters[key];
         
         if (key == "roles") {
-          data += JSON.stringify(value);
+          data += encodeURIComponent(JSON.stringify(value));
         }
         else {
           data += encodeURIComponent(value);
