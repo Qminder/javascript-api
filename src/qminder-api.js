@@ -192,6 +192,13 @@ var Qminder = (function() {
   
   exports.lines = {
   
+    details: function(line, callback) {
+      assertNotNull(line, ERRORS.LINE);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      get("lines/" + line, callback);
+    },
+  
     "delete": function(line, callback) {
       assertNotNull(line, ERRORS.LINE);
       

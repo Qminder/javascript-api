@@ -31,6 +31,35 @@ describe("Lines", function() {
     
   });
   
+  // http://www.qminderapp.com/docs/api/lines/#details
+  it("should throw exception for missing id in details call", function() {
+    
+    expect(Qminder.lines.details).toThrow("Line ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/lines/#details
+  it("should throw exception for missing callback in details call", function() {
+  
+    var call = function() {
+      Qminder.lines.details(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/lines/#details
+  it("should get details", function(done) {
+  
+    Qminder.lines.details(line, function(response) {
+      expect(response.statusCode).toBe(200);
+      expect(response.id).not.toBe(null);
+      expect(response.name).not.toBe(null);
+      done();
+    });
+  });
+  
   // http://www.qminderapp.com/docs/api/lines/#resetting
   it("should throw exception for missing id in delete call", function() {
     
