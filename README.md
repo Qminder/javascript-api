@@ -64,6 +64,11 @@ Qminder.locations.createLine(locationId, name, callback);
 
 ### Lines
 
+#### [Estimated time](http://www.qminderapp.com/docs/api/lines/#details)
+```js
+Qminder.lines.details(lineId, callback);
+```
+
 #### [Estimated time](http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service)
 ```js
 Qminder.lines.estimatedTime(lineId, callback);
