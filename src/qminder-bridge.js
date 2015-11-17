@@ -3,6 +3,7 @@ function QminderBridge() {
   "use strict";
   
   var onLoadCallback = null;
+  var inputFieldListeners = [];
 
   var receiveMessage = function(event) {
     if (event.data.secretKey) {
@@ -10,12 +11,22 @@ function QminderBridge() {
         onLoadCallback(event.data.secretKey);
       }
     }
+    else if (event.data.inputFieldValue) {
+      inputFieldListeners.forEach(function(listener) {
+        listener(event.data.inputFieldValue);
+      });
+    }
+
   };
 
   window.addEventListener("message", receiveMessage, false);
   
   this.onLoad = function(callback) {
     onLoadCallback = callback;
+  };
+  
+  this.onInputFieldChange = function(callback) {
+    inputFieldListeners.push(callback);
   };
   
   this.playAlertSound = function() {
