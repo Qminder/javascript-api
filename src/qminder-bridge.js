@@ -29,6 +29,14 @@ function QminderBridge() {
     inputFieldListeners.push(callback);
   };
   
+  this.showKeyboard = function(type) {
+    window.location = "qminder-signin://showKeyboardWithType/" + type;
+  };
+  
+  this.hideKeyboard = function() {
+    window.location = "qminder-signin://clearInputText";
+  };
+  
   this.playAlertSound = function() {
     parent.postMessage({"command": "playAlertSound"}, "*");
   };
