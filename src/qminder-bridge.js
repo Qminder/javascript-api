@@ -34,6 +34,10 @@ function QminderBridge() {
   };
   
   this.hideKeyboard = function() {
+    window.location = "qminder-signin://hideKeyboard";
+  };
+  
+  this.clearInputText = function() {
     window.location = "qminder-signin://clearInputText";
   };
   
