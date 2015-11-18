@@ -144,6 +144,11 @@ Qminder.tickets.details(id, callback);
 Qminder.users.create(parameters, callback);
 ```
 
+#### [Adding a role](http://www.qminderapp.com/docs/api/users/#adding-role)
+```js
+Qminder.users.addRole(id, parameters, [callback]);
+```
+
 #### [User details](http://qminderapp.com/docs/api/users/#details)
 ```js
 Qminder.users.details(id, callback);

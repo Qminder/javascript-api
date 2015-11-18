@@ -129,6 +129,205 @@ describe("Users", function() {
     });
   });
   
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for missing user ID in adding role call", function() {
+
+    expect(Qminder.users.addRole).toThrow("User ID not provided");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for missing parameters in adding role call", function() {
+    
+    var call = function() {
+      Qminder.users.addRole(1);
+    };
+
+    expect(call).toThrow("Parameters not provided");
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for invalid parameter type in adding role call", function() {
+  
+    var call = function() {
+      Qminder.users.addRole(1, "Juku");
+    };
+
+    expect(call).toThrow("Parameter has to be an object");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for invalid parameter in adding role call", function() {
+  
+    var call = function() {
+      Qminder.users.addRole(1, {"name": "Mike"});
+    };
+
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"type\",\"location\"]");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for missing type parameter in add role call", function() {
+  
+    var call = function() {
+      Qminder.users.addRole(1, {});
+    };
+
+    expect(call).toThrow("Parameter \"type\" is mandatory.");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for missing location parameter in add role call", function() {
+  
+    var call = function() {
+      Qminder.users.addRole(1, {"type": "MANAGER"});
+    };
+
+    expect(call).toThrow("Parameter \"location\" is mandatory.");
+
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for invalid type in add role call", function(done) {
+  
+    var createRole = function() {
+      var parameters = {
+        "type": "USER",
+        "location": 1
+        };
+      Qminder.users.addRole(user, parameters, function(response) {
+        expect(response.statusCode).toBe(400);
+        expect(response.attribute).toBe("type");
+        expect(response.message).toBe("Parameter \"type\" is invalid");
+        expect(response.developerMessage).toBe("Valid values are \"CLERK\", \"MANAGER\"");
+        done();
+      });
+    };
+    
+    var create = function(location) {
+      var parameters = {
+        "email": "user@example.com",
+        "firstName": "Stewart",
+        "lastName": "Little",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        user = response.id;
+        createRole();
+      });
+    };
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+      create(location);
+    });
+    
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should throw exception for invalid location in add role call", function(done) {
+  
+    var createRole = function() {
+      var parameters = {
+        "type": "MANAGER",
+        "location": 1
+        };
+      Qminder.users.addRole(user, parameters, function(response) {
+        expect(response.statusCode).toBe(400);
+        expect(response.message).toBe("Location does not exist");
+        done();
+      });
+    };
+    
+    var create = function(location) {
+      var parameters = {
+        "email": "user@example.com",
+        "firstName": "Stewart",
+        "lastName": "Little",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        user = response.id;
+        createRole();
+      });
+    };
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+      create(location);
+    });
+    
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should add a role", function(done) {
+  
+    var createRole = function(location) {
+      var parameters = {
+        "type": "MANAGER",
+        "location": location.id
+        };
+      Qminder.users.addRole(user, parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        done();
+      });
+    };
+    
+    var create = function(location) {
+      var parameters = {
+        "email": "user@example.com",
+        "firstName": "Stewart",
+        "lastName": "Little",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        user = response.id;
+        createRole(location);
+      });
+    };
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+      create(location);
+    });
+    
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#creating
+  it("should throw exception for missing user in add role call", function(done) {
+  
+    var parameters = {
+      "type": "MANAGER",
+      "location": 1
+      };
+    Qminder.users.addRole(1, parameters, function(response) {
+      expect(response.statusCode).toBe(404);
+      expect(response.message).toBe("User with id 1 not found");
+      done();
+    });
+  });
+  
   // http://www.qminderapp.com/docs/api/users/#resetting
   it("should throw exception for missing id in delete call", function() {
     

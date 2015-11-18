@@ -454,6 +454,50 @@ var Qminder = (function() {
     
     },
     
+    addRole: function(user, parameters, callback) {
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(parameters, "Parameters not provided");
+      assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
+      
+      var requiredParameters = ["type", "location"];
+      var data = null;
+      
+      for (var key in parameters) {
+        if (!parameters.hasOwnProperty(key)) {
+          continue;
+        }
+
+        if (requiredParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(requiredParameters);
+        }
+        
+        data += "&" + key + "=" + encodeURIComponent(parameters[key]);
+      }
+      
+      requiredParameters.forEach(function(parameter) {
+      
+        var found = false;
+      
+        for (key in parameters) {
+          if (!parameters.hasOwnProperty(key)) {
+            continue;
+          }
+          
+          if (key == parameter) {
+            found = true;
+            break;
+          }
+        }
+        
+        if (!found) {
+          throw "Parameter \"" + parameter + "\" is mandatory.";
+        }
+      });
+      
+      postData("users/" + user + "/roles", data, callback);
+    
+    },
+    
     "delete": function(user, callback) {
       assertNotNull(user, ERRORS.USER);
       deleteRequest("users/" + user, callback);
