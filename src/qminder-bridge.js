@@ -51,6 +51,10 @@ function QminderBridge() {
     window.location = "qminder-signin://clearInputText";
   };
   
+  this.setInputText = function(value) {
+    window.location = "qminder-signin://setInputText/" + value;
+  };
+  
   this.playAlertSound = function() {
     parent.postMessage({"command": "playAlertSound"}, "*");
   };
