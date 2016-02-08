@@ -82,6 +82,14 @@ function QminderBridge() {
 
     return result;
 	};
+	
+	this.getSettings = function() {
+  	var settings = this.getParameters().settings;
+  	if (settings) {
+    	return JSON.parse(settings);
+  	}
+  	return null;
+	};
 }
 
 var QminderBridge = new QminderBridge();
