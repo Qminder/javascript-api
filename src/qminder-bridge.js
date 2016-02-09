@@ -1,4 +1,6 @@
-function QminderBridge() {
+
+/* exported QminderBridge */
+var QminderBridge = (function() {
 
   "use strict";
   
@@ -27,39 +29,40 @@ function QminderBridge() {
 
   window.addEventListener("message", receiveMessage, false);
   
-  this.onLoad = function(callback) {
+  var exports = {};
+  exports.onLoad = function(callback) {
     onLoadCallback = callback;
   };
   
-  this.onInputFieldChange = function(callback) {
+  exports.onInputFieldChange = function(callback) {
     inputFieldListeners.push(callback);
   };
   
-  this.onKeyboardSubmit = function(callback) {
+  exports.onKeyboardSubmit = function(callback) {
     keyboardSubmitListeners.push(callback);
   };
   
-  this.showKeyboard = function(type) {
+  exports.showKeyboard = function(type) {
     window.location = "qminder-signin://showKeyboardWithType/" + type;
   };
   
-  this.hideKeyboard = function() {
+  exports.hideKeyboard = function() {
     window.location = "qminder-signin://hideKeyboard";
   };
   
-  this.clearInputText = function() {
+  exports.clearInputText = function() {
     window.location = "qminder-signin://clearInputText";
   };
   
-  this.setInputText = function(value) {
+  exports.setInputText = function(value) {
     window.location = "qminder-signin://setInputText/" + value;
   };
   
-  this.playAlertSound = function() {
+  exports.playAlertSound = function() {
     parent.postMessage({"command": "playAlertSound"}, "*");
   };
   
-  this.getParameters = function() {
+  exports.getParameters = function() {
     var url = window.location.search.substring(1);
     var variables = url.split("&");
 
@@ -67,8 +70,10 @@ function QminderBridge() {
     variables.forEach(function(variable) {
       var pair = variable.split("=");
       var id = pair[0];
-      var value = decodeURIComponent(pair[1]);
-      
+      var value = pair[1];
+      value = value.replace(/\+/g, "%20");
+      value = decodeURIComponent(value);
+
       if (typeof result[id] == "undefined") {
         result[id] = value;
       }
@@ -82,15 +87,15 @@ function QminderBridge() {
 
     return result;
 	};
-	
-	this.getSettings = function() {
-  	var settings = this.getParameters().settings;
-  	if (settings) {
+
+  exports.getSettings = function() {
+    var settings = exports.getParameters().settings;
+    if (settings) {
     	return JSON.parse(settings);
   	}
   	return null;
-	};
-}
-
-var QminderBridge = new QminderBridge();
+  };
+  
+  return exports;
+}());
 
