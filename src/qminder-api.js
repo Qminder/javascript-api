@@ -712,6 +712,17 @@ var Qminder = (function() {
       send(message, callback);
     };
     
+    exports.onSignInDeviceChange = function(signInDeviceId, callback) {
+    
+      var message = {
+          id: createId(),
+          subscribe : "SIGN_IN_CHANGE",
+          parameters: {id: signInDeviceId}
+        };
+
+      send(message, callback);
+    };
+    
     exports.onLinesChanged = function(locationId, callback) {
       var message = {
           id: createId(),
