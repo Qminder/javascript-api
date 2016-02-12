@@ -122,6 +122,11 @@ Qminder.tickets.markNoShow(id, callback);
 Qminder.tickets.cancel(id, user, callback);
 ```
 
+#### [Assigning a ticket](http://qminderapp.com/docs/api/tickets/#assigning)
+```js
+Qminder.tickets.assign(id, assigner, assignee, callback);
+```
+
 #### [Labelling a ticket](http://qminderapp.com/docs/api/tickets/#labelling)
 ```js
 Qminder.tickets.addLabel(id, value, user, callback);

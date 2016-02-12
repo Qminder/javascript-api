@@ -372,6 +372,17 @@ var Qminder = (function() {
       postData("tickets/" + id + "/cancel", data, callback);
     },
     
+    assign: function(id, assigner, assignee, callback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(assigner, "User ID of assigner not provided");
+      assertNotNull(assignee, "User ID of assignee not provided");
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      var data = "assigner=" + assigner;
+      data += "&assignee=" + assignee;
+      postData("tickets/" + id + "/assign", data, callback);
+    },
+    
     addLabel: function(id, value, user, callback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(value, "Value not provided");
