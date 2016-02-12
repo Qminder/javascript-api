@@ -816,6 +816,71 @@ describe("Tickets", function() {
     });
   });
   
+  // https://qminderapp.com/docs/api/tickets/#assigning
+  it("should throw exception for missing ticket id in assign call", function() {
+    
+    expect(Qminder.tickets.assign).toThrow("Ticket ID not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#assigning
+  it("should throw exception for missing assigner in assign call", function() {
+    
+    var call = function() {
+      Qminder.tickets.assign(1);
+    };
+    
+    expect(call).toThrow("User ID of assigner not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#assigning
+  it("should throw exception for missing assignee in assign call", function() {
+    
+    var call = function() {
+      Qminder.tickets.assign(1, 2);
+    };
+    
+    expect(call).toThrow("User ID of assignee not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#assigning
+  it("should throw exception for missing callback function in assign call", function() {
+    
+    var call = function() {
+      Qminder.tickets.assign(1, 2, 3);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#assigning
+  it("should assign a ticket", function(done) {
+  
+    var assign = function(ticketId) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var assignerId = usersResponse.data[0].id;
+          var assigneeId = usersResponse.data[1].id;
+          
+          Qminder.tickets.assign(ticketId, assignerId, assigneeId, function(response) {
+            expect(response.result).toBe("success");
+            Qminder.tickets.details(ticketId, function(response) {
+              expect(response.assigned.assigner).toBe(assignerId);
+              expect(response.assigned.assignee).toBe(assigneeId);
+              done();
+            });
+          });
+        });
+      });
+    };
+    
+    createTicket(null, function(r) {
+      assign(r.id);
+    });
+  });
+  
   // http://qminderapp.com/docs/api/tickets/#labelling
   it("should throw exception for missing ticket id in labelling call", function() {
     
