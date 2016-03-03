@@ -127,6 +127,11 @@ Qminder.tickets.cancel(id, user, callback);
 Qminder.tickets.assign(id, assigner, assignee, callback);
 ```
 
+#### [Reordering a ticket](http://qminderapp.com/docs/api/tickets/#reordering)
+```js
+Qminder.tickets.reorder(id, after, callback);
+```
+
 #### [Labelling a ticket](http://qminderapp.com/docs/api/tickets/#labelling)
 ```js
 Qminder.tickets.addLabel(id, value, user, callback);

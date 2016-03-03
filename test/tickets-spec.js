@@ -881,6 +881,60 @@ describe("Tickets", function() {
     });
   });
   
+  // https://qminderapp.com/docs/api/tickets/#reordering
+  it("should throw exception for missing ticket id in reorder call", function() {
+    
+    expect(Qminder.tickets.reorder).toThrow("Ticket ID not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#reordering
+  it("should throw exception for missing callback function in reorder call", function() {
+    
+    var call = function() {
+      Qminder.tickets.reorder(1);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#reordering
+  it("should reorder a ticket to the first", function(done) {
+  
+    var reorder = function(ticketId) {   
+      Qminder.tickets.reorder(ticketId, null, function(response) {
+        expect(response.result).toBe("success");
+        Qminder.tickets.details(ticketId, function(response) {
+          expect(response.orderAfter).not.toBe(null);
+          done();
+        });
+      });
+    };
+    
+    createTicket(null, function(r) {
+      reorder(r.id);
+    });
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#reordering
+  it("should reorder a ticket to be the second in the list", function(done) {
+  
+    var reorder = function(ticketId, after) {   
+      Qminder.tickets.reorder(ticketId, after, function(response) {
+        expect(response.result).toBe("success");
+        Qminder.tickets.details(ticketId, function(response) {
+          expect(response.orderAfter).not.toBe(null);
+          done();
+        });
+      });
+    };
+    
+    createTicket(null, function(ticket1) {
+      createTicket(null, function(ticket2) {
+        reorder(ticket1.id, ticket2.id);
+      });
+    });
+  });
+  
   // http://qminderapp.com/docs/api/tickets/#labelling
   it("should throw exception for missing ticket id in labelling call", function() {
     

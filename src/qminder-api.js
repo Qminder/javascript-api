@@ -383,6 +383,17 @@ var Qminder = (function() {
       postData("tickets/" + id + "/assign", data, callback);
     },
     
+    reorder: function(id, after, callback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      var data = null;
+      if (after !== null) {
+        data = "after=" + after;
+      }
+      postData("tickets/" + id + "/reorder", data, callback);
+    },
+    
     addLabel: function(id, value, user, callback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(value, "Value not provided");
