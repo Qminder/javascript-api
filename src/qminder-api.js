@@ -481,7 +481,8 @@ var Qminder = (function() {
       assertNotNull(parameters, "Parameters not provided");
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
       
-      var requiredParameters = ["type", "location"];
+      var validParameters = ["type", "location"];
+      var requiredParameters = ["type"];
       var data = null;
       
       for (var key in parameters) {
@@ -489,8 +490,8 @@ var Qminder = (function() {
           continue;
         }
 
-        if (requiredParameters.indexOf(key) == -1) {
-          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(requiredParameters);
+        if (validParameters.indexOf(key) == -1) {
+          throw "Parameter \"" + key + "\" is unknown and should not be used. Valid parameters: " + JSON.stringify(validParameters);
         }
         
         data += "&" + key + "=" + encodeURIComponent(parameters[key]);
@@ -515,6 +516,10 @@ var Qminder = (function() {
           throw "Parameter \"" + parameter + "\" is mandatory.";
         }
       });
+      
+      if ((parameters.type == "CLERK" || parameters.type == "MANAGER") && !parameters.hasOwnProperty("location")) {
+        throw "Parameter \"location\" is required when type is \"" + parameters.type + "\"";
+      }
       
       postData("users/" + user + "/roles", data, callback);
     
