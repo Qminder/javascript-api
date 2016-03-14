@@ -186,7 +186,7 @@ describe("Users", function() {
       Qminder.users.addRole(1, {"type": "MANAGER"});
     };
 
-    expect(call).toThrow("Parameter \"location\" is mandatory.");
+    expect(call).toThrow("Parameter \"location\" is required when type is \"MANAGER\"");
 
   });
   
@@ -202,7 +202,7 @@ describe("Users", function() {
         expect(response.statusCode).toBe(400);
         expect(response.attribute).toBe("type");
         expect(response.message).toBe("Parameter \"type\" is invalid");
-        expect(response.developerMessage).toBe("Valid values are \"CLERK\", \"MANAGER\"");
+        expect(response.developerMessage).toBe("Valid values are \"CLERK\", \"MANAGER\", \"ADMINISTRATOR\"");
         done();
       });
     };
@@ -304,6 +304,45 @@ describe("Users", function() {
         expect(response.id).not.toBe(null);
         user = response.id;
         createRole(location);
+      });
+    };
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+      create(location);
+    });
+    
+  });
+  
+  // http://www.qminderapp.com/docs/api/users/#adding-role
+  it("should add a administrator role", function(done) {
+  
+    var createRole = function() {
+      var parameters = {
+        "type": "ADMINISTRATOR"
+        };
+      Qminder.users.addRole(user, parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        done();
+      });
+    };
+    
+    var create = function(location) {
+      var parameters = {
+        "email": "user@example.com",
+        "firstName": "Stewart",
+        "lastName": "Little",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        user = response.id;
+        createRole();
       });
     };
   
