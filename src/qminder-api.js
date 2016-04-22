@@ -154,62 +154,62 @@ var Qminder = (function() {
   
   exports.locations = {
     
-    list: function(callback) {
+    list: function(callback, errorCallback) {
       assertNotNull(callback, ERRORS.CALLBACK);
-      get("locations/", callback);
+      get("locations/", callback, errorCallback);
     },
     
-    details: function(id, callback) {
+    details: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.LOCATION);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      get("locations/" + id, callback);
+      get("locations/" + id, callback, errorCallback);
     },
     
-    lines: function(id, callback) {
+    lines: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.LOCATION);
       assertNotNull(callback, ERRORS.CALLBACK);
 
-      get("locations/" + id + "/lines", callback);
+      get("locations/" + id + "/lines", callback, errorCallback);
     },
     
-    users: function(id, callback) {
+    users: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.LOCATION);
       assertNotNull(callback, ERRORS.CALLBACK);
 
-      get("locations/" + id + "/users", callback);
+      get("locations/" + id + "/users", callback, errorCallback);
     },
     
-    createLine: function(location, name, callback) {
+    createLine: function(location, name, callback, errorCallback) {
       assertNotNull(location, ERRORS.LOCATION);
       assertNotNull(name, "Name not provided");
       assertNotNull(callback, ERRORS.CALLBACK);
     
       var data = "name=" + encodeURIComponent(name);
-      postData("locations/" + location + "/lines", data, callback);
+      postData("locations/" + location + "/lines", data, callback, errorCallback);
     }
   };
   
   exports.lines = {
   
-    details: function(line, callback) {
+    details: function(line, callback, errorCallback) {
       assertNotNull(line, ERRORS.LINE);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      get("lines/" + line, callback);
+      get("lines/" + line, callback, errorCallback);
     },
   
-    "delete": function(line, callback) {
+    "delete": function(line, callback, errorCallback) {
       assertNotNull(line, ERRORS.LINE);
       
-      deleteRequest("lines/" + line, callback);
+      deleteRequest("lines/" + line, callback, errorCallback);
     },
     
-    estimatedTime: function(line, callback) {
+    estimatedTime: function(line, callback, errorCallback) {
       assertNotNull(line, ERRORS.LINE);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      get("lines/" + line + "/estimated-time", callback);
+      get("lines/" + line + "/estimated-time", callback, errorCallback);
     }
   };
   
@@ -274,7 +274,7 @@ var Qminder = (function() {
       get(url, callback, errorCallback);
     },
   
-    callNext: function(parameters, callback) {
+    callNext: function(parameters, callback, errorCallback) {
       assertNotNull(parameters, ERRORS.PARAMETERS);
       assertNotNull(parameters.lines, "List of lines not provided");
       assertNotNull(parameters.user, ERRORS.USER);
@@ -301,17 +301,17 @@ var Qminder = (function() {
         data += "&desk=" + parameters.desk;
       }
       
-      postData("tickets/" + parameters.id + "/call", data, callback);
+      postData("tickets/" + parameters.id + "/call", data, callback, errorCallback);
     },
     
-    recall: function(id, callback) {
+    recall: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
 
-      post("tickets/" + id + "/recall", callback);
+      post("tickets/" + id + "/recall", callback, errorCallback);
     },
     
-    edit: function(id, parameters, user, callback) {
+    edit: function(id, parameters, user, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(parameters, ERRORS.PARAMETERS);
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
@@ -346,33 +346,33 @@ var Qminder = (function() {
         }
       }
     
-      postData("tickets/" + id + "/edit", data, callback);
+      postData("tickets/" + id + "/edit", data, callback, errorCallback);
     },
     
-    markServed: function(id, callback) {
+    markServed: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
 
-      post("tickets/" + id + "/markserved", callback);
+      post("tickets/" + id + "/markserved", callback, errorCallback);
     },
     
-    markNoShow: function(id, callback) {
+    markNoShow: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
 
-      post("tickets/" + id + "/marknoshow", callback);
+      post("tickets/" + id + "/marknoshow", callback, errorCallback);
     },
     
-    cancel: function(id, user, callback) {
+    cancel: function(id, user, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(user, ERRORS.USER);
       assertNotNull(callback, ERRORS.CALLBACK);
 
       var data = "user=" + user;
-      postData("tickets/" + id + "/cancel", data, callback);
+      postData("tickets/" + id + "/cancel", data, callback, errorCallback);
     },
     
-    assign: function(id, assigner, assignee, callback) {
+    assign: function(id, assigner, assignee, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(assigner, "User ID of assigner not provided");
       assertNotNull(assignee, "User ID of assignee not provided");
@@ -380,7 +380,7 @@ var Qminder = (function() {
 
       var data = "assigner=" + assigner;
       data += "&assignee=" + assignee;
-      postData("tickets/" + id + "/assign", data, callback);
+      postData("tickets/" + id + "/assign", data, callback, errorCallback);
     },
     
     reorder: function(id, after, callback) {
@@ -391,7 +391,7 @@ var Qminder = (function() {
       if (after !== null) {
         data = "after=" + after;
       }
-      postData("tickets/" + id + "/reorder", data, callback);
+      postData("tickets/" + id + "/reorder", data, callback, errorCallback);
     },
     
     addLabel: function(id, value, user, callback) {
@@ -401,30 +401,30 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
 
       var data = "user=" + user + "&value=" + encodeURIComponent(value);
-      postData("tickets/" + id + "/labels/add", data, callback);
+      postData("tickets/" + id + "/labels/add", data, callback, errorCallback);
     },
     
-    removeLabel: function(id, value, user, callback) {
+    removeLabel: function(id, value, user, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(value, "Value not provided");
       assertNotNull(user, ERRORS.USER);
       assertNotNull(callback, ERRORS.CALLBACK);
 
       var data = "user=" + user + "&value=" + encodeURIComponent(value);
-      postData("tickets/" + id + "/labels/remove", data, callback);
+      postData("tickets/" + id + "/labels/remove", data, callback, errorCallback);
     },
     
-    details: function(id, callback) {
+    details: function(id, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
 
-      get("tickets/" + id, callback);
+      get("tickets/" + id, callback, errorCallback);
     }
   };
   
   exports.users = {
   
-    create: function(parameters, callback) {
+    create: function(parameters, callback, errorCallback) {
       assertNotNull(parameters, "Parameters not provided");
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
       assertNotNull(callback, ERRORS.CALLBACK);
@@ -472,11 +472,11 @@ var Qminder = (function() {
         }
       });
       
-      postData("users", data, callback);
+      postData("users", data, callback, errorCallback);
     
     },
     
-    addRole: function(user, parameters, callback) {
+    addRole: function(user, parameters, callback, errorCallback) {
       assertNotNull(user, ERRORS.USER);
       assertNotNull(parameters, "Parameters not provided");
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
@@ -521,20 +521,20 @@ var Qminder = (function() {
         throw "Parameter \"location\" is required when type is \"" + parameters.type + "\"";
       }
       
-      postData("users/" + user + "/roles", data, callback);
+      postData("users/" + user + "/roles", data, callback, errorCallback);
     
     },
     
-    "delete": function(user, callback) {
+    "delete": function(user, callback, errorCallback) {
       assertNotNull(user, ERRORS.USER);
-      deleteRequest("users/" + user, callback);
+      deleteRequest("users/" + user, callback, errorCallback);
     },
     
-    details: function(user, callback) {
+    details: function(user, callback, errorCallback) {
       assertNotNull(user, ERRORS.USER);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      get("users/" + user, callback);
+      get("users/" + user, callback, errorCallback);
     }
   };
   
