@@ -39,44 +39,44 @@ Qminder.setKey(key);
 
 #### [List of locations](http://www.qminderapp.com/docs/api/locations/#list)
 ```js
-Qminder.locations.list(callback);
+Qminder.locations.list(callback, [errorCallback]);
 ```
 
 #### [Location details](http://www.qminderapp.com/docs/api/locations/#details)
 ```js
-Qminder.locations.details(locationId, callback);
+Qminder.locations.details(locationId, callback, [errorCallback]);
 ```
 
 #### [List of lines](http://www.qminderapp.com/docs/api/locations/#lines)
 ```js
-Qminder.locations.lines(locationId, callback);
+Qminder.locations.lines(locationId, callback, [errorCallback]);
 ```
 
 #### [List of users](http://www.qminderapp.com/docs/api/locations/#users)
 ```js
-Qminder.locations.users(locationId, callback);
+Qminder.locations.users(locationId, callback, [errorCallback]);
 ```
 
 #### [Creating a line](http://www.qminderapp.com/docs/api/locations/#newline)
 ```js
-Qminder.locations.createLine(locationId, name, callback);
+Qminder.locations.createLine(locationId, name, callback, [errorCallback]);
 ```
 
 ### Lines
 
 #### [Line details](http://www.qminderapp.com/docs/api/lines/#details)
 ```js
-Qminder.lines.details(lineId, callback);
+Qminder.lines.details(lineId, callback, [errorCallback]);
 ```
 
 #### [Estimated time](http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service)
 ```js
-Qminder.lines.estimatedTime(lineId, callback);
+Qminder.lines.estimatedTime(lineId, callback, [errorCallback]);
 ```
 
 #### [Deleting a line](http://www.qminderapp.com/docs/api/lines/#deleting)
 ```js
-Qminder.lines.delete(lineId, [callback]);
+Qminder.lines.delete(lineId, [callback], [errorCallback]);
 ```
 
 
@@ -89,91 +89,91 @@ Qminder.tickets.create(line, parameters, callback, [errorCallback]);
 
 #### [Searching tickets](http://www.qminderapp.com/docs/api/tickets/#search)
 ```js
-Qminder.tickets.search(parameters, callback);
+Qminder.tickets.search(parameters, callback, [errorCallback]);
 ```
 
 #### [Calling a ticket from list](http://qminderapp.com/docs/api/tickets/#calling-from-list)
 ```js
-Qminder.tickets.callNext(parameters, callback);
+Qminder.tickets.callNext(parameters, callback, [errorCallback]);
 ```
 
 #### [Calling a ticket](http://www.qminderapp.com/docs/api/tickets/#calling)
 ```js
-Qminder.tickets.call(parameters, callback);
+Qminder.tickets.call(parameters, callback, [errorCallback]);
 ```
 
 #### [Recalling a ticket](http://qminderapp.com/docs/api/tickets/#recalling)
 ```js
-Qminder.tickets.recall(id, callback);
+Qminder.tickets.recall(id, callback, [errorCallback]);
 ```
 
 #### [Marking ticket served](http://qminderapp.com/docs/api/tickets/#marking-served)
 ```js
-Qminder.tickets.markServed(id, callback);
+Qminder.tickets.markServed(id, callback, [errorCallback]);
 ```
 
 #### [Marking ticket no show](http://qminderapp.com/docs/api/tickets/#marking-noshow)
 ```js
-Qminder.tickets.markNoShow(id, callback);
+Qminder.tickets.markNoShow(id, callback, [errorCallback]);
 ```
 
 #### [Cancelling a ticket](http://qminderapp.com/docs/api/tickets/#cancelling)
 ```js
-Qminder.tickets.cancel(id, user, callback);
+Qminder.tickets.cancel(id, user, callback, [errorCallback]);
 ```
 
 #### [Assigning a ticket](http://qminderapp.com/docs/api/tickets/#assigning)
 ```js
-Qminder.tickets.assign(id, assigner, assignee, callback);
+Qminder.tickets.assign(id, assigner, assignee, callback, [errorCallback]);
 ```
 
 #### [Reordering a ticket](http://qminderapp.com/docs/api/tickets/#reordering)
 ```js
-Qminder.tickets.reorder(id, after, callback);
+Qminder.tickets.reorder(id, after, callback, [errorCallback]);
 ```
 
 #### [Labelling a ticket](http://qminderapp.com/docs/api/tickets/#labelling)
 ```js
-Qminder.tickets.addLabel(id, value, user, callback);
+Qminder.tickets.addLabel(id, value, user, callback, [errorCallback]);
 ```
 
 #### [Removing a label](http://qminderapp.com/docs/api/tickets/#removing-label)
 ```js
-Qminder.tickets.removeLabel(id, value, user, callback);
+Qminder.tickets.removeLabel(id, value, user, callback, [errorCallback]);
 ```
 
 #### [Ticket status](http://www.qminderapp.com/docs/api/tickets/#status)
 ```js
-Qminder.tickets.details(id, callback);
+Qminder.tickets.details(id, callback, [errorCallback]);
 ```
 
 ### Users
 
 #### [Creating a users](http://www.qminderapp.com/docs/api/users/#creating)
 ```js
-Qminder.users.create(parameters, callback);
+Qminder.users.create(parameters, callback, [errorCallback]);
 ```
 
 #### [Adding a role](http://www.qminderapp.com/docs/api/users/#adding-role)
 ```js
-Qminder.users.addRole(id, parameters, [callback]);
+Qminder.users.addRole(id, parameters, [callback], [errorCallback]);
 ```
 
 #### [User details](http://qminderapp.com/docs/api/users/#details)
 ```js
-Qminder.users.details(id, callback);
+Qminder.users.details(id, callback, [errorCallback]);
 ```
 
 #### [Deleting a users](http://qminderapp.com/docs/api/users/#deleting)
 ```js
-Qminder.users.delete(id, callback);
+Qminder.users.delete(id, callback, [errorCallback]);
 ```
 
 ### Devices
 
 #### [List of devices](http://qminderapp.com/docs/api/devices/)
 ```js
-Qminder.devices.list(location, callback);
+Qminder.devices.list(location, callback, [errorCallback]);
 ```
 
 ## Questions?
