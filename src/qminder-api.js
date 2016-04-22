@@ -286,7 +286,7 @@ var Qminder = (function() {
         data += "&desk=" + parameters.desk;
       }
       
-      postData("tickets/call", data, callback);
+      postData("tickets/call", data, callback, errorCallback);
     },
     
     call: function(parameters, callback) {
