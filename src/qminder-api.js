@@ -289,7 +289,7 @@ var Qminder = (function() {
       postData("tickets/call", data, callback, errorCallback);
     },
     
-    call: function(parameters, callback) {
+    call: function(parameters, callback, errorCallback) {
       assertNotNull(parameters, ERRORS.PARAMETERS);
       assertNotNull(parameters.id, ERRORS.TICKET);
       assertNotNull(parameters.user, ERRORS.USER);
@@ -383,7 +383,7 @@ var Qminder = (function() {
       postData("tickets/" + id + "/assign", data, callback, errorCallback);
     },
     
-    reorder: function(id, after, callback) {
+    reorder: function(id, after, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
 
@@ -394,7 +394,7 @@ var Qminder = (function() {
       postData("tickets/" + id + "/reorder", data, callback, errorCallback);
     },
     
-    addLabel: function(id, value, user, callback) {
+    addLabel: function(id, value, user, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(value, "Value not provided");
       assertNotNull(user, ERRORS.USER);
