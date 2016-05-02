@@ -42,8 +42,11 @@ var QminderBridge = (function() {
     keyboardSubmitListeners.push(callback);
   };
   
-  exports.showKeyboard = function(type) {
-    window.location = "qminder-signin://showKeyboardWithType/" + type;
+  exports.showKeyboard = function(type, maxLength) {
+    if (maxLength === undefined) {
+      maxLength = 50;
+    }
+    window.location = "qminder-signin://showKeyboardWithType/" + type + "/" + maxLength;
   };
   
   exports.hideKeyboard = function() {
@@ -98,4 +101,3 @@ var QminderBridge = (function() {
   
   return exports;
 }());
-
