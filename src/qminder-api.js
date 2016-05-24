@@ -150,6 +150,7 @@ var Qminder = (function() {
   
   exports.setSslEnabled = function(enabled) {
     sslEnabled = enabled;
+    exports.setServer(SERVER);
   };
   
   exports.locations = {
