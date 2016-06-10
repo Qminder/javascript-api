@@ -552,17 +552,7 @@ describe("Tickets", function() {
     
     expect(call).toThrow("Parameters not provided");
   });
-  
-  // http://qminderapp.com/docs/api/tickets/#editing
-  it("should throw exception for missing user id in editing call", function() {
     
-    var call = function() {
-      Qminder.tickets.edit(1, {});
-    };
-    
-    expect(call).toThrow("User ID not provided");
-  });
-  
   // http://qminderapp.com/docs/api/tickets/#editing
   it("should throw exception for missing callback function in editing call", function() {
     
