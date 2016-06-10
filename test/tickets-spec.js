@@ -570,7 +570,7 @@ describe("Tickets", function() {
       Qminder.tickets.edit(123, {"name": "Tuuli"}, 2, function() {});
     };
     
-    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"user\",\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
   });
   
   

@@ -318,6 +318,8 @@ var Qminder = (function() {
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
       assertNotNull(callback, ERRORS.CALLBACK);
       
+      var data = "";
+      
       var validParameters = ["user", "phoneNumber", "firstName", "lastName", "extra"];
     
       for (var key in parameters) {
