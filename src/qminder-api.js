@@ -316,11 +316,11 @@ var Qminder = (function() {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(parameters, ERRORS.PARAMETERS);
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
-      assertNotNull(user, ERRORS.USER);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      var data = "user=" + user;
-      var validParameters = ["phoneNumber", "firstName", "lastName", "extra"];
+      var data = "";
+      
+      var validParameters = ["user", "phoneNumber", "firstName", "lastName", "extra"];
     
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
