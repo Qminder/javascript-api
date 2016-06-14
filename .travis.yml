@@ -14,6 +14,7 @@ deploy:
   provider: npm
   email: info@qminderapp.com
   api_key:
-    secure: DQQ3KlqEZBihvuF8YtazVSuMmQq6VzV7l7o4lOixCThHeW8Iqal5g4FUz4quArxoNuUsk1O+FLmhm9OGTR2/oDVcBeGhUtEV1UbFUTYmumuxstfJjWbCDTG5icxjUpC3v+DVF+VBTf+0bZ48QL/PabvedLlZS5Zkah7YOQTba7o=
+    secure: I+dkutiDxxPHg6v6mUSnoOUjJKi9fTdgFqqukvcxkq5r7YDVUFyIND7oifd66eVOI1Fcx92JDIIEnyxZo264DlbvzlM14aLOIJjvVvYsaAFOKq4K4mvzL47t9D+T51mOKVeKQnH8QlPj+rA+FIrMkIXn9NpynKk2HEIBBZ2k8ug=
   on:
     tags: true
+    repo: Qminder/javascript-api
