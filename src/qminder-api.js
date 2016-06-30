@@ -565,6 +565,8 @@ var Qminder = (function() {
     var onConnectedCallback = null;
     var onDisconnectedCallback = null;
     
+    var socketRetriedConnections = 0;
+    
     var createId = function() {
       var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
       var text = "";
@@ -600,7 +602,7 @@ var Qminder = (function() {
       socket.onopen = function() {
         console.log("Connection opened");
         connectionOpen = true;
-        
+        socketRetriedConnections = 0;
         messageHistory.forEach(function(message) {
           sendMessage(message);
         });
@@ -629,9 +631,10 @@ var Qminder = (function() {
           pingInterval = null;
         }
         
-        console.log("Connection closed, Trying to reconnect in 5 seconds");
-        setTimeout(openSocket, 5000);
-        
+        var timeoutMult = Math.floor(socketRetriedConnections / 10);
+        setTimeout(openSocket, Math.min(5000 + timeoutMult * 1000, 15000));
+        socketRetriedConnections++;
+
         if (onDisconnectedCallback !== null) {
           onDisconnectedCallback();
         }
