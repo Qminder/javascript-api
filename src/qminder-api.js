@@ -632,7 +632,7 @@ var Qminder = (function() {
         }
         
         var timeoutMult = Math.floor(socketRetriedConnections / 10);
-        setTimeout(openSocket, Math.min(5000 + timeoutMult * 1000, 15000));
+        setTimeout(openSocket, Math.min(5000 + timeoutMult * 1000, 60000));
         socketRetriedConnections++;
 
         if (onDisconnectedCallback !== null) {
