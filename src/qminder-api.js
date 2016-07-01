@@ -632,7 +632,9 @@ var Qminder = (function() {
         }
         
         var timeoutMult = Math.floor(socketRetriedConnections / 10);
-        setTimeout(openSocket, Math.min(5000 + timeoutMult * 1000, 60000));
+        var newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
+        console.log("Connection closed, Trying to reconnect in " + newTimeout/1000 + " seconds");
+        setTimeout(openSocket, newTimeout);
         socketRetriedConnections++;
 
         if (onDisconnectedCallback !== null) {
