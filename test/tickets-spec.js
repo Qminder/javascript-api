@@ -572,7 +572,7 @@ describe("Tickets", function() {
       Qminder.tickets.edit(123, {"name": "Tuuli"}, 2, function() {});
     };
     
-    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"user\",\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
+    expect(call).toThrow("Parameter \"name\" is unknown and should not be used. Valid parameters: [\"line\",\"user\",\"phoneNumber\",\"firstName\",\"lastName\",\"extra\"]");
   });
   
   
@@ -632,6 +632,28 @@ describe("Tickets", function() {
           var userId = usersResponse.data[0].id;
           
           Qminder.tickets.edit(ticketId, {"firstName": "Madli"}, userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
+          });
+        });
+      });
+    };
+    
+    createTicket(null, function(r) {
+      edit(r.id);
+    });
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#editing
+  it("should edit line of a ticket", function(done) {
+    
+    var edit = function(ticketId) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.createLine(location.id, "New Line", function(r) {
+          var line = r.id;
+          Qminder.tickets.edit(ticketId, {"line": line.id}, null, function(response) {
             expect(response.result).toBe("success");
             done();
           });
@@ -892,7 +914,7 @@ describe("Tickets", function() {
   // http://qminderapp.com/docs/api/tickets/#reordering
   it("should reorder a ticket to the first", function(done) {
   
-    var reorder = function(ticketId) {   
+    var reorder = function(ticketId) {
       Qminder.tickets.reorder(ticketId, null, function(response) {
         expect(response.result).toBe("success");
         Qminder.tickets.details(ticketId, function(response) {
@@ -910,7 +932,7 @@ describe("Tickets", function() {
   // http://qminderapp.com/docs/api/tickets/#reordering
   it("should reorder a ticket to be the second in the list", function(done) {
   
-    var reorder = function(ticketId, after) {   
+    var reorder = function(ticketId, after) {
       Qminder.tickets.reorder(ticketId, after, function(response) {
         expect(response.result).toBe("success");
         Qminder.tickets.details(ticketId, function(response) {
@@ -1130,7 +1152,7 @@ describe("Tickets", function() {
         expect(response.line).not.toBe(null);
         done();
       });
-    }); 
+    });
   });
   
   var createTicket = function(parameters, callback) {
