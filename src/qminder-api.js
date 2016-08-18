@@ -320,7 +320,7 @@ var Qminder = (function() {
       
       var data = "";
       
-      var validParameters = ["user", "phoneNumber", "firstName", "lastName", "extra"];
+      var validParameters = ["line", "user", "phoneNumber", "firstName", "lastName", "extra"];
     
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
