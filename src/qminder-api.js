@@ -585,6 +585,8 @@ var Qminder = (function() {
       socket.send(JSON.stringify(message));
     };
     
+    var autoReopenTimeout = null;
+    
     var openSocket = function() {
       
       if (!apiKey) {
@@ -592,6 +594,10 @@ var Qminder = (function() {
       }
       
       openingConnection = true;
+      
+      if (autoReopenTimeout) {
+        clearTimeout(autoReopenTimeout);
+      }
       
       // Samsung Smart-TVs (2013) crashes with SSL
       var supportsSSL = navigator.userAgent.match(/SMART-TV/i) === null;
@@ -634,7 +640,11 @@ var Qminder = (function() {
         var timeoutMult = Math.floor(socketRetriedConnections / 10);
         var newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
         console.log("Connection closed, Trying to reconnect in " + newTimeout/1000 + " seconds");
-        setTimeout(openSocket, newTimeout);
+        
+        if (autoReopenTimeout) {
+          clearTimeout(autoReopenTimeout);
+        }
+        autoReopenTimeout = setTimeout(openSocket, newTimeout);
         socketRetriedConnections++;
 
         if (onDisconnectedCallback !== null) {
@@ -697,6 +707,12 @@ var Qminder = (function() {
     
     exports.onConnected = function(callback) {
       onConnectedCallback = callback;
+    };
+    
+    exports.tryConnect  = function() {
+      if (connectionOpen || openingConnection) {
+        return false;
+      }
     };
     
     exports.onDisconnected = function(callback) {
