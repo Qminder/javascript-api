@@ -7,6 +7,7 @@ var QminderBridge = (function() {
   var onLoadCallback = null;
   var inputFieldListeners = [];
   var keyboardSubmitListeners = [];
+  var activeChangeListeners = [];
 
   var receiveMessage = function(event) {
     if (event.data.secretKey) {
@@ -21,6 +22,10 @@ var QminderBridge = (function() {
     }
     else if (event.data.keyboardSubmitted) {
       keyboardSubmitListeners.forEach(function(listener) {
+        listener();
+      });
+    } else if (event.data.activeStatus) {
+      activeChangeListeners.forEach(function(listener) {
         listener();
       });
     }
@@ -40,6 +45,10 @@ var QminderBridge = (function() {
   
   exports.onKeyboardSubmit = function(callback) {
     keyboardSubmitListeners.push(callback);
+  };
+  
+  exports.onActiveChange = function(callback) {
+    activeChangeListeners.push(callback);
   };
   
   exports.showKeyboard = function(type, maxLength) {
