@@ -713,6 +713,7 @@ var Qminder = (function() {
       if (connectionOpen || openingConnection) {
         return false;
       }
+      openSocket();
     };
     
     exports.onDisconnected = function(callback) {
