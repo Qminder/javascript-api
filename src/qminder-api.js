@@ -96,18 +96,19 @@ var Qminder = (function() {
 
     request.onerror = function(error) {
       if (typeof errorCallback != "undefined") {
+        var errorMessage = "Something went wrong";
         
         if (request.status === 0) {
-          error = "Network error";
+          errorMessage = "Network error";
         }
         
-        errorCallback(error);
+        errorCallback(errorMessage, request, error);
       }
     };
     
     if (typeof errorCallback != "undefined") {
-      request.ontimeout = function() {
-        errorCallback("timeout");
+      request.ontimeout = function(error) {
+        errorCallback("timeout", request, error);
       };
     }
 
