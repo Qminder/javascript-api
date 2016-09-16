@@ -84,30 +84,38 @@ var Qminder = (function() {
 
     request.onload = function() {
       var responseText = request.responseText;
-      var response = JSON.parse(responseText);
-      if (callback) {
-        callback(response);
-      }
-      else {
-        console.log("No callback function specified");
+      try {
+        var response = JSON.parse(responseText);
+        
+        if (callback) {
+          callback(response);
+        }
+        else {
+          console.log("No callback function specified");
+        }
+      } catch (error) {
+        if (errorCallback) {
+          errorCallback("JSON parse error", request, error);
+        }
       }
     };
 
 
     request.onerror = function(error) {
       if (typeof errorCallback != "undefined") {
+        var errorMessage = "Something went wrong";
         
         if (request.status === 0) {
-          error = "Network error";
+          errorMessage = "Network error";
         }
         
-        errorCallback(error);
+        errorCallback(errorMessage, request, error);
       }
     };
     
     if (typeof errorCallback != "undefined") {
-      request.ontimeout = function() {
-        errorCallback("timeout");
+      request.ontimeout = function(error) {
+        errorCallback("timeout", request, error);
       };
     }
 
