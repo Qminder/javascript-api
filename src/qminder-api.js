@@ -94,7 +94,9 @@ var Qminder = (function() {
           console.log("No callback function specified");
         }
       } catch (error) {
-        errorCallback("JSON parse error", request, error);
+        if (errorCallback) {
+          errorCallback("JSON parse error", request, error);
+        }
       }
     };
 
