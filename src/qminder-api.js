@@ -330,6 +330,10 @@ var Qminder = (function() {
       
       var validParameters = ["line", "user", "phoneNumber", "firstName", "lastName", "extra"];
     
+      if (user) {
+        data += "user=" + user;
+      }
+    
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
           continue;
