@@ -13,14 +13,14 @@ You can install this package either manually or with `bower`.
 
 Add to your webpage:
 
-[https://static.qminderapp.com/api/qminder-api.min.js](http://static.qminderapp.com/api/qminder-api.min.js)
+[https://static.qminder.com/api/qminder-api.min.js](http://static.qminder.com/api/qminder-api.min.js)
 ```js
-<script src="https://static.qminderapp.com/api/qminder-api.min.js" type="text/javascript"></script>
+<script src="https://static.qminder.com/api/qminder-api.min.js" type="text/javascript"></script>
 ```
 
-[https://static.qminderapp.com/api/qminder-bridge.min.js](http://static.qminderapp.com/api/qminder-bridge.min.js)
+[https://static.qminder.com/api/qminder-bridge.min.js](http://static.qminder.com/api/qminder-bridge.min.js)
 ```js
-<script src="https://static.qminderapp.com/api/qminder-bridge.min.js" type="text/javascript"></script>
+<script src="https://static.qminder.com/api/qminder-bridge.min.js" type="text/javascript"></script>
 ```
 
 ### bower
@@ -184,7 +184,7 @@ If you have any questions, please feel free to contact
 
 ## LICENSE
 
-Copyright 2015 Qminder Limited.
+Copyright 2016 Qminder Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

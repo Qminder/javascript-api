@@ -193,11 +193,17 @@ describe("Tickets", function() {
       expect(response.extra.length).toBe(2);
       
       var idCode = response.extra[0];
+      if (idCode.title != "ID Code") {
+        idCode = response.extra[1];
+      }
       expect(idCode.title).toBe("ID Code");
       expect(idCode.value).toBe("1234567890");
       expect(idCode.value.url).not.toBeDefined();
       
       var website = response.extra[1];
+      if (website.title != "Website") {
+        website = response.extra[0];
+      }
       expect(website.title).toBe("Website");
       expect(website.value).toBe("CNN website");
       expect(website.url).toBe("http://edition.cnn.com");

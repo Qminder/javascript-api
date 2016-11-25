@@ -21,7 +21,7 @@ if not aws_secret_access_key:
   exit(-1)
 
 connection = S3Connection(aws_access_key_id, aws_secret_access_key)
-bucket = connection.get_bucket('static.qminderapp.com')
+bucket = connection.get_bucket('static.qminder.com')
 
 uploadFile('dist/qminder-api.min.js', 'api/qminder-api.min.js')
 uploadFile('dist/qminder-bridge.min.js', 'api/qminder-bridge.min.js')
