@@ -32,6 +32,35 @@ describe("Tickets", function() {
       done();
     });
   });
+  
+  // http://qminderapp.com/docs/api/tickets/#auditlogs
+  it("should throw exception for missing ticket id in auditLogs call", function() {
+    
+    expect(Qminder.tickets.auditLogs).toThrow("Ticket ID not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#auditlogs
+  it("should throw exception for missing callback function in auditLogs call", function() {
+    
+    var call = function() {
+      Qminder.tickets.recall(1);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#auditlogs
+  it("should find audit logs for ticket", function(done) {
+  
+    createTicket(null, function(r) {
+      Qminder.tickets.auditLogs(r.id, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        done();
+      });
+    });
+  });
+
 
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should throw exception for missing id in create ticket call", function() {
