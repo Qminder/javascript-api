@@ -71,10 +71,9 @@ describe("Tickets", function() {
     createTicket(null, function(r) {
       addLabel(r.id, function () {
         Qminder.tickets.auditLogs(r.id, function(response) {
-          console.log(JSON.stringify(response.data));
           expect(response.statusCode).toBe(200);
           expect(response.id).not.toBe(null);
-          expect(response.label).toBe("Important & Awsome");
+          expect(response.data.changes.value).toBe("Important & Awsome");
           done();
         });
       });
