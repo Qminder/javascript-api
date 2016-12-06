@@ -92,6 +92,11 @@ Qminder.tickets.create(line, parameters, callback, [errorCallback]);
 Qminder.tickets.search(parameters, callback, [errorCallback]);
 ```
 
+#### [Audit logs for a ticket](http://qminderapp.com/docs/api/tickets/#auditlogs)
+```js
+Qminder.tickets.auditLogs(id, callback, errorCallback);
+```
+
 #### [Calling a ticket from list](http://qminderapp.com/docs/api/tickets/#calling-from-list)
 ```js
 Qminder.tickets.callNext(parameters, callback, [errorCallback]);
