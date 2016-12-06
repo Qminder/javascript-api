@@ -51,11 +51,29 @@ describe("Tickets", function() {
   
   // http://www.qminderapp.com/docs/api/tickets/#auditlogs
   it("should find audit logs for ticket", function(done) {
-  
+    
+    var addLabel = function(ticketId) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var userId = usersResponse.data[0].id;
+          
+          Qminder.tickets.addLabel(ticketId, "Important & Awsome", userId, function(response) {
+            expect(response.result).toBe("success");
+            done();
+          });
+        });
+      });
+    };
+    
     createTicket(null, function(r) {
+      addLabel(r.id);
       Qminder.tickets.auditLogs(r.id, function(response) {
         expect(response.statusCode).toBe(200);
         expect(response.id).not.toBe(null);
+        expect(response.label).toBe("Important & Awsome");
         done();
       });
     });
