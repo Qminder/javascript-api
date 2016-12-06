@@ -52,7 +52,7 @@ describe("Tickets", function() {
   // http://www.qminderapp.com/docs/api/tickets/#auditlogs
   it("should find audit logs for ticket", function(done) {
     
-    var addLabel = function(ticketId) {
+    var addLabel = function(ticketId, callback) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
         
@@ -62,20 +62,21 @@ describe("Tickets", function() {
           
           Qminder.tickets.addLabel(ticketId, "Important & Awsome", userId, function(response) {
             expect(response.result).toBe("success");
-            done();
+            callback();
           });
         });
       });
     };
     
     createTicket(null, function(r) {
-      addLabel(r.id);
-      Qminder.tickets.auditLogs(r.id, function(response) {
-        console.log(JSON.stringify(response.data));
-        expect(response.statusCode).toBe(200);
-        expect(response.id).not.toBe(null);
-        expect(response.label).toBe("Important & Awsome");
-        done();
+      addLabel(r.id, function () {
+        Qminder.tickets.auditLogs(r.id, function(response) {
+          console.log(JSON.stringify(response.data));
+          expect(response.statusCode).toBe(200);
+          expect(response.id).not.toBe(null);
+          expect(response.label).toBe("Important & Awsome");
+          done();
+        });
       });
     });
   });
