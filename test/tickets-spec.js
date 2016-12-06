@@ -73,6 +73,7 @@ describe("Tickets", function() {
         Qminder.tickets.auditLogs(r.id, function(response) {
           expect(response.statusCode).toBe(200);
           expect(response.id).not.toBe(null);
+          console.log(response.data.changes.value);
           expect(response.data.changes.value).toBe("Important & Awsome");
           done();
         });
