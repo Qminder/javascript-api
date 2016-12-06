@@ -262,6 +262,13 @@ var Qminder = (function() {
       postData("lines/" + line + "/ticket", data, callback, errorCallback);
     },
     
+    auditLogs: function(id, callback, errorCallback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      get("tickets/" + id + "/audit", callback, errorCallback);
+    },
+    
     search: function(parameters, callback, errorCallback) {
       assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
       assertNotNull(callback, ERRORS.CALLBACK);

@@ -32,6 +32,54 @@ describe("Tickets", function() {
       done();
     });
   });
+  
+  // http://qminderapp.com/docs/api/tickets/#auditlogs
+  it("should throw exception for missing ticket id in auditLogs call", function() {
+    
+    expect(Qminder.tickets.auditLogs).toThrow("Ticket ID not provided");
+  });
+  
+  // http://qminderapp.com/docs/api/tickets/#auditlogs
+  it("should throw exception for missing callback function in auditLogs call", function() {
+    
+    var call = function() {
+      Qminder.tickets.recall(1);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // http://www.qminderapp.com/docs/api/tickets/#auditlogs
+  it("should find audit logs for ticket", function(done) {
+    
+    var addLabel = function(ticketId, callback) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var userId = usersResponse.data[0].id;
+          
+          Qminder.tickets.addLabel(ticketId, "Important & Awsome", userId, function(response) {
+            expect(response.result).toBe("success");
+            callback();
+          });
+        });
+      });
+    };
+    
+    createTicket(null, function(r) {
+      addLabel(r.id, function () {
+        Qminder.tickets.auditLogs(r.id, function(response) {
+          expect(response.statusCode).toBe(200);
+          expect(response.id).not.toBe(null);
+          expect(response.data[0].changes[0].value).toBe("Important & Awsome");
+          done();
+        });
+      });
+    });
+  });
+
 
   // http://www.qminderapp.com/docs/api/tickets/#creating
   it("should throw exception for missing id in create ticket call", function() {
