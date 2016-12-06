@@ -33,7 +33,6 @@ describe("Tickets", function() {
     });
   });
   
-  
   // http://qminderapp.com/docs/api/tickets/#auditlogs
   it("should throw exception for missing ticket id in auditLogs call", function() {
     
