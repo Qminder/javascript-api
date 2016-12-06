@@ -266,7 +266,7 @@ var Qminder = (function() {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(callback, ERRORS.CALLBACK);
       
-      post("tickets/" + id + "/audit", callback, errorCallback);
+      get("tickets/" + id + "/audit", callback, errorCallback);
     },
     
     search: function(parameters, callback, errorCallback) {
