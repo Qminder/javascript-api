@@ -17,14 +17,14 @@ describe("Users", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing parameters in create user call", function() {
 
     expect(Qminder.users.create).toThrow("Parameters not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for invalid parameter type in create user call", function() {
   
     var call = function() {
@@ -35,7 +35,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing callback in create user call", function() {
   
     var call = function() {
@@ -46,7 +46,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for invalid parameter in create user call", function() {
   
     var call = function() {
@@ -57,7 +57,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing email parameter in create user call", function() {
   
     var call = function() {
@@ -68,7 +68,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing first name parameter in create user call", function() {
   
     var call = function() {
@@ -79,7 +79,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing last name parameter in create user call", function() {
   
     var call = function() {
@@ -90,7 +90,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing roles parameter in create user call", function() {
   
     var call = function() {
@@ -101,7 +101,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should create a users", function(done) {
   
     var create = function(location) {
@@ -129,14 +129,14 @@ describe("Users", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for missing user ID in adding role call", function() {
 
     expect(Qminder.users.addRole).toThrow("User ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for missing parameters in adding role call", function() {
     
     var call = function() {
@@ -146,7 +146,7 @@ describe("Users", function() {
     expect(call).toThrow("Parameters not provided");
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for invalid parameter type in adding role call", function() {
   
     var call = function() {
@@ -157,7 +157,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for invalid parameter in adding role call", function() {
   
     var call = function() {
@@ -168,7 +168,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for missing type parameter in add role call", function() {
   
     var call = function() {
@@ -179,7 +179,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for missing location parameter in add role call", function() {
   
     var call = function() {
@@ -190,7 +190,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for invalid type in add role call", function(done) {
   
     var createRole = function() {
@@ -233,7 +233,7 @@ describe("Users", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should throw exception for invalid location in add role call", function(done) {
   
     var createRole = function() {
@@ -274,7 +274,7 @@ describe("Users", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should add a role", function(done) {
   
     var createRole = function(location) {
@@ -314,7 +314,7 @@ describe("Users", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/users/#adding-role
+  // https://www.qminder.com/docs/api/users/#adding-role
   it("should add a administrator role", function(done) {
   
     var createRole = function() {
@@ -353,7 +353,7 @@ describe("Users", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/users/#creating
+  // https://www.qminder.com/docs/api/users/#creating
   it("should throw exception for missing user in add role call", function(done) {
   
     var parameters = {
@@ -367,14 +367,14 @@ describe("Users", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/users/#resetting
+  // https://www.qminder.com/docs/api/users/#resetting
   it("should throw exception for missing id in delete call", function() {
     
     expect(Qminder.users.delete).toThrow("User ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#deleting
+  // https://www.qminder.com/docs/api/users/#deleting
   it("should delete a user", function(done) {
   
     var deleteUser = function() {
@@ -410,14 +410,14 @@ describe("Users", function() {
     });
   });
 
-  // http://www.qminderapp.com/docs/api/users/#details
+  // https://www.qminder.com/docs/api/users/#details
   it("should throw exception for missing id in details call", function() {
     
     expect(Qminder.users.details).toThrow("User ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#details
+  // https://www.qminder.com/docs/api/users/#details
   it("should throw exception for missing callback in details call", function() {
   
     var call = function() {
@@ -428,7 +428,7 @@ describe("Users", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/users/#details
+  // https://www.qminder.com/docs/api/users/#details
   it("should get user details", function(done) {
   
     var getDetails = function() {

@@ -8,7 +8,7 @@ var Qminder = (function() {
 
   "use strict";
 
-  var SERVER = "api.qminderapp.com";
+  var SERVER = "api.qminder.com";
   var BASE_URL = "https://" + SERVER + "/v1/";
   var apiKey = null;
   var sslEnabled = true;

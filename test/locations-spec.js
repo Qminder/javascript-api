@@ -6,14 +6,14 @@ describe("Locations", function() {
     Qminder.setKey(QMINDER_SECRET_KEY);
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#list
+  // https://www.qminder.com/docs/api/locations/#list
   it("should throw exception for missing callback in list call", function() {
     
     expect(Qminder.locations.list).toThrow("Callback function not provided");
 
   });
 
-  // http://www.qminderapp.com/docs/api/locations/#list
+  // https://www.qminder.com/docs/api/locations/#list
   it("should list all locations", function(done) {
   
     Qminder.locations.list(function(response) {
@@ -28,14 +28,14 @@ describe("Locations", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#details
+  // https://www.qminder.com/docs/api/locations/#details
   it("should throw exception for missing id in details call", function() {
     
     expect(Qminder.locations.details).toThrow("Location ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#details
+  // https://www.qminder.com/docs/api/locations/#details
   it("should throw exception for missing callback in details call", function() {
   
     var call = function() {
@@ -46,7 +46,7 @@ describe("Locations", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#details
+  // https://www.qminder.com/docs/api/locations/#details
   it("should return location details", function(done) {
   
     Qminder.locations.list(function(r) {
@@ -62,14 +62,14 @@ describe("Locations", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#lines
+  // https://www.qminder.com/docs/api/locations/#lines
   it("should throw exception for missing id in line list call", function() {
     
     expect(Qminder.locations.lines).toThrow("Location ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#lines
+  // https://www.qminder.com/docs/api/locations/#lines
   it("should throw exception for missing callback in line list call", function() {
   
     var call = function() {
@@ -80,7 +80,7 @@ describe("Locations", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#lines
+  // https://www.qminder.com/docs/api/locations/#lines
   it("should list all lines", function(done) {
   
     Qminder.locations.list(function(r) {
@@ -99,14 +99,14 @@ describe("Locations", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#users
+  // https://www.qminder.com/docs/api/locations/#users
   it("should throw exception for missing id in users list call", function() {
     
     expect(Qminder.locations.users).toThrow("Location ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#users
+  // https://www.qminder.com/docs/api/locations/#users
   it("should throw exception for missing callback in users list call", function() {
   
     var call = function() {
@@ -117,7 +117,7 @@ describe("Locations", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#users
+  // https://www.qminder.com/docs/api/locations/#users
   it("should list all users", function(done) {
   
     Qminder.locations.list(function(r) {
@@ -139,14 +139,14 @@ describe("Locations", function() {
   });
 
   
-  // http://www.qminderapp.com/docs/api/locations/#newline
+  // https://www.qminder.com/docs/api/locations/#newline
   it("should throw exception for missing id in line creation call", function() {
     
     expect(Qminder.locations.createLine).toThrow("Location ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#newline
+  // https://www.qminder.com/docs/api/locations/#newline
   it("should throw exception for missing name in line creation call", function() {
   
     var call = function() {
@@ -157,7 +157,7 @@ describe("Locations", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#newline
+  // https://www.qminder.com/docs/api/locations/#newline
   it("should throw exception for missing callback in line creation call", function() {
   
     var call = function() {
@@ -169,7 +169,7 @@ describe("Locations", function() {
   });
   
   
-  // http://www.qminderapp.com/docs/api/locations/#newline
+  // https://www.qminder.com/docs/api/locations/#newline
   it("should not create a line with too long name", function(done) {
   
     Qminder.locations.list(function(r) {
@@ -185,7 +185,7 @@ describe("Locations", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/locations/#newline
+  // https://www.qminder.com/docs/api/locations/#newline
   it("should create and delete a line", function(done) {
   
     Qminder.locations.list(function(r) {

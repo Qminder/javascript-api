@@ -37,44 +37,44 @@ Qminder.setKey(key);
 
 ### Locations
 
-#### [List of locations](http://www.qminderapp.com/docs/api/locations/#list)
+#### [List of locations](https://www.qminder.com/docs/api/locations/#list)
 ```js
 Qminder.locations.list(callback, [errorCallback]);
 ```
 
-#### [Location details](http://www.qminderapp.com/docs/api/locations/#details)
+#### [Location details](https://www.qminder.com/docs/api/locations/#details)
 ```js
 Qminder.locations.details(locationId, callback, [errorCallback]);
 ```
 
-#### [List of lines](http://www.qminderapp.com/docs/api/locations/#lines)
+#### [List of lines](https://www.qminder.com/docs/api/locations/#lines)
 ```js
 Qminder.locations.lines(locationId, callback, [errorCallback]);
 ```
 
-#### [List of users](http://www.qminderapp.com/docs/api/locations/#users)
+#### [List of users](https://www.qminder.com/docs/api/locations/#users)
 ```js
 Qminder.locations.users(locationId, callback, [errorCallback]);
 ```
 
-#### [Creating a line](http://www.qminderapp.com/docs/api/locations/#newline)
+#### [Creating a line](https://www.qminder.com/docs/api/locations/#newline)
 ```js
 Qminder.locations.createLine(locationId, name, callback, [errorCallback]);
 ```
 
 ### Lines
 
-#### [Line details](http://www.qminderapp.com/docs/api/lines/#details)
+#### [Line details](https://www.qminder.com/docs/api/lines/#details)
 ```js
 Qminder.lines.details(lineId, callback, [errorCallback]);
 ```
 
-#### [Estimated time](http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service)
+#### [Estimated time](https://www.qminder.com/docs/api/lines/#estimated-time-of-service)
 ```js
 Qminder.lines.estimatedTime(lineId, callback, [errorCallback]);
 ```
 
-#### [Deleting a line](http://www.qminderapp.com/docs/api/lines/#deleting)
+#### [Deleting a line](https://www.qminder.com/docs/api/lines/#deleting)
 ```js
 Qminder.lines.delete(lineId, [callback], [errorCallback]);
 ```
@@ -82,12 +82,12 @@ Qminder.lines.delete(lineId, [callback], [errorCallback]);
 
 ### Tickets
 
-#### [Creating a ticket](http://www.qminderapp.com/docs/api/tickets/#creating)
+#### [Creating a ticket](https://www.qminder.com/docs/api/tickets/#creating)
 ```js
 Qminder.tickets.create(line, parameters, callback, [errorCallback]);
 ```
 
-#### [Searching tickets](http://www.qminderapp.com/docs/api/tickets/#search)
+#### [Searching tickets](https://www.qminder.com/docs/api/tickets/#search)
 ```js
 Qminder.tickets.search(parameters, callback, [errorCallback]);
 ```
@@ -102,7 +102,7 @@ Qminder.tickets.auditLogs(id, callback, errorCallback);
 Qminder.tickets.callNext(parameters, callback, [errorCallback]);
 ```
 
-#### [Calling a ticket](http://www.qminderapp.com/docs/api/tickets/#calling)
+#### [Calling a ticket](https://www.qminder.com/docs/api/tickets/#calling)
 ```js
 Qminder.tickets.call(parameters, callback, [errorCallback]);
 ```
@@ -147,19 +147,19 @@ Qminder.tickets.addLabel(id, value, user, callback, [errorCallback]);
 Qminder.tickets.removeLabel(id, value, user, callback, [errorCallback]);
 ```
 
-#### [Ticket status](http://www.qminderapp.com/docs/api/tickets/#status)
+#### [Ticket status](https://www.qminder.com/docs/api/tickets/#status)
 ```js
 Qminder.tickets.details(id, callback, [errorCallback]);
 ```
 
 ### Users
 
-#### [Creating a users](http://www.qminderapp.com/docs/api/users/#creating)
+#### [Creating a users](https://www.qminder.com/docs/api/users/#creating)
 ```js
 Qminder.users.create(parameters, callback, [errorCallback]);
 ```
 
-#### [Adding a role](http://www.qminderapp.com/docs/api/users/#adding-role)
+#### [Adding a role](https://www.qminder.com/docs/api/users/#adding-role)
 ```js
 Qminder.users.addRole(id, parameters, [callback], [errorCallback]);
 ```

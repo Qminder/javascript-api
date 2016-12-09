@@ -31,14 +31,14 @@ describe("Lines", function() {
     
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#details
+  // https://www.qminder.com/docs/api/lines/#details
   it("should throw exception for missing id in details call", function() {
     
     expect(Qminder.lines.details).toThrow("Line ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#details
+  // https://www.qminder.com/docs/api/lines/#details
   it("should throw exception for missing callback in details call", function() {
   
     var call = function() {
@@ -49,7 +49,7 @@ describe("Lines", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#details
+  // https://www.qminder.com/docs/api/lines/#details
   it("should get details", function(done) {
   
     Qminder.lines.details(line, function(response) {
@@ -60,14 +60,14 @@ describe("Lines", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#resetting
+  // https://www.qminder.com/docs/api/lines/#resetting
   it("should throw exception for missing id in delete call", function() {
     
     expect(Qminder.lines.delete).toThrow("Line ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#deleting
+  // https://www.qminder.com/docs/api/lines/#deleting
   it("should delete a line", function(done) {
   
     Qminder.lines.delete(line, function(response) {
@@ -77,14 +77,14 @@ describe("Lines", function() {
     });
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
+  // https://www.qminder.com/docs/api/lines/#estimated-time-of-service
   it("should throw exception for missing id in estimated time call", function() {
     
     expect(Qminder.lines.estimatedTime).toThrow("Line ID not provided");
 
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
+  // https://www.qminder.com/docs/api/lines/#estimated-time-of-service
   it("should throw exception for missing callback in estimated time call", function() {
   
     var call = function() {
@@ -95,7 +95,7 @@ describe("Lines", function() {
 
   });
   
-  // http://www.qminderapp.com/docs/api/lines/#estimated-time-of-service
+  // https://www.qminder.com/docs/api/lines/#estimated-time-of-service
   it("should get estimated time of service", function(done) {
   
     Qminder.lines.estimatedTime(line, function(response) {
