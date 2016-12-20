@@ -729,7 +729,7 @@ var Qminder = (function() {
     };
     
     exports.tryConnect  = function() {
-      if (connectionOpen || openingConnection) {
+      if (connectionOpen || openingConnection) {
         return false;
       }
       openSocket();
