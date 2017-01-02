@@ -942,14 +942,13 @@ describe("Tickets", function() {
     };
     
     var assignTicket = function(ticketId, assignerId, assigneeId) {
-      console.log("Assigning");
+
       Qminder.tickets.assign(ticketId, assignerId, assigneeId, function(response) {
-        console.log("Assigned");
+
         expect(response.result).toBe("success");
         Qminder.tickets.details(ticketId, function(response) {
           expect(response.assigned.assigner).toBe(assignerId);
           expect(response.assigned.assignee).toBe(assigneeId);
-          console.log("Doneee");
           done();
         });
       });
