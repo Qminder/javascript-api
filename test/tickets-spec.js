@@ -922,6 +922,38 @@ describe("Tickets", function() {
   
   // https://www.qminder.com/docs/api/tickets/#assigning
   it("should assign a ticket", function(done) {
+    
+    var createUser = function(location, callback) {
+      var parameters = {
+        "email": "mr-assignee@example.com",
+        "firstName": "Aku",
+        "lastName": "Ankka",
+        "roles": [
+          {
+            "type": "CLERK",
+            "location": location.id
+          }
+        ]};
+      Qminder.users.create(parameters, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.id).not.toBe(null);
+        callback(response);
+      });
+    };
+    
+    var assignTicket = function(ticketId, assignerId, assigneeId) {
+      console.log("Assigning");
+      Qminder.tickets.assign(ticketId, assignerId, assigneeId, function(response) {
+        console.log("Assigned");
+        expect(response.result).toBe("success");
+        Qminder.tickets.details(ticketId, function(response) {
+          expect(response.assigned.assigner).toBe(assignerId);
+          expect(response.assigned.assignee).toBe(assigneeId);
+          console.log("Doneee");
+          done();
+        });
+      });
+    };
   
     var assign = function(ticketId) {
       Qminder.locations.list(function(r) {
@@ -930,23 +962,24 @@ describe("Tickets", function() {
         Qminder.locations.users(location.id, function(r) {
           var usersResponse = r;
           var assignerId = usersResponse.data[0].id;
-          var assigneeId = usersResponse.data[1].id;
           
-          Qminder.tickets.assign(ticketId, assignerId, assigneeId, function(response) {
-            expect(response.result).toBe("success");
-            Qminder.tickets.details(ticketId, function(response) {
-              expect(response.assigned.assigner).toBe(assignerId);
-              expect(response.assigned.assignee).toBe(assigneeId);
-              done();
+          if (usersResponse.data.length < 2) {
+            createUser(location, function(response) {
+              assignTicket(ticketId, assignerId, response.id);
             });
-          });
-        });
+          }
+          else {
+            var assigneeId = usersResponse.data[1].id;
+            assignTicket(ticketId, assignerId, assigneeId);
+          }
       });
-    };
+    });
+  };
     
     createTicket(null, function(r) {
       assign(r.id);
     });
+
   });
   
   // https://www.qminder.com/docs/api/tickets/#reordering

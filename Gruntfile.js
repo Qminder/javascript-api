@@ -69,7 +69,7 @@ module.exports = function(grunt) {
 
 
   grunt.registerTask("tests", ["jshint", "uglify", "jasmine", "clean"]);
-  grunt.registerTask("travis", ["jshint", "uglify", "clean"]);
+  grunt.registerTask("travis", ["tests"]);
   grunt.registerTask("default", ["jshint"]);
 
 };
