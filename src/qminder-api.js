@@ -145,6 +145,8 @@ var Qminder = (function() {
   
   var exports = {};
   
+  exports.version = "1.0.3";
+  
   exports.setKey = function(key) {
     apiKey = key;
   };
@@ -815,4 +817,8 @@ var Qminder = (function() {
 // Nodejs support
 if (typeof module != "undefined") {
   module.exports = exports = Qminder;
+}
+
+if (typeof window != "undefined") {
+  window.Qminder = Qminder;
 }
