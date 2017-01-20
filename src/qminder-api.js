@@ -419,10 +419,14 @@ var Qminder = (function() {
     addLabel: function(id, value, user, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(value, "Value not provided");
-      assertNotNull(user, ERRORS.USER);
       assertNotNull(callback, ERRORS.CALLBACK);
-
-      var data = "user=" + user + "&value=" + encodeURIComponent(value);
+      
+      var data = "value=" + encodeURIComponent(value);
+      
+      if (user) {
+        data += "&user=" + user;
+      }
+      
       postData("tickets/" + id + "/labels/add", data, callback, errorCallback);
     },
     
