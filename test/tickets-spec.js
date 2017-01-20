@@ -1052,13 +1052,13 @@ describe("Tickets", function() {
   });
   
   // https://www.qminder.com/docs/api/tickets/#labelling
-  it("should throw exception for missing user id in labelling call", function() {
+  it("should not throw exception for missing user id in labelling call", function() {
     
     var call = function() {
       Qminder.tickets.addLabel(1, "VIP");
     };
     
-    expect(call).toThrow("User ID not provided");
+    expect(call).not.toThrow("User ID not provided");
   });
   
   // https://www.qminder.com/docs/api/tickets/#labelling
