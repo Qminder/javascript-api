@@ -7,7 +7,7 @@ Javascript wrapper for Qminder REST API.
 
 ## Installation
 
-You can install this package either manually or with `bower`.
+You can install this package either manually or with `bower` or `npm`.
 
 ### Manually
 
@@ -27,6 +27,12 @@ Add to your webpage:
 
 ```shell
 bower install qminder-api
+```
+
+### npm
+
+```shell
+npm install qminder-api
 ```
 
 ## API Methods
@@ -189,7 +195,7 @@ If you have any questions, please feel free to contact
 
 ## LICENSE
 
-Copyright 2016 Qminder Limited.
+Copyright 2017 Qminder Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
