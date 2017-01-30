@@ -16,7 +16,7 @@ var Qminder = (function() {
   var assertExtraParameters = function(parameters) {
     assertTrue(parameters instanceof Array, "Extra parameter has to be an array");
     
-    var validFields = ["title", "value", "url"];
+    var validFields = ["title", "value", "url", "color"];
     
     parameters.forEach(function(extraParameter) {
       assertTrue(typeof extraParameter === "object", "All extra parameters have to be objects");
