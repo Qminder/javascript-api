@@ -670,7 +670,7 @@ describe("Tickets", function() {
       Qminder.tickets.edit(123, {"extra": [{"name": "Meeli"}]}, 3, function() {});
     };
     
-    expect(call).toThrow("Extra parameter field \"name\" is unknown and should not be used. Valid fields: [\"title\",\"value\",\"url\"]");
+    expect(call).toThrow("Extra parameter field \"name\" is unknown and should not be used. Valid fields: [\"title\",\"value\",\"url\",\"color\"]");
 
   });
   
