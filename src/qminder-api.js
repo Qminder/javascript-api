@@ -84,19 +84,21 @@ var Qminder = (function() {
 
     request.onload = function() {
       var responseText = request.responseText;
+      var response;
       try {
-        var response = JSON.parse(responseText);
-        
-        if (callback) {
-          callback(response);
-        }
-        else {
-          console.log("No callback function specified");
-        }
+        response = JSON.parse(responseText);
       } catch (error) {
         if (errorCallback) {
-          errorCallback("JSON parse error", request, error);
+          errorCallback(error.message, request, error);
         }
+        return;
+      }
+
+      if (callback) {
+        callback(response);
+      }
+      else {
+        console.log("No callback function specified");
       }
     };
 
