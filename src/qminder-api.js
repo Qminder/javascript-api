@@ -84,8 +84,9 @@ var Qminder = (function() {
 
     request.onload = function() {
       var responseText = request.responseText;
+      var response;
       try {
-        var response = JSON.parse(responseText);
+        response = JSON.parse(responseText);
       } catch (error) {
         if (errorCallback) {
           errorCallback(error.message, request, error);
