@@ -573,11 +573,11 @@ var Qminder = (function() {
       assertNotNull(user, ERRORS.USER);
       assertNotNull(file);
       
-      var request = createCORSRequest("POST", BASE_URL + "users/" + user + "/picture");
-      
       if (!apiKey) {
         throw "Key not set. Please call Qminder.setKey before calling any other methods";
       }
+      
+      var request = createCORSRequest("POST", BASE_URL + "users/" + user + "/picture");
       request.setRequestHeader("X-Qminder-REST-API-Key", apiKey);
 
       request.onload = function() {
@@ -635,8 +635,7 @@ var Qminder = (function() {
       get("locations/" + location + "/devices", callback, errorCallback);
     }
   };
-  
-  
+    
   // Events
   
   exports.events = (function() {
