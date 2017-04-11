@@ -160,7 +160,7 @@ Qminder.tickets.details(id, callback, [errorCallback]);
 
 ### Users
 
-#### [Creating a users](https://www.qminder.com/docs/api/users/#creating)
+#### [Creating a user](https://www.qminder.com/docs/api/users/#creating)
 ```js
 Qminder.users.create(parameters, callback, [errorCallback]);
 ```
@@ -170,14 +170,24 @@ Qminder.users.create(parameters, callback, [errorCallback]);
 Qminder.users.addRole(id, parameters, [callback], [errorCallback]);
 ```
 
-#### [User details](http://qminderapp.com/docs/api/users/#details)
+#### [User details](http://www.qminder.com/docs/api/users/#details)
 ```js
 Qminder.users.details(id, callback, [errorCallback]);
 ```
 
-#### [Deleting a users](http://qminderapp.com/docs/api/users/#deleting)
+#### [Deleting a user](http://www.qminder.com/docs/api/users/#deleting)
 ```js
 Qminder.users.delete(id, callback, [errorCallback]);
+```
+
+#### [Adding a picture to a user](http://www.qminder.com/docs/api/users/#pictureadding)
+```js
+Qminder.users.addPicture(id, file, callback, [errorCallback]);
+```
+
+#### [Deleting picture from a user](http://www.qminder.com/docs/api/users/#picturedeleting)
+```js
+Qminder.users.deletePicture(id, callback, [errorCallback]);
 ```
 
 ### Devices
