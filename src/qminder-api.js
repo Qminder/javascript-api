@@ -563,6 +563,67 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
       
       get("users/" + user, callback, errorCallback);
+    },
+    
+    /**
+     * A function that adds a picture provided as a
+     * File object to the specified user.
+     * */
+    addPicture: function(user, file, callback, errorCallback) {
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(file);
+      
+      var request = createCORSRequest("POST", BASE_URL + "users/" + user + "/picture");
+      
+      if (!apiKey) {
+        throw "Key not set. Please call Qminder.setKey before calling any other methods";
+      }
+      request.setRequestHeader("X-Qminder-REST-API-Key", apiKey);
+
+      request.onload = function() {
+        var responseText = request.responseText;
+        try {
+          var response = JSON.parse(responseText);
+          
+          if (callback) {
+            callback(response);
+          }
+          else {
+            console.log("No callback function specified");
+          }
+        } catch (error) {
+          if (errorCallback) {
+            errorCallback("JSON parse error", request, error);
+          }
+        }
+      };
+
+      request.onerror = function(error) {
+        if (typeof errorCallback != "undefined") {
+          var errorMessage = "Something went wrong";
+          
+          if (request.status === 0) {
+            errorMessage = "Network error";
+          }
+          
+          errorCallback(errorMessage, request, error);
+        }
+      };
+      
+      if (typeof errorCallback != "undefined") {
+        request.ontimeout = function(error) {
+          errorCallback("timeout", request, error);
+        };
+      }
+
+      request.setRequestHeader("Content-Type", file.type);
+      request.send(file);
+    },
+
+    deletePicture: function(user, callback, errorCallback) {
+      assertNotNull(user, ERRORS.USER);
+      
+      deleteRequest("users/" + user + "/picture", callback, errorCallback);
     }
   };
   
