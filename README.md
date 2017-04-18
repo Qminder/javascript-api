@@ -98,12 +98,7 @@ Qminder.tickets.create(line, parameters, callback, [errorCallback]);
 Qminder.tickets.search(parameters, callback, [errorCallback]);
 ```
 
-#### [Audit logs for a ticket](http://qminderapp.com/docs/api/tickets/#auditlogs)
-```js
-Qminder.tickets.auditLogs(id, callback, errorCallback);
-```
-
-#### [Calling a ticket from list](http://qminderapp.com/docs/api/tickets/#calling-from-list)
+#### [Calling a ticket from list](https://www.qminder.com/docs/api/tickets/#calling-from-list)
 ```js
 Qminder.tickets.callNext(parameters, callback, [errorCallback]);
 ```
@@ -113,49 +108,59 @@ Qminder.tickets.callNext(parameters, callback, [errorCallback]);
 Qminder.tickets.call(parameters, callback, [errorCallback]);
 ```
 
-#### [Recalling a ticket](http://qminderapp.com/docs/api/tickets/#recalling)
+#### [Recalling a ticket](https://www.qminder.com/docs/api/tickets/#recalling)
 ```js
 Qminder.tickets.recall(id, callback, [errorCallback]);
 ```
 
-#### [Marking ticket served](http://qminderapp.com/docs/api/tickets/#marking-served)
+#### [Marking ticket served](https://www.qminder.com/docs/api/tickets/#marking-served)
 ```js
 Qminder.tickets.markServed(id, callback, [errorCallback]);
 ```
 
-#### [Marking ticket no show](http://qminderapp.com/docs/api/tickets/#marking-noshow)
+#### [Marking ticket no show](https://www.qminder.com/docs/api/tickets/#marking-noshow)
 ```js
 Qminder.tickets.markNoShow(id, callback, [errorCallback]);
 ```
 
-#### [Cancelling a ticket](http://qminderapp.com/docs/api/tickets/#cancelling)
+#### [Cancelling a ticket](https://www.qminder.com/docs/api/tickets/#cancelling)
 ```js
 Qminder.tickets.cancel(id, user, callback, [errorCallback]);
 ```
 
-#### [Assigning a ticket](http://qminderapp.com/docs/api/tickets/#assigning)
+#### [Assigning a ticket](https://www.qminder.com/docs/api/tickets/#assigning)
 ```js
 Qminder.tickets.assign(id, assigner, assignee, callback, [errorCallback]);
 ```
 
-#### [Reordering a ticket](http://qminderapp.com/docs/api/tickets/#reordering)
+#### [Reordering a ticket](https://www.qminder.com/docs/api/tickets/#reordering)
 ```js
 Qminder.tickets.reorder(id, after, callback, [errorCallback]);
 ```
 
-#### [Labelling a ticket](http://qminderapp.com/docs/api/tickets/#labelling)
+#### [Labelling a ticket](https://www.qminder.com/docs/api/tickets/#labelling)
 ```js
 Qminder.tickets.addLabel(id, value, user, callback, [errorCallback]);
 ```
 
-#### [Removing a label](http://qminderapp.com/docs/api/tickets/#removing-label)
+#### [Removing a label](https://www.qminder.com/docs/api/tickets/#removing-label)
 ```js
 Qminder.tickets.removeLabel(id, value, user, callback, [errorCallback]);
 ```
 
-#### [Ticket status](https://www.qminder.com/docs/api/tickets/#status)
+#### [Ticket details](https://www.qminder.com/docs/api/tickets/#details)
 ```js
 Qminder.tickets.details(id, callback, [errorCallback]);
+```
+
+#### [Audit logs for a ticket](https://www.qminder.com/docs/api/tickets/#auditlogs)
+```js
+Qminder.tickets.auditLogs(id, callback, [errorCallback]);
+```
+
+#### [Ticket messages](https://www.qminder.com/docs/api/tickets/#messages)
+```js
+Qminder.tickets.messages(id, callback, [errorCallback]);
 ```
 
 ### Users
@@ -192,7 +197,7 @@ Qminder.users.deletePicture(id, callback, [errorCallback]);
 
 ### Devices
 
-#### [List of devices](http://qminderapp.com/docs/api/devices/)
+#### [List of devices](https://www.qminder.com/docs/api/devices/)
 ```js
 Qminder.devices.list(location, callback, [errorCallback]);
 ```

@@ -1241,6 +1241,34 @@ describe("Tickets", function() {
     });
   });
   
+  // https://www.qminder.com/docs/api/tickets/#messages
+  it("should throw exception for missing ticket id in messages call", function () {
+    
+    expect(Qminder.tickets.messages).toThrow("Ticket ID not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#messages
+  it("should throw exception for missing callback in details call", function () {
+    
+    var call = function () {
+      Qminder.tickets.messages(1);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#messages
+  it("should find ticket messages", function (done) {
+    
+    createTicket(null, function (r) {
+      Qminder.tickets.messages(r.id, function (response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.messages.length).toBe(0);
+        done();
+      });
+    });
+  });
+  
   var createTicket = function(parameters, callback) {
   
     Qminder.tickets.create(line, parameters, function(response) {
