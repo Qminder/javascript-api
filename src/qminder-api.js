@@ -447,6 +447,13 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
 
       get("tickets/" + id, callback, errorCallback);
+    },
+    
+    messages: function(id, callback, errorCallback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      get("tickets/" + id + "/messages", callback, errorCallback);
     }
   };
   
