@@ -197,7 +197,7 @@ Qminder.users.deletePicture(id, callback, [errorCallback]);
 
 ### Devices
 
-#### [List of devices](http://qminderapp.com/docs/api/devices/)
+#### [List of devices](https://www.qminder.com/docs/api/devices/)
 ```js
 Qminder.devices.list(location, callback, [errorCallback]);
 ```
