@@ -319,7 +319,7 @@ describe("Tickets", function() {
   
     Qminder.locations.list(function(r) {
       var location = r.data[0];
-      searchTickets({"location": location.id}, function(response) {
+      searchTickets({"location": location.id, "limit": 10}, function(response) {
         expect(response.data.length).toBeGreaterThan(0);
         done();
       });

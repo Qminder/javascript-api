@@ -163,6 +163,11 @@ Qminder.tickets.auditLogs(id, callback, [errorCallback]);
 Qminder.tickets.messages(id, callback, [errorCallback]);
 ```
 
+#### [Sending a message](https://www.qminder.com/docs/api/tickets/#sendingsms)
+```js
+Qminder.tickets.sendMessage(id, message, user, callback, [errorCallback]);
+```
+
 ### Users
 
 #### [Creating a user](https://www.qminder.com/docs/api/users/#creating)
