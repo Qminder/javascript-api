@@ -454,6 +454,16 @@ var Qminder = (function() {
       assertNotNull(callback, ERRORS.CALLBACK);
 
       get("tickets/" + id + "/messages", callback, errorCallback);
+    },
+    
+    sendMessage: function(id, message, user, callback, errorCallback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(message, "Message not provided");
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      var data = "message=" + encodeURIComponent(message) + "&user=" + user;
+      postData("tickets/" + id + "/messages", data, callback, errorCallback);
     }
   };
   
