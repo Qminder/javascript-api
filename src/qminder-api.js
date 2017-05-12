@@ -445,14 +445,13 @@ var Qminder = (function() {
     details: function(id, parameters, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       
-      
       if (typeof parameters == "function") {
         errorCallback = callback;
         callback = parameters;
         parameters = {};
       }
-      assertNotNull(parameters, ERRORS.PARAMETERS);
       assertNotNull(callback, ERRORS.CALLBACK);
+      assertNotNull(parameters, ERRORS.PARAMETERS);
       
       var url = "tickets/" + id;
       
