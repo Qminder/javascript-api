@@ -150,7 +150,7 @@ Qminder.tickets.removeLabel(id, value, user, callback, [errorCallback]);
 
 #### [Ticket details](https://www.qminder.com/docs/api/tickets/#details)
 ```js
-Qminder.tickets.details(id, callback, [errorCallback]);
+Qminder.tickets.details(id, [parameters], callback, [errorCallback]);
 ```
 
 #### [Audit logs for a ticket](https://www.qminder.com/docs/api/tickets/#auditlogs)

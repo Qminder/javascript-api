@@ -279,7 +279,7 @@ var Qminder = (function() {
       
       var url = "tickets/search?";
       
-      var validParameters = ["location", "line", "status", "caller", "minCreated", "maxCreated", "minCalled", "maxCalled", "limit", "order"];
+      var validParameters = ["location", "line", "status", "caller", "minCreated", "maxCreated", "minCalled", "maxCalled", "limit", "order", "responseScope"];
       
       for (var key in parameters) {
         if (!parameters.hasOwnProperty(key)) {
@@ -442,11 +442,25 @@ var Qminder = (function() {
       postData("tickets/" + id + "/labels/remove", data, callback, errorCallback);
     },
     
-    details: function(id, callback, errorCallback) {
+    details: function(id, parameters, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
+      
+      
+      if (typeof parameters == "function") {
+        errorCallback = callback;
+        callback = parameters;
+        parameters = {};
+      }
+      assertNotNull(parameters, ERRORS.PARAMETERS);
       assertNotNull(callback, ERRORS.CALLBACK);
+      
+      var url = "tickets/" + id;
+      
+      if (parameters.responseScope && parameters.responseScope == "MESSAGES") {
+        url += "?responseScope=MESSAGES";
+      }
 
-      get("tickets/" + id, callback, errorCallback);
+      get(url, callback, errorCallback);
     },
     
     messages: function(id, callback, errorCallback) {
