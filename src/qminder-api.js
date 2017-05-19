@@ -717,7 +717,13 @@ var Qminder = (function() {
       }
       
       // Samsung Smart-TVs (2013) crashes with SSL
-      var supportsSSL = navigator.userAgent.match(/SMART-TV/i) === null;
+      // Non-browser environments are assumed to support SSL
+      var supportsSSL;
+      if (window && window.navigator) {
+        supportsSSL = navigator.userAgent.match(/SMART-TV/i) === null;
+      } else {
+        supportsSSL = true;
+      }
       
       var protocol = sslEnabled && supportsSSL ? "wss" : "ws";
       socket = new WebSocket(protocol + "://" + SERVER + "/events?rest-api-key=" + apiKey);
