@@ -1,4 +1,4 @@
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
 describe("Tickets", function() {
 
@@ -316,8 +316,6 @@ describe("Tickets", function() {
   
   // https://www.qminder.com/docs/api/tickets/#search
   it("should search tickets from location", function(done) {
-    
-    console.log("Timeout", jasmine.DEFAULT_TIMEOUT_INTERVAL);
   
     Qminder.locations.list(function(r) {
       var location = r.data[0];
@@ -924,8 +922,6 @@ describe("Tickets", function() {
   
   // https://www.qminder.com/docs/api/tickets/#returntoqueue
   it("should return ticket to the queue", function(done) {
-    
-    console.log("Timeout", jasmine.DEFAULT_TIMEOUT_INTERVAL);
     
     var callTicket = function(callback) {
       Qminder.locations.list(function(r) {
