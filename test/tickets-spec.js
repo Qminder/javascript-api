@@ -923,6 +923,8 @@ describe("Tickets", function() {
   // https://www.qminder.com/docs/api/tickets/#returntoqueue
   it("should return ticket to the queue", function(done) {
     
+    console.log("Timeout", jasmine.DEFAULT_TIMEOUT_INTERVAL);
+    
     var callTicket = function(callback) {
       Qminder.locations.list(function(r) {
         var location = r.data[0];
