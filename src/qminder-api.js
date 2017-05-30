@@ -396,6 +396,17 @@ var Qminder = (function() {
       postData("tickets/" + id + "/cancel", data, callback, errorCallback);
     },
     
+    returnToQueue: function(id, user, position, callback, errorCallback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(position, "Position not provided");
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      var data = "user=" + user;
+      data += "&position=" + position;
+      postData("tickets/" + id + "/returntoqueue", data, callback, errorCallback);
+    },
+    
     assign: function(id, assigner, assignee, callback, errorCallback) {
       assertNotNull(id, ERRORS.TICKET);
       assertNotNull(assigner, "User ID of assigner not provided");

@@ -128,6 +128,11 @@ Qminder.tickets.markNoShow(id, callback, [errorCallback]);
 Qminder.tickets.cancel(id, user, callback, [errorCallback]);
 ```
 
+#### [Returning ticket to the queue](https://www.qminder.com/docs/api/tickets/#returntoqueue)
+```js
+Qminder.tickets.returnToQueue(id, user, position, callback, [errorCallback]);
+```
+
 #### [Assigning a ticket](https://www.qminder.com/docs/api/tickets/#assigning)
 ```js
 Qminder.tickets.assign(id, assigner, assignee, callback, [errorCallback]);
