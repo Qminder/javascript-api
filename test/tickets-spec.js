@@ -942,9 +942,7 @@ describe("Tickets", function() {
     
     createTicket(null, function() {
       createTicket(null, function() {
-        console.log("Two tickets created");
         callTicket(function(ticketId, userId) {
-          console.log("Returning to queue");
           Qminder.tickets.returnToQueue(ticketId, userId, "MIDDLE", function(response) {
             expect(response.statusCode).toBe(200);
             expect(response.result).toBe("success");
