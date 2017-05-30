@@ -316,6 +316,8 @@ describe("Tickets", function() {
   
   // https://www.qminder.com/docs/api/tickets/#search
   it("should search tickets from location", function(done) {
+    
+    console.log("Timeout", jasmine.DEFAULT_TIMEOUT_INTERVAL);
   
     Qminder.locations.list(function(r) {
       var location = r.data[0];
