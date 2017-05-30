@@ -1,4 +1,4 @@
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
 describe("Tickets", function() {
 
@@ -882,6 +882,76 @@ describe("Tickets", function() {
     createTicket(null, function(r) {
       cancel(r.id);
     });
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#returntoqueue
+  it("should throw exception for missing ticket id in return to queue call", function() {
+    
+    expect(Qminder.tickets.returnToQueue).toThrow("Ticket ID not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#returntoqueue
+  it("should throw exception for missing user id in return to queue call", function() {
+    
+    var call = function() {
+      Qminder.tickets.returnToQueue(1);
+    };
+    
+    expect(call).toThrow("User ID not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#returntoqueue
+  it("should throw exception for missing position in return to queue call", function() {
+    
+    var call = function() {
+      Qminder.tickets.returnToQueue(1, 2);
+    };
+    
+    expect(call).toThrow("Position not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#returntoqueue
+  it("should throw exception for missing callback function in return to queue call", function() {
+    
+    var call = function() {
+      Qminder.tickets.returnToQueue(1, 2, "MIDDLE");
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#returntoqueue
+  it("should return ticket to the queue", function(done) {
+    
+    var callTicket = function(callback) {
+      Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        
+        Qminder.locations.users(location.id, function(r) {
+          var usersResponse = r;
+          var userId = usersResponse.data[0].id;
+          
+          Qminder.tickets.callNext({"lines":line, "user":userId}, function(response) {
+            expect(response.statusCode).toBe(200);
+            expect(response.id).toBeDefined();
+            callback(response.id, userId);
+          });
+        });
+      });
+    };
+    
+    createTicket(null, function() {
+      createTicket(null, function() {
+        callTicket(function(ticketId, userId) {
+          Qminder.tickets.returnToQueue(ticketId, userId, "MIDDLE", function(response) {
+            expect(response.statusCode).toBe(200);
+            expect(response.result).toBe("success");
+            done();
+          });
+        });
+      });
+    });
+
   });
   
   // https://www.qminder.com/docs/api/tickets/#assigning
