@@ -158,6 +158,11 @@ Qminder.tickets.removeLabel(id, value, user, callback, [errorCallback]);
 Qminder.tickets.details(id, [parameters], callback, [errorCallback]);
 ```
 
+#### [Estimated time of service for ticket](https://www.qminder.com/docs/api/tickets/#estimatedtime)
+```js
+Qminder.tickets.estimatedTime(id, callback, [errorCallback]);
+```
+
 #### [Audit logs for a ticket](https://www.qminder.com/docs/api/tickets/#auditlogs)
 ```js
 Qminder.tickets.auditLogs(id, callback, [errorCallback]);
