@@ -1,4 +1,4 @@
-jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+jasmine.DEFAULT_TIMEOUT_INTERVAL = 99999999;
 
 describe("Tickets", function() {
 
@@ -1318,7 +1318,7 @@ describe("Tickets", function() {
   });
   
   // https://www.qminder.com/docs/api/tickets/#messages
-  it("should throw exception for missing callback in details call", function () {
+  it("should throw exception for missing callback in messages call", function () {
     
     var call = function () {
       Qminder.tickets.messages(1);
@@ -1335,6 +1335,32 @@ describe("Tickets", function() {
         expect(response.statusCode).toBe(200);
         expect(response.messages.length).toBe(0);
         done();
+      });
+    });
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#estimatedtime
+  it("should throw exception for missing ticket id in estimated time call", function () {
+    
+    expect(Qminder.tickets.estimatedTime).toThrow("Ticket ID not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#estimatedtime
+  it("should throw exception for missing callback in estimated time call", function () {
+    
+    var call = function () {
+      Qminder.tickets.estimatedTime(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+  });
+  
+  // https://www.qminder.com/docs/api/tickets/#estimatedtime
+  it("should successfully make the call for estimated time of service", function () {
+    
+    createTicket(null, function (r) {
+      Qminder.tickets.estimatedTime(r.id, function (response) {
+        expect(response.statusCode).toBe(200);
       });
     });
   });
