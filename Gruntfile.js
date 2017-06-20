@@ -21,7 +21,7 @@ module.exports = function(grunt) {
         camelcase: true,
         curly: true,
         indent: 2,
-        latedef: true,
+        latedef: false,
         newcap: true,
         noarg: true,
         noempty: true,
@@ -38,15 +38,13 @@ module.exports = function(grunt) {
         }
       }
     },
-    jasmine: {
-      pivotal: {
-        src: "src/**/*.js",
-        options: {
-          specs: "test/*.js",
-          helpers: ["dist/*.js", "temp-secret.js"]
-        }
+    
+    karma: {
+      unit: {
+        configFile: "karma.conf.js"
       }
     },
+    
     watch: {
       scripts: {
         files: ["src/*.js", "test/*.js"],
@@ -61,14 +59,14 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-jshint");
-  grunt.loadNpmTasks("grunt-contrib-jasmine");
   grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks("grunt-karma");
   
   grunt.file.write("temp-secret.js", "QMINDER_SECRET_KEY=\"" + process.env.QMINDER_SECRET_KEY + "\";");
 
 
-  grunt.registerTask("tests", ["jshint", "uglify", "jasmine", "clean"]);
+  grunt.registerTask("tests", ["jshint", "uglify", "karma", "clean"]);
   grunt.registerTask("travis", ["tests"]);
   grunt.registerTask("default", ["jshint"]);
 

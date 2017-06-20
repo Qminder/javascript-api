@@ -16,11 +16,16 @@
     "xhr2": "^0.1.2"
   },
   "devDependencies": {
-    "grunt": "~0.4.2",
-    "grunt-contrib-uglify": "~0.10.1",
-    "grunt-contrib-jshint": "~0.11.0",
-    "grunt-contrib-jasmine": "~0.9.2",
-    "grunt-contrib-clean": "~0.7.0",
-    "grunt-contrib-watch": "~0.6.1"
+    "grunt": "^1.0.1",
+    "grunt-contrib-clean": "^1.1.0",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-contrib-uglify": "^3.0.1",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-karma": "^2.0.0",
+    "jasmine-core": "^2.5.2",
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.1.1",
+    "karma-jasmine": "^1.1.0",
+    "karma-nyan-reporter": "^0.2.5"
   }
 }
