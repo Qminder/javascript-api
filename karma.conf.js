@@ -79,6 +79,6 @@ module.exports = function(config) {
     // how many browser should be started simultaneous
     concurrency: 1,
     
-    browserDisconnectTimeout: 60000
+    browserNoActivityTimeout: 60000
   })
 }
