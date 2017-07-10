@@ -193,6 +193,13 @@ var Qminder = (function() {
       get("locations/" + id + "/users", callback, errorCallback);
     },
     
+    desks: function(id, callback, errorCallback) {
+      assertNotNull(id, ERRORS.LOCATION);
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      get("locations/" + id + "/desks", callback, errorCallback);
+    },
+    
     createLine: function(location, name, callback, errorCallback) {
       assertNotNull(location, ERRORS.LOCATION);
       assertNotNull(name, "Name not provided");
