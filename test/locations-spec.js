@@ -165,7 +165,7 @@ describe("Locations", function() {
       Qminder.locations.desks(location.id, function(response) {
         expect(response.statusCode).toBe(200);
         expect(response.desks).not.toBe(null);
-        expect(response.desks.length).toBe(0);
+        expect(response.desks.length).toBe(3);
         done();
       });
     });

@@ -63,6 +63,11 @@ Qminder.locations.lines(locationId, callback, [errorCallback]);
 Qminder.locations.users(locationId, callback, [errorCallback]);
 ```
 
+#### [List of desks](https://www.qminder.com/docs/api/locations/#desks)
+```js
+Qminder.locations.desks(locationId, callback, [errorCallback]);
+```
+
 #### [Creating a line](https://www.qminder.com/docs/api/locations/#newline)
 ```js
 Qminder.locations.createLine(locationId, name, callback, [errorCallback]);
