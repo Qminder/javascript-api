@@ -137,7 +137,39 @@ describe("Locations", function() {
       });
     });
   });
+  
+  // https://www.qminder.com/docs/api/locations/#desks
+  it("should throw exception for missing id in desks list call", function() {
+    
+    expect(Qminder.locations.desks).toThrow("Location ID not provided");
 
+  });
+  
+  // https://www.qminder.com/docs/api/locations/#desks
+  it("should throw exception for missing callback in desks list call", function() {
+  
+    var call = function() {
+      Qminder.locations.desks(123);
+    };
+    
+    expect(call).toThrow("Callback function not provided");
+
+  });
+  
+  // https://www.qminder.com/docs/api/locations/#desks
+  it("should list all desks", function(done) {
+  
+    Qminder.locations.list(function(r) {
+      var location = r.data[0];
+        
+      Qminder.locations.desks(location.id, function(response) {
+        expect(response.statusCode).toBe(200);
+        expect(response.desks).not.toBe(null);
+        expect(response.desks.length).toBe(0);
+        done();
+      });
+    });
+  });
   
   // https://www.qminder.com/docs/api/locations/#newline
   it("should throw exception for missing id in line creation call", function() {
