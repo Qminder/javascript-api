@@ -690,6 +690,28 @@ var Qminder = (function() {
       get("locations/" + location + "/devices", callback, errorCallback);
     }
   };
+  
+  exports.webhooks = {
+    add: function(parameters, callback, errorCallback) {
+      assertNotNull(parameters, "Parameters not provided");
+      assertTrue(typeof parameters == "object", ERRORS.PARAMETEROBJECT);
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      if (!parameters.url) {
+        throw "Parameter \"url\" is mandatory.";
+      }
+      
+      var data = "url=" + encodeURIComponent(parameters.url);
+      postData("webhooks/", data, callback, errorCallback);
+    },
+    
+    "delete": function(id, callback, errorCallback) {
+      assertNotNull(id, "Webhook id not provided");
+      assertNotNull(callback, ERRORS.CALLBACK);
+      
+      deleteRequest("webhooks/" + id, callback, errorCallback);
+    }
+  };
     
   // Events
   

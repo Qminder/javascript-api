@@ -222,6 +222,18 @@ Qminder.users.deletePicture(id, callback, [errorCallback]);
 Qminder.devices.list(location, callback, [errorCallback]);
 ```
 
+### Webhooks
+
+#### Add a webhook
+```js
+Qminder.webhooks.add(parameters, callback, [errorCallback]);
+```
+
+#### Deleting a webhook
+```js
+Qminder.webhooks.delete(webhook, callback, [errorCallback]);
+```
+
 ## Questions?
 
 If you have any questions, please feel free to contact
