@@ -8,10 +8,6 @@ addons:
   chrome: stable
 before_script:
 - npm install -g grunt-cli
-env:
-  global:
-  - secure: Ldvmyn+hQ+JotPiyqbIn8Bit/UuGNIensVbo5DllhVxOh7T2iiKJQuTz2ckX6TsfS/EYtxZ+r1MigCYQAM821vF1gRZ8lNfgzL0/1ZxfHspSStpxuEuScwzZ3e4Wa88M6y5HG0z4qkmaEIZf0zOHDs28WzQfg7fm061Trc0CVQQ=
-  - secure: gapYCGZpsVmoZsPVKHm9BASm6d2d+8jnF4VL85m4r7QkyH8M0FLHBfH7c5IQ30O4MQ3FmJwZHWmtWwa0FVuCrYFFOvsiqQCPpuVpMiebptiD6jhi+eH5gCP94g/M5A72mNBtNsmSw12Lopllu5GKwvPb2sE44RnkJTX1LkelcGI=
 after_success:
 - test ${TRAVIS_BRANCH} = master && sudo pip install boto && python deploy_s3.py
 deploy:
