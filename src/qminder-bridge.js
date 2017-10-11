@@ -110,3 +110,12 @@ var QminderBridge = (function() {
   
   return exports;
 }());
+
+// Nodejs support
+if (typeof module !== "undefined") {
+  module.exports = exports = QminderBridge;
+}
+
+if (typeof window !== "undefined") {
+  window.QminderBridge = QminderBridge;
+}
