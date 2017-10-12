@@ -146,9 +146,9 @@ var Qminder = (function() {
   // Public
   
   var exports = {};
-  
-  exports.version = "1.0.3";
-  
+
+  exports.version = "1.0.17";
+
   exports.setKey = function(key) {
     apiKey = key;
   };
@@ -619,7 +619,22 @@ var Qminder = (function() {
       
       get("users/" + user, callback, errorCallback);
     },
-    
+      
+    selectDesk: function(user, desk, callback, errorCallback) {
+        assertNotNull(user, ERRORS.USER);
+        assertNotNull(desk, "Desk not provided");
+        assertNotNull(callback, ERRORS.CALLBACK);
+
+        var data = "desk=" + desk;
+        postData("users/" + user + "/desk", data, callback, errorCallback);
+    },
+
+    deselectDesk: function(user, callback, errorCallback) {
+        assertNotNull(user, ERRORS.USER);
+        assertNotNull(callback, ERRORS.CALLBACK);
+        deleteRequest("users/" + user + "/desk", callback, errorCallback);
+      },
+
     /**
      * A function that adds a picture provided as a
      * File object to the specified user.
