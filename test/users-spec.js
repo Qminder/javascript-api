@@ -467,5 +467,115 @@ describe("Users", function() {
     });
   });
 
+  // https://www.qminder.com/docs/api/users/#desk
+  it("should throw exception for missing id in select desk call", function() {
+    expect(Qminder.users.selectDesk).toThrow("User ID not provided");
+  });
+
+  // https://www.qminder.com/docs/api/users/#desk
+  it("should throw exception for missing desk in select desk call", function() {
+    var call = function() {
+      Qminder.users.selectDesk(1);
+    };
+
+    expect(call).toThrow("Desk not provided");
+  });
+
+  // https://www.qminder.com/docs/api/users/#desk
+  it("should throw exception for missing callback in select desk call", function() {
+    var call = function() {
+      Qminder.users.selectDesk(1, 2);
+    };
+
+    expect(call).toThrow("Callback function not provided");
+  });
+
+  // https://www.qminder.com/docs/api/users/#desk
+  it("should select a desk", function(done) {
+    Qminder.locations.list(function(r) {
+        var location = r.data[0];
+        Qminder.locations.users(location.id, function(response) {
+          var user = response.data[0];
+
+            Qminder.locations.desks(location.id, function(desksCallback) {
+              var desk = desksCallback.desks[0];
+              Qminder.users.selectDesk(user.id, desk.id, function(finalCallback) {
+                  expect(finalCallback.statusCode).toBe(200);
+                  done();
+              });
+            });
+        });
+    });
+  });
+
+    // https://www.qminder.com/docs/api/users/#desk
+    it("should throw exception for missing id in select desk call", function() {
+        expect(Qminder.users.selectDesk).toThrow("User ID not provided");
+    });
+
+    // https://www.qminder.com/docs/api/users/#desk
+    it("should throw exception for missing desk in select desk call", function() {
+        var call = function() {
+            Qminder.users.selectDesk(1);
+        };
+
+        expect(call).toThrow("Desk not provided");
+    });
+
+    // https://www.qminder.com/docs/api/users/#desk
+    it("should throw exception for missing callback in select desk call", function() {
+        var call = function() {
+            Qminder.users.selectDesk(1, 2);
+        };
+
+        expect(call).toThrow("Callback function not provided");
+    });
+
+    // https://www.qminder.com/docs/api/users/#desk
+    it("should select a desk", function(done) {
+        Qminder.locations.list(function(r) {
+            var location = r.data[0];
+            Qminder.locations.users(location.id, function(response) {
+                var user = response.data[0];
+
+                Qminder.locations.desks(location.id, function(desksCallback) {
+                    var desk = desksCallback.desks[0];
+                    Qminder.users.selectDesk(user.id, desk.id, function(finalCallback) {
+                        expect(finalCallback.statusCode).toBe(200);
+                        done();
+                    });
+                });
+            });
+        });
+    });
+
+    // https://www.qminder.com/docs/api/users/#deskremoval
+    it("should throw exception for missing id in deselect desk call", function() {
+        expect(Qminder.users.deselectDesk).toThrow("User ID not provided");
+    });
+
+    // https://www.qminder.com/docs/api/users/#deskremoval
+    it("should throw exception for missing callback in deselect desk call", function() {
+        var call = function() {
+            Qminder.users.deselectDesk(1);
+        };
+
+        expect(call).toThrow("Callback function not provided");
+    });
+
+    // https://www.qminder.com/docs/api/users/#deskremoval
+    it("should deselect a desk", function(done) {
+        Qminder.locations.list(function(r) {
+            var location = r.data[0];
+            Qminder.locations.users(location.id, function(response) {
+                var user = response.data[0];
+
+                Qminder.users.deselectDesk(user.id, function(finalCallback) {
+                    expect(finalCallback.statusCode).toBe(200);
+                    done();
+                });
+            });
+        });
+    });
 
 });

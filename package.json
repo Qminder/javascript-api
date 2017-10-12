@@ -1,13 +1,13 @@
 {
   "name": "qminder-api",
-  "version": "1.0.16",
+  "version": "1.0.17",
   "description": "Qminder API",
   "homepage": "https://www.qminder.com",
   "license": "Apache-2.0",
   "main": "src/qminder-api.js",
   "repository": {
     "type": "git",
-    "url":  "git://github.com/Qminder/javascript-api.git"
+    "url": "git://github.com/Qminder/javascript-api.git"
   },
   "scripts": {
     "test": "grunt travis --verbose"
