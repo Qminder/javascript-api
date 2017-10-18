@@ -147,7 +147,7 @@ var Qminder = (function() {
   
   var exports = {};
 
-  exports.version = "1.0.17";
+  exports.version = "1.0.18";
 
   exports.setKey = function(key) {
     apiKey = key;
@@ -412,6 +412,17 @@ var Qminder = (function() {
       var data = "user=" + user;
       data += "&position=" + position;
       postData("tickets/" + id + "/returntoqueue", data, callback, errorCallback);
+    },
+
+    forward: function(id, user, line, callback, errorCallback) {
+      assertNotNull(id, ERRORS.TICKET);
+      assertNotNull(user, ERRORS.USER);
+      assertNotNull(line, "Line not provided");
+      assertNotNull(callback, ERRORS.CALLBACK);
+
+      var data = "user=" + user;
+      data += "&line=" + line;
+      postData("tickets/" + id + "/forward", data, callback, errorCallback);
     },
     
     assign: function(id, assigner, assignee, callback, errorCallback) {
