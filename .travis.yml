@@ -6,10 +6,14 @@ dist: trusty
 
 addons:
   chrome: stable
-before_script:
-- npm install -g grunt-cli
-after_success:
-- test ${TRAVIS_BRANCH} = master && sudo pip install boto && python deploy_s3.py
+
+language: node_js
+
+jobs:
+    include:
+        - stage: build
+          script: npm run build
+
 deploy:
   provider: npm
   email: info@qminderapp.com
