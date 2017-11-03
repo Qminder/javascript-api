@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e
+set +e
 # Start the mock WS server
 node ./test/mock-websocket-server.js >/dev/null &
 wspid=$!
