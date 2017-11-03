@@ -10,9 +10,9 @@ addons:
 language: node_js
 
 jobs:
-    include:
-        - stage: build
-          script: npm run build
+  include:
+    - stage: build
+      script: npm run build
 
 deploy:
   provider: npm
@@ -22,3 +22,4 @@ deploy:
   on:
     tags: true
     repo: Qminder/javascript-api
+  skip_cleanup: true
