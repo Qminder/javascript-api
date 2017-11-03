@@ -77,7 +77,6 @@
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^1.1.0",
-    "karma-nyan-reporter": "^0.2.5",
     "karma-sinon": "^1.0.5",
     "mocha": "^4.0.1",
     "sinon": "^3.2.0",
