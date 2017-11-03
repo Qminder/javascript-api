@@ -31,3 +31,4 @@ build-node
 build-web
 node_modules
 docs
+build-es6
