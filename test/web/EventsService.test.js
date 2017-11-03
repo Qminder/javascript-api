@@ -37,7 +37,7 @@ describe("Qminder.events", function () {
 
   beforeEach(function (done) {
     // Extend the timeouts because weird timing
-    jasmine.DEFAULT_TIMEOUT_INTERVAL = 30000;
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
     Qminder.events.reset();
     Qminder.events.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
