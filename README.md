@@ -38,7 +38,6 @@ API library can just be included in the page, and will be accessible via the glo
     // Root object
     // No including needed - just add the script tag to HTML.
     Qminder.setKey(...);
-    
 
 After importing the Qminder API library, make sure to set the access token to connect to your 
 Qminder account. You can get the access token from your account's 
@@ -46,6 +45,18 @@ Qminder account. You can get the access token from your account's
 
     Qminder.setKey('API Key');
 
+### Contributing
+
+To contribute to the Qminder API, set up your development environment, then clone the source code.
+
+To run various tasks on the code, use the following commands:
+
+**Build the web version**: `npm run build-web`
+**Build the node version**: `npm run build-node`
+**Test the web version**: `npm run test-web` or `npm run test`
+**Build web when code changes**: `npm run watch-web`
+**Test web when code changes**: `npm run watch-tests`
+**Compile documentation into the docs/ folder:**: `npm run docs`
 
 ## Questions?
 
