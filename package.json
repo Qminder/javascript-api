@@ -15,7 +15,6 @@
     "build-node": "sh ./scripts/build-node.sh",
     "watch": "npm run watch-web",
     "watch-web": "./node_modules/.bin/webpack --watch",
-    "watch-node": "./node_modules/.bin/webpack --watch --env.TARGET node",
     "docs": "./node_modules/.bin/documentation build src/qminder-api.js -f html -o docs"
   },
   "keywords": [
