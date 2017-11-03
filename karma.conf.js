@@ -1,3 +1,5 @@
+// Test configuration.
+// To have console.log statements show up in the terminal, set captureConsole to true.
 module.exports = function(config) {
   config.set({
 
@@ -7,14 +9,22 @@ module.exports = function(config) {
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-    frameworks: ["jasmine"],
+    frameworks: ["jasmine", "sinon"],
+
+
+
+    plugins: [
+      'karma-chrome-launcher',
+      'karma-jasmine',
+      'karma-sinon',
+      'karma-nyan-reporter'
+    ],
 
 
     // list of files / patterns to load in the browser
     files: [
-      "src/**/*.js",
-      "temp-secret.js",
-      "test/*.js"
+      "build-web/qminder-api.js",
+      "test/web/*.test.js",
     ],
 
 
@@ -32,8 +42,7 @@ module.exports = function(config) {
     // test results reporter to use
     // possible values: 'dots', 'progress'
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
-    reporters: ["dots"],
-
+    reporters: ["nyan"],
 
     // web server port
     port: 9876,
@@ -49,13 +58,12 @@ module.exports = function(config) {
 
 
     // enable / disable watching file and executing tests whenever any file changes
-    autoWatch: false,
-
+    // autoWatch: false,
 
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
     browsers: ["ChromeNoSandboxHeadless"],
-    
+
     customLaunchers: {
       ChromeNoSandboxHeadless: {
         base: "Chrome",
@@ -70,6 +78,11 @@ module.exports = function(config) {
       },
     },
 
+    // NOTE: set it to true to see log statements from the browser.
+    client: {
+      captureConsole: false
+    },
+
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
@@ -78,7 +91,7 @@ module.exports = function(config) {
     // Concurrency level
     // how many browser should be started simultaneous
     concurrency: 1,
-    
+
     browserNoActivityTimeout: 60000
-  })
-}
+  });
+};
