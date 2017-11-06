@@ -1,3 +1,4 @@
+// @flow
 /**
  * Lines represent visitor queues. A Location can have as many lines as needed. Visitors can select
  * which line they queue up to on the iPad Sign-In App.
