@@ -29,6 +29,6 @@ Temporary Items
 
 build-node
 build-web
+build-es6
 node_modules
 docs
-build-es6

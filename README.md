@@ -45,6 +45,16 @@ Qminder account. You can get the access token from your account's
 
     Qminder.setKey('API Key');
 
+Check out the Qminder API reference for various API methods. The services (TicketService, 
+UserService, LineService, LocationService) will be of interest.
+
+For starters, you can find all tickets in a line with ID 12345:
+
+    const tickets = await Qminder.tickets.search({ status: ['NEW'], line: 12345 });
+
+Qminder.tickets refers to TicketService, for which you can find documentation in the 
+[API reference][api].
+
 ### Contributing
 
 To contribute to the Qminder API, set up your development environment, then clone the source code.
@@ -80,7 +90,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 [doc]: https://api.qminder.com/
-[api]: https://api.qminder.com/
+[api]: https://qminder.github.io/javascript-api/
 [support]: mailto:support@qminder.com
 [old-api]: https://github.com/Qminder/javascript-api/tree/v1.0.18
 [integration]: https://dashboard.qminder.com/integration/
