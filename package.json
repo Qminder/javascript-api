@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system",
   "directories": {
     "test": "test"
@@ -12,6 +12,7 @@
     "watch-tests": "./test/run-tests.sh --no-single-run",
     "build": "sh ./scripts/build-full.sh",
     "build-web": "./node_modules/.bin/webpack",
+    "build-web-unbundled": "sh ./scripts/build-web-unbundled.sh",
     "build-node": "sh ./scripts/build-node.sh",
     "watch": "npm run watch-web",
     "watch-web": "./node_modules/.bin/webpack --watch",
@@ -34,8 +35,8 @@
   "main": "build-node/qminder-api.js",
   "unpkg": "build-web/qminder-api.min.js",
   "module": "build-node/qminder-api.js",
-  "jsnext:main": "src/qminder-api.js",
-  "browser": "build-web/qminder-api.js",
+  "jsnext:main": "build-es6/qminder-api.js",
+  "browser": "build-es6/qminder-api.js",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
     "babel-cli": "^6.26.0",
