@@ -1,4 +1,4 @@
-
+// @flow
 /**
  * Represents a single user picture.
  * The 'medium' sized user picture is available if the user has an image.
@@ -77,6 +77,7 @@ class User {
     if (typeof properties === 'number') {
       this.id = properties;
     } else {
+      // $FlowFixMe: TODO: assign all properties the User supports, without writing them all out?
       Object.assign(this, properties);
     }
   }

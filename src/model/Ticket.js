@@ -1,3 +1,4 @@
+// @flow
 /**
  * Represents a person in the queue. Every time someone is added to the queue, a ticket is created in Qminder.
  * The ticket contains the person's name, phone number, or other custom fields.
@@ -155,7 +156,7 @@ class Ticket {
 
   constructor(properties: number | Ticket) {
     if (typeof properties === 'number') {
-      this.id = number;
+      this.id = properties;
     } else {
       // $FlowFixMe: TODO: assign all properties the Ticket supports, without writing them all out?
       Object.assign(this, properties);

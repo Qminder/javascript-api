@@ -1,3 +1,4 @@
+// @flow
 /**
  * Desks represent working stations in a service location. For example, a bank office would use
  * numbered desks to call visitors to a specific clerk or table.
@@ -48,6 +49,7 @@ class Desk {
       this.id = properties;
       this.name = `${properties}`;
     } else {
+      // $FlowFixMe: TODO: assign all properties the Desk supports, without writing them all out?
       Object.assign(this, properties);
       this.id = properties.id || parseInt(properties.name);
     }
