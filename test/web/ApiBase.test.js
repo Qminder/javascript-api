@@ -128,6 +128,25 @@ describe("ApiBase", function () {
         done();
       });
     });
+    it("if POSTing with urlencoded data, sets the content type correctly", function(done) {
+      Qminder.setKey(API_KEY);
+
+      const body = {
+        id: 5,
+        firstName: "John",
+        lastName: "Smith",
+      };
+
+      const requestMatcher = sinon.match({
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      });
+      const url = 'https://api.qminder.com/v1/TEST';
+
+      Qminder.ApiBase.request('TEST', body).then(response => {
+        expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+        done();
+      });
+    });
     // TODO: finish
     xit("does not format File objects to form data", function(done) {
       Qminder.setKey(API_KEY);

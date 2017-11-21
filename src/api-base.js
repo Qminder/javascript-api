@@ -83,6 +83,8 @@ class ApiBase {
         init.headers['Content-Type'] = data.type;
       } else {
         init.body = querystring.stringify(data);
+        // $FlowFixMe: there's an issue with the fetch RequestOptions type.
+        init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
       }
     }
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
