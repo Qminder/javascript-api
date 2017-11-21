@@ -67,7 +67,12 @@ export default class UserService {
     if (!roles) {
       throw new Error('The user\'s roles are missing');
     }
-    return ApiBase.request(`users/`, { email, firstName, lastName, roles }, 'POST');
+    return ApiBase.request(`users/`, {
+      email,
+      firstName,
+      lastName,
+      roles: JSON.stringify(roles),
+    }, 'POST');
   }
   /**
    * Fetch the user's details.
