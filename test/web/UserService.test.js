@@ -98,6 +98,29 @@ describe("UserService", function() {
   });
   describe("create()", function() {
     // Qminder.users.create(userdata)
+
+    it('Sends the user roles as a JSON array', function() {
+      const user = new Qminder.User({
+        email: 'test@qminder.com',
+        firstName: 'Jon',
+        lastName: 'Snow',
+        roles: [
+          {
+            type: 'CLERK',
+            location: 1234
+          },
+          {
+            type: 'CLERK',
+            location: 1235
+          }
+        ]
+      });
+
+      Qminder.users.create(user);
+      expect(this.requestStub.calledWith('users/', sinon.match({
+        roles: JSON.stringify(user.roles)
+      }))).toBeTruthy();
+    });
   });
   describe("details()", function() {
     // Qminder.users.details(userId|userEmail)
