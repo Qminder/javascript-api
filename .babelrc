@@ -1,6 +1,5 @@
 {
 "presets": ["es2017"],
-"ignore": "node_modules",
 "plugins": [
   "transform-flow-strip-types",
   "transform-async-to-generator",
