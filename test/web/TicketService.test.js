@@ -274,6 +274,29 @@ describe("TicketService", function() {
     it('throws when line is a Qminder.Line with undefined ID', function() {
       expect(() => Qminder.tickets.create(new Qminder.Line({}))).toThrow();
     });
+    it('Sends the extras as a JSON array', function() {
+      const ticket = {
+        firstName: 'Jon',
+        lastName: 'Snow',
+        phoneNumber: 3185551234,
+        extra: [
+          {
+            title: 'Email',
+            value: '2@qminder.com'
+          },
+          {
+            title: 'Favorite soup',
+            value: 'Borscht'
+          }
+        ]
+      };
+
+      Qminder.tickets.create(1, ticket);
+      console.log(this.requestStub.firstCall.args);
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({
+        extra: JSON.stringify(ticket.extra)
+      }))).toBeTruthy();
+    });
   });
   describe("details()", function() {
     const detailsResponseBody = {
@@ -361,6 +384,28 @@ describe("TicketService", function() {
     });
     it('throws when ticket is a Ticket object but id is undefined', function() {
       expect(() => Qminder.tickets.edit(new Qminder.Ticket({}))).toThrow();
+    });
+
+    it('Sends the extras as a JSON array', function() {
+      const changes = {
+        phoneNumber: 3185551234,
+        extra: [
+          {
+            title: 'Email',
+            value: '2@qminder.com'
+          },
+          {
+            title: 'Favorite soup',
+            value: 'Borscht'
+          }
+        ]
+      };
+
+      Qminder.tickets.edit(12345, changes);
+      console.log(this.requestStub.firstCall.args);
+      expect(this.requestStub.calledWith('tickets/12345/edit', sinon.match({
+        extra: JSON.stringify(changes.extra)
+      }))).toBeTruthy();
     });
   });
   describe("callNext()", function() {
