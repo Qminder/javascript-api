@@ -560,7 +560,7 @@ class EventsService {
    */
   reset(): void {
     this.apiKey = '';
-    this.apiServer = 'api.qminder.com';
+    this.apiServer = 'wss://api.qminder.com:443';
     if (this.socket && this.socket.readyState === 1) {
       this.socket.close();
     }

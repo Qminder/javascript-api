@@ -437,4 +437,14 @@ describe("Qminder.events", function () {
       stub.restore();
     });
   });
+
+  describe('Defaults', function() {
+    beforeEach(function() {
+      Qminder.events.reset();
+    });
+
+    it('sets the server to wss://api.qminder.com:443 by default', function() {
+      expect(Qminder.events.apiServer).toBe('wss://api.qminder.com:443');
+    });
+  });
 });
