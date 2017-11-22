@@ -260,7 +260,12 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_LINE);
     }
 
-    return ApiBase.request(`lines/${lineId}/ticket`, ticket, 'POST').then(response => {
+    const params = Object.assign({}, ticket);
+    if (params.extra) {
+      params.extra = JSON.stringify(params.extra);
+    }
+
+    return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST').then(response => {
       response.id = parseInt(response.id, 10);
       return new Ticket(response);
     });
@@ -332,7 +337,14 @@ export default class TicketService {
     if (!changes) {
       throw new Error(ERROR_NO_TICKET_CHANGES);
     }
-    return ApiBase.request(`tickets/${ticketId}/edit`, changes).then(response => {
+
+    const params = Object.assign({}, changes);
+
+    if (params.extra) {
+      params.extra = JSON.stringify(params.extra);
+    }
+
+    return ApiBase.request(`tickets/${ticketId}/edit`, params).then(response => {
       return response.result;
     });
   }
