@@ -260,7 +260,7 @@ class EventsService {
         }
 
         console.log('[Qminder Events API] Reconnecting in ' + newTimeout/1000 + ' seconds...');
-        this.retryTimeout = setTimeout(this.openSocket, newTimeout);
+        this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
 
         this.connectionRetries++;
       }
