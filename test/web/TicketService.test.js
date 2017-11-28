@@ -232,6 +232,218 @@ describe("TicketService", function() {
       });
     });
   });
+  describe("count()", function() {
+    const tickets = { data: [ { id: 1, line: 123 }, { id: 2, line: 124 }, { id: 3, line: 125 } ] };
+    const ticketsWithMessages = {
+      data: tickets.data.map(each => Object.assign({}, each, { messages: [] }))
+    };
+    it('searches based on lines', function(done) {
+      const request = { line: [123, 124, 125] };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?line=123%2C124%2C125')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on location', function(done) {
+      const request = { location: 111 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?location=111')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on statuses', function(done) {
+      const request = { status: ['NEW', 'CALLED', 'SERVED'] };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?status=NEW%2CCALLED%2CSERVED')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on caller (passed as a number)', function(done) {
+      const request = { caller: 111 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?caller=111')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on caller (passed as a User)', function(done) {
+      const request = { caller: new Qminder.User(111) };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?caller=111')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on min created time (ISO8601)', function(done) {
+      const request = { minCreated: "2017-09-02T12:48:10Z" };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?minCreated=2017-09-02T12%3A48%3A10Z')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on min created time (Unix)', function(done) {
+      const request = { minCreated: 1507809281 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?minCreated=1507809281')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on max created time (ISO8601)', function(done) {
+      const request = { maxCreated: "2017-09-02T12:48:10Z" };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?maxCreated=2017-09-02T12%3A48%3A10Z')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on max created time (Unix)', function(done) {
+      const request = { maxCreated: 1507809281 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?maxCreated=1507809281')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on min called time (ISO8601)', function(done) {
+      const request = { minCalled: "2017-09-02T12:48:10Z" };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?minCalled=2017-09-02T12%3A48%3A10Z')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on min called time (Unix)', function(done) {
+      const request = { minCalled: 1507809281 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?minCalled=1507809281')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on max called time (ISO8601)', function(done) {
+      const request = { maxCalled: "2017-09-02T12:48:10Z" };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?maxCalled=2017-09-02T12%3A48%3A10Z')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('searches based on max called time (Unix)', function(done) {
+      const request = { maxCalled: 1507809281 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?maxCalled=1507809281')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('does not allow a limit', function(done) {
+      const request = { line: [ 1234 ], limit: 5 };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?line=1234&limit=5')).toBeFalsy();
+        expect(this.requestStub.calledWith('tickets/count?line=1234')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('does not allow ordering', function(done) {
+      const request = { line: [ 1234 ], order: 'id ASC' };
+      this.requestStub.onCall(0).resolves(tickets);
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?line=1234&order=id%20ASC')).toBeFalsy();
+        expect(this.requestStub.calledWith('tickets/count?line=1234')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('combines multiple searched parameters successfully', function(done) {
+      const request = {
+        line: [123, 234, 345],
+        status: ['NEW','CALLED','SERVED'],
+        caller: new Qminder.User(111),
+      };
+      this.requestStub.onCall(0).resolves({ count: 3 });
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?line=123%2C234%2C345&status=NEW%2CCALLED%2CSERVED&caller=111')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    // ---
+    it('its return value is a Number', function(done) {
+      this.requestStub.onCall(0).resolves({ count: 3 });
+      Qminder.tickets.count({ line: [1234] }).then(response => {
+        expect(typeof response).toBe('number');
+        done();
+      });
+    });
+  });
   describe("create()", function() {
     const createRequestBody = {
       firstName: 'John',
