@@ -9,6 +9,73 @@ import ApiBase from '../api-base';
 import querystring from 'querystring';
 
 
+
+
+/**
+ * Represents a collection of search criteria for TicketService.count().
+ *
+ * All of the criteria that have been included must match for tickets to be included.
+ *
+ * For example, the query `{ line: [123, 34], status: ['SERVED'] }` will retrieve a count of
+ * tickets that were marked served in lines 123 and 34.
+ */
+class TicketCountCriteria {
+  /**
+   * An array of lines to search tickets from, represented as an array of line IDs.
+   *
+   * For example: `line: [123, 234, 456]`
+   */
+  line: Array<number>;
+  /**
+   * The location ID to search tickets from.
+   *
+   * For example: `location: 4`
+   */
+  location: number;
+  /**
+   * The ticket statuses to include (for example new, called, served, no-shows)
+   *
+   * For example, `status: ['NEW', 'CALLED', 'SERVED']`
+   */
+  status: Array<TicketStatus> | string;
+  /**
+   * The caller of the ticket, for finding tickets that were called by a particular user.
+   * Tickets that are NEW have not been called - they won't be included in results with a caller
+   * filter.
+   *
+   * For example, `caller: 13410`
+   */
+  caller: User | number;
+  /**
+   * The minimum creation date of the ticket, using either a Unix timestamp or an ISO8601 date.
+   * If minCreated is specified, search results will only include tickets created after minCreated.
+   *
+   * For example, `minCreated: '2017-09-02T10:12:10Z'` or `minCreated: 1504348504`
+   */
+  minCreated: string | number;
+  /**
+   * The maximum creation date of the ticket.
+   * If maxCreated is specified, search results will only include tickets created before maxCreated.
+   *
+   * For example, `maxCreated: '2017-09-02T10:12:10Z'` or `maxCreated: 1504348504`
+   */
+  maxCreated: string | number;
+  /**
+   * The minimum called date of the ticket.
+   * If minCalled is specified, search results will only include tickets called after minCalled.
+   *
+   * For example, `minCalled: '2017-09-02T10:12:10Z'` or `minCalled: 1504348504`
+   */
+  minCalled: string | number;
+  /**
+   * The maximum called date of the ticket.
+   * If maxCalled is specified, search results will only include tickets called before maxCalled.
+   *
+   * For example, `maxCalled: '2017-09-02T10:12:10Z'` or `maxCalled: 1504348504`
+   */
+  maxCalled: string | number;
+}
+
 /**
  * Represents a collection of search criteria for TicketService.search().
  * All of these criteria need to apply in order for tickets to be included.
@@ -112,6 +179,7 @@ class TicketSearchCriteria {
   responseScope: Array<'MESSAGES' | 'INTERACTIONS'> | 'MESSAGES' | 'INTERACTIONS';
 }
 
+
 /**
  * Represents a position in the queue where the ticket should go when returning it to the queue.
  * They should either be the first in line, somewhere in the center (when they will be back
@@ -157,6 +225,8 @@ export default class TicketService {
   /**
    * Searches for tickets according to the given search criteria.
    * Resolves to a list of tickets that match the search.
+   *
+   * Only the first 10000 tickets are returned.
    *
    * The various search criteria to use are documented under {@link TicketSearchCriteria}.
    *
@@ -208,6 +278,44 @@ export default class TicketService {
     return ApiBase.request(`tickets/search?${queryStr}`).then(response => {
       return response.data.map(ticket => new Ticket(ticket))
     });
+  }
+
+  /**
+   * Count all tickets that match the search criteria.
+   *
+   * Fetches a count of all tickets matching the criteria and returns the number.
+   * Note that this function is not limited by 10000 like TicketService.search.
+   *
+   * ```POST /v1/tickets/count?(search)```
+   * @example
+   * const criteria = { line: 123, status: ['NEW'] };
+   * const count = await Qminder.tickets.count(criteria);
+   * console.log(count); // 14
+   * @param search the search criteria to use
+   * @returns the number of tickets that match the search criteria
+   */
+  static count(search: TicketCountCriteria): Promise<number> {
+    if (search.line) {
+      search.line = search.line.join(',');
+    }
+    if (search.status) {
+      search.status = search.status.join(',');
+    }
+    if (search.caller && search.caller instanceof User) {
+      search.caller = search.caller.id;
+    }
+    if (search.limit) {
+      delete search.limit;
+    }
+    if (search.order) {
+      delete search.order;
+    }
+    if (search.responseScope) {
+      delete search.responseScope;
+    }
+    const queryStr = querystring.stringify(search);
+    return ApiBase.request(`tickets/count?${queryStr}`)
+                  .then(response => response.count);
   }
 
   /**
