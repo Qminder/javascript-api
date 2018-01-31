@@ -955,11 +955,17 @@ describe("TicketService", function() {
     it('throws an error when the label text is missing', function() {
       expect(() => Qminder.tickets.addLabel(12345)).toThrow();
     });
-    it('throws an error when the user is missing', function() {
-      expect(() => Qminder.tickets.addLabel(12345, 'LABEL')).toThrow();
+    it('does not throw an error when the user is missing', function() {
+      expect(() => Qminder.tickets.addLabel(12345, 'LABEL')).not.toThrow();
+    });
+    it('does not throw an error when the user is null', function() {
+      expect(() => Qminder.tickets.addLabel(12345, 'LABEL', null)).not.toThrow();
     });
     it('does not throw an error when the user is a number', function() {
       expect(() => Qminder.tickets.addLabel(12345, 'LABEL', 1234)).not.toThrow();
+    });
+    it('does not throw an error when the user is a Qminder.User', function() {
+      expect(() => Qminder.tickets.addLabel(12345, 'LABEL', new Qminder.User(41414))).not.toThrow();
     });
   });
   describe("removeLabel()", function() {
