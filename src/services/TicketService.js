@@ -760,11 +760,11 @@ export default class TicketService {
    * await Qminder.tickets.addLabel(ticket, labelText, myUserId);
    * @param ticket  The ticket to label. The ticket ID can be used instead of the Ticket object.
    * @param label  The label to add, eg. "Has documents"
-   * @param user  The user that is adding the label.
+   * @param user  The user that is adding the label, or null if it was added by no real person
    * @returns {Promise<string>} promise that resolves to 'success' if all was OK, and 'no
    * action' if the label was already there, and rejects if something else went wrong.
    */
-  static addLabel(ticket: (Ticket|number), label: string, user: (User|number)): Promise<*> {
+  static addLabel(ticket: (Ticket|number), label: string, user?: (User|number)): Promise<*> {
     let ticketId: ?number = null;
     let userId: ?number = null;
 
@@ -788,14 +788,14 @@ export default class TicketService {
     } else {
       userId = user;
     }
-    if (!userId || typeof userId !== 'number') {
-      throw new Error('No user given');
-    }
 
     const body = {
-      value: label,
-      user: userId
+      value: label
     };
+
+    if (userId) {
+      body.user = userId;
+    }
 
     return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST')
                   .then(response => response.result);

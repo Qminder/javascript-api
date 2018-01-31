@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>qminder-api 2.0.6 | Documentation</title>
+  <title>qminder-api 2.1.7 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>qminder-api</h3>
-          <div class='mb1'><code>2.0.6</code></div>
+          <div class='mb1'><code>2.1.7</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -775,6 +775,76 @@
               
                 
                 <li><a
+                  href='#ticketcountcriteria'
+                  class=" toggle-sibling">
+                  TicketCountCriteria
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#ticketcountcriterialine'
+                        class='regular pre-open'>
+                        #line
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriterialocation'
+                        class='regular pre-open'>
+                        #location
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriteriastatus'
+                        class='regular pre-open'>
+                        #status
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriteriacaller'
+                        class='regular pre-open'>
+                        #caller
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriteriamincreated'
+                        class='regular pre-open'>
+                        #minCreated
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriteriamaxcreated'
+                        class='regular pre-open'>
+                        #maxCreated
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriteriamincalled'
+                        class='regular pre-open'>
+                        #minCalled
+                      </a></li>
+                      
+                      <li><a
+                        href='#ticketcountcriteriamaxcalled'
+                        class='regular pre-open'>
+                        #maxCalled
+                      </a></li>
+                      
+                    </ul>
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
+                
+                <li><a
                   href='#ticketsearchcriteria'
                   class=" toggle-sibling">
                   TicketSearchCriteria
@@ -888,6 +958,12 @@
                         href='#ticketservicesearch'
                         class='regular pre-open'>
                         .search
+                      </a></li>
+                    
+                      <li><a
+                        href='#ticketservicecount'
+                        class='regular pre-open'>
+                        .count
                       </a></li>
                     
                       <li><a
@@ -6815,6 +6891,484 @@ The desks all have sequential numbered names, for example: "1".</p>
   
   <div class='clearfix'>
     
+    <h3 class='fl m0' id='ticketcountcriteria'>
+      TicketCountCriteria
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Represents a collection of search criteria for TicketService.count().</p>
+<p>All of the criteria that have been included must match for tickets to be included.</p>
+<p>For example, the query <code>{ line: [123, 34], status: ['SERVED'] }</code> will retrieve a count of
+tickets that were marked served in lines 123 and 34.</p>
+
+
+  <div class='pre p1 fill-light mt0'>new TicketCountCriteria()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='ticketcountcriterialine'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>line</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>An array of lines to search tickets from, represented as an array of line IDs.</p>
+<p>For example: <code>line: [123, 234, 456]</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>line</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriterialocation'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>location</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The location ID to search tickets from.</p>
+<p>For example: <code>location: 4</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>location</div>
+  
+    <p>
+      Type:
+      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriteriastatus'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>status</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The ticket statuses to include (for example new, called, served, no-shows)</p>
+<p>For example, <code>status: ['NEW', 'CALLED', 'SERVED']</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>status</div>
+  
+    <p>
+      Type:
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketstatus">TicketStatus</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriteriacaller'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>caller</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The caller of the ticket, for finding tickets that were called by a particular user.
+Tickets that are NEW have not been called - they won't be included in results with a caller
+filter.</p>
+<p>For example, <code>caller: 13410</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>caller</div>
+  
+    <p>
+      Type:
+      (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriteriamincreated'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>minCreated</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The minimum creation date of the ticket, using either a Unix timestamp or an ISO8601 date.
+If minCreated is specified, search results will only include tickets created after minCreated.</p>
+<p>For example, <code>minCreated: '2017-09-02T10:12:10Z'</code> or <code>minCreated: 1504348504</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>minCreated</div>
+  
+    <p>
+      Type:
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriteriamaxcreated'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>maxCreated</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The maximum creation date of the ticket.
+If maxCreated is specified, search results will only include tickets created before maxCreated.</p>
+<p>For example, <code>maxCreated: '2017-09-02T10:12:10Z'</code> or <code>maxCreated: 1504348504</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>maxCreated</div>
+  
+    <p>
+      Type:
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriteriamincalled'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>minCalled</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The minimum called date of the ticket.
+If minCalled is specified, search results will only include tickets called after minCalled.</p>
+<p>For example, <code>minCalled: '2017-09-02T10:12:10Z'</code> or <code>minCalled: 1504348504</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>minCalled</div>
+  
+    <p>
+      Type:
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketcountcriteriamaxcalled'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>maxCalled</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>The maximum called date of the ticket.
+If maxCalled is specified, search results will only include tickets called before maxCalled.</p>
+<p>For example, <code>maxCalled: '2017-09-02T10:12:10Z'</code> or <code>maxCalled: 1504348504</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>maxCalled</div>
+  
+    <p>
+      Type:
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+    </p>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
     <h3 class='fl m0' id='ticketsearchcriteria'>
       TicketSearchCriteria
     </h3>
@@ -7567,6 +8121,7 @@ service tickets automatically.</p>
 
   <p>Searches for tickets according to the given search criteria.
 Resolves to a list of tickets that match the search.</p>
+<p>Only the first 10000 tickets are returned.</p>
 <p>The various search criteria to use are documented under <a href="#ticketsearchcriteria">TicketSearchCriteria</a>.</p>
 <p><code>GET /v1/tickets/search?&#x3C;CRITERIA></code></p>
 
@@ -7636,6 +8191,85 @@ Resolves to a list of tickets that match the search.</p>
 <span class="hljs-keyword">const</span> ticket: Ticket = tickets[<span class="hljs-number">0</span>];
 <span class="hljs-keyword">const</span> messages: <span class="hljs-built_in">Array</span>&lt;TicketMessage&gt; = ticket.messages;
 <span class="hljs-built_in">console</span>.log(messages[<span class="hljs-number">0</span>].body); <span class="hljs-comment">// "It's your turn!"</span></pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='ticketservicecount'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>count(search)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Count all tickets that match the search criteria.</p>
+<p>Fetches a count of all tickets matching the criteria and returns the number.
+Note that this function is not limited by 10000 like TicketService.search.</p>
+<p><code>POST /v1/tickets/count?(search)</code></p>
+
+
+  <div class='pre p1 fill-light mt0'>count(search: <a href="#ticketcountcriteria">TicketCountCriteria</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>search</span> <code class='quiet'>(<a href="#ticketcountcriteria">TicketCountCriteria</a>)</code>
+	    the search criteria to use
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
+        the number of tickets that match the search criteria
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> criteria = { <span class="hljs-attr">line</span>: <span class="hljs-number">123</span>, <span class="hljs-attr">status</span>: [<span class="hljs-string">'NEW'</span>] };
+<span class="hljs-keyword">const</span> count = <span class="hljs-keyword">await</span> Qminder.tickets.count(criteria);
+<span class="hljs-built_in">console</span>.log(count); <span class="hljs-comment">// 14</span></pre>
     
   
 
@@ -8570,7 +9204,7 @@ automatically colored.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
-	    The user that is adding the label.
+	    The user that is adding the label, or null if it was added by no real person
 
           </div>
           
