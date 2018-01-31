@@ -955,17 +955,25 @@ describe("TicketService", function() {
     it('throws an error when the label text is missing', function() {
       expect(() => Qminder.tickets.addLabel(12345)).toThrow();
     });
-    it('does not throw an error when the user is missing', function() {
+    it('does not throw an error when the user is missing (#147)', function() {
       expect(() => Qminder.tickets.addLabel(12345, 'LABEL')).not.toThrow();
     });
-    it('does not throw an error when the user is null', function() {
+    it('does not throw an error when the user is a Qminder.User', function() {
+      expect(() => Qminder.tickets.addLabel(12345, 'LABEL', new Qminder.User(41414))).not.toThrow();
+    });
+
+    // Regression tests for #147
+    it('calls the right URL with POST and parameters, without user ID (#147)', function(done) {
+      Qminder.tickets.addLabel(12345, 'LABEL').then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/labels/add', { value: 'LABEL' }, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('does not throw an error when the user is null (#147)', function() {
       expect(() => Qminder.tickets.addLabel(12345, 'LABEL', null)).not.toThrow();
     });
     it('does not throw an error when the user is a number', function() {
       expect(() => Qminder.tickets.addLabel(12345, 'LABEL', 1234)).not.toThrow();
-    });
-    it('does not throw an error when the user is a Qminder.User', function() {
-      expect(() => Qminder.tickets.addLabel(12345, 'LABEL', new Qminder.User(41414))).not.toThrow();
     });
   });
   describe("removeLabel()", function() {
