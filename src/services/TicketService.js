@@ -1091,6 +1091,7 @@ export default class TicketService {
    */
   static sendMessage(ticket: (Ticket|number), message: string, user: (User|number)): Promise<*> {
     let ticketId: ?number = null;
+    let userId: ?number = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1106,13 +1107,19 @@ export default class TicketService {
       throw new Error('No message specified. The message has to be a string.');
     }
 
-    if (!user || !user.id) {
+    if (user instanceof User) {
+      userId = user.id;
+    } else {
+      userId = user;
+    }
+
+    if (!userId || typeof userId !== 'number') {
       throw new Error(ERROR_NO_USER);
     }
 
     const body = {
       message,
-      user: user.id
+      user: userId
     };
 
     return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST');

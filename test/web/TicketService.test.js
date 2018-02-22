@@ -898,18 +898,34 @@ describe("TicketService", function() {
   });
   describe("cancel()", function() {
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves({
+      this.requestStub.resolves({
         result: 'success'
       });
     });
     it('calls the right URL with GET', function(done) {
-      Qminder.tickets.cancel(12345).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/cancel', undefined, 'POST')).toBeTruthy();
+      const matcher = sinon.match({ user: 14141 });
+      Qminder.tickets.cancel(12345, 14141).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/cancel', matcher, 'POST')).toBeTruthy();
         done();
       });
     });
     it('throws an error when the ticket ID is missing', function() {
       expect(() => Qminder.tickets.cancel()).toThrow();
+    });
+    it('throws an error when the ticket parameter is passed a random object', function() {
+      expect(() => Qminder.tickets.cancel({ test: 5 }, 14141).toThrow());
+    });
+    it('works when the ticket parameter is a Qminder.Ticket', function() {
+      const t = new Qminder.Ticket(12345);
+      expect(() => Qminder.tickets.cancel(t, 14141)).not.toThrow();
+      Qminder.tickets.cancel(t, 14141);
+      expect(this.requestStub.calledWith('tickets/12345/cancel', { user: 14141 }, 'POST')).toBeTruthy();
+    });
+    it('works when the user parameter is a Qminder.User', function() {
+      const u = new Qminder.User(14141);
+      expect(() => Qminder.tickets.cancel(12345, u)).not.toThrow();
+      Qminder.tickets.cancel(12345, u);
+      expect(this.requestStub.calledWith('tickets/12345/cancel', { user: 14141 }, 'POST')).toBeTruthy();
     });
   });
   describe("returnToQueue()", function() {
@@ -1165,13 +1181,20 @@ describe("TicketService", function() {
   });
   describe("sendMessage()", function() {
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves({
+      this.requestStub.resolves({
         result: 'success'
       });
     });
 
-    it('calls the right URL for sending a message', function(done) {
-      Qminder.tickets.sendMessage(12345, 'Hello!', { id: 41414 }).then(() => {
+    it('calls the right URL for sending a message with User object', function(done) {
+      Qminder.tickets.sendMessage(12345, 'Hello!', new Qminder.User({ id: 41414 })).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/messages', { message: 'Hello!', user: 41414 }, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+
+    it('calls the right URL for sending a message with user ID', function(done) {
+      Qminder.tickets.sendMessage(12345, 'Hello!', 41414).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/messages', { message: 'Hello!', user: 41414 }, 'POST')).toBeTruthy();
         done();
       });
@@ -1189,9 +1212,13 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.sendMessage(12345, 'Hello')).toThrow();
     });
 
-    it('throws when the sending user is specified as ID', function() {
-      expect(() => Qminder.tickets.sendMessage(12345, 'Hello', 41414)).toThrow();
+    it('does not throw when the sending user is specified as ID', function() {
+      expect(() => Qminder.tickets.sendMessage(12345, 'Hello', 41414)).not.toThrow();
     });
+
+    it('throws when the sending user is specified as some random object', function() {
+      expect(() => Qminder.tickets.sendMessage(12345, 'Hello', { test: 5 })).toThrow();
+    })
   });
 
   afterEach(function() {
