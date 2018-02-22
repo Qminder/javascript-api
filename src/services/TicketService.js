@@ -9,8 +9,6 @@ import ApiBase from '../api-base';
 import querystring from 'querystring';
 
 
-
-
 /**
  * Represents a collection of search criteria for TicketService.count().
  *
@@ -25,7 +23,7 @@ class TicketCountCriteria {
    *
    * For example: `line: [123, 234, 456]`
    */
-  line: Array<number>;
+  line: Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
@@ -92,7 +90,7 @@ class TicketSearchCriteria {
    *
    * For example: `line: [123, 234, 456]`
    */
-  line: Array<number>;
+  line: Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
@@ -258,10 +256,10 @@ export default class TicketService {
    * @see TicketMessage
    */
   static search(search: TicketSearchCriteria): Promise<Array<Ticket>> {
-    if (search.line) {
+    if (search.line && search.line instanceof Array) {
       search.line = search.line.join(',');
     }
-    if (search.status) {
+    if (search.status && search.status instanceof Array) {
       search.status = search.status.join(',');
     }
 
@@ -295,10 +293,10 @@ export default class TicketService {
    * @returns the number of tickets that match the search criteria
    */
   static count(search: TicketCountCriteria): Promise<number> {
-    if (search.line) {
+    if (search.line && search.line instanceof Array) {
       search.line = search.line.join(',');
     }
-    if (search.status) {
+    if (search.status && search.status instanceof Array) {
       search.status = search.status.join(',');
     }
     if (search.caller && search.caller instanceof User) {
@@ -673,12 +671,16 @@ export default class TicketService {
    *
    * Only new tickets (with the status 'NEW') can be cancelled.
    *
+   * The user ID is mandatory.
+   *
    * @param ticket  The ticket to cancel. The ticket ID can be used instead of the Ticket object.
+   * @param user  The user who canceled the ticket. This is a mandatory argument.
    * @returns  a promise that resolves to "success" if removing works, and rejects if something
    * went wrong.
    */
-  static cancel(ticket: (Ticket|number)): Promise<string> {
+  static cancel(ticket: (Ticket|number), user: User | number): Promise<string> {
     let ticketId: ?number = null;
+    let userId: ?number = null;
 
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -690,7 +692,18 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/cancel`, undefined, 'POST')
+    if (user instanceof User) {
+      userId = user.id;
+    } else {
+      userId = user;
+    }
+
+    if (!userId || typeof userId !== 'number') {
+      throw new Error(ERROR_NO_USER);
+    }
+
+
+    return ApiBase.request(`tickets/${ticketId}/cancel`, { user: userId }, 'POST')
       .then(response => response.result);
   }
 
@@ -1078,6 +1091,7 @@ export default class TicketService {
    */
   static sendMessage(ticket: (Ticket|number), message: string, user: (User|number)): Promise<*> {
     let ticketId: ?number = null;
+    let userId: ?number = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1093,13 +1107,19 @@ export default class TicketService {
       throw new Error('No message specified. The message has to be a string.');
     }
 
-    if (!user || !user.id) {
+    if (user instanceof User) {
+      userId = user.id;
+    } else {
+      userId = user;
+    }
+
+    if (!userId || typeof userId !== 'number') {
       throw new Error(ERROR_NO_USER);
     }
 
     const body = {
       message,
-      user: user.id
+      user: userId
     };
 
     return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST');

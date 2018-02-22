@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>qminder-api 2.1.7 | Documentation</title>
+  <title>qminder-api 2.1.8 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>qminder-api</h3>
-          <div class='mb1'><code>2.1.7</code></div>
+          <div class='mb1'><code>2.1.8</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -6952,7 +6952,7 @@ tickets that were marked served in lines 123 and 34.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7432,7 +7432,7 @@ currently called ticket.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>>
+      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -8988,7 +8988,7 @@ something went wrong.
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>cancel(ticket)</span>
+            <span class='code strong strong truncate'>cancel(ticket, user)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -8999,9 +8999,10 @@ something went wrong.
   <p>Cancel a ticket.</p>
 <p>Cancelling a ticket removes them from the queue, and from statistics.</p>
 <p>Only new tickets (with the status 'NEW') can be cancelled.</p>
+<p>The user ID is mandatory.</p>
 
 
-  <div class='pre p1 fill-light mt0'>cancel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>cancel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9020,6 +9021,15 @@ something went wrong.
           <div>
             <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to cancel. The ticket ID can be used instead of the Ticket object.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+	    The user who canceled the ticket. This is a mandatory argument.
 
           </div>
           
