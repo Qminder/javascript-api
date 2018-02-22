@@ -23,7 +23,7 @@ class TicketCountCriteria {
    *
    * For example: `line: [123, 234, 456]`
    */
-  line: Array<number>;
+  line: Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
@@ -90,7 +90,7 @@ class TicketSearchCriteria {
    *
    * For example: `line: [123, 234, 456]`
    */
-  line: Array<number>;
+  line: Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
@@ -256,7 +256,7 @@ export default class TicketService {
    * @see TicketMessage
    */
   static search(search: TicketSearchCriteria): Promise<Array<Ticket>> {
-    if (search.line) {
+    if (search.line && search.line instanceof Array) {
       search.line = search.line.join(',');
     }
     if (search.status && search.status instanceof Array) {
@@ -293,10 +293,10 @@ export default class TicketService {
    * @returns the number of tickets that match the search criteria
    */
   static count(search: TicketCountCriteria): Promise<number> {
-    if (search.line) {
+    if (search.line && search.line instanceof Array) {
       search.line = search.line.join(',');
     }
-    if (search.status) {
+    if (search.status && search.status instanceof Array) {
       search.status = search.status.join(',');
     }
     if (search.caller && search.caller instanceof User) {

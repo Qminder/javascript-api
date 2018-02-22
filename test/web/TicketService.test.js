@@ -21,6 +21,19 @@ describe("TicketService", function() {
         done();
       });
     });
+    it('if line is a number, not an array, the call still functions correctly', function(done) {
+      const request = { line: 123 };
+      this.requestStub.resolves(tickets);
+      expect(() => Qminder.tickets.search(request)).not.toThrow();
+      Qminder.tickets.search(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/search?line=123')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
     it('searches based on location', function(done) {
       const request = { location: 111 };
       this.requestStub.onCall(0).resolves(tickets);
@@ -262,6 +275,19 @@ describe("TicketService", function() {
         done();
       });
     });
+    it('if line is a number, not an array, the call still functions correctly', function(done) {
+      const request = { line: 123 };
+      this.requestStub.resolves(tickets);
+      expect(() => Qminder.tickets.count(request)).not.toThrow();
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?line=123')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
     it('searches based on location', function(done) {
       const request = { location: 111 };
       this.requestStub.onCall(0).resolves(tickets);
@@ -279,6 +305,19 @@ describe("TicketService", function() {
       this.requestStub.onCall(0).resolves(tickets);
       Qminder.tickets.count(request).then(() => {
         expect(this.requestStub.calledWith('tickets/count?status=NEW%2CCALLED%2CSERVED')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
+    it('if status is a string, not an array, the call still functions correctly', function(done) {
+      const request = { status: 'CALLED' };
+      this.requestStub.resolves(tickets);
+      expect(() => Qminder.tickets.count(request)).not.toThrow();
+      Qminder.tickets.count(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/count?status=CALLED')).toBeTruthy();
         done();
       }, fail => {
         console.error(fail);
