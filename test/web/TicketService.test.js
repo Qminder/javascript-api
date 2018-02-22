@@ -45,6 +45,19 @@ describe("TicketService", function() {
         done();
       });
     });
+    it('if status is a string, not an array, the call still functions correctly', function(done) {
+      const request = { status: 'CALLED' };
+      this.requestStub.resolves(tickets);
+      expect(() => Qminder.tickets.search(request)).not.toThrow();
+      Qminder.tickets.search(request).then(() => {
+        expect(this.requestStub.calledWith('tickets/search?status=CALLED')).toBeTruthy();
+        done();
+      }, fail => {
+        console.error(fail);
+        expect(false).toBe(true);
+        done();
+      });
+    });
     it('searches based on caller (passed as a number)', function(done) {
       const request = { caller: 111 };
       this.requestStub.onCall(0).resolves(tickets);

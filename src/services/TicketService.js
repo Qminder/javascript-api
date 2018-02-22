@@ -259,7 +259,7 @@ export default class TicketService {
     if (search.line) {
       search.line = search.line.join(',');
     }
-    if (search.status) {
+    if (search.status && search.status instanceof Array) {
       search.status = search.status.join(',');
     }
 
