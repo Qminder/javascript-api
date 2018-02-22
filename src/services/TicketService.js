@@ -9,8 +9,6 @@ import ApiBase from '../api-base';
 import querystring from 'querystring';
 
 
-
-
 /**
  * Represents a collection of search criteria for TicketService.count().
  *
@@ -673,12 +671,16 @@ export default class TicketService {
    *
    * Only new tickets (with the status 'NEW') can be cancelled.
    *
+   * The user ID is mandatory.
+   *
    * @param ticket  The ticket to cancel. The ticket ID can be used instead of the Ticket object.
+   * @param user  The user who canceled the ticket. This is a mandatory argument.
    * @returns  a promise that resolves to "success" if removing works, and rejects if something
    * went wrong.
    */
-  static cancel(ticket: (Ticket|number)): Promise<string> {
+  static cancel(ticket: (Ticket|number), user: User | number): Promise<string> {
     let ticketId: ?number = null;
+    let userId: ?number = null;
 
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -690,7 +692,18 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/cancel`, undefined, 'POST')
+    if (user instanceof User) {
+      userId = user.id;
+    } else {
+      userId = user;
+    }
+
+    if (!userId || typeof userId !== 'number') {
+      throw new Error(ERROR_NO_USER);
+    }
+
+
+    return ApiBase.request(`tickets/${ticketId}/cancel`, { user: userId }, 'POST')
       .then(response => response.result);
   }
 
