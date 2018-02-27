@@ -1062,7 +1062,7 @@ export default class TicketService {
     if (!ticketId || typeof ticketId !== 'number') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/messages`).then(response => response.data);
+    return ApiBase.request(`tickets/${ticketId}/messages`).then(response => response.messages);
   }
 
   /**

@@ -1185,8 +1185,8 @@ describe("TicketService", function() {
   });
   describe("getMessages()", function() {
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves({
-        data: [
+      this.requestStub.resolves({
+        messages: [
           {
             "created":
               {
@@ -1215,7 +1215,7 @@ describe("TicketService", function() {
         done();
       });
     });
-    it('resolves with the messages from response.data', function(done) {
+    it('resolves with the messages from response.messages', function(done) {
       Qminder.tickets.getMessages(12345).then((data) => {
         expect(data instanceof Array).toBeTruthy();
         expect(data.length).toBe(2);
@@ -1224,6 +1224,18 @@ describe("TicketService", function() {
         expect(data[0].type).toBe("OUTGOING");
         expect(data[0].status).toBe("SENT");
         expect(data[0].userId).toBe(15000);
+        done();
+      });
+    });
+    it('does not try to read response.data (#154)', function(done) {
+      this.requestStub.resolves({
+        data: [{ body: 'Wrong object!' }],
+        messages: [{ body: 'Right object!' }],
+      });
+      Qminder.tickets.getMessages(12345).then((data) => {
+        expect(data instanceof Array).toBeTruthy();
+        expect(data.length).toBe(1);
+        expect(data[0].body).toBe("Right object!");
         done();
       });
     });
