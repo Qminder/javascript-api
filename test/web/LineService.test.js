@@ -10,6 +10,12 @@ describe("LineService", function() {
   const LOCATION_ID = 673;
 
   beforeEach(function() {
+    if (typeof Qminder === 'undefined') {
+      Qminder = this.Qminder;
+    }
+    if (typeof sinon === 'undefined') {
+      sinon = this.sinon;
+    }
     Qminder.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
     Qminder.setServer('local.api.qminderapp.com');
 

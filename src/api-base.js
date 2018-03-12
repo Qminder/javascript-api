@@ -77,7 +77,7 @@ class ApiBase {
 
     if (data) {
       init.method = 'POST';
-      if (data instanceof File && init.headers) {
+      if (typeof File !== "undefined" && data instanceof File && init.headers) {
         init.body = data;
         // $FlowFixMe: there's an issue with the fetch RequestOptions type.
         init.headers['Content-Type'] = data.type;

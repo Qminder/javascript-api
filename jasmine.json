@@ -1,0 +1,12 @@
+{
+  "spec_dir": "test/web",
+  "spec_files": [
+    "**/EventsService.test.js",
+    "**/*test.node.js"
+  ],
+  "helpers": [
+    "../node_helper.js"
+  ],
+  "stopSpecOnExpectationFailure": true,
+  "random": false
+}

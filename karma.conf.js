@@ -11,8 +11,6 @@ module.exports = function(config) {
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ["jasmine", "sinon"],
 
-
-
     plugins: [
       'karma-chrome-launcher',
       'karma-jasmine',
@@ -24,6 +22,7 @@ module.exports = function(config) {
     files: [
       "build-web/qminder-api.js",
       "test/web/*.test.js",
+      "test/web/*.test.web.js"
     ],
 
 

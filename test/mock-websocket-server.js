@@ -24,6 +24,19 @@ class MockWebsocketServer {
       controlHandler.setSocket(sock);
       connHandler.setControlSocket(sock);
     });
+
+    connHandler.onClose(() => {
+      console.log('\x1b[33m   main |\x1b[0m Connection closed - closing control');
+      if (controlHandler.connection.readyState === 1) {
+        controlHandler.connection.close();
+      }
+    });
+    controlHandler.onClose(() => {
+      console.log('\x1b[33m   main |\x1b[0m Control closed - closing connection');
+      if (connHandler.connection.readyState === 1) {
+        connHandler.connection.close();
+      }
+    });
   }
 }
 

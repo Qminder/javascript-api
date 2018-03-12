@@ -43,6 +43,12 @@ describe("Qminder.locations", function() {
   const DESKS = [1, 2, 3, 4].map(x => ({ name: `${x}` }));
 
   beforeEach(function() {
+    if (typeof Qminder === 'undefined') {
+      Qminder = this.Qminder;
+    }
+    if (typeof sinon === 'undefined') {
+      sinon = this.sinon;
+    }
     Qminder.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
     Qminder.setServer('local.api.qminderapp.com');
     this.requestStub = sinon.stub(Qminder.ApiBase, 'request');

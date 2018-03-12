@@ -36,6 +36,15 @@ describe("Qminder.events", function () {
   };
 
   beforeEach(function (done) {
+    if (typeof Qminder === 'undefined') {
+      Qminder = this.Qminder;
+    }
+    if (typeof sinon === 'undefined') {
+      sinon = this.sinon;
+    }
+    if (typeof WebSocket === 'undefined') {
+      WebSocket = require('ws');
+    }
     // Extend the timeouts because weird timing
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
@@ -87,7 +96,17 @@ describe("Qminder.events", function () {
     this.controlSocketStub.withArgs('PING').returns('PONG');
 
     // If both Qminder.events and the controlSocket are open, then continue
-    this.controlSocket.onopen = () => done();
+    const controlSocketOpen = new Promise(resolve => {
+      this.controlSocket.onopen = resolve;
+    });
+    const clientSocketOpen = new Promise(resolve => {
+      if (Qminder.events.socket.readyState === 1) {
+        resolve();
+      } else {
+        Qminder.events.socket.addEventListener('open', resolve);
+      }
+    });
+    Promise.all([controlSocketOpen, clientSocketOpen]).then(done);
   });
   afterEach(function (done) {
     // Reset behavior and history of the socket stub
