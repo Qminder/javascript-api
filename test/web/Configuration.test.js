@@ -1,7 +1,13 @@
 describe('Configuration', function() {
   describe('Qminder.setKey', function() {
     beforeEach(function() {
-      this.webSocketStub = sinon.stub(window, 'WebSocket');
+      if (typeof Qminder === 'undefined') {
+        Qminder = this.Qminder;
+      }
+      if (typeof sinon === 'undefined') {
+        sinon = this.sinon;
+      }
+
       Qminder.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
       this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
       this.requestStub.onFirstCall().resolves({ data: [] });
@@ -29,7 +35,6 @@ describe('Configuration', function() {
     });
 
     afterEach(function() {
-      this.webSocketStub.restore();
       Qminder.ApiBase.request.restore();
     });
   });

@@ -1,7 +1,12 @@
 describe("ApiBase", function () {
   const API_KEY = 'testing';
-
   beforeEach(function() {
+    if (typeof Qminder === 'undefined') {
+      Qminder = this.Qminder;
+    }
+    if (typeof sinon === 'undefined') {
+      sinon = this.sinon;
+    }
     // Manual reset for ApiBase - Karma doesn't reload the environment between tests.
     Qminder.ApiBase.initialized = false;
     Qminder.ApiBase.apiKey = undefined;

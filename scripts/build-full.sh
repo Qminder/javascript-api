@@ -12,3 +12,7 @@ npm run build-web-unbundled
 printf "\x1b[32mCompiling node...\x1b[0m\n"
 npm run build-node
 
+printf "\x1b[32mTesting node bundle...\x1b[0m\n"
+npm run test-node
+
+
