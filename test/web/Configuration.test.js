@@ -1,5 +1,4 @@
 describe('Configuration', function() {
-  let isNode = false;
   describe('Qminder.setKey', function() {
     beforeEach(function() {
       if (typeof Qminder === 'undefined') {
@@ -11,9 +10,8 @@ describe('Configuration', function() {
       if (typeof window !== 'undefined') {
         this.webSocketStub = sinon.stub(window, 'WebSocket');
       } else {
-        this.webSocketStub = sinon.spy();
+        this.webSocketStub = sinon.spy(this, 'WebSocket');
       }
-      isNode = this.isNode;
       Qminder.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
       this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
       this.requestStub.onFirstCall().resolves({ data: [] });
@@ -35,18 +33,13 @@ describe('Configuration', function() {
       expect(() => Qminder.events.onTicketCreated(() => {})).not.toThrow();
     });
 
-    // TODO: Test WebSockets on Node
-    if (!isNode) {
-      xit('uses the API key in the websocket handshake', function() {
-        Qminder.events.openSocket();
-        expect(this.webSocketStub.calledWith('wss://' + Qminder.events.apiServer + '/events?rest-api-key=F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn')).toBeTruthy();
-      });
-    }
+    xit('uses the API key in the websocket handshake', function() {
+      Qminder.events.openSocket();
+      expect(this.webSocketStub.calledWith('wss://' + Qminder.events.apiServer + '/events?rest-api-key=F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn')).toBeTruthy();
+    });
 
     afterEach(function() {
-      if (!this.isNode) {
-        this.webSocketStub.restore();
-      }
+      this.webSocketStub.restore();
       Qminder.ApiBase.request.restore();
     });
   });
