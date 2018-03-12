@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set +e
+set -e
 # Start the mock WS server
 node ./test/mock-websocket-server.js >/dev/null &
 wspid=$!
@@ -9,4 +9,4 @@ wspid=$!
 echo "Suppressing logs. Allow logs in the karma config with captureConsole: true."
 ./node_modules/.bin/karma start --log-level error ${@:1}
 
-kill $wspid
+kill $wspid || :
