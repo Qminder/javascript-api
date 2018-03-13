@@ -159,6 +159,12 @@ describe("Qminder.locations", function() {
     beforeEach(function() {
       this.requestStub.withArgs(`locations/${LOCATION_ID}/input-fields`).resolves({ fields });
     });
+    it('throws with undefined location ID', function() {
+      expect(() => Qminder.locations.getInputFields()).toThrow();
+    });
+    it('throws with an object that doesn\'t fit', function() {
+      expect(() => Qminder.locations.getInputFields({ statusCode: 200 })).toThrow();
+    });
     it('does not throw with numeric location ID', function() {
       expect(() => Qminder.locations.getInputFields(LOCATION_ID)).not.toThrow();
     });

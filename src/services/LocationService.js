@@ -1,6 +1,8 @@
 import Location from '../model/Location.js';
 import ApiBase from '../api-base.js';
 import Desk from '../model/Desk';
+
+const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
 /**
  * This service allows you to get location data
  *
@@ -69,6 +71,9 @@ export default class LocationService {
       locationId = location.id;
     } else {
       locationId = location;
+    }
+    if (!locationId || typeof locationId !== 'number') {
+      throw new Error(ERROR_NO_LOCATION_ID);
     }
     return ApiBase.request(`locations/${locationId}/input-fields`)
                   .then(response => response.fields);
