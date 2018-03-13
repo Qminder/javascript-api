@@ -1115,9 +1115,37 @@ describe("TicketService", function() {
         done();
       });
     });
-    it('calls the right URL for reorder to be first', function(done) {
+    it('works when the ticket is a Ticket object', function(done) {
+      const ticket = new Qminder.Ticket(12345);
+      Qminder.tickets.reorder(ticket, 12346).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        done();
+      });
+    });
+    it('works when the afterTicket is a Ticket object', function(done) {
+      const afterTicket = new Qminder.Ticket(12346);
+      Qminder.tickets.reorder(12345, afterTicket).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        done();
+      });
+    });
+    it('works when both ticket and afterTicket are Ticket objects', function(done) {
+      const ticket = new Qminder.Ticket(12345);
+      const afterTicket = new Qminder.Ticket(12346);
+      Qminder.tickets.reorder(ticket, afterTicket).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        done();
+      });
+    });
+    it('calls the right URL when reordering to be first', function(done) {
       Qminder.tickets.reorder(12345).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: null })).toBeTruthy();
+        expect(this.requestStub.calledWith('tickets/12345/reorder', undefined)).toBeTruthy();
+        done();
+      });
+    });
+    it('omits the after key when reordering to be first (#159)', function(done) {
+      Qminder.tickets.reorder(12345, null).then(() => {
+        expect(this.requestStub.firstCall.args[1]).toBeUndefined();
         done();
       });
     });
