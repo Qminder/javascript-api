@@ -151,6 +151,40 @@ describe("Qminder.locations", function() {
     });
   });
 
+  describe("getInputFields()", function() {
+    const fields = [
+      { type: 'firstName' },
+      { type: 'lastName' },
+    ];
+    beforeEach(function() {
+      this.requestStub.withArgs(`locations/${LOCATION_ID}/input-fields`).resolves({ fields });
+    });
+    it('does not throw with numeric location ID', function() {
+      expect(() => Qminder.locations.getInputFields(LOCATION_ID)).not.toThrow();
+    });
+    it('does not throw with Qminder.Location', function() {
+      expect(() => Qminder.locations.getInputFields(new Qminder.Location(LOCATION_ID))).not.toThrow();
+    });
+    it('calls the right URL with numeric location ID', function(done) {
+      Qminder.locations.getInputFields(LOCATION_ID).then(() => {
+        expect(this.requestStub.calledWith(`locations/${LOCATION_ID}/input-fields`)).toBeTruthy();
+        done();
+      }, (err) => {
+        expect(err).toBeUndefined();
+        done();
+      });
+    });
+    it('gets the input fields from the response object', function(done) {
+      Qminder.locations.getInputFields(LOCATION_ID).then((response) => {
+        expect(response).toEqual(fields);
+        done();
+      }, (err) => {
+        expect(err).toBeUndefined();
+        done();
+      });
+    });
+  });
+
   afterEach(function() {
     this.requestStub.restore();
   })
