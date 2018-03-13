@@ -962,10 +962,25 @@ export default class TicketService {
       ticketId = ticket;
     }
 
+    let afterTicketId: ?number = null;
+    if (afterTicket instanceof Ticket) {
+      afterTicketId = afterTicket.id;
+    } else {
+      afterTicketId = afterTicket;
+    }
+
+    let postData: { after: number } = undefined;
+    if (afterTicketId) {
+      console.log('afterTicketId is truthy', { afterTicketId });
+      postData = {
+        after: afterTicketId,
+      };
+    }
+
     if (!ticketId || typeof ticketId !== 'number') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/reorder`, { after: afterTicket || null })
+    return ApiBase.request(`tickets/${ticketId}/reorder`, postData)
       .then(response => response.result);
   }
 
