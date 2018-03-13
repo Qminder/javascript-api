@@ -1,6 +1,8 @@
 import Location from '../model/Location.js';
 import ApiBase from '../api-base.js';
 import Desk from '../model/Desk';
+
+const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
 /**
  * This service allows you to get location data
  *
@@ -45,5 +47,35 @@ export default class LocationService {
       }
       return response.desks.map(each => new Desk(each));
     });
+  }
+
+  /**
+   * Get the input fields in a particular location.
+   * This returns a list of the configured input fields that clerks can enter on the Qminder
+   * Dashboard Service View.
+   *
+   * ```GET /locations/<ID>/input-fields```
+   * @example
+   * // Get the input fields for a location that has only Line, First Name & Last Name enabled
+   * const inputFields = await Qminder.locations.getInputFields(1234);
+   * console.log(inputFields);
+   * // => [ { type: 'firstName' }, { type: 'lastName' }, { type: 'line' } ]
+   * @param location the location to query, either as an ID or a Qminder Location object
+   * @returns {Promise.<Array.<InputField>>} a Promise that resolves to an array of input
+   * fields, or rejects if something went wrong.
+   */
+  static getInputFields(location: (Location | number)): Promise<Array<InputField>> {
+    let locationId: ?number = null;
+    // Get the location's ID
+    if (location instanceof Location) {
+      locationId = location.id;
+    } else {
+      locationId = location;
+    }
+    if (!locationId || typeof locationId !== 'number') {
+      throw new Error(ERROR_NO_LOCATION_ID);
+    }
+    return ApiBase.request(`locations/${locationId}/input-fields`)
+                  .then(response => response.fields);
   }
 };
