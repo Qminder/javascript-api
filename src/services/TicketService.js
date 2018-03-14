@@ -971,7 +971,6 @@ export default class TicketService {
 
     let postData: { after: number } = undefined;
     if (afterTicketId) {
-      console.log('afterTicketId is truthy', { afterTicketId });
       postData = {
         after: afterTicketId,
       };
@@ -980,7 +979,7 @@ export default class TicketService {
     if (!ticketId || typeof ticketId !== 'number') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/reorder`, postData)
+    return ApiBase.request(`tickets/${ticketId}/reorder`, postData, 'POST')
       .then(response => response.result);
   }
 

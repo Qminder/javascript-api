@@ -1111,21 +1111,21 @@ describe("TicketService", function() {
     });
     it('calls the right URL for reorder after ticket', function(done) {
       Qminder.tickets.reorder(12345, 12346).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 }, 'POST')).toBeTruthy();
         done();
       });
     });
     it('works when the ticket is a Ticket object', function(done) {
       const ticket = new Qminder.Ticket(12345);
       Qminder.tickets.reorder(ticket, 12346).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 }, 'POST')).toBeTruthy();
         done();
       });
     });
     it('works when the afterTicket is a Ticket object', function(done) {
       const afterTicket = new Qminder.Ticket(12346);
       Qminder.tickets.reorder(12345, afterTicket).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 }, 'POST')).toBeTruthy();
         done();
       });
     });
@@ -1133,13 +1133,13 @@ describe("TicketService", function() {
       const ticket = new Qminder.Ticket(12345);
       const afterTicket = new Qminder.Ticket(12346);
       Qminder.tickets.reorder(ticket, afterTicket).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 })).toBeTruthy();
+        expect(this.requestStub.calledWith('tickets/12345/reorder', { after: 12346 }, 'POST')).toBeTruthy();
         done();
       });
     });
     it('calls the right URL when reordering to be first', function(done) {
       Qminder.tickets.reorder(12345).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/reorder', undefined)).toBeTruthy();
+        expect(this.requestStub.calledWith('tickets/12345/reorder', undefined, 'POST')).toBeTruthy();
         done();
       });
     });
