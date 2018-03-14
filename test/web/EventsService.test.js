@@ -134,6 +134,14 @@ describe("Qminder.events", function () {
     Promise.all([clientSocketClosed, controlSocketClosed]).then(done);
   });
 
+
+  it('does not duplicate subscribe on createSubscription and onopen', function() {
+    Qminder.events.onTicketCreated(func, { location: 1234 });
+    expect(Qminder.events.subscriptions.length).toBe(1);
+    Qminder.events.socket.onopen();
+    expect(Qminder.events.subscriptions.length).toBe(1);
+  });
+
   describe('openSocket()', function () {
     it('Connects to websocket', function () {
       expect(() => Qminder.events.openSocket()).not.toThrow();
@@ -208,12 +216,20 @@ describe("Qminder.events", function () {
     });
     it('Sends the subscription and callback to this.subscribe', function () {
       const stub = sinon.stub(Qminder.events, 'subscribe');
+      const createIdStub = sinon.stub(Qminder.events, 'createId');
+      createIdStub.returns('Test!');
       Qminder.events.createSubscription('TICKET_CREATED', func, { line: 123 });
-      expect(Qminder.events.subscriptions.length).toBe(1);
+      expect(Qminder.events.subscriptions.length).toBe(0);
 
-      const sub = Qminder.events.subscriptions[0];
-      expect(stub.calledWith(sub, func)).toBeTruthy();
+      const matcher = sinon.match({
+        id: 'Test!',
+        subscribe: 'TICKET_CREATED',
+        line: 123
+      });
+
+      expect(stub.calledWith(matcher, func)).toBeTruthy();
       stub.restore();
+      createIdStub.restore();
     });
     it('Adds the subscription to the subscriptions list', function () {
       Qminder.events.createSubscription('TICKET_CREATED', func, { line: 123 });
@@ -229,6 +245,20 @@ describe("Qminder.events", function () {
   });
 
   describe('subscribe() - connected to API', function () {
+    it('pushes a subscription into the subscriptions array', function() {
+      const sub = { subscribe: 'TICKET_CREATED', location: 1234, id: 'TEST' };
+      Qminder.events.subscribe(sub, func);
+      expect(Qminder.events.subscriptions.length).toBe(1);
+    });
+
+    it('does not push the same subscription twice into the subscriptions array', function() {
+      const sub = { subscribe: 'TICKET_CREATED', location: 1234, id: 'TEST' };
+      const sub2 = Object.assign({}, sub);
+      Qminder.events.subscribe(sub, func);
+      Qminder.events.subscribe(sub2, func);
+      expect(Qminder.events.subscriptions.length).toBe(1);
+    });
+
     it('puts the given callback to a subscription callback map by ID', function () {
       Qminder.events.subscribe({ subscribe: 'TICKET_CREATED', location: 1234, id: 'AFAFAF' }, func);
       let map = Qminder.events.subscriptionCallbackMap;

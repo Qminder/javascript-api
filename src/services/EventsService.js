@@ -224,7 +224,6 @@ class EventsService {
       while (this.messageQueue.length > 0) {
         const { message, callback } = this.messageQueue.pop();
         this.subscribe(message, callback);
-        this.subscriptions.push(message);
       }
 
       // Start sending pings every 10s
@@ -333,18 +332,21 @@ class EventsService {
     }
 
     this.subscribe(subscription, callback);
-    this.subscriptions.push(subscription);
   }
 
   /**
    * Subscribe to an event.
    * Sends a WebSocket message if possible to Qminder API, to subscribe to events based on the
    * EventSubscription. If not possible, opens the connection and queues the subscription message.
+   * Memorizes the EventSubscription to be replayed when the websocket drops and reconnects.
    * @param subscription  details about the event to subscribe to
    * @param callback  a callback to call when the event occurs
    * @private
    */
   subscribe(subscription: EventSubscription, callback: Function) {
+    if (this.subscriptions.findIndex(sub => sub.id === subscription.id) === -1) {
+      this.subscriptions.push(subscription);
+    }
     if (this.connected) {
       if (typeof callback === 'function') {
         this.subscriptionCallbackMap[subscription.id] = callback;
