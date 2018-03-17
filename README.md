@@ -55,6 +55,25 @@ For starters, you can find all tickets in a line with ID 12345:
 Qminder.tickets refers to TicketService, for which you can find documentation in the 
 [API reference][api].
 
+### Testing changes to Javascript API in another project
+
+When contributing to the JS API, you may wish to test if it works in a project that utilizes the API
+library. To include your local dev version of the Javascript API for the project:
+
+```bash
+# 1. Build
+npm run build
+# 2. cd into the project you want to use API on
+cd $PROJECT
+# 3. install the local JS API folder, and keep track of its changes
+npm install $JAVASCRIPT_API
+# 4. Recompile the code
+webpack
+# The project now uses your local development copy of the Javascript API.
+# The JS API will be symlinked into your project, which means you can keep changing the
+# JS API until your new feature works.
+```
+
 ### Contributing
 
 To contribute to the Qminder API, set up your development environment, then clone the source code.
