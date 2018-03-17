@@ -1,7 +1,8 @@
+// Empty function to pass as callback and check for equality
+const func = () => {
+};
+
 describe("Qminder.events", function () {
-  // Empty function to pass as callback and check for equality
-  const func = () => {
-  };
 
   // An example ticket creation message. Only the 'data' is passed to the callback.
   const TICKET_CREATED_MESSAGE = {
@@ -461,14 +462,6 @@ describe("Qminder.events", function () {
 
   // TODO: these tests need to close the connection and wait for it to open, which is NYI.
   xdescribe('subscribe() - no connection yet', function () {
-    it('puts the message and callback to the message queue', function () {
-      const subscription = { subscribe: 'TICKET_CREATED', location: 1234, id: 'AFAFAF' };
-      Qminder.events.subscribe(subscription, func);
-      const message = Qminder.events.messageQueue[0];
-      expect(Qminder.events.messageQueue.length).toBe(1);
-      expect(message.message).toBe(subscription);
-      expect(message.callback).toBe(func);
-    });
     it('if not connecting, tries to open the socket', function () {
       const subscription = { subscribe: 'TICKET_CREATED', location: 1234, id: 'AFAFAF' };
       const stub = sinon.stub(Qminder.events, 'openSocket');
@@ -495,5 +488,132 @@ describe("Qminder.events", function () {
     it('sets the server to wss://api.qminder.com:443 by default', function() {
       expect(Qminder.events.apiServer).toBe('wss://api.qminder.com:443');
     });
+  });
+});
+
+describe("Qminder.events (without connecting)", function() {
+  beforeEach(function(done) {
+    if (typeof Qminder === 'undefined') {
+      Qminder = this.Qminder;
+    }
+    if (typeof sinon === 'undefined') {
+      sinon = this.sinon;
+    }
+    if (typeof WebSocket === 'undefined') {
+      WebSocket = require('ws');
+    }
+    // Extend the timeouts because weird timing
+    jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
+
+    Qminder.events.reset();
+    Qminder.events.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
+    Qminder.events.setServer('ws://localhost:8123');
+
+    // NOTE: the following test starts with a closed socket.
+
+    // Interface the Mock Websocket Server to add stubbing behavior.
+    // The stub's return value is sent to the control socket, and data received from the control
+    // socket is passed as the first argument into the stub.
+
+    // This means you can do this:
+    // this.controlSocketStub.onCall(0).returns({ subscriptionId: 1234, message: "Wow" });
+    // and when the Qminder API sends a websocket message, the object is sent back to it over the
+    // socket.
+
+    // Create a socket to the control interface of the mock WS server's control pipe
+    this.controlSocket = new WebSocket('ws://localhost:8124');
+    this.controlSocketStub = sinon.stub();
+    this.controlSocket.onmessage = (event) => {
+      if (event.data.indexOf('PING') !== -1) {
+        this.controlSocket.send('PONG');
+        return;
+      }
+
+      try {
+        const data = JSON.parse(event.data);
+        let controlMessage = this.controlSocketStub(data);
+
+        if (typeof controlMessage !== 'string') {
+          controlMessage = JSON.stringify(controlMessage);
+        }
+
+        console.log(controlMessage);
+
+        if (controlMessage) {
+          this.controlSocket.send(controlMessage);
+        }
+      } catch (e) {
+        console.error(e.stack);
+      }
+    };
+
+    // Handle pings/pongs automatically
+    this.controlSocketStub.withArgs('PING').returns('PONG');
+
+    // If both Qminder.events and the controlSocket are open, then continue
+    const controlSocketOpen = new Promise(resolve => {
+      this.controlSocket.onopen = resolve;
+    });
+    Promise.all([controlSocketOpen]).then(done);
+  });
+  it('does not double subscribe on onopen()', function(done) {
+    const subscription = {
+      subscribe: 'TICKET_CREATED',
+      location: 673,
+      id: 'ID'
+    };
+
+    // Make the subscription ID generator deterministic
+    const stub = sinon.stub(Qminder.events, 'createId');
+    stub.returns('ID');
+
+    // Trigger a subscription while not connected
+    // NOTE: triggers a socket open
+    Qminder.events.subscribe(subscription, func);
+
+    // Check subscriptions array
+    expect(Qminder.events.subscriptions).toEqual([subscription]);
+
+    const clientSocketOpen = new Promise(resolve => {
+      if (Qminder.events.socket.readyState === 1) {
+        setTimeout(resolve, 50);
+      } else {
+        Qminder.events.socket.addEventListener('open', () => setTimeout(resolve, 50));
+      }
+    });
+
+    // After Qminder API connects:
+    clientSocketOpen.then(() => {
+      const matcher = sinon.match(subscription);
+      expect(this.controlSocketStub.calledWith(matcher)).toBeTruthy();
+      expect(this.controlSocketStub.callCount).toEqual(1);
+      done();
+    });
+  });
+
+  afterEach(function(done) {
+    // Reset behavior and history of the socket stub
+    this.controlSocketStub.reset();
+    this.controlSocketStub.resetBehavior();
+
+    // Close the control socket
+    this.controlSocket.close();
+
+    // Close the Qminder events websocket
+    Qminder.events.closeSocket();
+
+    // Wait for both client & control socket to close before done
+    const clientSocketClosed = new Promise((resolve) => {
+      if (Qminder.events.socket.readyState === 3) {
+        resolve();
+      } else {
+        Qminder.events.socket.addEventListener('close', resolve);
+      }
+    });
+    const controlSocketClosed = new Promise((resolve) => {
+      this.controlSocket.addEventListener('close', resolve);
+    });
+
+    Promise.all([clientSocketClosed, controlSocketClosed]).then(done);
   });
 });

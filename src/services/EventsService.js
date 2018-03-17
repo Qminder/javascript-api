@@ -67,11 +67,6 @@ class EventsService {
    * @private */
   connected: boolean;
 
-  /** A queue of subscriptions to create when the connection is re-established. When the
-   *  websocket is disconnected, all subscription requests are queued until connected again.
-   * @private */
-  messageQueue: Array<{ message: EventSubscription, callback: Function }>;
-
   /** A timeout object after which to retry connecting to Qminder API.
    * @private*/
   retryTimeout: Object;
@@ -220,12 +215,6 @@ class EventsService {
       // When the socket opens, re-establish all subscriptions
       this.subscriptions.forEach(message => this.subscribe(message));
 
-      // Make sure that any subscriptions in the queue get re-established too
-      while (this.messageQueue.length > 0) {
-        const { message, callback } = this.messageQueue.pop();
-        this.subscribe(message, callback);
-      }
-
       // Start sending pings every 10s
       this.pingInterval = setInterval(() => this.socket.send("PING"), 10000);
 
@@ -347,16 +336,13 @@ class EventsService {
     if (this.subscriptions.findIndex(sub => sub.id === subscription.id) === -1) {
       this.subscriptions.push(subscription);
     }
+    if (typeof callback === 'function') {
+      this.subscriptionCallbackMap[subscription.id] = callback;
+    }
     if (this.connected) {
-      if (typeof callback === 'function') {
-        this.subscriptionCallbackMap[subscription.id] = callback;
-      }
       this.socket.send(JSON.stringify(subscription));
-    } else {
-      this.messageQueue.push({ message: subscription, callback });
-      if (!this.connecting) {
-        this.openSocket();
-      }
+    } else if (!this.connecting) {
+      this.openSocket();
     }
   }
 
@@ -568,7 +554,6 @@ class EventsService {
     }
     this.connecting = false;
     this.connected = false;
-    this.messageQueue = [];
 
     if (this.retryTimeout) {
       clearTimeout(this.retryTimeout);
