@@ -349,6 +349,13 @@ describe("Qminder.events", function () {
         .toBeTruthy();
     });
 
+    it('onLocationChanged throws an error if the location ID is missing', function () {
+      expect(() => Qminder.events.onLocationChanged(func)).toThrow();
+      const obj = sinon.match({ });
+      expect(this.createSubscriptionStub.calledWith('LOCATION_CHANGE', func, undefined, obj))
+        .toBeFalsy();
+    });
+
     it('passes the filter along', function () {
       Qminder.events.onTicketCreated(func, filter);
       expect(this.createSubscriptionStub.calledWith('TICKET_CREATED', func, filter)).toBeTruthy();

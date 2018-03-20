@@ -555,6 +555,9 @@ class EventsService {
    * @param id  the location's ID to listen to
    */
   onLocationChanged(callback: EventCallback<{}>, id: number) {
+    if (typeof id !== 'number') {
+      throw new Error('EventsService: onLocationChanged: missing location ID');
+    }
     this.createSubscription('LOCATION_CHANGE', callback, undefined, { id });
   }
 
