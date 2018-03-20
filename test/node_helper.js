@@ -6,3 +6,5 @@ beforeAll(function() {
   this.sinon = require('sinon');
   this.isNode = true;
 });
+
+process.on('unhandledRejection', err => { throw err; });

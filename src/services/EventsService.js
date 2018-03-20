@@ -542,6 +542,23 @@ class EventsService {
   }
 
   /**
+   * Register a callback to get notified when a location's settings change.
+   *
+   * @example
+   * const apiKey = "...";
+   * const locationId = 1524;
+   * Qminder.setKey(apiKey);
+   * Qminder.events.onLocationChanged(function(event) {
+   *     console.log("Location changed: ", event);
+   * }, locationId);
+   * @param callback  a function that gets called every time the location settings change
+   * @param id  the location's ID to listen to
+   */
+  onLocationChanged(callback: EventCallback<{}>, id: number) {
+    this.createSubscription('LOCATION_CHANGE', callback, undefined, { id });
+  }
+
+  /**
    * Reset the Events API.
    * You will normally not need this.
    * @private
