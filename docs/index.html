@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>qminder-api 2.1.11 | Documentation</title>
+  <title>qminder-api 2.1.15 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>qminder-api</h3>
-          <div class='mb1'><code>2.1.11</code></div>
+          <div class='mb1'><code>2.1.15</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -729,6 +729,12 @@
                         #onLinesChanged
                       </a></li>
                       
+                      <li><a
+                        href='#eventsserviceonlocationchanged'
+                        class='regular pre-open'>
+                        #onLocationChanged
+                      </a></li>
+                      
                     </ul>
                   
                   
@@ -1299,7 +1305,7 @@ This function sets the API key and enables you to use the API methods.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>key</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>key</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    the Qminder API key
 
           </div>
@@ -1348,7 +1354,7 @@ numbered desks to call visitors to a specific clerk or table.</p>
 <p>Desks need to be enabled in a Location to be able to use them.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new Desk(properties: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#desk">Desk</a>))</div>
+  <div class='pre p1 fill-light mt0'>new Desk(properties: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#desk">Desk</a>))</div>
   
   
 
@@ -1365,8 +1371,10 @@ numbered desks to call visitors to a specific clerk or table.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#desk">Desk</a>))</code>
-	    
+            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#desk">Desk</a>))</code>
+	    either the desk number, or the desk's properties in one object. Even another
+Desk works as a properties object.
+
           </div>
           
         </div>
@@ -1408,7 +1416,7 @@ numbered desks to call visitors to a specific clerk or table.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -1460,7 +1468,7 @@ numbered desks to call visitors to a specific clerk or table.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -1537,7 +1545,8 @@ Apple TV or custom TV screen.</p>
         <div class='space-bottom0'>
           <div>
             <span class='code bold'>properties</span> <code class='quiet'>(<a href="#device">Device</a>)</code>
-	    
+	    an object with the Device's properties.
+
           </div>
           
         </div>
@@ -1578,7 +1587,7 @@ Apple TV or custom TV screen.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -1687,7 +1696,7 @@ sign-in application.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -1738,7 +1747,7 @@ sign-in application.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>
     </p>
   
   
@@ -1789,7 +1798,7 @@ sign-in application.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?
     </p>
   
   
@@ -1848,7 +1857,7 @@ currently charging.</p>
   
     <p>
       Type:
-      {level: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, charging: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>}?
+      {level: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, charging: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>}?
     </p>
   
   
@@ -1911,7 +1920,7 @@ which line they queue up to on the iPad Sign-In App.</p>
 one line.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new Line(properties: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#line">Line</a>))</div>
+  <div class='pre p1 fill-light mt0'>new Line(properties: <a href="#line">Line</a>)</div>
   
   
 
@@ -1928,8 +1937,9 @@ one line.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#line">Line</a>))</code>
-	    
+            <span class='code bold'>properties</span> <code class='quiet'>(<a href="#line">Line</a>)</code>
+	    the line, or a plain object describing a line.
+
           </div>
           
         </div>
@@ -1971,7 +1981,7 @@ This is the unique identifier for a given Line.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -2023,7 +2033,7 @@ This can be seen on the iPad, TV and on each ticket in the service screen.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -2075,7 +2085,7 @@ This is used in statistics views for coloring charts.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -2127,7 +2137,7 @@ Sign-In App and on the Service View.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>
     </p>
   
   
@@ -2187,7 +2197,7 @@ service clerks, and multiple iPads and TVs. A location can have SMS enabled, whe
 Pro plan.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new Location(properties: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#location">Location</a>))</div>
+  <div class='pre p1 fill-light mt0'>new Location(properties: <a href="#location">Location</a>)</div>
   
   
 
@@ -2204,8 +2214,9 @@ Pro plan.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#location">Location</a>))</code>
-	    
+            <span class='code bold'>properties</span> <code class='quiet'>(<a href="#location">Location</a>)</code>
+	    a Location, or a plain object describing a Location.
+
           </div>
           
         </div>
@@ -2246,7 +2257,7 @@ Pro plan.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -2297,7 +2308,7 @@ Pro plan.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -2350,7 +2361,7 @@ and 60 for London (UTC + 1 hour).</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -2402,7 +2413,7 @@ This value is from the Google Maps API, using their projections.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -2454,7 +2465,7 @@ This value is from the Google Maps API, using their projections.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -2506,7 +2517,7 @@ This value is pulled from the Google Maps API.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -2648,7 +2659,7 @@ by the Location Manager.</p>
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
@@ -2770,13 +2781,13 @@ An option can have a color, which is represented as a hex string.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>color</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+          <span class='code bold'>color</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
@@ -2853,13 +2864,13 @@ options in Qminder Dashboard.</p>
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#selectfieldoption">SelectFieldOption</a>>)</code>
+          <span class='code bold'>options</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#selectfieldoption">SelectFieldOption</a>>)</code>
           
           
         </div>
@@ -2904,7 +2915,7 @@ Tickets can have many TicketExtras.</p>
 messages are stored with the ticket in the TicketMessages list.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new Ticket(properties: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</div>
+  <div class='pre p1 fill-light mt0'>new Ticket(properties: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</div>
   
   
 
@@ -2921,7 +2932,7 @@ messages are stored with the ticket in the TicketMessages list.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</code>
+            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</code>
 	    
           </div>
           
@@ -2963,7 +2974,7 @@ messages are stored with the ticket in the TicketMessages list.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -3015,7 +3026,7 @@ messages are stored with the ticket in the TicketMessages list.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
     </p>
   
   
@@ -3174,7 +3185,7 @@ For example, 14142.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -3225,7 +3236,7 @@ For example, 14142.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -3276,7 +3287,7 @@ For example, 14142.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -3327,7 +3338,7 @@ For example, 14142.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?
     </p>
   
   
@@ -3388,7 +3399,7 @@ return new Date(timeA) - new Date(timeB);
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -3441,7 +3452,7 @@ milliseconds.</p>
   
     <p>
       Type:
-      {date: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}
+      {date: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}
     </p>
   
   
@@ -3494,7 +3505,7 @@ was called, in ISO8601 format, with milliseconds.</p>
   
     <p>
       Type:
-      {date: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}?
+      {date: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}?
     </p>
   
   
@@ -3546,7 +3557,7 @@ served, in ISO8601 format, with milliseconds.</p>
   
     <p>
       Type:
-      {date: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}?
+      {date: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}?
     </p>
   
   
@@ -3602,7 +3613,7 @@ The assignee is the person who will call the ticket for service.</p>
   
     <p>
       Type:
-      {assigner: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, assignee: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?
+      {assigner: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, assignee: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?
     </p>
   
   
@@ -3655,7 +3666,7 @@ ISO8601 format, and the ID of the User who cancelled the ticket.</p>
   
     <p>
       Type:
-      {date: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, canceller: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?
+      {date: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, canceller: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?
     </p>
   
   
@@ -3706,7 +3717,7 @@ ISO8601 format, and the ID of the User who cancelled the ticket.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketextra">TicketExtra</a>>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketextra">TicketExtra</a>>?
     </p>
   
   
@@ -3757,7 +3768,7 @@ ISO8601 format, and the ID of the User who cancelled the ticket.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketlabel">TicketLabel</a>>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketlabel">TicketLabel</a>>?
     </p>
   
   
@@ -3808,7 +3819,7 @@ ISO8601 format, and the ID of the User who cancelled the ticket.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketinteraction">TicketInteraction</a>>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketinteraction">TicketInteraction</a>>?
     </p>
   
   
@@ -3859,7 +3870,7 @@ ISO8601 format, and the ID of the User who cancelled the ticket.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketmessage">TicketMessage</a>>?
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketmessage">TicketMessage</a>>?
     </p>
   
   
@@ -3944,7 +3955,7 @@ property, and the title is always assigned to "Open".</p>
   
     <p>
       Type:
-      {title: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?, editable: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?}
+      {title: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, value: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?, editable: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?}
     </p>
   
   
@@ -3963,25 +3974,25 @@ property, and the title is always assigned to "Open".</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>title</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>value</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>value</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
+          <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>?)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>editable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?)</code>
+          <span class='code bold'>editable</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a>?)</code>
           
           
         </div>
@@ -4031,7 +4042,7 @@ and the Line ID that the Ticket was in, during the specified time.</p>
   
     <p>
       Type:
-      {start: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, end: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, line: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}
+      {start: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, end: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, line: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}
     </p>
   
   
@@ -4050,19 +4061,19 @@ and the Line ID that the Ticket was in, during the specified time.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>start</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>start</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>end</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>line</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          <span class='code bold'>line</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
           
           
         </div>
@@ -4110,7 +4121,7 @@ label is automatically generated.</p>
   
     <p>
       Type:
-      {value: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, color: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}
+      {value: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, color: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}
     </p>
   
   
@@ -4129,13 +4140,13 @@ label is automatically generated.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>value</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>value</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>color</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>color</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
@@ -4212,7 +4223,7 @@ with the User ID <code>15000</code>.</p>
   
     <p>
       Type:
-      {created: {date: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}, body: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, type: (<code>"INCOMING"</code> | <code>"OUTGOING"</code>), status: (<code>"NEW"</code> | <code>"SENT"</code> | <code>"DELIVERED"</code> | <code>"INVALID_NUMBER"</code>), userId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?}
+      {created: {date: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}, body: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, type: (<code>"INCOMING"</code> | <code>"OUTGOING"</code>), status: (<code>"NEW"</code> | <code>"SENT"</code> | <code>"DELIVERED"</code> | <code>"INVALID_NUMBER"</code>), userId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?}
     </p>
   
   
@@ -4231,19 +4242,19 @@ with the User ID <code>15000</code>.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>created</span> <code class='quiet'>({date: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>})</code>
+          <span class='code bold'>created</span> <code class='quiet'>({date: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>})</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>created.date</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>created.date</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>body</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>body</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
@@ -4261,7 +4272,7 @@ with the User ID <code>15000</code>.</p>
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>userId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
+          <span class='code bold'>userId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
           
           
         </div>
@@ -4364,7 +4375,7 @@ The 'medium' sized user picture is available if the user has an image.</p>
   
     <p>
       Type:
-      {size: (<code>"small"</code> | <code>"medium"</code> | <code>"large"</code>), url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}
+      {size: (<code>"small"</code> | <code>"medium"</code> | <code>"large"</code>), url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>}
     </p>
   
   
@@ -4389,7 +4400,7 @@ The 'medium' sized user picture is available if the user has an image.</p>
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
@@ -4489,7 +4500,7 @@ If the role type is 'ADMINISTRATOR', there is no location specified.</p>
   
     <p>
       Type:
-      {id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, type: <a href="#roletype">RoleType</a>, location: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?}
+      {id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, type: <a href="#roletype">RoleType</a>, location: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?}
     </p>
   
   
@@ -4508,7 +4519,7 @@ If the role type is 'ADMINISTRATOR', there is no location specified.</p>
     <div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
           
           
         </div>
@@ -4520,7 +4531,7 @@ If the role type is 'ADMINISTRATOR', there is no location specified.</p>
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
+          <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
           
           
         </div>
@@ -4563,7 +4574,7 @@ visitors, and potentially more if they have additional rights.</p>
 The 'medium' picture size is 200x200.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new User(properties: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#user">User</a>))</div>
+  <div class='pre p1 fill-light mt0'>new User(properties: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#user">User</a>))</div>
   
   
 
@@ -4580,8 +4591,9 @@ The 'medium' picture size is 200x200.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#user">User</a>))</code>
-	    
+            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#user">User</a>))</code>
+	    either the User's ID, or a properties object.
+
           </div>
           
         </div>
@@ -4623,7 +4635,7 @@ For example, 12345</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -4675,7 +4687,7 @@ For example, 'Jane'</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -4727,7 +4739,7 @@ For example, 'Smith'</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -4780,7 +4792,7 @@ For example: 'jane.smith@example.com'.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -4831,7 +4843,7 @@ For example: 'jane.smith@example.com'.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#picture">Picture</a>>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#picture">Picture</a>>
     </p>
   
   
@@ -4882,7 +4894,7 @@ For example: 'jane.smith@example.com'.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -4933,7 +4945,7 @@ For example: 'jane.smith@example.com'.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#userrole">UserRole</a>>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#userrole">UserRole</a>>
     </p>
   
   
@@ -4992,7 +5004,7 @@ For example: 'jane.smith@example.com'.</p>
 downstream listeners about various events such as ticket creation or location changes.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new Webhook(properties: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#webhook">Webhook</a>))</div>
+  <div class='pre p1 fill-light mt0'>new Webhook(properties: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#webhook">Webhook</a>))</div>
   
   
 
@@ -5009,7 +5021,7 @@ downstream listeners about various events such as ticket creation or location ch
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#webhook">Webhook</a>))</code>
+            <span class='code bold'>properties</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#webhook">Webhook</a>))</code>
 	    
           </div>
           
@@ -5094,7 +5106,7 @@ Sign-In app installed, or Apple TVs with the Qminder TV app.</p>
 <p><code>GET /v1/locations/&#x3C;ID>/devices/</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>list(location: (<a href="#location">Location</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#device">Device</a>>></div>
+  <div class='pre p1 fill-light mt0'>list(location: (<a href="#location">Location</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#device">Device</a>>></div>
   
   
 
@@ -5111,7 +5123,7 @@ Sign-In app installed, or Apple TVs with the Qminder TV app.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>location</span> <code class='quiet'>((<a href="#location">Location</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>location</span> <code class='quiet'>((<a href="#location">Location</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Location or location's ID
 
           </div>
@@ -5126,7 +5138,7 @@ Sign-In app installed, or Apple TVs with the Qminder TV app.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#device">Device</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#device">Device</a>>></code>:
         a Promise that resolves to the list of devices for the location, or rejects if
 something went wrong.
 
@@ -5181,7 +5193,7 @@ Returns the ID, name, theme and settings of the TV.</p>
 <p><code>GET /v1/tv/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>details(tv: (<a href="#device">Device</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></div>
+  <div class='pre p1 fill-light mt0'>details(tv: (<a href="#device">Device</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></div>
   
   
 
@@ -5198,7 +5210,7 @@ Returns the ID, name, theme and settings of the TV.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tv</span> <code class='quiet'>((<a href="#device">Device</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>tv</span> <code class='quiet'>((<a href="#device">Device</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Device that represents the TV, or the TV ID
 
           </div>
@@ -5213,7 +5225,7 @@ Returns the ID, name, theme and settings of the TV.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></code>:
         a Promise that resolves to device details, or rejects if
 something went wrong.
 
@@ -5266,7 +5278,7 @@ This changes the TV's display name in the TV List in the Qminder Dashboard.</p>
 <p><code>POST /v1/tv/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>edit(tv: (<a href="#device">Device</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), newName: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></div>
+  <div class='pre p1 fill-light mt0'>edit(tv: (<a href="#device">Device</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), newName: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></div>
   
   
 
@@ -5283,7 +5295,7 @@ This changes the TV's display name in the TV List in the Qminder Dashboard.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tv</span> <code class='quiet'>((<a href="#device">Device</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>tv</span> <code class='quiet'>((<a href="#device">Device</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Device that represents the TV, or the TV ID.
 
           </div>
@@ -5292,7 +5304,7 @@ This changes the TV's display name in the TV List in the Qminder Dashboard.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>newName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>newName</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    the desired new name of the TV.
 
           </div>
@@ -5307,7 +5319,7 @@ This changes the TV's display name in the TV List in the Qminder Dashboard.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#device">Device</a>></code>:
         a Promise that resolves to the new TV details, or rejects if something went wrong.
 
       
@@ -5359,7 +5371,7 @@ device = <span class="hljs-keyword">await</span> Qminder.devices.edit(device, de
 <p><code>DELETE /v1/tv/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>remove(tv: (<a href="#device">Device</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{statusCode: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}></div>
+  <div class='pre p1 fill-light mt0'>remove(tv: (<a href="#device">Device</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{statusCode: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}></div>
   
   
 
@@ -5376,7 +5388,7 @@ device = <span class="hljs-keyword">await</span> Qminder.devices.edit(device, de
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>tv</span> <code class='quiet'>((<a href="#device">Device</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>tv</span> <code class='quiet'>((<a href="#device">Device</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Device that represents the TV, or the TV ID.
 
           </div>
@@ -5391,7 +5403,7 @@ device = <span class="hljs-keyword">await</span> Qminder.devices.edit(device, de
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{statusCode: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;{statusCode: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}></code>:
         A promise that resolves when successful and rejects when something went wrong.
 
       
@@ -5566,7 +5578,7 @@ device = <span class="hljs-keyword">await</span> Qminder.devices.edit(device, de
   
     <p>
       Type:
-      {line: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?, location: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?}?
+      {line: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?, location: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?}?
     </p>
   
   
@@ -5618,7 +5630,7 @@ device = <span class="hljs-keyword">await</span> Qminder.devices.edit(device, de
   
     <p>
       Type:
-      {subscribe: <a href="#eventtype">EventType</a>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, line: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?, location: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?, parameters: {id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?}
+      {subscribe: <a href="#eventtype">EventType</a>, id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, line: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?, location: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?, parameters: {id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?}
     </p>
   
   
@@ -5643,31 +5655,31 @@ device = <span class="hljs-keyword">await</span> Qminder.devices.edit(device, de
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+          <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>line</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
+          <span class='code bold'>line</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
+          <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>?)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>parameters</span> <code class='quiet'>({id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?)</code>
+          <span class='code bold'>parameters</span> <code class='quiet'>({id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>}?)</code>
           
           
         </div>
       
         <div class='space-bottom0'>
-          <span class='code bold'>parameters.id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+          <span class='code bold'>parameters.id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
           
           
         </div>
@@ -5768,7 +5780,7 @@ previously subscribed events.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;function (): void>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;function (): void>
     </p>
   
   
@@ -6428,7 +6440,7 @@ Qminder.events.onTicketChanged(<span class="hljs-function"><span class="hljs-key
   <p>Register a callback to get notified when TV settings change.</p>
 
 
-  <div class='pre p1 fill-light mt0'>onOverviewMonitorChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
+  <div class='pre p1 fill-light mt0'>onOverviewMonitorChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
   
   
 
@@ -6454,7 +6466,7 @@ Qminder.events.onTicketChanged(<span class="hljs-function"><span class="hljs-key
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    The TV's ID to listen to
 
           </div>
@@ -6507,7 +6519,7 @@ Qminder.events.onOverviewMonitorChanged(<span class="hljs-function"><span class=
   <p>Register a callback to get notified when iPad settings change.</p>
 
 
-  <div class='pre p1 fill-light mt0'>onSignInDeviceChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
+  <div class='pre p1 fill-light mt0'>onSignInDeviceChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
   
   
 
@@ -6533,7 +6545,7 @@ Qminder.events.onOverviewMonitorChanged(<span class="hljs-function"><span class=
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    The iPad's ID to listen to
 
           </div>
@@ -6586,7 +6598,7 @@ Qminder.events.onSignInDeviceChanged(<span class="hljs-function"><span class="hl
   <p>Register a callback to get notified when a location's lines change.</p>
 
 
-  <div class='pre p1 fill-light mt0'>onLinesChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
+  <div class='pre p1 fill-light mt0'>onLinesChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
   
   
 
@@ -6612,7 +6624,7 @@ Qminder.events.onSignInDeviceChanged(<span class="hljs-function"><span class="hl
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    The Location ID to listen to
 
           </div>
@@ -6637,6 +6649,86 @@ Qminder.setKey(apiKey);
 Qminder.events.onLinesChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
     <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Lines changed: "</span>, event);
 });</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='eventsserviceonlocationchanged'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>onLocationChanged(callback, id)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Register a callback to get notified when a location's settings change.</p>
+
+
+  <div class='pre p1 fill-light mt0'>onLocationChanged(callback: <a href="#eventcallback">EventCallback</a>&#x3C;{}>, id: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>callback</span> <code class='quiet'>(<a href="#eventcallback">EventCallback</a>&#x3C;{}>)</code>
+	    a function that gets called every time the location settings change
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+	    the location's ID to listen to
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> apiKey = <span class="hljs-string">"..."</span>;
+<span class="hljs-keyword">const</span> locationId = <span class="hljs-number">1524</span>;
+Qminder.setKey(apiKey);
+Qminder.events.onLocationChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Location changed: "</span>, event);
+}, locationId);</pre>
     
   
 
@@ -6718,7 +6810,7 @@ The lines will have the line ID, name, and color filled in.</p>
 <p><code>GET /locations/&#x3C;ID>/lines</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>list(location: (<a href="#location">Location</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#line">Line</a>>></div>
+  <div class='pre p1 fill-light mt0'>list(location: (<a href="#location">Location</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#line">Line</a>>></div>
   
   
 
@@ -6735,7 +6827,7 @@ The lines will have the line ID, name, and color filled in.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>location</span> <code class='quiet'>((<a href="#location">Location</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>location</span> <code class='quiet'>((<a href="#location">Location</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Location or its ID
 
           </div>
@@ -6750,7 +6842,7 @@ The lines will have the line ID, name, and color filled in.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#line">Line</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#line">Line</a>>></code>:
         a promise that resolves to a list of lines, or rejects if something went wrong.
 
       
@@ -6793,7 +6885,7 @@ The lines will have the line ID, name, and color filled in.</p>
 <p><code>GET /lines/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>details(line: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#line">Line</a>></div>
+  <div class='pre p1 fill-light mt0'>details(line: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#line">Line</a>></div>
   
   
 
@@ -6810,7 +6902,7 @@ The lines will have the line ID, name, and color filled in.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>line</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>line</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    The line to get detailed info about, or the line's ID.
 
           </div>
@@ -6825,7 +6917,7 @@ The lines will have the line ID, name, and color filled in.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#line">Line</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#line">Line</a>></code>:
         a promise that resolves to the Line object, or rejects if
 something went wrong.
 
@@ -6869,7 +6961,7 @@ something went wrong.
 <p><code>POST /locations/&#x3C;ID>/lines</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>create(location: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, line: <a href="#line">Line</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>create(location: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>, line: <a href="#line">Line</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -6886,7 +6978,7 @@ something went wrong.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    the location to add the line under
 
           </div>
@@ -6910,7 +7002,7 @@ something went wrong.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         a Promise that resolves to a new Line object, created according
 to the parameters.
 
@@ -6957,7 +7049,7 @@ statistics. This action cannot be undone.</p>
 <p><code>DELETE /lines/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>remove(line: (<a href="#line">Line</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>remove(line: (<a href="#line">Line</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -6974,7 +7066,7 @@ statistics. This action cannot be undone.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>line</span> <code class='quiet'>((<a href="#line">Line</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>line</span> <code class='quiet'>((<a href="#line">Line</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Line or the line's ID to remove
 
           </div>
@@ -6989,7 +7081,7 @@ statistics. This action cannot be undone.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         A Promise that resolves when the line was deleted, and rejects
 when something went wrong.
 
@@ -7088,7 +7180,7 @@ This function returns a list of locations that the API key has access to.</p>
 <p><code>GET /locations/</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>list(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></div>
+  <div class='pre p1 fill-light mt0'>list(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></div>
   
   
 
@@ -7106,7 +7198,7 @@ This function returns a list of locations that the API key has access to.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>></code>:
         A promise that resolves to an array of locations.
 
       
@@ -7143,7 +7235,7 @@ This function returns a list of locations that the API key has access to.</p>
 <p><code>GET /locations/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>details(locationId: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#location">Location</a>></div>
+  <div class='pre p1 fill-light mt0'>details(locationId: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#location">Location</a>></div>
   
   
 
@@ -7160,7 +7252,7 @@ This function returns a list of locations that the API key has access to.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>locationId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>locationId</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    the location's unique ID, for example 1234
 
           </div>
@@ -7175,7 +7267,7 @@ This function returns a list of locations that the API key has access to.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#location">Location</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#location">Location</a>></code>:
         A promise that resolves to the location.
 
       
@@ -7213,7 +7305,7 @@ The desks all have sequential numbered names, for example: "1".</p>
 <p><code>GET /v1/locations/&#x3C;ID>/desks</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>getDesks(location: <a href="#location">Location</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#desk">Desk</a>>></div>
+  <div class='pre p1 fill-light mt0'>getDesks(location: <a href="#location">Location</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#desk">Desk</a>>></div>
   
   
 
@@ -7244,7 +7336,7 @@ The desks all have sequential numbered names, for example: "1".</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#desk">Desk</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#desk">Desk</a>>></code>:
         the list of desks in this location
 
       
@@ -7283,7 +7375,7 @@ Dashboard Service View.</p>
 <p><code>GET /locations/&#x3C;ID>/input-fields</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>getInputFields(location: (<a href="#location">Location</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#inputfield">InputField</a>>></div>
+  <div class='pre p1 fill-light mt0'>getInputFields(location: (<a href="#location">Location</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#inputfield">InputField</a>>></div>
   
   
 
@@ -7300,7 +7392,7 @@ Dashboard Service View.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>location</span> <code class='quiet'>((<a href="#location">Location</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>location</span> <code class='quiet'>((<a href="#location">Location</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the location to query, either as an ID or a Qminder Location object
 
           </div>
@@ -7315,7 +7407,7 @@ Dashboard Service View.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#inputfield">InputField</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#inputfield">InputField</a>>></code>:
         a Promise that resolves to an array of input
 fields, or rejects if something went wrong.
 
@@ -7424,7 +7516,7 @@ tickets that were marked served in lines 123 and 34.</p>
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7476,7 +7568,7 @@ tickets that were marked served in lines 123 and 34.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -7528,7 +7620,7 @@ tickets that were marked served in lines 123 and 34.</p>
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketstatus">TicketStatus</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketstatus">TicketStatus</a>> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)
     </p>
   
   
@@ -7582,7 +7674,7 @@ filter.</p>
   
     <p>
       Type:
-      (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7635,7 +7727,7 @@ If minCreated is specified, search results will only include tickets created aft
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7688,7 +7780,7 @@ If maxCreated is specified, search results will only include tickets created bef
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7741,7 +7833,7 @@ If minCalled is specified, search results will only include tickets called after
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7794,7 +7886,7 @@ If maxCalled is specified, search results will only include tickets called befor
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7904,7 +7996,7 @@ currently called ticket.</p>
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -7956,7 +8048,7 @@ currently called ticket.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -8008,7 +8100,7 @@ currently called ticket.</p>
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketstatus">TicketStatus</a>> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketstatus">TicketStatus</a>> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)
     </p>
   
   
@@ -8062,7 +8154,7 @@ filter.</p>
   
     <p>
       Type:
-      (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -8115,7 +8207,7 @@ If minCreated is specified, search results will only include tickets created aft
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -8168,7 +8260,7 @@ If maxCreated is specified, search results will only include tickets created bef
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -8221,7 +8313,7 @@ If minCalled is specified, search results will only include tickets called after
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -8274,7 +8366,7 @@ If maxCalled is specified, search results will only include tickets called befor
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)
     </p>
   
   
@@ -8327,7 +8419,7 @@ The number has to be between 1 and 10000, and by default up to 1000 results will
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>
     </p>
   
   
@@ -8383,7 +8475,7 @@ the key, separated by spaces.</p>
   
     <p>
       Type:
-      <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
+      <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>
     </p>
   
   
@@ -8441,7 +8533,7 @@ Tickets without interactions have an empty array.</p>
   
     <p>
       Type:
-      (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;(<code>"MESSAGES"</code> | <code>"INTERACTIONS"</code>)> | <code>"MESSAGES"</code> | <code>"INTERACTIONS"</code>)
+      (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;(<code>"MESSAGES"</code> | <code>"INTERACTIONS"</code>)> | <code>"MESSAGES"</code> | <code>"INTERACTIONS"</code>)
     </p>
   
   
@@ -8598,7 +8690,7 @@ Resolves to a list of tickets that match the search.</p>
 <p><code>GET /v1/tickets/search?&#x3C;CRITERIA></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>search(search: <a href="#ticketsearchcriteria">TicketSearchCriteria</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticket">Ticket</a>>></div>
+  <div class='pre p1 fill-light mt0'>search(search: <a href="#ticketsearchcriteria">TicketSearchCriteria</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticket">Ticket</a>>></div>
   
   
 
@@ -8630,7 +8722,7 @@ Resolves to a list of tickets that match the search.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticket">Ticket</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticket">Ticket</a>>></code>:
         A promise that resolves to matching tickets.
 
       
@@ -8694,7 +8786,7 @@ Note that this function is not limited by 10000 like TicketService.search.</p>
 <p><code>POST /v1/tickets/count?(search)</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>count(search: <a href="#ticketcountcriteria">TicketCountCriteria</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
+  <div class='pre p1 fill-light mt0'>count(search: <a href="#ticketcountcriteria">TicketCountCriteria</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
   
   
 
@@ -8726,7 +8818,7 @@ Note that this function is not limited by 10000 like TicketService.search.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
         the number of tickets that match the search criteria
 
       
@@ -8771,7 +8863,7 @@ Note that this function is not limited by 10000 like TicketService.search.</p>
 <p><code>POST /v1/lines/&#x3C;ID>/ticket</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>create(line: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#line">Line</a>), ticket: <a href="#ticket">Ticket</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
+  <div class='pre p1 fill-light mt0'>create(line: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#line">Line</a>), ticket: <a href="#ticket">Ticket</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
   
   
 
@@ -8788,7 +8880,7 @@ Note that this function is not limited by 10000 like TicketService.search.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>line</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#line">Line</a>))</code>
+            <span class='code bold'>line</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#line">Line</a>))</code>
 	    the ticket's desired line
 
           </div>
@@ -8812,7 +8904,7 @@ Note that this function is not limited by 10000 like TicketService.search.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
         a promise that resolves to the new Ticket object including its ID and other details.
 
       
@@ -8890,7 +8982,7 @@ ticket = <span class="hljs-keyword">await</span> Qminder.tickets.create(lineId, 
 <p><code>GET /v1/tickets/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>details(ticket: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
+  <div class='pre p1 fill-light mt0'>details(ticket: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
   
   
 
@@ -8907,7 +8999,7 @@ ticket = <span class="hljs-keyword">await</span> Qminder.tickets.create(lineId, 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</code>
 	    the Ticket to query, by ticket ID or Ticket object
 
           </div>
@@ -8922,7 +9014,7 @@ ticket = <span class="hljs-keyword">await</span> Qminder.tickets.create(lineId, 
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
         the ticket's details as a Ticket object
 
       
@@ -8977,7 +9069,7 @@ ticket = <span class="hljs-keyword">await</span> Qminder.tickets.create(lineId, 
 that need to be changed.</p>
 
 
-  <div class='pre p1 fill-light mt0'>edit(ticket: (<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>), changes: <a href="#ticket">Ticket</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>edit(ticket: (<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>), changes: <a href="#ticket">Ticket</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -8994,7 +9086,7 @@ that need to be changed.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a> | <a href="#ticket">Ticket</a>))</code>
 	    the ticket to edit, either the Ticket object or the ticket's ID
 
           </div>
@@ -9018,7 +9110,7 @@ that need to be changed.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         a Promise that resolves to "success" when editing the ticket worked
 
       
@@ -9078,7 +9170,7 @@ lines are put in chronological order, making sure to keep "orderAfter" in mind, 
 ticket is called.</p>
 
 
-  <div class='pre p1 fill-light mt0'>callNext(lines: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;(<a href="#line">Line</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), desk: (<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
+  <div class='pre p1 fill-light mt0'>callNext(lines: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;(<a href="#line">Line</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), desk: (<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
   
   
 
@@ -9095,7 +9187,7 @@ ticket is called.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>lines</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;(<a href="#line">Line</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)>)</code>
+            <span class='code bold'>lines</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;(<a href="#line">Line</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)>)</code>
 	    the list of lines to search for tickets
 
           </div>
@@ -9104,7 +9196,7 @@ ticket is called.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the user that is calling the ticket. This is needed when the API is used with
 the account API key, instead of a user-specific API key.
 
@@ -9114,7 +9206,7 @@ the account API key, instead of a user-specific API key.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>desk</span> <code class='quiet'>((<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>desk</span> <code class='quiet'>((<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the desk to call the user to.
 
           </div>
@@ -9129,7 +9221,7 @@ the account API key, instead of a user-specific API key.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
         a Promise that resolves to the ticket that was called, resolves to null if there
 was no ticket to call, and rejects if something went wrong.
 
@@ -9169,7 +9261,7 @@ details to the clerk on the Service View, and change the ticket status to 'CALLE
 <p>Only tickets that are waiting (their status is 'NEW') can be called.</p>
 
 
-  <div class='pre p1 fill-light mt0'>call(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), desk: (<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
+  <div class='pre p1 fill-light mt0'>call(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), desk: (<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></div>
   
   
 
@@ -9186,7 +9278,7 @@ details to the clerk on the Service View, and change the ticket status to 'CALLE
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to call. The ticket ID can be used instead of the Ticket object.
 
           </div>
@@ -9195,7 +9287,7 @@ details to the clerk on the Service View, and change the ticket status to 'CALLE
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the user that is calling the ticket. This parameter is not needed if
 Qminder.setKey was called with an API key belonging to a specific User. The user ID can be
 used instead of the User object.
@@ -9206,7 +9298,7 @@ used instead of the User object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>desk</span> <code class='quiet'>((<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>desk</span> <code class='quiet'>((<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the desk to call the ticket into. The desk ID can be used instead of the Desk
 object.
 
@@ -9222,7 +9314,7 @@ object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#ticket">Ticket</a>></code>:
         the ticket that was just called
 
       
@@ -9260,7 +9352,7 @@ object.
 <p>Only called tickets (with the status 'CALLED') can be recalled.</p>
 
 
-  <div class='pre p1 fill-light mt0'>recall(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>recall(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9277,7 +9369,7 @@ object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to recall. The ticket ID can be used instead of the Ticket object.
 
           </div>
@@ -9292,7 +9384,7 @@ object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         a promise that resolves to 'success' if all went well.
 
       
@@ -9330,7 +9422,7 @@ object.
 <p>Only called tickets (with the status 'CALLED') can be marked served.</p>
 
 
-  <div class='pre p1 fill-light mt0'>markServed(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>markServed(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9347,7 +9439,7 @@ object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to mark served. The ticket ID can be used instead of the Ticket
 object.
 
@@ -9363,7 +9455,7 @@ object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         a promise that resolves to 'success' if all went well.
 
       
@@ -9401,7 +9493,7 @@ object.
 <p>Only called tickets (with the status 'CALLED') can be marked as "no-show".</p>
 
 
-  <div class='pre p1 fill-light mt0'>markNoShow(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>markNoShow(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9418,7 +9510,7 @@ object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to mark no-show. The ticket ID can be used instead of the Ticket
 object.
 
@@ -9434,7 +9526,7 @@ object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         A promise that resolves to "success" when marking no-show works, and rejects when
 something went wrong.
 
@@ -9474,7 +9566,7 @@ something went wrong.
 <p>The user ID is mandatory.</p>
 
 
-  <div class='pre p1 fill-light mt0'>cancel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>cancel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9491,7 +9583,7 @@ something went wrong.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to cancel. The ticket ID can be used instead of the Ticket object.
 
           </div>
@@ -9500,7 +9592,7 @@ something went wrong.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user who canceled the ticket. This is a mandatory argument.
 
           </div>
@@ -9515,7 +9607,7 @@ something went wrong.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         a promise that resolves to "success" if removing works, and rejects if something
 went wrong.
 
@@ -9557,7 +9649,7 @@ the reason the visitor needs to go back to the queue and when they will be back 
 <p>Only called tickets (with the status 'CALLED') can be returned to the queue.</p>
 
 
-  <div class='pre p1 fill-light mt0'>returnToQueue(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), position: <a href="#desiredqueueposition">DesiredQueuePosition</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>returnToQueue(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), position: <a href="#desiredqueueposition">DesiredQueuePosition</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9574,7 +9666,7 @@ the reason the visitor needs to go back to the queue and when they will be back 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to return to queue. The ticket ID can be used instead of the
 Ticket object.
 
@@ -9584,7 +9676,7 @@ Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user that returned the ticket to the queue. The user ID can be used instead
 of the User object.
 
@@ -9610,7 +9702,7 @@ or 'LAST'.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         a promise that resolves to "success" if it worked, and rejects
 if something went wrong.
 
@@ -9650,7 +9742,7 @@ and can save additional details about the visitor into the label list. Labels ar
 automatically colored.</p>
 
 
-  <div class='pre p1 fill-light mt0'>addLabel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), label: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>addLabel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), label: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9667,7 +9759,7 @@ automatically colored.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to label. The ticket ID can be used instead of the Ticket object.
 
           </div>
@@ -9676,7 +9768,7 @@ automatically colored.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>label</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>label</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    The label to add, eg. "Has documents"
 
           </div>
@@ -9685,7 +9777,7 @@ automatically colored.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user that is adding the label, or null if it was added by no real person
 
           </div>
@@ -9700,7 +9792,7 @@ automatically colored.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         promise that resolves to 'success' if all was OK, and 'no
 action' if the label was already there, and rejects if something else went wrong.
 
@@ -9748,7 +9840,7 @@ action' if the label was already there, and rejects if something else went wrong
 <p>This API call removes the label from a ticket's label list, by the label's text.</p>
 
 
-  <div class='pre p1 fill-light mt0'>removeLabel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), label: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>removeLabel(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), label: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9765,7 +9857,7 @@ action' if the label was already there, and rejects if something else went wrong
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to remove a label from. The ticket ID can be used instead of the
 Ticket object.
 
@@ -9775,7 +9867,7 @@ Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>label</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>label</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    The label to remove, for example, "Has Cool Hair"
 
           </div>
@@ -9784,7 +9876,7 @@ Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user who is removing the label, for example 9500
 
           </div>
@@ -9799,7 +9891,7 @@ Ticket object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         A promise that resolves to "success" when removing the label
 worked, and rejects when something went wrong.
 
@@ -9849,7 +9941,7 @@ worked, and rejects when something went wrong.
 The user who will take the ticket (assignee) should be the third argument.</p>
 
 
-  <div class='pre p1 fill-light mt0'>assignToUser(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), assigner: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), assignee: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
+  <div class='pre p1 fill-light mt0'>assignToUser(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), assigner: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), assignee: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -9866,7 +9958,7 @@ The user who will take the ticket (assignee) should be the third argument.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to assign to an user. The ticket ID can be used instead of the
 Ticket object.
 
@@ -9876,7 +9968,7 @@ Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>assigner</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>assigner</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user who is assigning.
 
           </div>
@@ -9885,7 +9977,7 @@ Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>assignee</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>assignee</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user who will take the ticket.
 
           </div>
@@ -9900,7 +9992,7 @@ Ticket object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         resolves to 'success' on success
 
       
@@ -9953,7 +10045,7 @@ tickets.map(<span class="hljs-function">(<span class="hljs-params">ticket: Ticke
 <p><code>POST /v1/tickets/&#x3C;ID>/reorder</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>reorder(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), afterTicket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
+  <div class='pre p1 fill-light mt0'>reorder(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), afterTicket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)?): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
   
   
 
@@ -9970,7 +10062,7 @@ tickets.map(<span class="hljs-function">(<span class="hljs-params">ticket: Ticke
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to reorder. The ticket ID can be used instead
 of the Ticket object.
 
@@ -9980,7 +10072,7 @@ of the Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>afterTicket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)?)</code>
+            <span class='code bold'>afterTicket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)?)</code>
 	    the ticket to reorder after, or null if reordering to be first in the
 queue.
 
@@ -9996,7 +10088,7 @@ queue.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
         resolves to 'success' when it worked
 
       
@@ -10046,7 +10138,7 @@ Qminder.tickets.reorder(ticket3, ticket1);
 <p><code>GET /v1/tickets/&#x3C;ID>/estimated-time</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>getEstimatedTimeOfService(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
+  <div class='pre p1 fill-light mt0'>getEstimatedTimeOfService(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
   
   
 
@@ -10063,7 +10155,7 @@ Qminder.tickets.reorder(ticket3, ticket1);
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the ticket to get the estimated time for. The ticket ID can be used instead
 of the Ticket object.
 
@@ -10079,7 +10171,7 @@ of the Ticket object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
         the estimated Unix time the visitor will be called, eg 1509460809
 
       
@@ -10127,7 +10219,7 @@ of the Ticket object.
 <p>The list of audit logs shows who made changes to a ticket, and what changes have been made.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getAuditLogs(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TicketAudit>></div>
+  <div class='pre p1 fill-light mt0'>getAuditLogs(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TicketAudit>></div>
   
   
 
@@ -10144,7 +10236,7 @@ of the Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the ticket to get audit logs for
 
           </div>
@@ -10159,7 +10251,7 @@ of the Ticket object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TicketAudit>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;TicketAudit>></code>:
         the list of changes made to the Ticket. Each
 TicketAudit can have one or more actions. Similar actions (such as adding multiple labels)
 are grouped into one TicketAudit.
@@ -10199,7 +10291,7 @@ If the location has SMS enabled, clerks can send and receive SMS messages from v
 It works only if the visitor's phone number has been entered into Qminder.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getMessages(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketmessage">TicketMessage</a>>></div>
+  <div class='pre p1 fill-light mt0'>getMessages(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketmessage">TicketMessage</a>>></div>
   
   
 
@@ -10216,7 +10308,7 @@ It works only if the visitor's phone number has been entered into Qminder.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to get the message list for. The ticket ID can be used instead
 of the Ticket object.
 
@@ -10232,7 +10324,7 @@ of the Ticket object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketmessage">TicketMessage</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#ticketmessage">TicketMessage</a>>></code>:
         a Promise that resolves to a list of ticket messages
 
       
@@ -10296,7 +10388,7 @@ of the Ticket object.
   <p>Send a new SMS message to a visitor.</p>
 
 
-  <div class='pre p1 fill-light mt0'>sendMessage(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), message: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
+  <div class='pre p1 fill-light mt0'>sendMessage(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), message: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
   
   
 
@@ -10313,7 +10405,7 @@ of the Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The ticket to send a message to. The user ID may also be used.
 
           </div>
@@ -10322,7 +10414,7 @@ of the Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>message</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    the message to send, as a text string, for example "Welcome to our location!"
 
           </div>
@@ -10331,7 +10423,7 @@ of the Ticket object.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the user who is sending the message. The user ID may also be used.
 
           </div>
@@ -10346,7 +10438,7 @@ of the Ticket object.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
         a promise that resolves to the string "success" if it works, and rejects when
 something goes wrong.
 
@@ -10409,7 +10501,7 @@ allows to build multi-step workflows. Only tickets with the status 'CALLED' can 
 <p>After forwarding, a ticket's status will be 'NEW'.</p>
 
 
-  <div class='pre p1 fill-light mt0'>forward(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), line: (<a href="#line">Line</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
+  <div class='pre p1 fill-light mt0'>forward(ticket: (<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), line: (<a href="#line">Line</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
   
   
 
@@ -10426,7 +10518,7 @@ allows to build multi-step workflows. Only tickets with the status 'CALLED' can 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>ticket</span> <code class='quiet'>((<a href="#ticket">Ticket</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the ticket to forward, as ticket ID or ticket object
 
           </div>
@@ -10435,7 +10527,7 @@ allows to build multi-step workflows. Only tickets with the status 'CALLED' can 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>line</span> <code class='quiet'>((<a href="#line">Line</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>line</span> <code class='quiet'>((<a href="#line">Line</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the visitor's next line, as line ID or line object.
 
           </div>
@@ -10444,7 +10536,7 @@ allows to build multi-step workflows. Only tickets with the status 'CALLED' can 
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the user who forwarded the ticket, as user ID or user object. Only necessary
 if forwarding on behalf of a User.
 
@@ -10460,7 +10552,7 @@ if forwarding on behalf of a User.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
         a Promise that resolves when forwarding works, and rejects when it fails.
 
       
@@ -10583,7 +10675,7 @@ Location Managers, and Clerks)</p>
 <p>GET /locations/{id}/users</p>
 
 
-  <div class='pre p1 fill-light mt0'>list(location: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#user">User</a>>></div>
+  <div class='pre p1 fill-light mt0'>list(location: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#user">User</a>>></div>
   
   
 
@@ -10600,7 +10692,7 @@ Location Managers, and Clerks)</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
+            <span class='code bold'>location</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)</code>
 	    the Location to find all users for.
 
           </div>
@@ -10615,7 +10707,7 @@ Location Managers, and Clerks)</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#user">User</a>>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array">Array</a>&#x3C;<a href="#user">User</a>>></code>:
         a Promise that resolves to a list of Users who have access
 to the location, or rejects when something went wrong.
 
@@ -10665,7 +10757,7 @@ When they reset their password, they can access Qminder based on their UserRoles
 <p>POST /users/</p>
 
 
-  <div class='pre p1 fill-light mt0'>create(user: <a href="#user">User</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></div>
+  <div class='pre p1 fill-light mt0'>create(user: <a href="#user">User</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></div>
   
   
 
@@ -10698,7 +10790,7 @@ an array of UserRoles are mandatory.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></code>:
         a Promise that resolves with the new created User, or rejects if
 something went wrong.
 
@@ -10746,7 +10838,7 @@ address, only exact matches are considered.</p>
 <p>GET /users/{user}</p>
 
 
-  <div class='pre p1 fill-light mt0'>details(user: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></div>
+  <div class='pre p1 fill-light mt0'>details(user: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></div>
   
   
 
@@ -10763,7 +10855,7 @@ address, only exact matches are considered.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>user</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    The user, the user's ID, or the user's email address.
 
           </div>
@@ -10778,7 +10870,7 @@ address, only exact matches are considered.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#user">User</a>></code>:
         a Promise that resolves to the user's details, and rejects when
 something goes wrong.
 
@@ -10842,7 +10934,7 @@ firstUser = <span class="hljs-keyword">await</span> Qminder.users.details(firstU
 <p>DELETE /users/{id}</p>
 
 
-  <div class='pre p1 fill-light mt0'>remove(user: <a href="#user">User</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>remove(user: <a href="#user">User</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -10874,7 +10966,7 @@ firstUser = <span class="hljs-keyword">await</span> Qminder.users.details(firstU
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         a Promise that resolves when the user was removed, and rejects when
 something goes wrong.
 
@@ -10926,7 +11018,7 @@ However, a User who has clerk privileges can log in and serve visitors, but not 
 location settings nor see service statistics.</p>
 
 
-  <div class='pre p1 fill-light mt0'>addRole(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), role: <a href="#userrole">UserRole</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>addRole(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), role: <a href="#userrole">UserRole</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -10943,7 +11035,7 @@ location settings nor see service statistics.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the User that you want to add roles to
 
           </div>
@@ -10967,7 +11059,7 @@ location settings nor see service statistics.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         a Promise that resolves when the role adding succeeded, and
 rejects when something went wrong.
 
@@ -11005,7 +11097,7 @@ rejects when something went wrong.
 POST /v1/users/<ID>/picture</p>
 
 
-  <div class='pre p1 fill-light mt0'>addPicture(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), picture: File): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>addPicture(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), picture: File): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -11022,7 +11114,7 @@ POST /v1/users/<ID>/picture</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the user to add the profile picture to
 
           </div>
@@ -11047,7 +11139,7 @@ be added to the request's Content-Type.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         a Promise that resolves when adding the profile picture
 succeeded, or rejects if something went wrong.
 
@@ -11093,7 +11185,7 @@ succeeded, or rejects if something went wrong.
 DELETE /v1/users/<ID>/picture</p>
 
 
-  <div class='pre p1 fill-light mt0'>removePicture(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>removePicture(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -11110,7 +11202,7 @@ DELETE /v1/users/<ID>/picture</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the user that the profile picture will be removed from.
 
           </div>
@@ -11125,7 +11217,7 @@ DELETE /v1/users/<ID>/picture</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
         a promise that resolves when it succeeds, and rejects when something
 goes wrong.
 
@@ -11183,7 +11275,7 @@ goes wrong.
 POST /v1/users/<ID>/desk</p>
 
 
-  <div class='pre p1 fill-light mt0'>selectDesk(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), desk: (<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  <div class='pre p1 fill-light mt0'>selectDesk(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>), desk: (<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
   
   
 
@@ -11200,7 +11292,7 @@ POST /v1/users/<ID>/desk</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user to modify.
 
           </div>
@@ -11209,7 +11301,7 @@ POST /v1/users/<ID>/desk</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>desk</span> <code class='quiet'>((<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>desk</span> <code class='quiet'>((<a href="#desk">Desk</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The desired desk.
 
           </div>
@@ -11224,7 +11316,7 @@ POST /v1/users/<ID>/desk</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
         A promise that resolves when setting the desk works, and rejects
 if it failed.
 
@@ -11270,7 +11362,7 @@ if it failed.
 <p>DELETE /v1/users/<ID>/desk</p>
 
 
-  <div class='pre p1 fill-light mt0'>removeDesk(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
+  <div class='pre p1 fill-light mt0'>removeDesk(user: (<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
   
   
 
@@ -11287,7 +11379,7 @@ if it failed.
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>user</span> <code class='quiet'>((<a href="#user">User</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    The user to modify
 
           </div>
@@ -11302,7 +11394,7 @@ if it failed.
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
         A promise that resolves when setting the desk works, and rejects
 if it failed.
 
@@ -11398,7 +11490,7 @@ To set up HMAC verification, follow the instructions here:
 <p><code>POST /v1/webhooks</code></p>
 
 
-  <div class='pre p1 fill-light mt0'>create(url: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#webhook">Webhook</a>></div>
+  <div class='pre p1 fill-light mt0'>create(url: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#webhook">Webhook</a>></div>
   
   
 
@@ -11415,7 +11507,7 @@ To set up HMAC verification, follow the instructions here:
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+            <span class='code bold'>url</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
 	    the public URL to receive the webhooks, such as 
 <a href="https://example.com/webhook">https://example.com/webhook</a>
 
@@ -11431,7 +11523,7 @@ To set up HMAC verification, follow the instructions here:
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#webhook">Webhook</a>></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="#webhook">Webhook</a>></code>:
         a Webhook object with the webhook's ID and HMAC secret.
 
       
@@ -11488,7 +11580,7 @@ list of webhooks in the Qminder Dashboard.</p>
 <p><code>DELETE /v1/webhooks/&#x3C;ID></code></p>
 
 
-  <div class='pre p1 fill-light mt0'>remove(webhook: (<a href="#webhook">Webhook</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
+  <div class='pre p1 fill-light mt0'>remove(webhook: (<a href="#webhook">Webhook</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>)): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></div>
   
   
 
@@ -11505,7 +11597,7 @@ list of webhooks in the Qminder Dashboard.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>webhook</span> <code class='quiet'>((<a href="#webhook">Webhook</a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
+            <span class='code bold'>webhook</span> <code class='quiet'>((<a href="#webhook">Webhook</a> | <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>))</code>
 	    the Webhook object or the webhook ID.
 
           </div>
@@ -11520,7 +11612,7 @@ list of webhooks in the Qminder Dashboard.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;any></code>:
         a promise that resolves when the API call worked, and rejects when it failed.
 
       
@@ -11531,7 +11623,7 @@ list of webhooks in the Qminder Dashboard.</p>
     <div class='py1 quiet mt1 prose-big'>Throws</div>
     <ul>
       
-        <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: ERROR_NO_WEBHOOK_ID when the webhook ID is not provided or is not a number
+        <li><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error">Error</a>: ERROR_NO_WEBHOOK_ID when the webhook ID is not provided or is not a number
 </li>
       
     </ul>

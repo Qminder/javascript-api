@@ -87,7 +87,7 @@ describe("Qminder.locations", function() {
   });
 
   describe("list() - Fails", function() {
-    it("rejects when the server errors", function() {
+    it("rejects when the server errors", function(done) {
       this.requestStub.withArgs('locations/').rejects({ statusCode: 500 });
       Qminder.locations.list().then(response => {
         expect(response).toBeUndefined();

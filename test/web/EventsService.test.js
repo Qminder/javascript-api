@@ -342,6 +342,20 @@ describe("Qminder.events", function () {
         .toBeTruthy();
     });
 
+    it('onLocationChanged does not error and calls createSubscription correctly', function () {
+      expect(() => Qminder.events.onLocationChanged(func, 14141)).not.toThrow();
+      const obj = sinon.match({ id: 14141 });
+      expect(this.createSubscriptionStub.calledWith('LOCATION_CHANGE', func, undefined, obj))
+        .toBeTruthy();
+    });
+
+    it('onLocationChanged throws an error if the location ID is missing', function () {
+      expect(() => Qminder.events.onLocationChanged(func)).toThrow();
+      const obj = sinon.match({ });
+      expect(this.createSubscriptionStub.calledWith('LOCATION_CHANGE', func, undefined, obj))
+        .toBeFalsy();
+    });
+
     it('passes the filter along', function () {
       Qminder.events.onTicketCreated(func, filter);
       expect(this.createSubscriptionStub.calledWith('TICKET_CREATED', func, filter)).toBeTruthy();
@@ -443,20 +457,6 @@ describe("Qminder.events", function () {
       // Send the messages down the wire
       this.controlSocket.send(JSON.stringify(lineMessage));
       this.controlSocket.send(JSON.stringify(ticketMessage));
-    });
-  });
-
-
-  describe('Connect/Disconnect events', function () {
-    // TODO: this test needs to disconnect and wait for it to reopen to receive the callback.
-    xit('fires the onConnect callback on socket open', function (done) {
-      Qminder.events.onConnect(() => done());
-      Qminder.events.subscribe({ id: "WOWHELLO", subscribe: "TICKET_CREATED", line: 12345 });
-    });
-    it('fires the onDisconnect callback on socket close', function (done) {
-      this.controlSocketStub.returns('DROP!');
-      Qminder.events.onDisconnect(() => done());
-      Qminder.events.subscribe({ id: "WOWHELLO", subscribe: "TICKET_CREATED", line: 12345 });
     });
   });
 
@@ -588,6 +588,18 @@ describe("Qminder.events (without connecting)", function() {
       expect(this.controlSocketStub.calledWith(matcher)).toBeTruthy();
       expect(this.controlSocketStub.callCount).toEqual(1);
       done();
+    });
+  });
+
+  describe('Connect/Disconnect events', function () {
+    it('fires the onConnect callback on socket open', function (done) {
+      Qminder.events.onConnect(() => done());
+      Qminder.events.subscribe({ id: "Test", subscribe: "TICKET_CREATED", line: 12345 });
+    });
+    it('fires the onDisconnect callback on socket close', function (done) {
+      this.controlSocketStub.returns('DROP!');
+      Qminder.events.onDisconnect(() => done());
+      Qminder.events.subscribe({ id: "Test", subscribe: "TICKET_CREATED", line: 12345 });
     });
   });
 
