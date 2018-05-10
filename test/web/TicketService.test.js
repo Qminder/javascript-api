@@ -1075,33 +1075,76 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.removeLabel(12345, 'LABEL', 1234)).not.toThrow();
     });
   });
-  describe("assignToUser()", function() {
+  describe("unassign()", function() {
     beforeEach(function() {
       this.requestStub.onCall(0).resolves({
         result: 'success'
       });
     });
     it('calls the right URL with POST and parameters', function(done) {
+      Qminder.tickets.unassign(63020420, 7500).then(() => {
+        expect(this.requestStub.calledWith('tickets/63020420/unassign', { user: 7500 }, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('throws an error when the ticket ID is missing', function() {
+      expect(() => Qminder.tickets.unassign()).toThrow();
+    });
+    it('throws an error when the assigner is missing', function() {
+      expect(() => Qminder.tickets.unassign(63020424)).toThrow();
+    });
+    it('works with User object passed as User parameter', function(done) {
+      const unassigner = new Qminder.User(4100);
+      Qminder.tickets.unassign(63020421, unassigner).then(() => {
+        expect(this.requestStub.calledWith('tickets/63020421/unassign', { user: 4100 }, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('works with Ticket object passed as ticket parameter', function(done) {
+      const ticket = new Qminder.Ticket(60403009);
+      Qminder.tickets.unassign(ticket, 4142).then(() => {
+        expect(this.requestStub.calledWith('tickets/60403009/unassign', { user: 4142 }, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('works with Ticket & User object passed as parameters', function(done) {
+      const unassigner = new Qminder.User(4100);
+      const ticket = new Qminder.Ticket(59430);
+      Qminder.tickets.unassign(ticket, unassigner).then(() => {
+        expect(this.requestStub.calledWith('tickets/59430/unassign', { user: 4100 }, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('throws an error when the unassigner is invalid', function() {
+      expect(() => Qminder.tickets.unassign(63020422, {})).toThrow();
+    });
+    it('throws an error when the response returns an error', function(done) {
+      this.requestStub.restore();
+      this.requestStub.onCall(0).rejects({ status: 400, message: '', developerMessage: '' });
+      Qminder.tickets.unassign(63020422, 4950).then(
+        () => done(new Error('Qminder.tickets.unassign promise should reject but resolved')),
+        () => done());
+    });
+  });
+  describe('unassign()', function() {
+    beforeEach(function() {
+      this.requestStub.onCall(0).resolves({
+        result: 'success'
+      });
+    });
+    it('TODO calls the right URL with POST and parameters', function(done) {
       Qminder.tickets.assignToUser(12345, 41413, 41414).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/assign', { assigner: 41413, assignee: 41414 }, 'POST')).toBeTruthy();
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function() {
+    it('TODO throws an error when the ticket ID is missing', function() {
       expect(() => Qminder.tickets.assignToUser()).toThrow();
     });
-    it('throws an error when the assigner is missing', function() {
+    it('TODO throws an error when the assigner is missing', function() {
       expect(() => Qminder.tickets.assignToUser(12345)).toThrow();
     });
-    it('throws an error when the assignee missing', function() {
-      expect(() => Qminder.tickets.assignToUser(12345, { id: 41413 })).toThrow();
-    });
-    it('throws an error when the assigner is invalid', function() {
-      expect(() => Qminder.tickets.assignToUser(12345, { id: 41413 }, 1234)).toThrow();
-    });
-    it('throws an error when the assigner is invalid', function() {
-      expect(() => Qminder.tickets.assignToUser(12345, 41413, { id: 1234 })).toThrow();
-    });
+
   });
   describe("reorder()", function() {
     beforeEach(function() {

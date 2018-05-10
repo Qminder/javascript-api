@@ -936,6 +936,67 @@ export default class TicketService {
   }
 
   /**
+   * Un-assign a ticket. This returns the ticket to the unassigned list.
+   * This call works only for Tickets that have the status: 'NEW'.
+   * @example
+   * // Using unassign with async/await in latest Javascript/ES6 standard
+   * const ticketID = 141412345;
+   * const myUserID = 123;
+   * try {
+   *   await Qminder.tickets.unassign(ticketID, myUserID);
+   *   console.log('Ticket unassign worked!');
+   * } catch (error) {
+   *   console.log('Ticket unassign failed', error);
+   * }
+   * @example
+   * // Using unassign without async/await, with plain promises.
+   * const ticketID = 1452521;
+   * const myUserID = 529;
+   * Qminder.tickets.unassign(ticketID, myUserID).then(function(success) {
+   *   console.log('Ticket unassign worked!');
+   * }, function(error) {
+   *   console.log('Ticket unassign failed!', error);
+   * });
+   * @example
+   * // Using unassign with a Ticket object and async/await in latest Javascript/ES6 standard
+   * const myUserID = 42049;
+   * const tickets = await Qminder.tickets.search({ line: 12345 });
+   * const ticket = tickets[0];
+   * await Qminder.tickets.unassign(ticket, myUserID);
+   * @param ticket the ticket object or the ticket's ID that needs un-assignment
+   * @param unassigner the User who un-assigned the ticket, for example current user's ID
+   * @returns {Promise<any>} a Promise that resolves when unassigning works and rejects when
+   * unassigning fails
+   */
+  static unassign(ticket: (Ticket|number), unassigner: (User|ticket)): Promise<*> {
+    let ticketId: ?number = null;
+    let unassignerId: ?number = null;
+
+    if (ticket instanceof Ticket) {
+      ticketId = ticket.id;
+    } else {
+      ticketId = ticket;
+    }
+
+    if (!ticketId || typeof ticketId !== 'number') {
+      throw new Error(ERROR_NO_TICKET_ID);
+    }
+
+    if (unassigner instanceof User) {
+      unassignerId = unassigner.id;
+    } else {
+      unassignerId = unassigner;
+    }
+
+    if (!unassignerId || typeof unassignerId !== 'number') {
+      throw new Error('Qminder.tickets.unassign was called without a valid unassigner user.');
+    }
+
+    return ApiBase.request(`tickets/${ticketId}/unassign`, { user: unassignerId }, 'POST')
+      .then(response => response.result);
+  }
+
+  /**
    * Reorder a ticket after another ticket.
    *
    * ```POST /v1/tickets/<ID>/reorder```
