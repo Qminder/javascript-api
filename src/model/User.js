@@ -1,4 +1,5 @@
 // @flow
+import Location from './Location';
 /**
  * Represents a single user picture.
  * The 'medium' sized user picture is available if the user has an image.
@@ -41,6 +42,12 @@ class User {
    */
   id: number;
   /**
+   * This user's email address.
+   * They can use the email address to log in, and to receive Qminder notifications.
+   * For example: 'jane.smith@example.com'.
+   */
+  email: string;
+  /**
    * This user's first name.
    * For example, 'Jane'
    */
@@ -51,24 +58,21 @@ class User {
    */
   lastName: string;
   /**
-   * This user's email address.
-   * They can use the email address to log in, and to receive Qminder notifications.
-   * For example: 'jane.smith@example.com'.
+   * The user's currently selected desk.
    */
-  email: string;
+  desk: number;
+  /**
+   * The user's currently selected location.
+   */
+  selectedLocation: number;
   /**
    * This user's profile pictures, in various sizes. A 'medium' size is guaranteed.
    */
   picture: Array<Picture>;
   /**
-   * The user's currently selected desk.
-   */
-  desk: number;
-  /**
    * The user's roles.
    */
   roles: Array<UserRole>;
-
   /**
    * Construct a User object.
    * @param properties either the User's ID, or a properties object.
@@ -80,6 +84,66 @@ class User {
       // $FlowFixMe: TODO: assign all properties the User supports, without writing them all out?
       Object.assign(this, properties);
     }
+  }
+
+  /**
+   * Returns true if the user is an administrator.
+   * It uses the user's roles object that can be loaded via Qminder.users.details().
+   * The user is an administrator when their role list includes an ADMIN role.
+   * @example
+   * // Get the details of an user and find out if they are an admin, with ES6 async/await syntax.
+   * const user = await Qminder.users.details(1234);
+   * const isAdmin = user.isAdmin();
+   * console.log(isAdmin);
+   * @example
+   * // Get the details of an user and find out if they are an admin, in plain JS
+   * // note: this asynchronously loads the user data
+   * Qminder.users.details(1234).then(function(user) {
+   *   const isAdmin = user.isAdmin();
+   *   console.log(isAdmin);
+   * });
+   * @returns {boolean} true if the user is an administrator, false if they are not.
+   * @throws Error if the user's roles are not loaded.
+   */
+  isAdmin(): boolean {
+    if (!this.roles) {
+      throw new Error('User roles are not available. Please load the User via Qminder.users.details');
+    }
+    const adminRole = this.roles.find(role => role && role.type === 'ADMIN');
+    return adminRole !== undefined;
+  }
+
+  /**
+   * Returns true if the user is a manager of the given location.
+   * Looks at the user's roles which can be loaded via Qminder.users.details().
+   * @example
+   * // Get the details user 1234 and find out if they are an admin of Location ID 1114, using ES6
+   * // async/await syntax
+   * const user = await Qminder.users.details(1234);
+   * const isManagerOfLocation = user.isManager(1114);
+   * @param location  the location to check, for example 6901
+   * @returns {boolean} true if the user is the manager of the location given
+   * @throws
+   */
+  isManager(location: (Location|number)) {
+    if (!this.roles) {
+      throw new Error('User roles are not available. Please load the User via Qminder.users.details');
+    }
+
+    let locationId;
+
+    if (typeof location === 'number') {
+      locationId = location;
+    } else {
+      locationId = location.id;
+    }
+
+    if (typeof locationId !== 'number') {
+      throw new Error('Invalid first argument. Please pass a number or a Qminder Location object.');
+    }
+
+    const managerRole = this.roles.find(role => role && role.type === 'MANAGER' && role.location === location);
+    return managerRole !== undefined;
   }
 }
 
