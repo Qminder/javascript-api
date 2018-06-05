@@ -1,5 +1,5 @@
 # Qminder Javascript API
-[![Build Status](https://travis-ci.org/Qminder/javascript-api.svg?branch=master)](https://travis-ci.org/Qminder/javascript-api) [![Dependency Status](https://gemnasium.com/Qminder/qminder-api.svg)](https://gemnasium.com/Qminder/qminder-api)
+[![Build Status](https://travis-ci.org/Qminder/javascript-api.svg?branch=master)](https://travis-ci.org/Qminder/javascript-api)
 [![npm](https://img.shields.io/npm/v/qminder-api.svg)](https://www.npmjs.com/package/qminder-api)
 [![Bower](https://img.shields.io/bower/v/qminder-api.svg)](http://bower.io/search/?q=qminder-api)
 
@@ -94,7 +94,7 @@ If you have any questions, please feel free to contact
 
 ## LICENSE
 
-Copyright 2017 Qminder Limited.
+Copyright 2018 Qminder Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
