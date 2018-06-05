@@ -16,8 +16,6 @@ describe("User model", function () {
     if (typeof sinon === 'undefined') {
       sinon = this.sinon;
     }
-    Qminder.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
-    Qminder.setServer('local.api.qminderapp.com');
   });
 
   describe('isAdmin()', function() {
