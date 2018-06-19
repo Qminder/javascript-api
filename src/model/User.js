@@ -116,7 +116,7 @@ class User {
   /**
    * Returns true if the user is an Owner.
    * It uses the user's roles object that can be loaded via Qminder.users.details().
-   * The user is an administrator when their role list includes an OWNER role.
+   * The user is an owner when their role list includes an OWNER role.
    * An Owner role can do everything an Admin can, as well as manage billing.
    * @example
    * // Get the details of an user and find out if they are an owner, with ES6 async/await syntax.
