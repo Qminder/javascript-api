@@ -33,8 +33,8 @@ module.exports = function() {
   return ({
     target: 'web',
     entry: {
-      'qminder-api.min': ['es6-promise', 'whatwg-fetch', './src/qminder-api.js'],
-      'qminder-api': ['es6-promise', 'whatwg-fetch', './src/qminder-api.js'],
+      'qminder-api.min': ['es6-promise', 'whatwg-fetch', './src/qminder-api.ts'],
+      'qminder-api': ['es6-promise', 'whatwg-fetch', './src/qminder-api.ts'],
     },
 
     output: {
@@ -46,7 +46,7 @@ module.exports = function() {
     },
 
     module: {
-      loaders: [{
+      rules: [{
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
@@ -54,7 +54,12 @@ module.exports = function() {
       {
         test: /\.json$/,
         loader: 'json-loader'
-      }]
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader'
+      }
+      ]
     },
 
     stats: {
@@ -66,7 +71,7 @@ module.exports = function() {
         path.resolve('./node_modules'),
         path.resolve('./src'),
       ],
-      extensions: ['.js'],
+      extensions: ['.js', '.ts'],
     },
 
     devtool: 'source-map',
