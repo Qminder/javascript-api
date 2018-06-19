@@ -5,6 +5,7 @@ function getUserWithRoles(roles) {
 }
 describe("User model", function () {
   const ADMIN_ROLE = { type: 'ADMIN', id: 14124 };
+  const OWNER_ROLE = { type: 'OWNER', id: 14129 };
   const MANAGER_ROLE = { type: 'MANAGER', id: 14121, location: 12345 };
   const ANOTHER_MANAGER_ROLE = { type: 'MANAGER', id: 15, location: 1234 };
   const CLERK_ROLE = { type: 'CLERK', id: 400, location: 12345 };
@@ -48,6 +49,51 @@ describe("User model", function () {
     it('throws if user does not have any roles', function() {
       const user = getUserWithRoles(undefined);
       expect(() => user.isAdmin()).toThrow();
+    });
+  });
+
+  describe('isOwner()', function() {
+    it('returns true if the user is only an owner', function() {
+      const user = getUserWithRoles([OWNER_ROLE]);
+      expect(user.isOwner()).toBeTruthy();
+    });
+    it('returns true if the user has two roles, one of them Owner', function() {
+      const user = getUserWithRoles([OWNER_ROLE, MANAGER_ROLE]);
+      const anotherUser = getUserWithRoles([MANAGER_ROLE, OWNER_ROLE]);
+      expect(user.isOwner()).toBeTruthy();
+      expect(anotherUser.isOwner()).toBeTruthy();
+    });
+    it('returns false if the user is a clerk', function() {
+      const user = getUserWithRoles([CLERK_ROLE]);
+      expect(user.isOwner()).toBeFalsy();
+    });
+    it('returns false if the user has one location manager role', function() {
+      const user = getUserWithRoles([MANAGER_ROLE]);
+      expect(user.isOwner()).toBeFalsy();
+    });
+    it('returns false if the user has multiple location manager roles', function() {
+      const user = getUserWithRoles([MANAGER_ROLE, ANOTHER_MANAGER_ROLE]);
+      expect(user.isOwner()).toBeFalsy();
+    });
+    it('returns false if the user has mixed clerk/LM roles', function() {
+      const user = getUserWithRoles([MANAGER_ROLE, CLERK_ROLE, ANOTHER_MANAGER_ROLE]);
+      expect(user.isOwner()).toBeFalsy();
+    });
+    it('returns false if the user is an admin', function() {
+      const user = getUserWithRoles([ADMIN_ROLE]);
+      expect(user.isOwner()).toBeFalsy();
+    });
+    it('returns false if the user has mixed clerk/LM/Admin roles', function() {
+      const user = getUserWithRoles([MANAGER_ROLE, CLERK_ROLE, ANOTHER_MANAGER_ROLE, ADMIN_ROLE]);
+      expect(user.isOwner()).toBeFalsy();
+    });
+    it('returns true if the user has mixed clerk/LM/owner roles', function() {
+      const user = getUserWithRoles([MANAGER_ROLE, CLERK_ROLE, ANOTHER_MANAGER_ROLE, OWNER_ROLE]);
+      expect(user.isOwner()).toBeTruthy();
+    });
+    it('throws if user does not have any roles', function() {
+      const user = getUserWithRoles(undefined);
+      expect(() => user.isOwner()).toThrow();
     });
   });
 

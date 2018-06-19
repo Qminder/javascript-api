@@ -114,6 +114,34 @@ class User {
   }
 
   /**
+   * Returns true if the user is an Owner.
+   * It uses the user's roles object that can be loaded via Qminder.users.details().
+   * The user is an owner when their role list includes an OWNER role.
+   * An Owner role can do everything an Admin can, as well as manage billing.
+   * @example
+   * // Get the details of an user and find out if they are an owner, with ES6 async/await syntax.
+   * const user = await Qminder.users.details(1234);
+   * const isOwner = user.isOwner();
+   * console.log(isOwner);
+   * @example
+   * // Get the details of an user and find out if they are an owner, in plain JS
+   * // note: this asynchronously loads the user data
+   * Qminder.users.details(1234).then(function(user) {
+   *   const isOwner = user.isOwner();
+   *   console.log(isOwner);
+   * });
+   * @returns {boolean} true if the user is an owner, false if they are not.
+   * @throws Error if the user's roles are not loaded.
+   */
+  isOwner(): boolean {
+    if (!this.roles) {
+      throw new Error('User roles are not available. Please load the User via Qminder.users.details');
+    }
+    const ownerRole = this.roles.find(role => role && role.type === 'OWNER');
+    return ownerRole !== undefined;
+  }
+
+  /**
    * Returns true if the user is a manager of the given location.
    * Looks at the user's roles which can be loaded via Qminder.users.details().
    * @example
