@@ -558,6 +558,12 @@
                       </a></li>
                       
                       <li><a
+                        href='#userisowner'
+                        class='regular pre-open'>
+                        #isOwner
+                      </a></li>
+                      
+                      <li><a
                         href='#userismanager'
                         class='regular pre-open'>
                         #isManager
@@ -5119,6 +5125,88 @@ The user is an administrator when their role list includes an ADMIN role.</p>
 Qminder.users.details(<span class="hljs-number">1234</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user</span>) </span>{
   <span class="hljs-keyword">const</span> isAdmin = user.isAdmin();
   <span class="hljs-built_in">console</span>.log(isAdmin);
+});</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='userisowner'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>isOwner()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Returns true if the user is an Owner.
+It uses the user's roles object that can be loaded via Qminder.users.details().
+The user is an administrator when their role list includes an OWNER role.
+An Owner role can do everything an Admin can, as well as manage billing.</p>
+
+
+  <div class='pre p1 fill-light mt0'>isOwner(): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></code>:
+        true if the user is an owner, false if they are not.
+
+      
+    
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>any: Error if the user's roles are not loaded.
+</li>
+      
+    </ul>
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-comment">// Get the details of an user and find out if they are an owner, with ES6 async/await syntax.</span>
+<span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> Qminder.users.details(<span class="hljs-number">1234</span>);
+<span class="hljs-keyword">const</span> isOwner = user.isOwner();
+<span class="hljs-built_in">console</span>.log(isOwner);</pre>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-comment">// Get the details of an user and find out if they are an owner, in plain JS</span>
+<span class="hljs-comment">// note: this asynchronously loads the user data</span>
+Qminder.users.details(<span class="hljs-number">1234</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user</span>) </span>{
+  <span class="hljs-keyword">const</span> isOwner = user.isOwner();
+  <span class="hljs-built_in">console</span>.log(isOwner);
 });</pre>
     
   
