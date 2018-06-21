@@ -16,8 +16,8 @@ describe("LineService", function() {
     if (typeof sinon === 'undefined') {
       sinon = this.sinon;
     }
-    Qminder.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
-    Qminder.setServer('local.api.qminderapp.com');
+    Qminder.setKey('EXAMPLE_API_KEY');
+    Qminder.setServer('api.qminder.com');
 
     // Stub ApiBase.request to feed specific data to API
     this.requestStub = sinon.stub(Qminder.ApiBase, 'request');

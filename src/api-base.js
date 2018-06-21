@@ -102,7 +102,7 @@ class ApiBase {
    *
    * Sends the given query to the Qminder API, returning a Promise that resolves to the site's HTTP
    * response.
-   * @param query required: he GraphQL query, for example "{ me { email } }", or
+   * @param query required: the GraphQL query, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
    * @param variables optional: the GraphQL query's variables, for example { id: "4" }
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
