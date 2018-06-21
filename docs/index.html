@@ -1291,6 +1291,34 @@
                 
                 </li>
               
+                
+                <li><a
+                  href='#graphqlservice'
+                  class=" toggle-sibling">
+                  GraphQLService
+                  <span class='icon'>▸</span>
+                </a>
+                
+                <div class='toggle-target display-none'>
+                  
+                  <ul class='list-reset py1-ul pl1'>
+                    <li class='h5'><span>Static members</span></li>
+                    
+                      <li><a
+                        href='#graphqlservicequery'
+                        class='regular pre-open'>
+                        .query
+                      </a></li>
+                    
+                    </ul>
+                  
+                  
+                  
+                  
+                </div>
+                
+                </li>
+              
             </ul>
           </div>
           <div class='mt1 h6 quiet'>
@@ -12080,6 +12108,166 @@ list of webhooks in the Qminder Dashboard.</p>
       <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">const</span> url = <span class="hljs-string">'https://example.com/webhooks/qminder'</span>;
 <span class="hljs-keyword">const</span> webhook: Webhook = <span class="hljs-keyword">await</span> Qminder.webhooks.create(url);
 <span class="hljs-keyword">await</span> Qminder.webhooks.remove(webhook);</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='graphqlservice'>
+      GraphQLService
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A service that lets the user query Qminder API via GraphQL statements.</p>
+
+
+  <div class='pre p1 fill-light mt0'>new GraphQLService()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Static Members</div>
+    <div class="clearfix">
+  
+    <div class='border-bottom' id='graphqlservicequery'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>query(query, variables)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Query Qminder API with GraphQL</p>
+<p>Send a GraphQL query to the Qminder API.</p>
+<p>When the query contains variables, make sure to fill them all in the second parameter.</p>
+
+
+  <div class='pre p1 fill-light mt0'>query(query: <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>, variables: {}): <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>query</span> <code class='quiet'>(<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>)</code>
+	    required: the query to send, for example '{ me { selectedLocation } }'
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>variables</span> <code class='quiet'>({})</code>
+	    optional: additional variables for the query
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>></code>:
+        a promise that resolves to the query's results, or rejects if the query failed
+
+      
+    
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Throws</div>
+    <ul>
+      
+        <li>any: when the 'query' argument is undefined or an empty string
+</li>
+      
+    </ul>
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-comment">// Figure out the selected location ID of the current user, with async/await</span>
+<span class="hljs-keyword">try</span> {
+    <span class="hljs-keyword">const</span> response = <span class="hljs-keyword">await</span> Qminder.graphql(<span class="hljs-string">`{ me { selectedLocation } }`</span>);
+    <span class="hljs-built_in">console</span>.log(response.me.selectedLocation); <span class="hljs-comment">// "12345"</span>
+} <span class="hljs-keyword">catch</span> (error) {
+    <span class="hljs-built_in">console</span>.log(error);
+}</pre>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-comment">// Figure out the selected location ID of the current user, with promises</span>
+Qminder.graphql(<span class="hljs-string">"{ me { selectedLocation } }"</span>).then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">response</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(response.me.selectedLocation);
+}, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(error);
+});</pre>
     
   
 

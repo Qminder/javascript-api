@@ -16,6 +16,7 @@ import LocationService from './services/LocationService';
 import TicketService from './services/TicketService';
 import UserService from './services/UserService';
 import WebhooksService from './services/WebhooksService';
+import GraphQLService from './services/GraphQLService';
 
 /**
  * Set the Qminder API key.
@@ -40,6 +41,9 @@ const setServer = (server: string) => {
 // VERSION is replaced with the version string from package.json during compile time
 const qminderVersion = VERSION;
 
+const graphql = GraphQLService.query;
+
+
 export {
   DeviceService as devices,
   EventsService as events,
@@ -48,10 +52,10 @@ export {
   TicketService as tickets,
   UserService as users,
   WebhooksService as webhooks,
-
   qminderVersion as version,
   setKey,
   setServer,
+  graphql,
 
   ApiBase,
   Desk,
