@@ -55,6 +55,18 @@ For starters, you can find all tickets in a line with ID 12345:
 Qminder.tickets refers to TicketService, for which you can find documentation in the 
 [API reference][api].
 
+Alternatively, you can send a [GraphQL](https://graphql.org/) query to the Qminder API:
+
+    const locations = await Qminder.graphql(`{
+        locations {
+            id
+            name
+        }
+    }`);
+
+The GraphQL API is self-documenting. Specialized query tools and IDE integrations can 
+automatically query the API schema and validate queries before they are sent.
+
 ### Testing changes to Javascript API in another project
 
 When contributing to the JS API, you may wish to test if it works in a project that utilizes the API
