@@ -1,4 +1,4 @@
-query location($id: String!){
+query location($id: ID!){
     location(id: $id) {
       lines {
           id
