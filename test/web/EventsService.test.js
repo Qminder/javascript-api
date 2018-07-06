@@ -50,7 +50,7 @@ describe("Qminder.events", function () {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
     Qminder.events.reset();
-    Qminder.events.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
+    Qminder.events.setKey('EXAMPLE_API_KEY');
     Qminder.events.setServer('ws://localhost:8123');
 
     // Open client socket - NOTE normally this is done automatically. For testing purposes, this
@@ -506,7 +506,7 @@ describe("Qminder.events (without connecting)", function() {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 60000;
 
     Qminder.events.reset();
-    Qminder.events.setKey('F7arvJSi0ycoT2mDRq63blBofBU3LxrnVVqCLxhn');
+    Qminder.events.setKey('EXAMPLE_API_KEY');
     Qminder.events.setServer('ws://localhost:8123');
 
     // NOTE: the following test starts with a closed socket.

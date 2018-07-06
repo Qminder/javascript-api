@@ -1,3 +1,70 @@
+
+
+/**
+ * A function that generates an object with the following keys:
+ * - A GraphQL query
+ * - The expected fetch(url, init) init parameter
+ * - The expected successful response
+ *
+ * Given the GraphQL query, HTTP response data (without boilerplate), and an object of
+ * variables.
+ *
+ * @param {string} query a GraphQL query, for example '{ me { id } }'
+ * @param {object} responseData the response data this query generates
+ * @param {object} variables any variables needed for the GraphQL query
+ * @returns an object with this shape: { request: string, variables: object, expectedFetch:
+    * object, successfulResponse: object }
+ */
+function generateRequestData(query, responseData, variables) {
+
+  const queryObject = {
+    query
+  };
+
+  if (variables) {
+    queryObject.variables = variables;
+  }
+
+  return {
+    variables,
+    request: query,
+    expectedFetch: {
+      method: 'POST',
+      headers: {
+        'X-Qminder-REST-API-Key': 'testing',
+      },
+      mode: 'cors',
+      body: JSON.stringify(queryObject),
+    },
+    successfulResponse: {
+      statusCode: 200,
+      errors: [],
+      data: responseData
+    }
+  };
+}
+
+/**
+ * A mock implementation of the fetch Response object.
+ * Useful for mocking out the request/response cycle of Qminder.ApiBase.fetch.
+ *
+ * Use like this:
+ *
+ * this.fetchStub.onCall(0).resolves( new MockResponse({ ... }) );
+ *
+ * Then, when Qminder.ApiBase calls fetch() (either via request or queryGraph),
+ * the corresponding MockResponse is resolved, and the method receives
+ * the object passed as parameter.
+ */
+class MockResponse {
+  constructor(data) {
+    this.data = data;
+  }
+  json() {
+    return this.data;
+  }
+}
+
 describe("ApiBase", function () {
   const API_KEY = 'testing';
   beforeEach(function() {
@@ -178,5 +245,108 @@ describe("ApiBase", function () {
     afterEach(function() {
       this.fetchSpy.restore();
     })
+  });
+
+  describe("queryGraph()", function() {
+    const ME_ID = generateRequestData('{ me { id } }', {
+      me: {
+        id: 12345
+      }
+    });
+    const LOCATION_ID_NAME = generateRequestData(
+      'query Location($id: ID!) { location($id) { id name } }',
+      {
+        location: {
+          id: 673,
+          name: 'Regional HQ'
+        },
+      },
+      {
+        id: 673
+      });
+
+    const ERROR_UNDEFINED_FIELD = {
+      "statusCode": 200,
+      "errors": [
+        {
+          "message": "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
+          "locations": [
+            {
+              "line": 4,
+              "column": 3,
+              "sourceName": null
+            }
+          ],
+          "description": "Field 'x' in type 'Account' is undefined",
+          "validationErrorType": "FieldUndefined",
+          "queryPath": [
+            "account",
+            "x"
+          ],
+          "errorType": "ValidationError",
+          "extensions": null,
+          "path": null
+        }
+      ],
+      "dataPresent": false
+    };
+
+    const API_URL = 'https://api.qminder.com/graphql';
+
+    beforeEach(function() {
+      this.fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch');
+    });
+    it('throws when no query is passed', function() {
+      Qminder.ApiBase.setKey('testing');
+      expect(() => Qminder.ApiBase.queryGraph()).toThrow();
+    });
+    it('does not throw when no variables are passed', function() {
+      Qminder.ApiBase.setKey('testing');
+      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).not.toThrow();
+    });
+    it('throws when API key is not defined', function() {
+      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).toThrow();
+    });
+    it('sends a correct request with query and no variables', function() {
+      Qminder.ApiBase.setKey('testing');
+      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      Qminder.ApiBase.queryGraph(ME_ID.request);
+      expect(this.fetchSpy.calledWithExactly(API_URL, sinon.match(ME_ID.expectedFetch))).toBeTruthy();
+    });
+    it('sends a correct request with query and variables', function() {
+      Qminder.ApiBase.setKey('testing');
+      this.fetchSpy.onCall(0).resolves(new MockResponse(LOCATION_ID_NAME.successfulResponse));
+      Qminder.ApiBase.queryGraph(LOCATION_ID_NAME.request, LOCATION_ID_NAME.variables);
+      expect(this.fetchSpy.calledWithExactly(API_URL, sinon.match(LOCATION_ID_NAME.expectedFetch))).toBeTruthy();
+    });
+    it('resolves with the entire response object, not only response data', function(done) {
+      Qminder.ApiBase.setKey('testing');
+      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
+        expect(response).toEqual(ME_ID.successfulResponse);
+        done();
+      });
+    });
+    it('does not throw an error when getting errors as response', function(done) {
+      Qminder.ApiBase.setKey('testing');
+      this.fetchSpy.resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
+      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request).then(
+        () => done(),
+        () => done(new Error('QueryGraph should not have thrown')))
+      ).not.toThrow();
+    });
+    it('resolves with response, even if response has errors', function(done) {
+      Qminder.ApiBase.setKey('testing');
+      this.fetchSpy.onCall(0).resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
+      Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
+        expect(response).toEqual(ERROR_UNDEFINED_FIELD);
+        done();
+      })
+    });
+    afterEach(function() {
+      this.fetchSpy.restore();
+    });
   });
 });

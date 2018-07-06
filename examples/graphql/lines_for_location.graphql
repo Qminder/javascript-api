@@ -1,0 +1,8 @@
+query location($id: ID!){
+    location(id: $id) {
+      lines {
+          id
+          name
+      }
+  }
+}
