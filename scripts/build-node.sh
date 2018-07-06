@@ -18,8 +18,8 @@ sedi () {
 sedi "s/VERSION/'$qminderVersion'/" build-node/qminder-api.js
 
 # Use sed to replace ENV in fetch/websocket imports
-sedi "s:./lib/fetch-ENV:./lib/fetch-node:" build-node/api-base.js
-sedi "s:../lib/websocket-ENV:../lib/websocket-node:" build-node/services/EventsService.js
+sedi "s:./lib/fetch-web:./lib/fetch-node:" build-node/api-base.js
+#sedi "s:../lib/websocket-web:../lib/websocket-node:" build-node/services/EventsService.js
 
 # Copy all sources next to the compiled files, with ".flow" in the end of the name
 for flowSource in $(find src -name "*.js"); do

@@ -1,4 +1,4 @@
-import ApiBase from '../api-base.js';
+import ApiBase from '../api-base';
 import Device from '../model/Device';
 import Location from '../model/Location';
 
@@ -22,12 +22,12 @@ export default class DeviceService {
    * @throws Error if the Location ID is not provided.
    */
   static list(location: Location | number): Promise<Array<Device>> {
-    let locationId: ?number = location instanceof Location ? location.id : location;
+    let locationId: any = location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID not provided');
     }
     return ApiBase.request(`locations/${locationId}/devices/`)
-                  .then(response => response.data.map(each => new Device(each)));
+                  .then((response: { data: Device[] }) => response.data.map(each => new Device(each)));
   }
 
   /**
@@ -43,12 +43,12 @@ export default class DeviceService {
    * @throws Error if the TV ID is not provided.
    */
   static details(tv: Device | number): Promise<Device> {
-    let tvId: ?number = tv instanceof Device ? tv.id : tv;
+    let tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
 
-    return ApiBase.request(`tv/${tvId}`).then(response => new Device(response));
+    return ApiBase.request(`tv/${tvId}`).then((response: Device) => new Device(response));
   }
 
   /**
@@ -65,14 +65,14 @@ export default class DeviceService {
    * @throws Error if the TV ID and TV name are not provided.
    */
   static edit(tv: Device | number, newName: string): Promise<Device> {
-    let tvId: ?number = tv instanceof Device ? tv.id : tv;
+    let tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
     if (!newName || typeof newName !== 'string') {
       throw new Error('TV name not provided');
     }
-    return ApiBase.request(`tv/${tvId}`, { name: newName }, 'POST');
+    return (ApiBase.request(`tv/${tvId}`, { name: newName }, 'POST') as Promise<Device>);
   }
 
   /**
@@ -89,10 +89,10 @@ export default class DeviceService {
    * @throws Error if the TV ID is not provided
    */
   static remove(tv: Device | number): Promise<{ statusCode: number }> {
-    let tvId: ?number = tv instanceof Device ? tv.id : tv;
+    let tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
-    return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE');
+    return (ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{ statusCode: number }>);
   }
 }

@@ -1,12 +1,9 @@
-import Ticket from '../model/Ticket';
-import type TicketMessage from '../model/Ticket';
-import type TicketStatus from '../model/Ticket';
-import type TicketAudit from '../model/Ticket';
+import Ticket, { TicketStatus } from '../model/Ticket';
 import User from '../model/User';
 import Desk from '../model/Desk';
 import Line from '../model/Line';
 import ApiBase from '../api-base';
-import querystring from 'querystring';
+import * as querystring from 'querystring';
 
 
 /**
@@ -17,13 +14,15 @@ import querystring from 'querystring';
  * For example, the query `{ line: [123, 34], status: ['SERVED'] }` will retrieve a count of
  * tickets that were marked served in lines 123 and 34.
  */
-class TicketCountCriteria {
+interface TicketCountCriteria {
   /**
    * An array of lines to search tickets from, represented as an array of line IDs.
    *
-   * For example: `line: [123, 234, 456]`
+   * For example:
+   `line: [123, 234, 456]`
+   `line: '123,234,456'`
    */
-  line: Array<number> | number;
+  line: string | Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
@@ -84,13 +83,13 @@ class TicketCountCriteria {
  * The query `{ status: ['CALLED'], caller: 11111, limit: 1 }` will retrieve the clerk 11111's
  * currently called ticket.
  */
-class TicketSearchCriteria {
+interface TicketSearchCriteria {
   /**
    * An array of lines to search tickets from, represented as an array of line IDs.
    *
-   * For example: `line: [123, 234, 456]`
+   * For example: `line: [123, 234, 456]`, or `line: 1234`, or `line: '1234,2434,5555'`
    */
-  line: Array<number> | number;
+  line: string | Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
@@ -173,8 +172,14 @@ class TicketSearchCriteria {
    *
    * If the value is 'INTERACTIONS', the ticket's interaction list is attached to each ticket.
    * Tickets without interactions have an empty array.
+   *
+   * For example:
+   *
+   * responseScope: 'MESSAGES'
+   * responseScope: ['MESSAGES', 'INTERACTIONS']
+   * responseScope: 'MESSAGES,INTERACTIONS'
    */
-  responseScope: Array<'MESSAGES' | 'INTERACTIONS'> | 'MESSAGES' | 'INTERACTIONS';
+  responseScope: string | Array<'MESSAGES' | 'INTERACTIONS'> | 'MESSAGES' | 'INTERACTIONS';
 }
 
 
@@ -214,6 +219,38 @@ export const ERROR_INVALID_USER: string = 'User is not a number or User object.'
 export const ERROR_NO_QUEUE_POSITION: string = 'Queue position missing from arguments.';
 
 export const ERROR_INVALID_DESK: string = 'Desk is not a number or Desk object.';
+
+/**
+ * The format of the HTTP request to send when creating a ticket.
+ */
+interface TicketCreationRequest {
+  firstName?: string;
+  lastName?: string;
+  phoneNumber?: number;
+  extra?: string;
+  source?: string;
+}
+
+/**
+ * The format of the HTTP request to send when editing a ticket.
+ */
+interface TicketEditingRequest extends TicketCreationRequest {
+  line?: number;
+  user?: number;
+}
+
+interface TicketCallRequest {
+  user?: number;
+  desk?: number;
+}
+
+interface CallNextRequest extends TicketCallRequest {
+  lines: string;
+}
+
+interface TicketCreationResponse {
+  id: string;
+}
 
 /**
  * The Ticket Service allows access to tickets, and provides API methods to modify, call, and
@@ -273,7 +310,7 @@ export default class TicketService {
 
     const queryStr = querystring.stringify(search);
 
-    return ApiBase.request(`tickets/search?${queryStr}`).then(response => {
+    return ApiBase.request(`tickets/search?${queryStr}`).then((response: { data: Ticket[] }) => {
       return response.data.map(ticket => new Ticket(ticket))
     });
   }
@@ -302,18 +339,19 @@ export default class TicketService {
     if (search.caller && search.caller instanceof User) {
       search.caller = search.caller.id;
     }
-    if (search.limit) {
-      delete search.limit;
+    // Sanity checks if user passes TicketSearchCriteria
+    if ((search as TicketSearchCriteria).limit) {
+      delete (search as TicketSearchCriteria).limit;
     }
-    if (search.order) {
-      delete search.order;
+    if ((search as TicketSearchCriteria).order) {
+      delete (search as TicketSearchCriteria).order;
     }
-    if (search.responseScope) {
-      delete search.responseScope;
+    if ((search as TicketSearchCriteria).responseScope) {
+      delete (search as TicketSearchCriteria).responseScope;
     }
     const queryStr = querystring.stringify(search);
     return ApiBase.request(`tickets/count?${queryStr}`)
-                  .then(response => response.count);
+                  .then((response: { count: number }) => response.count);
   }
 
   /**
@@ -322,42 +360,42 @@ export default class TicketService {
    * ```POST /v1/lines/<ID>/ticket```
    * @example
    * const lineId = 1234;
-   * let ticket: Ticket = new Ticket({
+   * const ticket: Ticket = new Ticket({
    *    firstName: "Jane",
    *    lastName: "Smith",
    *    phoneNumber: 3185551234,
    * });
-   * ticket = await Qminder.tickets.create(lineId, ticket);
-   * console.log(ticket.id); // 12345678
+   * const ticketId = await Qminder.tickets.create(lineId, ticket);
+   * console.log(ticketId); // 12345678
    * @example
    * const lineId = 1234;
-   * let ticket: Ticket = new Ticket({
+   * const ticket: Ticket = new Ticket({
    *    firstName: "Sarah Jane",
    *    lastName: "Smith",
    *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
    * });
-   * ticket = await Qminder.tickets.create(lineId, ticket);
-   * console.log(ticket.id); // 12345681
+   * const ticketId = await Qminder.tickets.create(lineId, ticket);
+   * console.log(ticketId); // 12345681
    * @example
-   * let ticket: Ticket = new Ticket({
+   * const ticket: Ticket = new Ticket({
    *    firstName: "Sarah Jane",
    *    lastName: "Smith",
    *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
    * });
    * const line: Line = await Qminder.lines.details(12345);
-   * const ticket = await Qminder.tickets.create(line, ticket);
-   * console.log(ticket.id); // 12345689
+   * const ticketId = await Qminder.tickets.create(line, ticket);
+   * console.log(ticketId); // 12345689
    * @param line  the ticket's desired line
    * @param ticket  the ticket data
-   * @returns a promise that resolves to the new Ticket object including its ID and other details.
+   * @returns a promise that resolves to the ID of the new ticket.
    * @throws ERROR_NO_LINE_ID when the lineId parameter is undefined or not a number.
    */
-  static create(line: number | Line, ticket: Ticket): Promise<Ticket> {
+  static create(line: number | Line, ticket: Ticket): Promise<number> {
     if (line === undefined) {
       throw new Error(ERROR_NO_LINE_ID);
     }
 
-    let lineId: ?number = null;
+    let lineId: any = null;
     if (typeof line === 'number') {
       lineId = line;
     } else if (line instanceof Line && typeof line.id === 'number') {
@@ -366,14 +404,18 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_LINE);
     }
 
-    const params = Object.assign({}, ticket);
-    if (params.extra) {
+    const params: TicketCreationRequest = {
+      firstName: ticket.firstName,
+      lastName: ticket.lastName,
+      phoneNumber: ticket.phoneNumber
+    };
+    if (ticket.extra) {
       params.extra = JSON.stringify(params.extra);
     }
 
-    return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST').then(response => {
-      response.id = parseInt(response.id, 10);
-      return new Ticket(response);
+    return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST')
+                  .then((response: TicketCreationResponse) => {
+      return parseInt(response.id, 10)
     });
   }
 
@@ -391,7 +433,7 @@ export default class TicketService {
    * @throws ERROR_NO_TICKET_ID when the ticket ID is undefined or not a number.
    */
   static details(ticket: number | Ticket): Promise<Ticket> {
-    let ticketId: ?number = null;
+    let ticketId: any = null;
     if (ticket === undefined) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
@@ -404,7 +446,7 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_TICKET);
     }
 
-    return ApiBase.request(`tickets/${ticketId}`).then(response => new Ticket(response));
+    return ApiBase.request(`tickets/${ticketId}`).then((response: Ticket) => new Ticket(response));
   }
 
   /**
@@ -425,12 +467,12 @@ export default class TicketService {
    * @throws ERROR_NO_TICKET_ID when the ticket ID was undefined or not a number
    * @throws ERROR_NO_TICKET_CHANGES when the ticket changes were undefined
    */
-  static edit(ticket: number | Ticket, changes: Ticket): Promise<string> {
+  static edit(ticket: number | Ticket, changes: Ticket): Promise<'success'> {
     if (!ticket) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    let ticketId: ?number = null;
+    let ticketId: any = null;
 
     if (typeof ticket === 'number') {
       ticketId = ticket;
@@ -444,13 +486,18 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_CHANGES);
     }
 
-    const params = Object.assign({}, changes);
+    const params: TicketEditingRequest = {
+      firstName: changes.firstName,
+      lastName: changes.lastName,
+      phoneNumber: changes.phoneNumber,
+      line: changes.line,
+    };
 
     if (params.extra) {
       params.extra = JSON.stringify(params.extra);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/edit`, params).then(response => {
+    return ApiBase.request(`tickets/${ticketId}/edit`, params).then((response: { result: 'success' }) => {
       return response.result;
     });
   }
@@ -473,15 +520,23 @@ export default class TicketService {
                   user?: (User | number),
                   desk?: (Desk | number)): Promise<Ticket> {
 
+    function linesIsArrayOfNumber(lines: (Line|number)[]): lines is number[] {
+      return lines.every(line => typeof line === 'number');
+    }
+
+    function linesIsArrayOfLine(lines: (Line|number)[]): lines is Line[] {
+      return lines.every(line => line instanceof Line);
+    }
+
     if (!lines || lines.length === 0) {
       throw new Error('Lines not specified.');
     }
 
     let lineIds: Array<number> = null;
 
-    if (lines.every(line => typeof line === 'number')) {
+    if (linesIsArrayOfNumber(lines)) {
       lineIds = lines;
-    } else if (lines.every(line => line instanceof Line)) {
+    } else if (linesIsArrayOfLine(lines)) {
       lineIds = lines.map(line => line.id);
     } else {
       throw new Error('Invalid line list specified');
@@ -491,9 +546,9 @@ export default class TicketService {
       throw new Error('Invalid line list specified');
     }
 
-    const request = {};
-
-    request.lines = lineIds.join(',');
+    const request: CallNextRequest = {
+      lines: lineIds.join(','),
+    };
 
     if (user && typeof user === 'number') {
       request.user = user;
@@ -518,7 +573,7 @@ export default class TicketService {
     }
 
     return ApiBase.request('tickets/call', request, 'POST')
-                  .then(response => response.hasOwnProperty('id') ? new Ticket(response) : null);
+                  .then((response: Ticket) => response.hasOwnProperty('id') ? new Ticket(response) : null);
   }
 
   /**
@@ -544,7 +599,7 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    let ticketId: ?number = null;
+    let ticketId: any = null;
     if (typeof ticket === 'number') {
       ticketId = ticket;
     } else if (ticket instanceof Ticket && ticket.id) {
@@ -553,7 +608,7 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_TICKET);
     }
 
-    let request = {};
+    let request: TicketCallRequest = {};
 
     if (user) {
       if (typeof user === 'number') {
@@ -581,7 +636,7 @@ export default class TicketService {
     }
 
     return ApiBase.request(`tickets/${ticketId}/call`, request, 'POST')
-                  .then(response => new Ticket(response));
+                  .then((response: Ticket) => new Ticket(response));
   }
 
   /**
@@ -594,8 +649,8 @@ export default class TicketService {
    * @param ticket  The ticket to recall. The ticket ID can be used instead of the Ticket object.
    * @returns  a promise that resolves to 'success' if all went well.
    */
-  static recall(ticket: (Ticket|number)): Promise<string> {
-    let ticketId: ?number = null;
+  static recall(ticket: (Ticket|number)): Promise<'success'> {
+    let ticketId: any = null;
 
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -607,7 +662,7 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
     return ApiBase.request(`tickets/${ticketId}/recall`, undefined, 'POST')
-                  .then(response => response.result);
+                  .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -621,8 +676,8 @@ export default class TicketService {
    * object.
    * @returns  a promise that resolves to 'success' if all went well.
    */
-  static markServed(ticket: (Ticket|number)): Promise<string> {
-    let ticketId: ?number = null;
+  static markServed(ticket: (Ticket|number)): Promise<'success'> {
+    let ticketId = null;
 
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -635,7 +690,7 @@ export default class TicketService {
     }
 
     return ApiBase.request(`tickets/${ticketId}/markserved`, undefined, 'POST')
-      .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -650,8 +705,8 @@ export default class TicketService {
    * @returns A promise that resolves to "success" when marking no-show works, and rejects when
    * something went wrong.
    */
-  static markNoShow(ticket: (Ticket|number)): Promise<string> {
-    let ticketId: ?number = null;
+  static markNoShow(ticket: (Ticket|number)): Promise<'success'> {
+    let ticketId: any = null;
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
     } else {
@@ -661,7 +716,7 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
     return ApiBase.request(`tickets/${ticketId}/marknoshow`, undefined, 'POST')
-      .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -679,8 +734,8 @@ export default class TicketService {
    * went wrong.
    */
   static cancel(ticket: (Ticket|number), user: User | number): Promise<string> {
-    let ticketId: ?number = null;
-    let userId: ?number = null;
+    let ticketId: any = null;
+    let userId: any = null;
 
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -704,7 +759,7 @@ export default class TicketService {
 
 
     return ApiBase.request(`tickets/${ticketId}/cancel`, { user: userId }, 'POST')
-      .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -728,9 +783,9 @@ export default class TicketService {
    */
   static returnToQueue(ticket: (Ticket|number),
                        user: (User|number),
-                       position: DesiredQueuePosition): Promise<*> {
-    let ticketId: ?number = null;
-    let userId: ?number = null;
+                       position: DesiredQueuePosition): Promise<'success'> {
+    let ticketId: any = null;
+    let userId: any = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -757,7 +812,7 @@ export default class TicketService {
 
     const query = querystring.stringify({ position, user: userId });
     return ApiBase.request(`tickets/${ticketId}/returntoqueue?${query}`, undefined, 'POST')
-      .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -773,13 +828,13 @@ export default class TicketService {
    * await Qminder.tickets.addLabel(ticket, labelText, myUserId);
    * @param ticket  The ticket to label. The ticket ID can be used instead of the Ticket object.
    * @param label  The label to add, eg. "Has documents"
-   * @param user  The user that is adding the label, or null if it was added by no real person
+   * @param user  The user that is adding the label.
    * @returns {Promise<string>} promise that resolves to 'success' if all was OK, and 'no
    * action' if the label was already there, and rejects if something else went wrong.
    */
-  static addLabel(ticket: (Ticket|number), label: string, user?: (User|number)): Promise<*> {
-    let ticketId: ?number = null;
-    let userId: ?number = null;
+  static addLabel(ticket: (Ticket|number), label: string, user: (User|number)): Promise<'success'> {
+    let ticketId: any = null;
+    let userId: any = null;
 
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
@@ -802,16 +857,13 @@ export default class TicketService {
       userId = user;
     }
 
-    const body = {
-      value: label
+    const body: { value: string, user: number } = {
+      value: label,
+      user: userId
     };
 
-    if (userId) {
-      body.user = userId;
-    }
-
     return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST')
-                  .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -831,9 +883,9 @@ export default class TicketService {
    * @returns {Promise<string>}  A promise that resolves to "success" when removing the label
    * worked, and rejects when something went wrong.
    */
-  static removeLabel(ticket: (Ticket|number), label: string, user: (User|number)): Promise<*> {
-    let ticketId: ?number = null;
-    let userId: ?number = null;
+  static removeLabel(ticket: (Ticket|number), label: string, user: (User|number)): Promise<'success'> {
+    let ticketId: any = null;
+    let userId: any = null;
 
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
@@ -865,7 +917,7 @@ export default class TicketService {
     };
 
     return ApiBase.request(`tickets/${ticketId}/labels/remove`, body, 'POST')
-                  .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**

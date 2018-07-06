@@ -1,2 +1,2 @@
-import WebSocket from 'ws';
+import * as WebSocket from 'ws';
 export default WebSocket;

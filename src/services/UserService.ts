@@ -3,7 +3,7 @@ import ApiBase from '../api-base';
 import User from '../model/User';
 import Desk from '../model/Desk';
 import Location from '../model/Location';
-import type UserRole from '../model/User';
+import { UserRole } from '../model/User';
 
 /**
  * User Service
@@ -24,11 +24,11 @@ export default class UserService {
    * to the location, or rejects when something went wrong.
    */
   static list(location: (Location|number)): Promise<Array<User>> {
-    let locationId: ?number = location instanceof Location ? location.id : location;
+    let locationId: any = location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location was not valid.');
     }
-    return ApiBase.request(`locations/${locationId}/users`).then(users => {
+    return ApiBase.request(`locations/${locationId}/users`).then((users: { data: User[] }) => {
       if (!users.data) {
         throw new Error('User list response was invalid!');
       }
@@ -67,12 +67,12 @@ export default class UserService {
     if (!roles) {
       throw new Error('The user\'s roles are missing');
     }
-    return ApiBase.request(`users/`, {
+    return (ApiBase.request(`users/`, {
       email,
       firstName,
       lastName,
       roles: JSON.stringify(roles),
-    }, 'POST');
+    }, 'POST') as Promise<User>);
   }
   /**
    * Fetch the user's details.
@@ -95,7 +95,7 @@ export default class UserService {
    * @throws Error when the user argument was invalid (not a string, not a number, or not a User)
    */
   static details(user: number | string | User): Promise<User> {
-    let search: ?(string | number) = null;
+    let search = null;
     if (user instanceof User) {
       search = user.id;
     } else {
@@ -106,7 +106,7 @@ export default class UserService {
       throw new Error('User to search by was invalid. Searching only works by email or user ID or User object.');
     }
 
-    return ApiBase.request(`users/${search}`).then(userResponse => new User(userResponse));
+    return ApiBase.request(`users/${search}`).then((userResponse: User) => new User(userResponse));
   }
 
   /**
@@ -121,12 +121,12 @@ export default class UserService {
    * @throws Error when the argument is invalid (either the user ID is not a number, or the User
    * object did not have an ID).
    */
-  static remove(user: (User|number)): Promise<*> {
-    let userId: ?number = user instanceof User ? user.id : user;
+  static remove(user: (User|number)): Promise<{ success: true }> {
+    let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID was invalid');
     }
-    return ApiBase.request(`users/${userId}/`, undefined, 'DELETE');
+    return (ApiBase.request(`users/${userId}/`, undefined, 'DELETE') as Promise<{ success: true }>);
   }
 
   /**
@@ -143,12 +143,12 @@ export default class UserService {
    * @return {Promise.<Object>} a Promise that resolves when the role adding succeeded, and
    * rejects when something went wrong.
    */
-  static addRole(user: User | number, role: UserRole): Promise<*> {
-    let userId: ?number = user instanceof User ? user.id : user;
+  static addRole(user: User | number, role: UserRole): Promise<{ success: true }> {
+    let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
-    return ApiBase.request(`users/${userId}/roles`, role, 'POST');
+    return (ApiBase.request(`users/${userId}/roles`, role, 'POST') as Promise<{ success: true }>);
   }
 
   /**
@@ -164,7 +164,7 @@ export default class UserService {
    * succeeded, or rejects if something went wrong.
    */
   static addPicture(user: User | number, picture: File): Promise<*> {
-    let userId: ?number = user instanceof User ? user.id : user;
+    let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
@@ -185,7 +185,7 @@ export default class UserService {
    * @throws Error if the user object or user ID is invalid.
    */
   static removePicture(user: User | number): Promise<*> {
-    let userId: ?number = user instanceof User ? user.id : user;
+    let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
@@ -203,12 +203,12 @@ export default class UserService {
    * if it failed.
    */
   static selectDesk(user: User | number, desk: Desk | number) {
-    let userId: ?number = user instanceof User ? user.id : user;
+    let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
 
-    let deskId: ?number = desk instanceof Desk ? desk.id : desk;
+    let deskId: any = desk instanceof Desk ? desk.id : desk;
     if (!deskId || typeof deskId !== 'number') {
       throw new Error('Desk ID is invalid');
     }
@@ -225,8 +225,8 @@ export default class UserService {
    * @returns {Promise.<*>} A promise that resolves when setting the desk works, and rejects
    * if it failed.
    */
-  static removeDesk(user: User | number): Promise<*> {
-    let userId: ?number = user instanceof User ? user.id : user;
+  static removeDesk(user: User | number): Promise<{ success: true }> {
+    let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }

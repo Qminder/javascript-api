@@ -1,6 +1,9 @@
 #!/bin/sh
 set -e
 
+echo "WIP"
+exit 1
+
 #
 # Compile Qminder API v2 for ES6 inclusion with tools like Closure Compiler.
 #
@@ -22,10 +25,6 @@ sedi () {
 }
 
 sedi "s/VERSION/'$qminderVersion'/" build-es6/qminder-api.js
-
-# Use sed to replace ENV in fetch/websocket imports
-sedi "s:./lib/fetch-ENV:./lib/fetch-web:" build-es6/api-base.js
-sedi "s:../lib/websocket-ENV:../lib/websocket-web:" build-es6/services/EventsService.js
 
 # Copy all sources next to the compiled files, with ".flow" in the end of the name
 for flowSource in $(find src -name "*.js"); do

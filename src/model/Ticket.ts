@@ -21,13 +21,13 @@ class Ticket {
    * Tickets with numbers have been deprecated.
    * @deprecated
    */
-  number: ?number;
+  number?: number | undefined;
 
 
   /**
    * The current status of this ticket.
    */
-  status: TicketStatus;
+  status?: TicketStatus;
 
   /**
    * Describes how the visitor was added into the queue.
@@ -37,7 +37,7 @@ class Ticket {
    * NAME - The visitor added themselves into a queue via iPad Sign-In (a Name Device). <br>
    * PRINTER - The visitor used a printer (discontinued) to queue up.
    */
-  source: 'PHONE' | 'MANUAL' | 'NAME' | 'PRINTER';
+  source?: 'PHONE' | 'MANUAL' | 'NAME' | 'PRINTER';
 
   /**
    * The ID of the line that this ticket belongs to. All tickets belong to a line.
@@ -46,11 +46,11 @@ class Ticket {
   line: number;
 
   /** The first name of the visitor. For example, "Jane". */
-  firstName: string;
+  firstName?: string;
   /** The last name of the visitor. For example, "Smith". */
-  lastName: string;
+  lastName?: string;
   /** The phone number of the visitor. For example: 3725551111 */
-  phoneNumber: ?number;
+  phoneNumber?: number;
 
 
   /**
@@ -69,7 +69,7 @@ class Ticket {
    *     return new Date(timeA) - new Date(timeB);
    * });
    */
-  orderAfter: string;
+  orderAfter?: string;
 
   /**
    * An object that contains the creation timestamp of the ticket in ISO8601 format, with
@@ -87,15 +87,15 @@ class Ticket {
    *
    * { "date": "2017-10-31T17:30:00.000Z" }
    */
-  called: ?{
+  called?: {
     date: string;
-  };
+  } | undefined;
 
   /**
    * If the ticket has been marked served, then this object contains the time the ticket was
    * served, in ISO8601 format, with milliseconds.
    */
-  served: ?{
+  served?: {
     date: string;
   };
 
@@ -112,7 +112,7 @@ class Ticket {
    * { "assigner": 1459, "assignee": 1459 }
    */
 
-  assigned: ?{
+  assigned?: {
     assigner: number;
     assignee: number;
   };
@@ -123,7 +123,7 @@ class Ticket {
    *
    * { "date": "2017-10-31T17:30:00.000Z", "canceller": 1445 }
    */
-  cancelled: ?{
+  cancelled?: {
     date: string;
     canceller: number;
   };
@@ -132,33 +132,35 @@ class Ticket {
    * List of custom fields and their values attached to the ticket.
    * @see TicketExtra
    */
-  extra: ?Array<TicketExtra>;
+  extra?: TicketExtra[];
 
   /**
    * List of the ticket's labels.
    * @see TicketLabel
    */
-  labels: ?Array<TicketLabel>;
+  labels?: TicketLabel[];
 
 
   /**
    * List of interactions of this ticket.
    * @see TicketInteraction
    */
-  interactions: ?Array<TicketInteraction>;
+  interactions?: TicketInteraction[];
 
   /**
    * List of SMS messages exchanged with this visitor.
    * @see TicketMessage
    */
-  messages: ?Array<TicketMessage>;
+  messages?: TicketMessage[];
 
 
   constructor(properties: number | Ticket) {
     if (typeof properties === 'number') {
       this.id = properties;
     } else {
-      // $FlowFixMe: TODO: assign all properties the Ticket supports, without writing them all out?
+      if (typeof properties.id === 'string') {
+        properties.id = parseInt(properties.id, 10);
+      }
       Object.assign(this, properties);
     }
   }
@@ -299,7 +301,7 @@ export type TicketMessage = {
   body: string;
   type: 'INCOMING' | 'OUTGOING';
   status: 'NEW' | 'SENT' | 'DELIVERED' | 'INVALID_NUMBER';
-  userId: ?number;
+  userId?: number;
 };
 
 export type TicketAudit = {

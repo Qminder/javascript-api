@@ -33,7 +33,7 @@ export default class GraphQLService {
    * @returns a promise that resolves to the query's results, or rejects if the query failed
    * @throws when the 'query' argument is undefined or an empty string
    */
-  static query(query: string, variables?: { [string]: any }): Promise<Object> {
+  static query(query: string, variables?: { [key: string]: any }): Promise<Object> {
     if (!query || query.length === 0) {
       throw new Error('GraphQLService query expects a GraphQL query as its first argument');
     }

@@ -1,5 +1,5 @@
-import Location from '../model/Location.js';
-import ApiBase from '../api-base.js';
+import Location, { InputField } from '../model/Location';
+import ApiBase from '../api-base';
 import Desk from '../model/Desk';
 
 const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
@@ -16,8 +16,8 @@ export default class LocationService {
    * ```GET /locations/```
    * @returns {Promise.<Array>} A promise that resolves to an array of locations.
    */
-  static list(): Promise<Array<Location>> {
-    return ApiBase.request('locations/').then(locations => {
+  static list(): Promise<Location[]> {
+    return ApiBase.request('locations/').then((locations: { data: Location[] }) => {
       return locations.data.map(each => new Location(each));
     });
   }
@@ -30,7 +30,7 @@ export default class LocationService {
    * @returns {Promise.<Location>} A promise that resolves to the location.
    */
   static details(locationId: number): Promise<Location> {
-    return ApiBase.request(`locations/${locationId}/`).then(details => new Location(details));
+    return ApiBase.request(`locations/${locationId}/`).then((details: Location) => new Location(details));
   }
 
   /**
@@ -40,8 +40,8 @@ export default class LocationService {
    * ```GET /v1/locations/<ID>/desks```
    * @returns the list of desks in this location
    */
-  static getDesks(location: Location) : Promise<Array<Desk>> {
-    return ApiBase.request(`locations/${location.id}/desks`).then(response => {
+  static getDesks(location: Location) : Promise<Desk[]> {
+    return ApiBase.request(`locations/${location.id}/desks`).then((response: { desks: Desk[] }) => {
       if (!response.desks) {
         throw new Error(`Desk list response was invalid - ${response}`);
       }
@@ -64,8 +64,8 @@ export default class LocationService {
    * @returns {Promise.<Array.<InputField>>} a Promise that resolves to an array of input
    * fields, or rejects if something went wrong.
    */
-  static getInputFields(location: (Location | number)): Promise<Array<InputField>> {
-    let locationId: ?number = null;
+  static getInputFields(location: (Location | number)): Promise<InputField[]> {
+    let locationId: any = null;
     // Get the location's ID
     if (location instanceof Location) {
       locationId = location.id;
@@ -76,6 +76,6 @@ export default class LocationService {
       throw new Error(ERROR_NO_LOCATION_ID);
     }
     return ApiBase.request(`locations/${locationId}/input-fields`)
-                  .then(response => response.fields);
+                  .then((response: { fields: InputField[] }) => response.fields);
   }
 };

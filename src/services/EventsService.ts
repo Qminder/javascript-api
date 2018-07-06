@@ -1,5 +1,4 @@
-
-import WebSocket from '../lib/websocket-ENV';
+import WebSocket from '../lib/websocket-web';
 import Ticket from '../model/Ticket';
 
 /**
@@ -7,13 +6,13 @@ import Ticket from '../model/Ticket';
  */
 type EventType = 'TICKET_CREATED' | 'TICKET_CALLED' | 'TICKET_RECALLED' | 'TICKET_CANCELLED' |
   'TICKET_SERVED' | 'TICKET_CHANGED' | 'OVERVIEW_MONITOR_CHANGE' | 'SIGN_IN_CHANGE' |
-  'LINES_CHANGED';
+  'LINES_CHANGED' | 'LOCATION_CHANGE';
 
 /** A callback type that takes a parameter of type T and the return value is ignored. */
-type EventCallback<T> = (T) => void;
+type EventCallback<T> = (event: T) => void;
 
 /** An event filter. */
-type EventFilter = ?{ line?: number, location?: number };
+type EventFilter = { line?: number, location?: number } | undefined;
 
 /** An event subscription. These are kept in an array for re-subscription. */
 type EventSubscription = {
@@ -51,39 +50,34 @@ type EventSubscription = {
  */
 class EventsService {
 
-  /** The Qminder API key
-   * @private */
-  apiKey: string;
+  /** The Qminder API key */
+  private apiKey: string;
 
-  /** The WebSocket instance used to connect to the Qminder API.
-   * @private */
-  socket: WebSocket;
+  /** The API server to query */
+  private apiServer: string;
 
-  /** True if the API is currently connecting to the Qminder API, false if not.
-   * @private */
-  connecting: boolean;
+  /** The WebSocket instance used to connect to the Qminder API. */
+  private socket: WebSocket;
 
-  /** True if there is a connection to the Qminder API websocket, false if not
-   * @private */
-  connected: boolean;
+  /** True if the API is currently connecting to the Qminder API, false if not. */
+  private connecting: boolean;
 
-  /** A timeout object after which to retry connecting to Qminder API.
-   * @private*/
-  retryTimeout: Object;
+  /** True if there is a connection to the Qminder API websocket, false if not */
+  private connected: boolean;
 
-  /** An interval object to automatically send keep-alive pings.
-   * @private */
-  pingInterval: Object;
+  /** A timeout object after which to retry connecting to Qminder API. */
+  private retryTimeout: any;
+
+  /** An interval object to automatically send keep-alive pings. */
+  private pingInterval: any;
 
   /** An array of all event subscription messages, to re-establish event subscriptions when the
-   *  websocket re-connects
-   * @private */
-  subscriptions: Array<EventSubscription>;
+   *  websocket re-connects */
+  private subscriptions: EventSubscription[];
 
   /** Counts the amount of times the event emitter retried connecting. This is used for
-   *  exponential retry falloff.
-   * @private */
-  connectionRetries: number;
+   *  exponential retry falloff. */
+  private connectionRetries: number;
 
   /**
    * Keeps track of each subscription's callback.
@@ -96,20 +90,18 @@ class EventsService {
    * {
    *    "fzkf9afasoofiSr1o": function(messageData: Object): undefined {}
    * }
-   * @private
    */
-  subscriptionCallbackMap: { [string]: Function };
+  private subscriptionCallbackMap: { [subscriptionKey: string]: Function };
 
   /**
    * The list of callbacks that listen to when the socket connects.
-   * @private
    */
-  onConnectCallbacks: Array<() => void>;
+  private onConnectCallbacks: (() => void)[];
 
   /**
    * The list of callbacks that listen to when the socket disconnects.
    */
-  onDisconnectCallbacks: Array<() => void>;
+  private onDisconnectCallbacks: (() => void)[];
 
   /**
    * Create a 30-letter random identifier.
@@ -118,9 +110,8 @@ class EventsService {
    * const identifier = Qminder.events.createId();
    * // identifier = "h2bjBXYvsQoZGp8RXiEumvWSXiEp4Z";
    * @returns {string} A random identifier.
-   * @private
    */
-  createId(): string {
+  private createId(): string {
     const POSSIBLE_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     let text = "";
 
@@ -174,8 +165,7 @@ class EventsService {
     this.apiKey = apiKey;
   }
 
-  /** Set the WebSocket hostname the EventsService uses.
-   * @private */
+  /** Set the WebSocket hostname the EventsService uses. */
   setServer(apiServer: string) {
     this.apiServer = apiServer;
   }
@@ -223,7 +213,7 @@ class EventsService {
       }
     };
 
-    socket.onclose = (event) => {
+    socket.onclose = (event: CloseEvent) => {
       // NOTE: if the event code is 1006, it is any of the errors in the list here:
       // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
       console.log('[Qminder Events API] Connection lost: ' + event.code);

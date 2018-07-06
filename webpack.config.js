@@ -25,11 +25,6 @@ const versionDefinition = new webpack.DefinePlugin({
 });
 
 module.exports = function() {
-
-  const moduleReplacements = new webpack.NormalModuleReplacementPlugin(/(.*)-ENV/, function (resource) {
-    resource.request = resource.request.replace(/-ENV/, '-web');
-  });
-
   return ({
     target: 'web',
     entry: {
@@ -77,8 +72,6 @@ module.exports = function() {
     devtool: 'source-map',
     plugins: [
       versionDefinition,
-      moduleReplacements,
-      new FlowBabelWebpackPlugin(),
       uglify
     ],
   });

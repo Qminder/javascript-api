@@ -1,7 +1,6 @@
-// @flow
-import querystring from 'querystring';
+import * as querystring from 'querystring';
 
-import fetch from './lib/fetch-ENV';
+import fetch from './lib/fetch-web';
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
 
 interface GraphqlQueryVariables {
@@ -13,6 +12,21 @@ interface GraphqlQuery {
   variables?: GraphqlQueryVariables;
 }
 
+interface ErrorResponse {
+  statusCode: number;
+  message: string;
+  developerMessage: string;
+}
+
+interface SuccessResponse {
+  statusCode: number;
+}
+
+type ApiResponse = ErrorResponse | SuccessResponse;
+
+function responseIsError(response: ApiResponse): response is ErrorResponse {
+  return response.statusCode && Math.floor(response.statusCode / 100) !== 2;
+}
 
 /**
  * Base functionality of the API, such as HTTP requests with the API key.
@@ -78,28 +92,26 @@ class ApiBase {
 
     const init: RequestInit = {
       method: method,
-      headers: {
-        'X-Qminder-REST-API-Key': this.apiKey,
-      },
       mode: 'cors',
     };
+
+    init.headers = new Headers();
+    init.headers.append('X-Qminder-REST-API-Key', this.apiKey);
 
     if (data) {
       init.method = 'POST';
       if (typeof File !== "undefined" && data instanceof File && init.headers) {
         init.body = data;
-        // $FlowFixMe: there's an issue with the fetch RequestOptions type.
-        init.headers['Content-Type'] = data.type;
+        init.headers.append('Content-Type', data.type);
       } else {
         init.body = querystring.stringify(data);
-        // $FlowFixMe: there's an issue with the fetch RequestOptions type.
-        init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+        init.headers.append('Content-Type', 'application/x-www-form-urlencoded');
       }
     }
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
-           .then(response => response.json())
-           .then(responseJson => {
-             if (responseJson.statusCode && Math.floor(responseJson.statusCode/100) !== 2) {
+           .then((response: Response) => response.json())
+           .then((responseJson: ApiResponse) => {
+             if (responseIsError(responseJson)) {
                throw new Error(responseJson.developerMessage || responseJson.message);
              }
              return responseJson;
@@ -142,7 +154,7 @@ class ApiBase {
     };
 
     return this.fetch(`https://${this.apiServer}/graphql`, init)
-      .then(response => response.json());
+      .then((response: Response) => response.json());
   }
 }
 

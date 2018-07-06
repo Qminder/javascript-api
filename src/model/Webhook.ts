@@ -10,7 +10,6 @@ class Webhook {
     if (typeof properties === 'number') {
       this.id = properties;
     } else {
-      // $FlowFixMe
       Object.assign(this, properties);
     }
   }

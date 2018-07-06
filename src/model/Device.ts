@@ -30,7 +30,7 @@ export default class Device {
   offline: boolean;
 
   /** True if the iOS device needs a system update, false if it does not. */
-  needsUpdate: ?boolean;
+  needsUpdate?: boolean;
 
   /**
    * The iOS device's battery status.
@@ -47,7 +47,7 @@ export default class Device {
    * where level is the battery level, in percent, and charging is true when the iOS device is
    * currently charging.
    * */
-  battery: ?{
+  battery?: {
     level: number;
     charging: boolean;
   };

@@ -14,19 +14,20 @@ type Picture = {
  *
  * `CLERK` - the user can only serve visitors and see the Welcome screen.<br>
  * `MANAGER` - the user can edit the settings and view stats of one location.<br>
- * `ADMINISTRATOR` - the user can edit and view all locations for the account.
+ * `ADMIN` - the user can edit and view all locations for the account.<br>
+ * `OWNER` - the user has all rights over all locations in the account.
  */
-type RoleType = 'CLERK' | 'MANAGER' | 'ADMINISTRATOR';
+type RoleType = 'CLERK' | 'MANAGER' | 'ADMIN' | 'OWNER';
 
 /**
  * Represents a single user role.
  * If the role type is 'ADMINISTRATOR', there is no location specified.
  */
-type UserRole = {
-  id: number,
-  type: RoleType,
-  location?: number,
-};
+export interface UserRole {
+  id: number;
+  type: RoleType;
+  location?: number;
+}
 
 /**
  * Represents an employee. A User can log in to the Qminder Dashboard, manage (create/edit/call)
@@ -81,7 +82,6 @@ class User {
     if (typeof properties === 'number') {
       this.id = properties;
     } else {
-      // $FlowFixMe: TODO: assign all properties the User supports, without writing them all out?
       Object.assign(this, properties);
     }
   }

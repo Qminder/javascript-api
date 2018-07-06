@@ -1,1 +1,1 @@
-export default window.WebSocket;
+export default WebSocket;

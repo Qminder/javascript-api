@@ -1,4 +1,3 @@
-// @flow
 import Line from '../model/Line';
 import Location from '../model/Location';
 import ApiBase from '../api-base';
@@ -18,12 +17,12 @@ export default class LineService {
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
   static list(location: Location | number): Promise<Array<Line>> {
-    let locationId: ?number = location instanceof Location ? location.id : location;
+    let locationId: any = location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID invalid or missing.');
     }
     return ApiBase.request(`locations/${locationId}/lines`)
-                  .then(response => response.data.map(line => new Line(line)));
+                  .then((response: { data: Line[] }) => response.data.map(line => new Line(line)));
   }
 
   /**
@@ -37,11 +36,12 @@ export default class LineService {
    * something went wrong.
    */
   static details(line: Line | number): Promise<Line> {
-    let lineId: ?number = line instanceof Line ? line.id : line;
+    let lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return ApiBase.request(`lines/${lineId}/`).then(response => new Line(response));
+    return ApiBase.request(`lines/${lineId}/`)
+                  .then((response: Line) => new Line(response));
   }
 
   /**
@@ -57,7 +57,7 @@ export default class LineService {
    * to the parameters.
    */
   static create(location: Location | number, line: Line): Promise<Line> {
-    let locationId: ?number = location instanceof Location ? location.id : location;
+    let locationId: any = location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID invalid or missing.');
     }
@@ -67,7 +67,7 @@ export default class LineService {
     if (!line.name || typeof line.name !== 'string') {
       throw new Error('Cannot create a line without a line name.');
     }
-    return ApiBase.request(`locations/${locationId}/lines/`, line, 'POST');
+    return (ApiBase.request(`locations/${locationId}/lines/`, line, 'POST') as Promise<Line>);
   }
 
   /**
@@ -82,11 +82,11 @@ export default class LineService {
    * @returns {Promise.<Object>} A Promise that resolves when the line was deleted, and rejects
    * when something went wrong.
    */
-  static remove(line: Line | number): Promise<*> {
-    let lineId: ?number = line instanceof Line ? line.id : line;
+  static remove(line: Line | number): Promise<any> {
+    let lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return ApiBase.request(`lines/${lineId}`, undefined, 'DELETE');
+    return (ApiBase.request(`lines/${lineId}`, undefined, 'DELETE') as Promise<any>);
   }
 };
