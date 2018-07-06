@@ -1,8 +1,17 @@
 // @flow
 import querystring from 'querystring';
-// $FlowFixMe
+
 import fetch from './lib/fetch-ENV';
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
+
+interface GraphqlQueryVariables {
+  [key: string]: any;
+}
+
+interface GraphqlQuery {
+  query: string;
+  variables?: GraphqlQueryVariables;
+}
 
 
 /**
@@ -61,13 +70,13 @@ class ApiBase {
    */
   request(url: string,
           data?: Object | File,
-          method?: HTTPMethod = 'GET'): Promise<Object> {
+          method: HTTPMethod = 'GET'): Promise<Object> {
 
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: RequestOptions = {
+    const init: RequestInit = {
       method: method,
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
@@ -109,7 +118,7 @@ class ApiBase {
    * @throws when the API key is missing
    * @throws when the query is undefined or an empty string
    */
-  queryGraph(query: string, variables?: { [string]: any }): Promise<Object> {
+  queryGraph(query: string, variables?: GraphqlQueryVariables): Promise<Object> {
     if (!query) {
       throw new Error('ApiBase.queryGraph expected a query as its first argument.');
     }
@@ -117,13 +126,13 @@ class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const requestBody: { query: string, variables?: { [string]: any }} = { query };
+    const requestBody: GraphqlQuery = { query };
 
     if (variables) {
       requestBody.variables = variables;
     }
 
-    const init: RequestOptions = {
+    const init: RequestInit = {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
