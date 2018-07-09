@@ -38,6 +38,7 @@ const setServer = (server: string) => {
   EventsService.setServer(`wss://${server}:443`);
 };
 
+declare var VERSION: string;
 // VERSION is replaced with the version string from package.json during compile time
 const qminderVersion = VERSION;
 

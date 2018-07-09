@@ -139,12 +139,10 @@ describe("ApiBase", function () {
     });
     it("sends the API key in the headers as X-Qminder-REST-API-Key", function(done) {
       Qminder.setKey(API_KEY);
-
-      const headers = new Headers();
-      headers.append('X-Qminder-REST-API-Key', API_KEY);
-
       const init = {
-        headers,
+        headers: {
+          'X-Qminder-REST-API-Key': API_KEY
+        },
         method: 'GET',
         mode: 'cors',
       };
@@ -210,10 +208,11 @@ describe("ApiBase", function () {
         lastName: "Smith",
       };
 
-      const headers = new Headers();
-      headers.append('Content-Type', 'application/x-www-form-urlencoded');
-
-      const requestMatcher = sinon.match({ headers });
+      const requestMatcher = sinon.match({
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        }
+      });
       const url = 'https://api.qminder.com/v1/TEST';
 
       Qminder.ApiBase.request('TEST', body).then(response => {

@@ -28,6 +28,20 @@ function responseIsError(response: ApiResponse): response is ErrorResponse {
   return response.statusCode && Math.floor(response.statusCode / 100) !== 2;
 }
 
+// NOTE: this is defined because the RequestInit type has issues
+interface CorrectRequestInit {
+  method?: string;
+  headers?: {
+    [key: string]: string;
+  };
+  mode?: 'cors' | 'same-origin' | 'navigate' | 'no-cors';
+  credentials?: 'omit' | 'same-origin' | 'include';
+  cache?: string;
+  body?: string | Blob;
+  referrer?: string;
+  referrerPolicy?: string;
+}
+
 /**
  * Base functionality of the API, such as HTTP requests with the API key.
  * Additionally, manages the WebSocket connection.
@@ -90,22 +104,22 @@ class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: RequestInit = {
+    const init: CorrectRequestInit = {
       method: method,
       mode: 'cors',
+      headers: {
+        'X-Qminder-REST-API-Key': this.apiKey
+      },
     };
-
-    init.headers = new Headers();
-    init.headers.append('X-Qminder-REST-API-Key', this.apiKey);
 
     if (data) {
       init.method = 'POST';
       if (typeof File !== "undefined" && data instanceof File && init.headers) {
         init.body = data;
-        init.headers.append('Content-Type', data.type);
+        init.headers['Content-Type'] = data.type;
       } else {
         init.body = querystring.stringify(data);
-        init.headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
       }
     }
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
