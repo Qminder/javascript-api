@@ -318,11 +318,16 @@ class EventsService {
    * Sends a WebSocket message if possible to Qminder API, to subscribe to events based on the
    * EventSubscription. If not possible, opens the connection and queues the subscription message.
    * Memorizes the EventSubscription to be replayed when the websocket drops and reconnects.
+   *
+   * If called without a callback, then it simply emits the subscription message to the websocket.
+   * It's assumed that the callback is already in {@link this.subscriptionCallbackMap}. This is used
+   * to replay the EventSubscription when the websocket reconnects.
+   *
    * @param subscription  details about the event to subscribe to
    * @param callback  a callback to call when the event occurs
    * @private
    */
-  subscribe(subscription: EventSubscription, callback: Function) {
+  subscribe(subscription: EventSubscription, callback?: Function) {
     if (this.subscriptions.findIndex(sub => sub.id === subscription.id) === -1) {
       this.subscriptions.push(subscription);
     }

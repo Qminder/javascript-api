@@ -34,7 +34,8 @@ class WebhooksService {
     if (!url || typeof url !== 'string') {
       throw new Error(ERROR_NO_URL);
     }
-    return ApiBase.request(`webhooks`, { url }, 'POST').then(response => new Webhook(response));
+    return ApiBase.request(`webhooks`, { url }, 'POST')
+                  .then((response: Webhook) => new Webhook(response));
   }
 
   /**
@@ -54,8 +55,8 @@ class WebhooksService {
    * @returns a promise that resolves when the API call worked, and rejects when it failed.
    * @throws {Error} ERROR_NO_WEBHOOK_ID when the webhook ID is not provided or is not a number
    */
-  static remove(webhook: Webhook | number): Promise<*> {
-    let webhookId: ?number = webhook instanceof Webhook ? webhook.id : webhook;
+  static remove(webhook: Webhook | number): Promise<Object> {
+    let webhookId: any = webhook instanceof Webhook ? webhook.id : webhook;
     if (!webhookId || typeof webhookId !== 'number') {
       throw new Error(ERROR_NO_WEBHOOK_ID);
     }

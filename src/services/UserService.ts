@@ -163,7 +163,7 @@ export default class UserService {
    * @returns {Promise.<Object>} a Promise that resolves when adding the profile picture
    * succeeded, or rejects if something went wrong.
    */
-  static addPicture(user: User | number, picture: File): Promise<*> {
+  static addPicture(user: User | number, picture: File): Promise<Object> {
     let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
@@ -184,7 +184,7 @@ export default class UserService {
    * goes wrong.
    * @throws Error if the user object or user ID is invalid.
    */
-  static removePicture(user: User | number): Promise<*> {
+  static removePicture(user: User | number): Promise<Object> {
     let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
@@ -222,10 +222,10 @@ export default class UserService {
    *
    * DELETE /v1/users/<ID>/desk
    * @param user The user to modify
-   * @returns {Promise.<*>} A promise that resolves when setting the desk works, and rejects
+   * @returns {Promise<Object>} A promise that resolves when setting the desk works, and rejects
    * if it failed.
    */
-  static removeDesk(user: User | number): Promise<{ success: true }> {
+  static removeDesk(user: User | number): Promise<Object> {
     let userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');

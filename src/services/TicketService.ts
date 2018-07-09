@@ -1,4 +1,4 @@
-import Ticket, { TicketStatus } from '../model/Ticket';
+import Ticket, { TicketStatus, TicketAudit, TicketMessage } from '../model/Ticket';
 import User from '../model/User';
 import Desk from '../model/Desk';
 import Line from '../model/Line';
@@ -390,7 +390,7 @@ export default class TicketService {
    * @returns a promise that resolves to the ID of the new ticket.
    * @throws ERROR_NO_LINE_ID when the lineId parameter is undefined or not a number.
    */
-  static create(line: number | Line, ticket: Ticket): Promise<number> {
+  static create(line: number | Line, ticket: Ticket): Promise<Ticket> {
     if (line === undefined) {
       throw new Error(ERROR_NO_LINE_ID);
     }
@@ -410,12 +410,15 @@ export default class TicketService {
       phoneNumber: ticket.phoneNumber
     };
     if (ticket.extra) {
-      params.extra = JSON.stringify(params.extra);
+      params.extra = JSON.stringify(ticket.extra);
     }
 
     return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST')
                   .then((response: TicketCreationResponse) => {
-      return parseInt(response.id, 10)
+      const ticketId = parseInt(response.id, 10);
+      const ticket = new Ticket(ticketId);
+      ticket.line = lineId;
+      return ticket;
     });
   }
 
@@ -486,20 +489,25 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_CHANGES);
     }
 
-    const params: TicketEditingRequest = {
-      firstName: changes.firstName,
-      lastName: changes.lastName,
-      phoneNumber: changes.phoneNumber,
-      line: changes.line,
-    };
-
-    if (params.extra) {
-      params.extra = JSON.stringify(params.extra);
+    const params: TicketEditingRequest = {};
+    if (changes.firstName) {
+      params.firstName = changes.firstName;
+    }
+    if (changes.lastName) {
+      params.lastName = changes.lastName;
+    }
+    if (changes.phoneNumber) {
+      params.phoneNumber = changes.phoneNumber;
+    }
+    if (changes.line) {
+      params.line = changes.line;
+    }
+    if (changes.extra) {
+      params.extra = JSON.stringify(changes.extra);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/edit`, params).then((response: { result: 'success' }) => {
-      return response.result;
-    });
+    return ApiBase.request(`tickets/${ticketId}/edit`, params)
+                  .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -832,7 +840,7 @@ export default class TicketService {
    * @returns {Promise<string>} promise that resolves to 'success' if all was OK, and 'no
    * action' if the label was already there, and rejects if something else went wrong.
    */
-  static addLabel(ticket: (Ticket|number), label: string, user: (User|number)): Promise<'success'> {
+  static addLabel(ticket: (Ticket|number), label: string, user?: (User|number)): Promise<'success'> {
     let ticketId: any = null;
     let userId: any = null;
 
@@ -857,10 +865,13 @@ export default class TicketService {
       userId = user;
     }
 
-    const body: { value: string, user: number } = {
+    const body: { value: string, user?: number } = {
       value: label,
-      user: userId
     };
+
+    if (typeof userId === 'number') {
+      body.user = userId;
+    }
 
     return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST')
       .then((response: { result: 'success' }) => response.result);
@@ -943,10 +954,10 @@ export default class TicketService {
    */
   static assignToUser(ticket: (Ticket|number),
                       assigner: (User|number),
-                      assignee: (User|number)): Promise<*> {
-    let ticketId: ?number = null;
-    let assignerId: ?number = null;
-    let assigneeId: ?number = null;
+                      assignee: (User|number)): Promise<'success'> {
+    let ticketId: any = null;
+    let assignerId: any = null;
+    let assigneeId: any = null;
 
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
@@ -984,7 +995,7 @@ export default class TicketService {
       assignee: assigneeId
     };
     return ApiBase.request(`tickets/${ticketId}/assign`, body, 'POST')
-                  .then(response => response.result);
+                  .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -1020,9 +1031,9 @@ export default class TicketService {
    * @returns {Promise<any>} a Promise that resolves when unassigning works and rejects when
    * unassigning fails
    */
-  static unassign(ticket: (Ticket|number), unassigner: (User|ticket)): Promise<*> {
-    let ticketId: ?number = null;
-    let unassignerId: ?number = null;
+  static unassign(ticket: (Ticket|number), unassigner: (User|number)): Promise<'success'> {
+    let ticketId: any = null;
+    let unassignerId: any = null;
 
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1045,7 +1056,7 @@ export default class TicketService {
     }
 
     return ApiBase.request(`tickets/${ticketId}/unassign`, { user: unassignerId }, 'POST')
-      .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -1066,8 +1077,8 @@ export default class TicketService {
    * queue.
    * @returns resolves to 'success' when it worked
    */
-  static reorder(ticket: (Ticket|number), afterTicket: ?(Ticket|number)): Promise<*> {
-    let ticketId: ?number = null;
+  static reorder(ticket: (Ticket|number), afterTicket: (Ticket|number|null)): Promise<'success'> {
+    let ticketId: any = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1075,14 +1086,14 @@ export default class TicketService {
       ticketId = ticket;
     }
 
-    let afterTicketId: ?number = null;
+    let afterTicketId: any = null;
     if (afterTicket instanceof Ticket) {
       afterTicketId = afterTicket.id;
     } else {
       afterTicketId = afterTicket;
     }
 
-    let postData: { after: number } = undefined;
+    let postData: { after: number | null } = undefined;
     if (afterTicketId) {
       postData = {
         after: afterTicketId,
@@ -1093,7 +1104,7 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
     return ApiBase.request(`tickets/${ticketId}/reorder`, postData, 'POST')
-      .then(response => response.result);
+      .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -1113,7 +1124,7 @@ export default class TicketService {
    * @returns {Promise<number>} the estimated Unix time the visitor will be called, eg 1509460809
    */
   static getEstimatedTimeOfService(ticket: (Ticket|number)): Promise<number> {
-    let ticketId: ?number = null;
+    let ticketId: any = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1126,7 +1137,7 @@ export default class TicketService {
     }
 
     return ApiBase.request(`tickets/${ticketId}/estimated-time`)
-      .then(response => response.estimatedTimeOfService);
+      .then((response: { estimatedTimeOfService: number }) => response.estimatedTimeOfService);
   }
 
   /**
@@ -1138,8 +1149,8 @@ export default class TicketService {
    * TicketAudit can have one or more actions. Similar actions (such as adding multiple labels)
    * are grouped into one TicketAudit.
    */
-  static getAuditLogs(ticket: (Ticket|number)): Promise<Array<TicketAudit>> {
-    let ticketId: ?number = null;
+  static getAuditLogs(ticket: (Ticket|number)): Promise<TicketAudit[]> {
+    let ticketId: any = null;
 
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
@@ -1152,7 +1163,8 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/audit`).then(response => response.data);
+    return ApiBase.request(`tickets/${ticketId}/audit`)
+                  .then((response: { data: TicketAudit[] }) => response.data);
   }
 
   /**
@@ -1178,7 +1190,7 @@ export default class TicketService {
    * @throws ERROR_NO_TICKET_ID  if the ticket is missing from the arguments, or invalid.
    */
   static getMessages(ticket: (Ticket|number)): Promise<Array<TicketMessage>> {
-    let ticketId: ?number = null;
+    let ticketId: any = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1189,7 +1201,8 @@ export default class TicketService {
     if (!ticketId || typeof ticketId !== 'number') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/messages`).then(response => response.messages);
+    return ApiBase.request(`tickets/${ticketId}/messages`)
+                  .then((response: { messages: TicketMessage[] }) => response.messages);
   }
 
   /**
@@ -1216,9 +1229,11 @@ export default class TicketService {
    * @returns a promise that resolves to the string "success" if it works, and rejects when
    * something goes wrong.
    */
-  static sendMessage(ticket: (Ticket|number), message: string, user: (User|number)): Promise<*> {
-    let ticketId: ?number = null;
-    let userId: ?number = null;
+  static sendMessage(ticket: (Ticket|number),
+                     message: string,
+                     user: (User|number)): Promise<'success'> {
+    let ticketId: any = null;
+    let userId: any = null;
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
       ticketId = ticket.id;
@@ -1249,7 +1264,8 @@ export default class TicketService {
       user: userId
     };
 
-    return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST');
+    return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST')
+                  .then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -1282,10 +1298,12 @@ export default class TicketService {
    * @returns  a Promise that resolves when forwarding works, and rejects when it fails.
    * @throws an Error when the ticket or line are missing or invalid.
    */
-  static forward(ticket: (Ticket|number), line: (Line|number), user?: (User|number)): Promise<*> {
-    let ticketId: ?number = null;
-    let lineId: ?number = null;
-    let userId: ?number = null;
+  static forward(ticket: (Ticket|number),
+                 line: (Line|number),
+                 user?: (User|number)): Promise<Object> {
+    let ticketId: any = null;
+    let lineId: any = null;
+    let userId: any = null;
 
     // Get the ticket's ID
     if (ticket instanceof Ticket) {
@@ -1320,12 +1338,15 @@ export default class TicketService {
     if (user !== undefined && typeof userId !== 'number') {
       throw new Error('User ID is not a number.');
     }
-    const body = {};
-    body.line = lineId;
+
+    const body: { line: number, user?: number } = {
+      line: lineId
+    };
 
     if (userId !== undefined) {
       body.user = userId;
     }
+
     return ApiBase.request(`tickets/${ticketId}/forward`, body);
   }
 };

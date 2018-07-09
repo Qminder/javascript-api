@@ -592,7 +592,7 @@ describe("TicketService", function() {
       });
     });
     it('resolves to a Ticket object', function(done) {
-      Qminder.tickets.create(12345, detailsResponseBody).then(response => {
+      Qminder.tickets.details(12345).then(response => {
         expect(response instanceof Qminder.Ticket).toBeTruthy();
         expect(response.line).toBe(11111);
         expect(response.id).toBe(12345);
@@ -623,6 +623,7 @@ describe("TicketService", function() {
     });
     it('calls the right URL when ticket is passed as ID', function(done) {
       Qminder.tickets.edit(12345, editedFields).then(response => {
+        console.log(this.requestStub.firstCall.args);
         expect(this.requestStub.calledWith('tickets/12345/edit', editedFields)).toBeTruthy();
         expect(response).toBe('success');
         done();
@@ -631,6 +632,7 @@ describe("TicketService", function() {
     it('calls the right URL when ticket is passed as a Ticket object', function(done) {
       const ticket = new Qminder.Ticket({ id: 12345 });
       Qminder.tickets.edit(ticket, editedFields).then(response => {
+        console.log(this.requestStub.firstCall.args);
         expect(this.requestStub.calledWith('tickets/12345/edit', editedFields)).toBeTruthy();
         expect(response).toBe('success');
         done();
