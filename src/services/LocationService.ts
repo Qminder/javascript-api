@@ -14,7 +14,7 @@ export default class LocationService {
    * This function returns a list of locations that the API key has access to.
    *
    * ```GET /locations/```
-   * @returns {Promise.<Array>} A promise that resolves to an array of locations.
+   * @returns A promise that resolves to an array of locations.
    */
   static list(): Promise<Location[]> {
     return ApiBase.request('locations/').then((locations: { data: Location[] }) => {
@@ -26,8 +26,8 @@ export default class LocationService {
    * Get details about a location.
    *
    * ```GET /locations/<ID>```
-   * @param {number} locationId the location's unique ID, for example 1234
-   * @returns {Promise.<Location>} A promise that resolves to the location.
+   * @param locationId the location's unique ID, for example 1234
+   * @returns A promise that resolves to the location.
    */
   static details(locationId: number): Promise<Location> {
     return ApiBase.request(`locations/${locationId}/`).then((details: Location) => new Location(details));
@@ -61,7 +61,7 @@ export default class LocationService {
    * console.log(inputFields);
    * // => [ { type: 'firstName' }, { type: 'lastName' }, { type: 'line' } ]
    * @param location the location to query, either as an ID or a Qminder Location object
-   * @returns {Promise.<Array.<InputField>>} a Promise that resolves to an array of input
+   * @returns a Promise that resolves to an array of input
    * fields, or rejects if something went wrong.
    */
   static getInputFields(location: (Location | number)): Promise<InputField[]> {
