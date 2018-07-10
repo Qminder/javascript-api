@@ -92,6 +92,11 @@
 </code></pre><h2 id="using-the-api">Using the API</h2>
 				<p>The functionality of Qminder API is grouped under different Services. For example, to work with
 				visitors in the Qminder queue, you should use <code>Qminder.tickets</code>.</p>
+				<p>Qminder API services are built based on <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises">Promises</a>. This means that Qminder API can be
+				used with <code>await</code> keywords in modern Javascript and <code>.then()</code> callbacks in ES5.</p>
+				<p>Unless specifically mentioned otherwise, the API code examples are written using modern
+					Javascript (ES2015) standards. To write code according to modern JS standards, use latest
+				versions of Node.js, or in the browser, compile to an older version of Javascript.</p>
 				<p>Here&#39;s a list of things you can do with the Qminder API:</p>
 				<ul>
 					<li><a href="./classes/_services_deviceservice_.deviceservice.html"><code>Qminder.devices</code></a>: List and manage Apple TVs attached to a location. </li>
