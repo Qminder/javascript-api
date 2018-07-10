@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;api-base&quot; | Qminder</title>
+	<title>GraphqlResponse | Qminder</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,63 +56,111 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_api_base_.html">&quot;api-base&quot;</a>
+					<a href="../modules/_api_base_.html">&quot;api-base&quot;</a>
+				</li>
+				<li>
+					<a href="_api_base_.graphqlresponse.html">GraphqlResponse</a>
 				</li>
 			</ul>
-			<h1>External module &quot;api-base&quot;</h1>
+			<h1>Interface GraphqlResponse</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The shape of the JSON response from the GraphQL API.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">GraphqlResponse</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Interfaces</h3>
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_api_base_.correctrequestinit.html" class="tsd-kind-icon">Correct<wbr>Request<wbr>Init</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_api_base_.errorresponse.html" class="tsd-kind-icon">Error<wbr>Response</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_api_base_.graphqlerror.html" class="tsd-kind-icon">Graphql<wbr>Error</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_api_base_.graphqlquery.html" class="tsd-kind-icon">Graphql<wbr>Query</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_api_base_.graphqlqueryvariables.html" class="tsd-kind-icon">Graphql<wbr>Query<wbr>Variables</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module"><a href="../interfaces/_api_base_.graphqlresponse.html" class="tsd-kind-icon">Graphql<wbr>Response</a></li>
-								<li class="tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported"><a href="../interfaces/_api_base_.successresponse.html" class="tsd-kind-icon">Success<wbr>Response</a></li>
-							</ul>
-						</section>
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Type aliases</h3>
-							<ul class="tsd-index-list">
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported"><a href="_api_base_.html#apiresponse" class="tsd-kind-icon">Api<wbr>Response</a></li>
-								<li class="tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported"><a href="_api_base_.html#httpmethod" class="tsd-kind-icon">HTTPMethod</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_base_.graphqlresponse.html#data" class="tsd-kind-icon">data</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_base_.graphqlresponse.html#datapresent" class="tsd-kind-icon">data<wbr>Present</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_base_.graphqlresponse.html#errors" class="tsd-kind-icon">errors</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_api_base_.graphqlresponse.html#statuscode" class="tsd-kind-icon">status<wbr>Code</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Type aliases</h2>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="apiresponse" class="tsd-anchor"></a>
-					<h3>Api<wbr>Response</h3>
-					<div class="tsd-signature tsd-kind-icon">Api<wbr>Response<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_api_base_.errorresponse.html" class="tsd-signature-type">ErrorResponse</a><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_api_base_.successresponse.html" class="tsd-signature-type">SuccessResponse</a></div>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="data" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> data</h3>
+					<div class="tsd-signature tsd-kind-icon">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/api-base.ts#L50">api-base.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/api-base.ts#L37">api-base.ts:37</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If the data was loaded without any errors, contains the requested object.</p>
+						</div>
+					</div>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-					<a name="httpmethod" class="tsd-anchor"></a>
-					<h3>HTTPMethod</h3>
-					<div class="tsd-signature tsd-kind-icon">HTTPMethod<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"GET"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"POST"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"PUT"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"PATCH"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"OPTIONS"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"HEAD"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"DELETE"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"CONNECT"</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="datapresent" class="tsd-anchor"></a>
+					<h3>data<wbr>Present</h3>
+					<div class="tsd-signature tsd-kind-icon">data<wbr>Present<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/api-base.ts#L4">api-base.ts:4</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/api-base.ts#L33">api-base.ts:33</a></li>
 						</ul>
 					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>true if the data was loaded, false if the data was not loaded.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="errors" class="tsd-anchor"></a>
+					<h3>errors</h3>
+					<div class="tsd-signature tsd-kind-icon">errors<span class="tsd-signature-symbol">:</span> <a href="_api_base_.graphqlerror.html" class="tsd-signature-type">GraphqlError</a><span class="tsd-signature-symbol">[]</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/api-base.ts#L35">api-base.ts:35</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>An array that contains any GraphQL errors.</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="statuscode" class="tsd-anchor"></a>
+					<h3>status<wbr>Code</h3>
+					<div class="tsd-signature tsd-kind-icon">status<wbr>Code<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/api-base.ts#L31">api-base.ts:31</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>If all went well, 200. The response may still have errors.</p>
+						</div>
+					</div>
 				</section>
 			</section>
 		</div>
@@ -126,95 +174,113 @@
 						<span>Internals</span>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="_api_base_.html">"api-<wbr>base"</a>
+						<a href="../modules/_api_base_.html">"api-<wbr>base"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_desk_.html">"model/<wbr>Desk"</a>
+						<a href="../modules/_model_desk_.html">"model/<wbr>Desk"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_device_.html">"model/<wbr>Device"</a>
+						<a href="../modules/_model_device_.html">"model/<wbr>Device"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_line_.html">"model/<wbr>Line"</a>
+						<a href="../modules/_model_line_.html">"model/<wbr>Line"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_location_.html">"model/<wbr>Location"</a>
+						<a href="../modules/_model_location_.html">"model/<wbr>Location"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_ticket_.html">"model/<wbr>Ticket"</a>
+						<a href="../modules/_model_ticket_.html">"model/<wbr>Ticket"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_user_.html">"model/<wbr>User"</a>
+						<a href="../modules/_model_user_.html">"model/<wbr>User"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_model_webhook_.html">"model/<wbr>Webhook"</a>
+						<a href="../modules/_model_webhook_.html">"model/<wbr>Webhook"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_qminder_api_.html">"qminder-<wbr>api"</a>
+						<a href="../modules/_qminder_api_.html">"qminder-<wbr>api"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_deviceservice_.html">"services/<wbr>Device<wbr>Service"</a>
+						<a href="../modules/_services_deviceservice_.html">"services/<wbr>Device<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_eventsservice_.html">"services/<wbr>Events<wbr>Service"</a>
+						<a href="../modules/_services_eventsservice_.html">"services/<wbr>Events<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_graphqlservice_.html">"services/<wbr>GraphQLService"</a>
+						<a href="../modules/_services_graphqlservice_.html">"services/<wbr>GraphQLService"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_lineservice_.html">"services/<wbr>Line<wbr>Service"</a>
+						<a href="../modules/_services_lineservice_.html">"services/<wbr>Line<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_locationservice_.html">"services/<wbr>Location<wbr>Service"</a>
+						<a href="../modules/_services_locationservice_.html">"services/<wbr>Location<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_ticketservice_.html">"services/<wbr>Ticket<wbr>Service"</a>
+						<a href="../modules/_services_ticketservice_.html">"services/<wbr>Ticket<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
+						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_services_webhooksservice_.html">"services/<wbr>Webhooks<wbr>Service"</a>
+						<a href="../modules/_services_webhooksservice_.html">"services/<wbr>Webhooks<wbr>Service"</a>
 					</li>
 					<li class="label tsd-is-external">
 						<span>Externals</span>
 					</li>
 					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="_lib_fetch_web_.html">"lib/fetch-<wbr>web"</a>
+						<a href="../modules/_lib_fetch_web_.html">"lib/fetch-<wbr>web"</a>
 					</li>
 					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="_lib_websocket_web_.html">"lib/websocket-<wbr>web"</a>
+						<a href="../modules/_lib_websocket_web_.html">"lib/websocket-<wbr>web"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_api_base_.correctrequestinit.html" class="tsd-kind-icon">Correct<wbr>Request<wbr>Init</a>
+						<a href="_api_base_.correctrequestinit.html" class="tsd-kind-icon">Correct<wbr>Request<wbr>Init</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_api_base_.errorresponse.html" class="tsd-kind-icon">Error<wbr>Response</a>
+						<a href="_api_base_.errorresponse.html" class="tsd-kind-icon">Error<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_api_base_.graphqlerror.html" class="tsd-kind-icon">Graphql<wbr>Error</a>
+						<a href="_api_base_.graphqlerror.html" class="tsd-kind-icon">Graphql<wbr>Error</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_api_base_.graphqlquery.html" class="tsd-kind-icon">Graphql<wbr>Query</a>
+						<a href="_api_base_.graphqlquery.html" class="tsd-kind-icon">Graphql<wbr>Query</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_api_base_.graphqlqueryvariables.html" class="tsd-kind-icon">Graphql<wbr>Query<wbr>Variables</a>
+						<a href="_api_base_.graphqlqueryvariables.html" class="tsd-kind-icon">Graphql<wbr>Query<wbr>Variables</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_api_base_.graphqlresponse.html" class="tsd-kind-icon">Graphql<wbr>Response</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_api_base_.graphqlresponse.html" class="tsd-kind-icon">Graphql<wbr>Response</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_api_base_.graphqlresponse.html#data" class="tsd-kind-icon">data</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_api_base_.graphqlresponse.html#datapresent" class="tsd-kind-icon">data<wbr>Present</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_api_base_.graphqlresponse.html#errors" class="tsd-kind-icon">errors</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_api_base_.graphqlresponse.html#statuscode" class="tsd-kind-icon">status<wbr>Code</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../interfaces/_api_base_.successresponse.html" class="tsd-kind-icon">Success<wbr>Response</a>
+						<a href="_api_base_.successresponse.html" class="tsd-kind-icon">Success<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_api_base_.html#apiresponse" class="tsd-kind-icon">Api<wbr>Response</a>
+						<a href="../modules/_api_base_.html#apiresponse" class="tsd-kind-icon">Api<wbr>Response</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_api_base_.html#httpmethod" class="tsd-kind-icon">HTTPMethod</a>
+						<a href="../modules/_api_base_.html#httpmethod" class="tsd-kind-icon">HTTPMethod</a>
 					</li>
 				</ul>
 			</nav>
