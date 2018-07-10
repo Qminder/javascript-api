@@ -5,13 +5,11 @@
  *    NormalModuleReplacementPlugin. Used to hotswap websockets & fetch polyfills
  * 3. Traverse the dep graph - include all files imported. For node.js, make sure to not include
  *    node packages (ws, node-fetch) in the bundle.
- * 4. Strip Flow.js types, compile ES2017 to ES5, concat and minify to produce one JS bundle.
- *    For node.js, skip the minification step.
+ * 4. Use Typescript compiler before Babel compiler, to get the bundled package.
  */
 
 const path = require('path');
 const webpack = require('webpack');
-const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const uglify = new UglifyJsPlugin({
