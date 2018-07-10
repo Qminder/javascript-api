@@ -1,4 +1,3 @@
-// @flow
 /**
  * Represents a person in the queue. Every time someone is added to the queue, a ticket is created in Qminder.
  * The ticket contains the person's name, phone number, or other custom fields.

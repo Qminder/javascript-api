@@ -1,4 +1,3 @@
-// @flow
 import Location from './Location';
 /**
  * Represents a single user picture.

@@ -19,22 +19,22 @@ interface TicketCountCriteria {
    * An array of lines to search tickets from, represented as an array of line IDs.
    *
    * For example:
-   `line: [123, 234, 456]`
-   `line: '123,234,456'`
+   * `line: [123, 234, 456]`
+   * `line: '123,234,456'`
    */
-  line: string | Array<number> | number;
+  line?: string | Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
    * For example: `location: 4`
    */
-  location: number;
+  location?: number;
   /**
    * The ticket statuses to include (for example new, called, served, no-shows)
    *
    * For example, `status: ['NEW', 'CALLED', 'SERVED']`
    */
-  status: Array<TicketStatus> | string;
+  status?: Array<TicketStatus> | string;
   /**
    * The caller of the ticket, for finding tickets that were called by a particular user.
    * Tickets that are NEW have not been called - they won't be included in results with a caller
@@ -42,35 +42,35 @@ interface TicketCountCriteria {
    *
    * For example, `caller: 13410`
    */
-  caller: User | number;
+  caller?: User | number;
   /**
    * The minimum creation date of the ticket, using either a Unix timestamp or an ISO8601 date.
    * If minCreated is specified, search results will only include tickets created after minCreated.
    *
    * For example, `minCreated: '2017-09-02T10:12:10Z'` or `minCreated: 1504348504`
    */
-  minCreated: string | number;
+  minCreated?: string | number;
   /**
    * The maximum creation date of the ticket.
    * If maxCreated is specified, search results will only include tickets created before maxCreated.
    *
    * For example, `maxCreated: '2017-09-02T10:12:10Z'` or `maxCreated: 1504348504`
    */
-  maxCreated: string | number;
+  maxCreated?: string | number;
   /**
    * The minimum called date of the ticket.
    * If minCalled is specified, search results will only include tickets called after minCalled.
    *
    * For example, `minCalled: '2017-09-02T10:12:10Z'` or `minCalled: 1504348504`
    */
-  minCalled: string | number;
+  minCalled?: string | number;
   /**
    * The maximum called date of the ticket.
    * If maxCalled is specified, search results will only include tickets called before maxCalled.
    *
    * For example, `maxCalled: '2017-09-02T10:12:10Z'` or `maxCalled: 1504348504`
    */
-  maxCalled: string | number;
+  maxCalled?: string | number;
 }
 
 /**
@@ -89,19 +89,19 @@ interface TicketSearchCriteria {
    *
    * For example: `line: [123, 234, 456]`, or `line: 1234`, or `line: '1234,2434,5555'`
    */
-  line: string | Array<number> | number;
+  line?: string | Array<number> | number;
   /**
    * The location ID to search tickets from.
    *
    * For example: `location: 4`
    */
-  location: number;
+  location?: number;
   /**
    * The ticket statuses to include (for example new, called, served, no-shows)
    *
    * For example, `status: ['NEW', 'CALLED', 'SERVED']`
    */
-  status: Array<TicketStatus> | string;
+  status?: Array<TicketStatus> | string;
   /**
    * The caller of the ticket, for finding tickets that were called by a particular user.
    * Tickets that are NEW have not been called - they won't be included in results with a caller
@@ -109,42 +109,42 @@ interface TicketSearchCriteria {
    *
    * For example, `caller: 13410`
    */
-  caller: User | number;
+  caller?: User | number;
   /**
    * The minimum creation date of the ticket, using either a Unix timestamp or an ISO8601 date.
    * If minCreated is specified, search results will only include tickets created after minCreated.
    *
    * For example, `minCreated: '2017-09-02T10:12:10Z'` or `minCreated: 1504348504`
    */
-  minCreated: string | number;
+  minCreated?: string | number;
   /**
    * The maximum creation date of the ticket.
    * If maxCreated is specified, search results will only include tickets created before maxCreated.
    *
    * For example, `maxCreated: '2017-09-02T10:12:10Z'` or `maxCreated: 1504348504`
    */
-  maxCreated: string | number;
+  maxCreated?: string | number;
   /**
    * The minimum called date of the ticket.
    * If minCalled is specified, search results will only include tickets called after minCalled.
    *
    * For example, `minCalled: '2017-09-02T10:12:10Z'` or `minCalled: 1504348504`
    */
-  minCalled: string | number;
+  minCalled?: string | number;
   /**
    * The maximum called date of the ticket.
    * If maxCalled is specified, search results will only include tickets called before maxCalled.
    *
    * For example, `maxCalled: '2017-09-02T10:12:10Z'` or `maxCalled: 1504348504`
    */
-  maxCalled: string | number;
+  maxCalled?: string | number;
   /**
    * The maximum number of results retrieved.
    * The number has to be between 1 and 10000, and by default up to 1000 results will be retrieved.
    *
    * For example, `limit: 50`
    */
-  limit: number;
+  limit?: number;
   /**
    * The order of the returned tickets.
    *
@@ -157,7 +157,7 @@ interface TicketSearchCriteria {
    *
    * For example, `order: 'id ASC'`, or `order: 'created DESC'`
    */
-  order: string;
+  order?: string;
 
   /**
    * This property decides whether to include additional information along with the tickets.
@@ -179,7 +179,7 @@ interface TicketSearchCriteria {
    * responseScope: ['MESSAGES', 'INTERACTIONS']
    * responseScope: 'MESSAGES,INTERACTIONS'
    */
-  responseScope: string | Array<'MESSAGES' | 'INTERACTIONS'> | 'MESSAGES' | 'INTERACTIONS';
+  responseScope?: string | Array<'MESSAGES' | 'INTERACTIONS'> | 'MESSAGES' | 'INTERACTIONS';
 }
 
 
@@ -192,32 +192,34 @@ type DesiredQueuePosition = 'FIRST' | 'MIDDLE' | 'LAST';
 
 /** This error is thrown when a Line ID is not passed to the API method, or when its type is not
  *  a number.
- *  @private */
+ *  @hidden */
 export const ERROR_NO_LINE_ID: string = 'Line ID missing from arguments.';
 /**
  * This error is thrown when the line is not a number (for the line ID) or a valid Line object.
- * @private
+ * @hidden
  */
 export const ERROR_INVALID_LINE: string = 'Line is not a number or Line object.';
 
 /** This error is thrown when the Ticket ID is not passed to the API method, or when its type is
  *  not a number.
- *  @private */
+ *  @hidden */
 export const ERROR_NO_TICKET_ID: string = 'Ticket ID missing from arguments.';
+/** @hidden */
 export const ERROR_INVALID_TICKET: string = 'Ticket is not a number or Ticket object.';
 /** This error is thrown when the Ticket Changes object is not passed to TicketService.edit.
- * @private */
+ * @hidden */
 export const ERROR_NO_TICKET_CHANGES: string = 'Ticket changes missing from arguments.';
 
 /** This error is thrown when a user is not passed into API methods that take a user.
- * @private */
+ * @hidden */
 export const ERROR_NO_USER: string = 'User missing from arguments.';
+/** @hidden */
 export const ERROR_INVALID_USER: string = 'User is not a number or User object.';
 /** This error is thrown when the desired queue position is not passed into
  *  TicketService.returnToQueue.
- *  @private */
+ *  @hidden */
 export const ERROR_NO_QUEUE_POSITION: string = 'Queue position missing from arguments.';
-
+/** @hidden */
 export const ERROR_INVALID_DESK: string = 'Desk is not a number or Desk object.';
 
 /**
@@ -253,8 +255,47 @@ interface TicketCreationResponse {
 }
 
 /**
- * The Ticket Service allows access to tickets, and provides API methods to modify, call, and
- * service tickets automatically.
+ * TicketService includes methods that work with tickets. Tickets represent a visitor that is
+ * currently in the queue.
+ *
+ * For example, to create a new ticket, use {@link create}.
+ *
+ * ```javascript
+ * import * as Qminder from 'qminder-api';
+ * Qminder.setKey('API_KEY_HERE');
+ *
+ * // Example 1. Create a new ticket in Line ID 12346
+ * const ticket = await Qminder.tickets.create(12346, {
+ *    firstName: 'Jane',
+ *    lastName: 'Eyre',
+ *    phoneNumber: 13185551234
+ * });
+ * ```
+ *
+ * For example, to get a list of all visitors currently in the queue, use {@link search}.
+ *
+ * ```javascript
+ * import * as Qminder from 'qminder-api';
+ * Qminder.setKey('API_KEY_HERE');
+ *
+ * // Example 2. Get a list of all visitors currently in queue in location 12345
+ * const visitors = await Qminder.tickets.search({ location: 12345, status: ['NEW'] });
+ * ```
+ *
+ * This service additionally includes methods to work with visitors, such as call them to
+ * service, add custom business-specific labels or mark them as served.
+ *
+ * For example, to call the next visitor in the lines 12345, 12346 and 12347, use {@link callNext}.
+ *
+ * ```javascript
+ * import * as Qminder from 'qminder-api';
+ * Qminder.setKey('API_KEY_HERE');
+ *
+ * // Example 3. Call the next visitor in lines 12345, 12346, 12347
+ * const visitor = await Qminder.tickets.callNext([12345, 12346, 12347]);
+ * console.log(visitor);
+ * // => { id: 141592145 }
+ * ```
  */
 export default class TicketService {
   /**
@@ -265,32 +306,40 @@ export default class TicketService {
    *
    * The various search criteria to use are documented under {@link TicketSearchCriteria}.
    *
-   * ```GET /v1/tickets/search?<CRITERIA>```
-   * @example
+   * This method calls the following HTTP API: `GET /v1/tickets/search?<CRITERIA>`
+   *
+   * For example:
+   *
+   * ```
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example 1. Search line 1234 for tickets created after July 9, 2018, ordered by IDs,
+   * // smallest first.
    * const criteria = {
    *     line: [ 1234 ],
    *     order: 'id ASC',
-   *     minCalled: "2017-10-19T00:00:00Z"
+   *     minCalled: "2018-07-09T00:00:00Z"
    * };
    * const tickets: Array<Ticket> = Qminder.tickets.search(criteria);
    * const ticket: Ticket = tickets[0];
    * console.log(ticket.id); // 12345
    * console.log(ticket.firstName); // John
    * console.log(ticket.lastName);  // Smith
-   * @example
+   *
+   * // Example 2. Search tickets, including their SMS conversation in the response data.
    * const criteria = {
    *     ...,
    *     responseScope: 'MESSAGES'
    * };
    * const tickets: Array<Ticket> = Qminder.tickets.search(criteria);
    * const ticket: Ticket = tickets[0];
+   * // NOTE: only included in the response data, if criteria.responseScope === 'MESSAGES'
+   * // This data can also be loaded with Qminder.tickets.getMessages(Ticket)
    * const messages: Array<TicketMessage> = ticket.messages;
    * console.log(messages[0].body); // "It's your turn!"
-   * @param search  the search criteria
+   * ```
+   * @param search the search criteria
    * @returns A promise that resolves to matching tickets.
-   * @see TicketSearchCriteria
-   * @see Ticket
-   * @see TicketMessage
    */
   static search(search: TicketSearchCriteria): Promise<Array<Ticket>> {
     if (search.line && search.line instanceof Array) {
@@ -321,11 +370,18 @@ export default class TicketService {
    * Fetches a count of all tickets matching the criteria and returns the number.
    * Note that this function is not limited by 10000 like TicketService.search.
    *
-   * ```POST /v1/tickets/count?(search)```
-   * @example
+   * Calls this HTTP API: `POST /v1/tickets/count?(search)`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
    * const criteria = { line: 123, status: ['NEW'] };
    * const count = await Qminder.tickets.count(criteria);
    * console.log(count); // 14
+   * ```
    * @param search the search criteria to use
    * @returns the number of tickets that match the search criteria
    */
@@ -357,27 +413,36 @@ export default class TicketService {
   /**
    * Creates a new ticket and puts it into the queue as the last in the given line.
    *
-   * ```POST /v1/lines/<ID>/ticket```
-   * @example
+   * Calls this HTTP API: `POST /v1/lines/<ID>/ticket`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Create a ticket with first and last name, and phone number
    * const lineId = 1234;
-   * const ticket: Ticket = new Ticket({
+   * const ticket: Ticket = new Qminder.Ticket({
    *    firstName: "Jane",
    *    lastName: "Smith",
    *    phoneNumber: 3185551234,
    * });
    * const ticketId = await Qminder.tickets.create(lineId, ticket);
    * console.log(ticketId); // 12345678
-   * @example
+   *
+   * // Example 2. Create a ticket with custom fields
    * const lineId = 1234;
-   * const ticket: Ticket = new Ticket({
+   * const ticket: Ticket = new Qminder.Ticket({
    *    firstName: "Sarah Jane",
    *    lastName: "Smith",
    *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
    * });
    * const ticketId = await Qminder.tickets.create(lineId, ticket);
    * console.log(ticketId); // 12345681
-   * @example
-   * const ticket: Ticket = new Ticket({
+
+   * // Example 3. Create a ticket by using a Line object to specify the line
+   * const ticket: Ticket = new Qminder.Ticket({
    *    firstName: "Sarah Jane",
    *    lastName: "Smith",
    *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
@@ -385,6 +450,7 @@ export default class TicketService {
    * const line: Line = await Qminder.lines.details(12345);
    * const ticketId = await Qminder.tickets.create(line, ticket);
    * console.log(ticketId); // 12345689
+   * ```
    * @param line  the ticket's desired line
    * @param ticket  the ticket data
    * @returns a promise that resolves to the ID of the new ticket.
@@ -404,11 +470,16 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_LINE);
     }
 
-    const params: TicketCreationRequest = {
-      firstName: ticket.firstName,
-      lastName: ticket.lastName,
-      phoneNumber: ticket.phoneNumber
-    };
+    const params: TicketCreationRequest = {};
+    if (ticket.firstName) {
+      params.firstName = ticket.firstName;
+    }
+    if (ticket.lastName) {
+      params.lastName = ticket.lastName;
+    }
+    if (ticket.phoneNumber) {
+      params.phoneNumber = ticket.phoneNumber;
+    }
     if (ticket.extra) {
       params.extra = JSON.stringify(ticket.extra);
     }
@@ -425,12 +496,19 @@ export default class TicketService {
   /**
    * Fetches the details of a given ticket ID and returns a Ticket object filled with data.
    *
-   * ```GET /v1/tickets/<ID>```
-   * @example
+   * Calls the following HTTP API: `GET /v1/tickets/<ID>`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
    * const ticket = await Qminder.tickets.details(12345);
    * console.log(ticket.id); // 12345
    * console.log(ticket.firstName); // Jane
    * console.log(ticket.lastName); // Eyre
+   * ```
    * @param ticket  the Ticket to query, by ticket ID or Ticket object
    * @returns the ticket's details as a Ticket object
    * @throws ERROR_NO_TICKET_ID when the ticket ID is undefined or not a number.
@@ -458,12 +536,15 @@ export default class TicketService {
    * To edit a ticket, pass the ticket ID to edit, and an object that only includes the keys
    * that need to be changed.
    *
-   * @example
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * // Edit a ticket's first name
    * const ticket = { id: 12345, firstName: "John", lastName: "Smith" };
    * const changes = { firstName: "Jane" };
    * const successMessage = await Qminder.tickets.edit(ticket, changes);
    * console.log(successMessage === "success"); // true if it worked
+   * ```
    * @param ticket  the ticket to edit, either the Ticket object or the ticket's ID
    * @param changes  an object only including changed properties of the ticket
    * @returns a Promise that resolves to "success" when editing the ticket worked
@@ -829,18 +910,25 @@ export default class TicketService {
    * It adds a label to the ticket's labels list. Clerks can see the labels in the Service View,
    * and can save additional details about the visitor into the label list. Labels are
    * automatically colored.
-   * @example <caption>Add a label</caption>
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
    * const myUserId = 15151;
    * const ticket = 591050;
    * const labelText = "Has documents";
    * await Qminder.tickets.addLabel(ticket, labelText, myUserId);
+   * ```
    * @param ticket  The ticket to label. The ticket ID can be used instead of the Ticket object.
    * @param label  The label to add, eg. "Has documents"
    * @param user  The user that is adding the label.
-   * @returns {Promise<string>} promise that resolves to 'success' if all was OK, and 'no
+   * @returns promise that resolves to 'success' if all was OK, and 'no
    * action' if the label was already there, and rejects if something else went wrong.
    */
-  static addLabel(ticket: (Ticket|number), label: string, user?: (User|number)): Promise<'success'> {
+  static addLabel(ticket: (Ticket|number), label: string, user?: (User|number)): Promise<'success' | 'no action'> {
     let ticketId: any = null;
     let userId: any = null;
 
@@ -874,19 +962,27 @@ export default class TicketService {
     }
 
     return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+      .then((response: { result: 'success' | 'no action' }) => response.result);
   }
 
   /**
    * Remove a label from the ticket.
    *
    * This API call removes the label from a ticket's label list, by the label's text.
-   * @example <caption>Remove a label from a ticket</caption>
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
    * const myUserId = 51000;
    * const ticket = 1234567;
    * const label = "Hello";
    * await Qminder.tickets.removeLabel(ticket, label, myUserId);
    * console.log('It worked!');
+   * ```
+   *
    * @param ticket  The ticket to remove a label from. The ticket ID can be used instead of the
    * Ticket object.
    * @param label  The label to remove, for example, "Has Cool Hair"
@@ -937,15 +1033,23 @@ export default class TicketService {
    * The user who is assigning (assigner) should be the second argument.
    * The user who will take the ticket (assignee) should be the third argument.
    *
-   * @example <caption>Assign the ticket 11425 to user 12345</caption>
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Assign Ticket 11425 to User 12345, and the user performing the action is 91020.
    * const myUserId = 91020;
    * const ticketId = 11425;
    * const assigneeId = 12345;
    * await Qminder.tickets.assignToUser(ticketId, myUserId, assigneeId);
    * console.log('It worked!');
-   * @example <caption>Assign all tickets in Line 111 to user 15152</caption>
+   *
+   * // Example 2. Assign all tickets in Line 111 to user 15152
    * const tickets: Array<Ticket> = await Qminder.tickets.search({ line: 111, status: ['NEW'] });
    * tickets.map((ticket: Ticket) => Qminder.tickets.assign(ticket, 15152));
+   * ```
    * @param ticket The ticket to assign to an user. The ticket ID can be used instead of the
    * Ticket object.
    * @param assigner The user who is assigning.
@@ -1001,8 +1105,14 @@ export default class TicketService {
   /**
    * Un-assign a ticket. This returns the ticket to the unassigned list.
    * This call works only for Tickets that have the status: 'NEW'.
-   * @example
-   * // Using unassign with async/await in latest Javascript/ES6 standard
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Using unassign with async/await in latest Javascript/ES6 standard
    * const ticketID = 141412345;
    * const myUserID = 123;
    * try {
@@ -1011,8 +1121,8 @@ export default class TicketService {
    * } catch (error) {
    *   console.log('Ticket unassign failed', error);
    * }
-   * @example
-   * // Using unassign without async/await, with plain promises.
+   *
+   * // Example 2. Using unassign without async/await, with plain promises.
    * const ticketID = 1452521;
    * const myUserID = 529;
    * Qminder.tickets.unassign(ticketID, myUserID).then(function(success) {
@@ -1020,15 +1130,17 @@ export default class TicketService {
    * }, function(error) {
    *   console.log('Ticket unassign failed!', error);
    * });
-   * @example
-   * // Using unassign with a Ticket object and async/await in latest Javascript/ES6 standard
+   *
+   * // Example 3. Using unassign with a Ticket object and async/await in latest Javascript/ES6
+   * // standard
    * const myUserID = 42049;
    * const tickets = await Qminder.tickets.search({ line: 12345 });
    * const ticket = tickets[0];
    * await Qminder.tickets.unassign(ticket, myUserID);
+   * ```
    * @param ticket the ticket object or the ticket's ID that needs un-assignment
    * @param unassigner the User who un-assigned the ticket, for example current user's ID
-   * @returns {Promise<any>} a Promise that resolves when unassigning works and rejects when
+   * @returns a Promise that resolves when unassigning works and rejects when
    * unassigning fails
    */
   static unassign(ticket: (Ticket|number), unassigner: (User|number)): Promise<'success'> {
@@ -1062,8 +1174,14 @@ export default class TicketService {
   /**
    * Reorder a ticket after another ticket.
    *
-   * ```POST /v1/tickets/<ID>/reorder```
-   * @example
+   * Calls this HTTP API: `POST /v1/tickets/<ID>/reorder`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
    * const ticket1 = { id: 12345 };
    * const ticket2 = { id: 12346 };
    * const ticket3 = { id: 12347 };
@@ -1071,6 +1189,7 @@ export default class TicketService {
    * // Ticket 3 will be put after Ticket 1
    * Qminder.tickets.reorder(ticket3, ticket1);
    * // Queue: ticket1, ticket3, ticket2
+   * ```
    * @param ticket The ticket to reorder. The ticket ID can be used instead
    * of the Ticket object.
    * @param afterTicket the ticket to reorder after, or null if reordering to be first in the
@@ -1112,16 +1231,21 @@ export default class TicketService {
    *
    * The time will be returned as a Unix timestamp (in seconds).
    *
-   * `GET /v1/tickets/<ID>/estimated-time`
-   * @example <caption>Get the ticket's estimated time when it was created</caption>
+   * Calls the HTTP API: `GET /v1/tickets/<ID>/estimated-time`
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Get the ticket's estimated time of service
    * const lineId = 15152;
    * const visitorDetails = { firstName: "Jon", lastName: "Snow" };
    * const ticket = await Qminder.tickets.create(lineId, visitorDetails);
    * const eta = await Qminder.tickets.getEstimatedTimeOfService(ticket);
    * console.log(eta); // 1509460809, for example.
+   * ```
    * @param ticket  the ticket to get the estimated time for. The ticket ID can be used instead
    * of the Ticket object.
-   * @returns {Promise<number>} the estimated Unix time the visitor will be called, eg 1509460809
+   * @returns the estimated Unix time the visitor will be called, eg 1509460809
    */
   static getEstimatedTimeOfService(ticket: (Ticket|number)): Promise<number> {
     let ticketId: any = null;
@@ -1145,7 +1269,7 @@ export default class TicketService {
    *
    * The list of audit logs shows who made changes to a ticket, and what changes have been made.
    * @param ticket  the ticket to get audit logs for
-   * @returns {Promise<Array<TicketAudit>>} the list of changes made to the Ticket. Each
+   * @returns the list of changes made to the Ticket. Each
    * TicketAudit can have one or more actions. Similar actions (such as adding multiple labels)
    * are grouped into one TicketAudit.
    */
@@ -1171,19 +1295,28 @@ export default class TicketService {
    * Get the ticket's SMS messages.
    * If the location has SMS enabled, clerks can send and receive SMS messages from visitors.
    * It works only if the visitor's phone number has been entered into Qminder.
-   * @example <caption>Get list of messages with async/await in ES2017</caption>
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Get list of messages with async/await in ES2017
    * const messages = await Qminder.tickets.getMessages(12345678);
    * if (messages.length > 0) {
    *   console.log(messages[0]);
    *   // { "body": "Hi!", "type": "INCOMING", ... }
    * }
-   * @example <caption>Get list of messages with regular Javascript</caption>
+   *
+   * // Example 2. Get list of messages with regular Javascript
    * Qminder.tickets.getMessages(12345678).then(function(messages) {
    *     if (messages.length > 0) {
    *        console.log(messages[0]);
    *        // { "body": "Hi!", "type": "INCOMING", ... }
    *     }
    * });
+   * ```
    * @param ticket   The ticket to get the message list for. The ticket ID can be used instead
    * of the Ticket object.
    * @returns  a Promise that resolves to a list of ticket messages
@@ -1207,13 +1340,21 @@ export default class TicketService {
 
   /**
    * Send a new SMS message to a visitor.
-   * @example <caption>Send the message with async/await in ES2017</caption>
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Send the message with async/await in ES2017
    * const success = await Qminder.tickets.sendMessage(12345678,
    *                        "Hello! Go get some coffee now!",
    *                        { id: 14142 });
    * console.log('It worked!');
-   * // If sending a message fails, then the async function will be rejected.
-   * @example <caption>Send the message with regular Javascript</caption>
+   * // NOTE: If sending a message fails, then the async function will be rejected.
+   *
+   * // Example 2. Send the message with regular Javascript
    * Qminder.tickets.sendMessage(
    *        12345678,
    *        "Hello! Free coffee time!",
@@ -1223,6 +1364,7 @@ export default class TicketService {
    * }, function(error) {
    *     console.log("Something went wrong while sending the message.");
    * });
+   * ```
    * @param ticket  The ticket to send a message to. The user ID may also be used.
    * @param message  the message to send, as a text string, for example "Welcome to our location!"
    * @param user  the user who is sending the message. The user ID may also be used.
@@ -1275,15 +1417,22 @@ export default class TicketService {
    * allows to build multi-step workflows. Only tickets with the status 'CALLED' can be forwarded.
    *
    * After forwarding, a ticket's status will be 'NEW'.
-   * @example <caption>Forward a ticket using ES2017 features (async and await). This code
-   * only works inside an asynchronous function.</caption>
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Forward a ticket using ES2017 features (async and await). This code only works
+   * // inside an asynchronous function.
    * const tickets = await Qminder.tickets.search({ status: ['CALLED'], location: 3, limit: 1 });
    * if (tickets.length > 0) {
    *    await Qminder.tickets.forward(tickets[0], 15124);
    *    console.log('Success!');
    * }
-   * @example <caption>Forward a ticket using regular Javascript. This doesn't use any ES6
-   * features and can be deployed to a server without any pre-processing.</caption>
+   *
+   * // Example 2. Forward a ticket using regular Javascript. This doesn't use any ES6
+   * // features and can be deployed to a server without any pre-processing.
    * Qminder.tickets.search({ status: ['CALLED'], location: 3, limit: 1 }).then(function(tickets) {
    *   if (tickets.length > 0) {
    *      Qminder.tickets.forward(tickets[0], 15124).then(function(success) {
@@ -1291,6 +1440,7 @@ export default class TicketService {
    *      }, function(error) { console.error(error); });
    *   }
    * });
+   * ```
    * @param ticket  the ticket to forward, as ticket ID or ticket object
    * @param line  the visitor's next line, as line ID or line object.
    * @param user  the user who forwarded the ticket, as user ID or user object. Only necessary

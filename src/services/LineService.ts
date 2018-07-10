@@ -3,16 +3,32 @@ import Location from '../model/Location';
 import ApiBase from '../api-base';
 
 /**
- * Line Service
+ * The LineService allows you to access data about Lines in Qminder.
+ *
+ * For example, list all Lines of your Location:
+ *
+ * ```javascript
+ * import * as Qminder from 'qminder-api';
+ * Qminder.setKey('API_KEY_GOES_HERE');
+ *
+ * const locationId = 12345;
+ * const lines = await Qminder.lines.list(locationId);
+ *
+ * console.log(lines);
+ * ```
  */
 export default class LineService {
   /**
    * Fetch the location's line list.
    * The lines will have the line ID, name, and color filled in.
    *
-   * ```GET /locations/<ID>/lines```
-   * @example
-   * const lines: Array<Line> = await Qminder.lines.list(159);
+   * Calls the following HTTP API: `GET /locations/<ID>/lines`
+   *
+   * For example:
+   *
+   * ```javascript
+   * const lines = await Qminder.lines.list(159);
+   * ```
    * @param location the Location or its ID
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
@@ -28,12 +44,15 @@ export default class LineService {
   /**
    * Fetch detailed information about one line.
    *
-   * ```GET /lines/<ID>```
-   * @example
+   * Calls the following HTTP API: `GET /lines/<ID>`
+   *
+   * For example:
+   *
+   * ```javascript
    * const line: Line = await Qminder.lines.details(1425);
-   * @param {number} line The line to get detailed info about, or the line's ID.
-   * @returns {Promise.<Line>} a promise that resolves to the Line object, or rejects if
-   * something went wrong.
+   * ```
+   * @param line The line to get detailed info about, or the line's ID.
+   * @returns a promise that resolves to the Line object, or rejects if something went wrong.
    */
   static details(line: Line | number): Promise<Line> {
     let lineId: any = line instanceof Line ? line.id : line;
@@ -47,13 +66,17 @@ export default class LineService {
   /**
    * Create a new Line and return its details.
    *
-   * ```POST /locations/<ID>/lines```
-   * @example
+   * Calls the following HTTP API: `POST /locations/<ID>/lines`
+   *
+   * For example:
+   *
+   * ```javascript
    * const line: Line = await Qminder.lines.create(950, { name: 'Priority Service' });
    * console.log(line.id); // 1425
-   * @param {number} location the location to add the line under
-   * @param {Line} line the parameters of the new line - must include the line name
-   * @returns {Promise.<Object>} a Promise that resolves to a new Line object, created according
+   * ```
+   * @param location the location to add the line under
+   * @param line the parameters of the new line - must include the line name
+   * @returns a Promise that resolves to a new Line object, created according
    * to the parameters.
    */
   static create(location: Location | number, line: Line): Promise<Line> {
@@ -75,11 +98,15 @@ export default class LineService {
    * This removes the line from the line list, from iPads and TVs, from the service screen and from
    * statistics. This action cannot be undone.
    *
-   * ```DELETE /lines/<ID>```
-   * @example
+   * Calls the following HTTP API: `DELETE /lines/<ID>`
+   *
+   * For example:
+   *
+   * ```javascript
    * await Qminder.lines.remove(1425);
+   * ```
    * @param line  the Line or the line's ID to remove
-   * @returns {Promise.<Object>} A Promise that resolves when the line was deleted, and rejects
+   * @returns A Promise that resolves when the line was deleted, and rejects
    * when something went wrong.
    */
   static remove(line: Line | number): Promise<any> {

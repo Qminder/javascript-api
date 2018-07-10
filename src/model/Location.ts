@@ -1,4 +1,3 @@
-// @flow
 /**
  * A Location represents one service center in the real world. It can have multiple lines and
  * service clerks, and multiple iPads and TVs. A location can have SMS enabled, when using the
@@ -61,7 +60,6 @@ class Location {
     if (typeof properties === 'number') {
       this.id = properties;
     } else {
-      // $FlowFixMe
       Object.assign(this, properties);
     }
   }

@@ -3,6 +3,11 @@ set -ex
 #
 # Build the documentation for the API.
 #
-
-# Generate the documentation
-node_modules/.bin/documentation build src/qminder-api.js -f html -o docs
+exec ./node_modules/.bin/typedoc \
+     --mode modules \
+     --out docs \
+     --excludePrivate \
+     --exclude "**/lib/*.ts" \
+     --name Qminder \
+     --readme manual/apidoc-index.md \
+     src

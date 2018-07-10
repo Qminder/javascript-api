@@ -131,6 +131,21 @@ class EventsService {
     this.reset();
   }
 
+  /**
+   * Add a callback for when the Qminder API connects successfully.
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * Qminder.events.onConnect(() => {
+   *   console.log('API has (re-)connected!');
+   * });
+   * ```
+   *
+   * @param callback the callback function, which will not receive any arguments or data
+   */
   onConnect(callback: () => void): void {
     if (typeof callback === 'function') {
       this.onConnectCallbacks.push(callback);
@@ -140,12 +155,18 @@ class EventsService {
   }
 
   /**
-   * Add an event listener to be called when the Qminder Events API websocket disconnects.
-   * @example
+   * Add a callback for when the Qminder Events API websocket disconnects.
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * Qminder.events.onDisconnect(function() {
    *   console.log('Connection lost.');
    * });
-   * @param callback  the function to call
+   * ```
+   * @param callback  the callback function, which will not receive any arguments or data.
    */
   onDisconnect(callback: () => void): void {
     if (typeof callback === 'function') {
@@ -159,13 +180,16 @@ class EventsService {
    * Initialize the EventsService by setting the API key.
    * When the API key is set, the socket can be opened.
    * This method is automatically called when doing Qminder.setKey().
-   * @private
+   * @hidden
    */
   setKey(apiKey: string) {
     this.apiKey = apiKey;
   }
 
-  /** Set the WebSocket hostname the EventsService uses. */
+  /**
+   * Set the WebSocket hostname the EventsService uses.
+   * @hidden
+   */
   setServer(apiServer: string) {
     this.apiServer = apiServer;
   }
@@ -175,7 +199,7 @@ class EventsService {
    * Doesn't allow connecting if the connection already exists.
    * Re-initializes previously held subscriptions and sends queued messages.
    * Automatically starts sending pings every 10 s to keep the connection alive.
-   * @private
+   * @hidden
    */
   openSocket() {
     if (!this.apiKey) {
@@ -271,7 +295,7 @@ class EventsService {
   /**
    * Close the websocket connected to Qminder.
    * This will stop all events from coming.
-   * @private
+   * @hidden
    */
   closeSocket(): void {
     if (this.socket && this.socket.readyState === 1) {
@@ -289,7 +313,7 @@ class EventsService {
    * @param filter  the event filter, for example { line: 14142 }
    * @param parameters  the event parameters, for example { id: 15920 }. Used by iPad / TV /
    * Location Changed events.
-   * @private
+   * @hidden
    */
   createSubscription(eventType: EventType, callback: Function, filter?: EventFilter, parameters?: { id: number }) {
     const subscription: EventSubscription = {
@@ -325,7 +349,7 @@ class EventsService {
    *
    * @param subscription  details about the event to subscribe to
    * @param callback  a callback to call when the event occurs
-   * @private
+   * @hidden
    */
   subscribe(subscription: EventSubscription, callback?: Function) {
     if (this.subscriptions.findIndex(sub => sub.id === subscription.id) === -1) {
@@ -345,20 +369,23 @@ class EventsService {
    * Register a callback to get notified when a new ticket is created.
    * It is possible to filter the tickets based on their line and location, which is a good
    * practice if you do not want events on all tickets for the entire account.
-   * @example
-   * // Listening to all created tickets in location 1234
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   *
+   * ```
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // 1. Listening to all created tickets in location 1234
    * Qminder.events.onTicketCreated(function(event) {
    *     console.log("Ticket created in location 1234: ", event);
    * }, { location: 1234 });
-   * @example
-   * // Listening to all created tickets in line 94502
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * // 2. Listening to all created tickets in line 94502
    * Qminder.events.onTicketCreated(function(event) {
    *     console.log("Ticket created in line 94502: ", event);
    * }, { line: 94502 });
+   * ```
+   *
    * @param callback  a function that gets called every time a new ticket is created
    * @param filter  an object that contains a location or line ID to filter the events
    */
@@ -370,20 +397,19 @@ class EventsService {
    * Register a callback to get notified when a ticket is called to service.
    * It is possible to filter the tickets based on their line and location, which is a good
    * practice if you do not want events on all tickets for the entire account.
-   * @example
-   * // Listening to all called tickets in location 1234
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // 1. Listening to all called tickets in location 1234
    * Qminder.events.onTicketCalled(function(event) {
    *     console.log("Ticket called in location 1234: ", event);
    * }, { location: 1234 });
-   * @example
-   * // Listening to all called tickets in line 94502
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * // 2. Listening to all called tickets in line 94502
    * Qminder.events.onTicketCalled(function(event) {
    *     console.log("Ticket called in line 94502: ", event);
    * }, { line: 94502 });
+   * ```
    * @param callback  a function that gets called every time a new ticket is called
    * @param filter  an object that contains a location or line ID to filter the events
    */
@@ -395,20 +421,19 @@ class EventsService {
    * Register a callback to get notified when a ticket is re-called.
    * It is possible to filter the tickets based on their line and location, which is a good
    * practice if you do not want events on all tickets for the entire account.
-   * @example
-   * // Listening to all recalled tickets in location 1234
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // 1. Listening to all recalled tickets in location 1234
    * Qminder.events.onTicketRecalled(function(event) {
    *     console.log("Ticket recalled in location 1234: ", event);
    * }, { location: 1234 });
-   * @example
-   * // Listening to all recalled tickets in line 94502
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * // 2. Listening to all recalled tickets in line 94502
    * Qminder.events.onTicketRecalled(function(event) {
    *     console.log("Ticket recalled in line 94502: ", event);
    * }, { line: 94502 });
+   * ```
    * @param callback  a function that gets called every time a new ticket is recalled
    * @param filter  an object that contains a location or line ID to filter the events
    */
@@ -420,20 +445,22 @@ class EventsService {
    * Register a callback to get notified when a ticket is cancelled.
    * It is possible to filter the tickets based on their line and location, which is a good
    * practice if you do not want events on all tickets for the entire account.
-   * @example
-   * // Listening to all cancelled tickets in location 1234
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example 1. Listening to all cancelled tickets in location 1234
    * Qminder.events.onTicketCancelled(function(event) {
    *     console.log("Ticket cancelled in location 1234: ", event);
    * }, { location: 1234 });
-   * @example
-   * // Listening to all cancelled tickets in line 94502
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * // Example 2. Listening to all cancelled tickets in line 94502
    * Qminder.events.onTicketCancelled(function(event) {
    *     console.log("Ticket cancelled in line 94502: ", event);
    * }, { line: 94502 });
+   * ```
    * @param callback  a function that gets called every time a new ticket is cancelled
    * @param filter  an object that contains a location or line ID to filter the events
    */
@@ -445,20 +472,22 @@ class EventsService {
    * Register a callback to get notified when a ticket is served.
    * It is possible to filter the tickets based on their line and location, which is a good
    * practice if you do not want events on all tickets for the entire account.
-   * @example
-   * // Listening to all served tickets in location 1234
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example 1. Listening to all served tickets in location 1234
    * Qminder.events.onTicketCancelled(function(event) {
    *     console.log("Ticket served in location 1234: ", event);
    * }, { location: 1234 });
-   * @example
-   * // Listening to all served tickets in line 94502
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * // Example 2. Listening to all served tickets in line 94502
    * Qminder.events.onTicketCancelled(function(event) {
    *     console.log("Ticket served in line 94502: ", event);
    * }, { line: 94502 });
+   * ```
    * @param callback  a function that gets called every time a new ticket is served
    * @param filter  an object that contains a location or line ID to filter the events
    */
@@ -470,20 +499,22 @@ class EventsService {
    * Register a callback to get notified when a ticket has changed.
    * It is possible to filter the tickets based on their line and location, which is a good
    * practice if you do not want events on all tickets for the entire account.
-   * @example
-   * // Listening to all changed tickets in location 1234
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example 1. Listening to all changed tickets in location 1234
    * Qminder.events.onTicketChanged(function(event) {
    *     console.log("Ticket changed in location 1234: ", event);
    * }, { location: 1234 });
-   * @example
-   * // Listening to all changed tickets in line 94502
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * // Example 2. Listening to all changed tickets in line 94502
    * Qminder.events.onTicketChanged(function(event) {
    *     console.log("Ticket changed in line 94502: ", event);
    * }, { line: 94502 });
+   * ```
    * @param callback  a function that gets called every time a ticket has changed
    * @param filter  an object that contains a location or line ID to filter the events
    */
@@ -493,12 +524,16 @@ class EventsService {
 
   /**
    * Register a callback to get notified when TV settings change.
-   * @example
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * Qminder.events.onOverviewMonitorChanged(function(event) {
    *     console.log("TV changed: ", event);
    * });
+   * ```
    * @param callback  a function that gets called every time TV settings change
    * @param id  The TV's ID to listen to
    */
@@ -508,12 +543,16 @@ class EventsService {
 
   /**
    * Register a callback to get notified when iPad settings change.
-   * @example
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * Qminder.events.onSignInDeviceChanged(function(event) {
    *     console.log("iPad changed: ", event);
    * });
+   * ```
    * @param callback  a function that gets called every time the iPad settings change
    * @param id  The iPad's ID to listen to
    */
@@ -523,12 +562,15 @@ class EventsService {
 
   /**
    * Register a callback to get notified when a location's lines change.
-   * @example
-   * const apiKey = "...";
-   * Qminder.setKey(apiKey);
+   *
+   * For example:
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * Qminder.events.onLinesChanged(function(event) {
    *     console.log("Lines changed: ", event);
    * });
+   * ```
    * @param callback  a function that gets called every time the lines change
    * @param id  The Location ID to listen to
    */
@@ -539,13 +581,16 @@ class EventsService {
   /**
    * Register a callback to get notified when a location's settings change.
    *
-   * @example
-   * const apiKey = "...";
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * const locationId = 1524;
-   * Qminder.setKey(apiKey);
    * Qminder.events.onLocationChanged(function(event) {
    *     console.log("Location changed: ", event);
    * }, locationId);
+   * ```
    * @param callback  a function that gets called every time the location settings change
    * @param id  the location's ID to listen to
    */
@@ -559,7 +604,7 @@ class EventsService {
   /**
    * Reset the Events API.
    * You will normally not need this.
-   * @private
+   * @hidden
    */
   reset(): void {
     this.apiKey = '';

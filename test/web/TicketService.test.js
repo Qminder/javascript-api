@@ -567,6 +567,16 @@ describe("TicketService", function() {
         extra: JSON.stringify(ticket.extra)
       }))).toBeTruthy();
     });
+    it('Does not send undefined keys', function() {
+      Qminder.tickets.create(1, {});
+      console.log(this.requestStub.firstCall.args);
+      expect(this.requestStub.calledWithExactly('lines/1/ticket', sinon.match({
+        firstName: undefined,
+        lastName: undefined,
+        extra: undefined
+      }))).toBeFalsy();
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({}))).toBeTruthy();
+    });
   });
   describe("details()", function() {
     const detailsResponseBody = {

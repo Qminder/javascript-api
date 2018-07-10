@@ -24,6 +24,12 @@ interface SuccessResponse {
 
 type ApiResponse = ErrorResponse | SuccessResponse;
 
+/**
+ * Returns true if an ApiResponse is an Error response, usable as a type guard.
+ * @param response an ApiResponse to narrow down
+ * @returns true if the ApiResponse is an ErrorResponse, false if it is a SuccessResponse
+ * @hidden
+ */
 function responseIsError(response: ApiResponse): response is ErrorResponse {
   return response.statusCode && Math.floor(response.statusCode / 100) !== 2;
 }
@@ -44,8 +50,11 @@ interface CorrectRequestInit {
 
 /**
  * Base functionality of the API, such as HTTP requests with the API key.
- * Additionally, manages the WebSocket connection.
- * @private
+ *
+ * Includes two function definitions for requesting the HTTP API and the GraphQL API, used
+ * internally by other methods.
+ *
+ * @hidden
  */
 class ApiBase {
   /**
@@ -83,7 +92,7 @@ class ApiBase {
   /**
    * Set the domain name of the Qminder API server.
    * @param  server the server's domain name, eg 'api.qminder.com'
-   * @private
+   * @hidden
    */
   setServer(server: string) {
     this.apiServer = server;

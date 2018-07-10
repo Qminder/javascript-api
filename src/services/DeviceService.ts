@@ -11,11 +11,17 @@ export default class DeviceService {
   /**
    * List all devices (TVs, iPads, ...) at the given location.
    *
-   * ```GET /v1/locations/<ID>/devices/```
-   * @example
+   * Calls the HTTP API: `GET /v1/locations/<ID>/devices/`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
    * const devices: Array<Device> = await Qminder.devices.list(152);
    * const device: Device = devices[0];
    * console.log(device.type); // 'MONITOR', or maybe something else
+   * ```
    * @param location  the Location or location's ID
    * @returns a Promise that resolves to the list of devices for the location, or rejects if
    * something went wrong.
@@ -34,9 +40,15 @@ export default class DeviceService {
    * Read the details of a particular TV based on its ID.
    * Returns the ID, name, theme and settings of the TV.
    *
-   * ```GET /v1/tv/<ID>```
-   * @example
-   * const tv: Device = await Qminder.devices.details(1425);
+   * Calls the HTTP API: `GET /v1/tv/<ID>`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * const tv = await Qminder.devices.details(1425);
+   * ```
    * @param tv the Device that represents the TV, or the TV ID
    * @returns {Promise.<Device>} a Promise that resolves to device details, or rejects if
    * something went wrong.
@@ -55,10 +67,16 @@ export default class DeviceService {
    * Modify the TV's name.
    * This changes the TV's display name in the TV List in the Qminder Dashboard.
    *
-   * ```POST /v1/tv/<ID>```
-   * @example
-   * let device: Device = Qminder.devices.details(1235);
+   * Calls the HTTP API: `POST /v1/tv/<ID>`
+   *
+   * For example:9
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * let device = Qminder.devices.details(1235);
    * device = await Qminder.devices.edit(device, device.name + ' (Offsite)');
+   * ```
    * @param tv the Device that represents the TV, or the TV ID.
    * @param newName the desired new name of the TV.
    * @returns a Promise that resolves to the new TV details, or rejects if something went wrong.
@@ -78,12 +96,19 @@ export default class DeviceService {
   /**
    * Remove a TV. This deletes the TV and revokes the API key, removing it from the list of TVs.
    *
-   * ```DELETE /v1/tv/<ID>```
-   * @example
+   * Calls the HTTP API: `DELETE /v1/tv/<ID>`
+   *
+   * For example:
+   *
+   * ```
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example 1. Delete based on device ID
    * await Qminder.devices.remove(1235);
-   * @example
-   * const device: Device = Qminder.devices.details(125);
+   * // Example 2. Delete based on Device object
+   * const device = Qminder.devices.details(125);
    * await Qminder.devices.remove(device);
+   * ```
    * @param tv the Device that represents the TV, or the TV ID.
    * @returns A promise that resolves when successful and rejects when something went wrong.
    * @throws Error if the TV ID is not provided

@@ -1,4 +1,3 @@
-// @flow
 /**
  * The Device object represents a physical device that is paired to Qminder, such as an iPad or
  * Apple TV or custom TV screen.
@@ -60,7 +59,6 @@ export default class Device {
    * @constructor
    */
   constructor(properties: Device) {
-    // $FlowFixMe: TODO: assign all properties the Device supports, without writing them all out?
     Object.assign(this, properties);
   }
 }

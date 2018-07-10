@@ -1,4 +1,3 @@
-// @flow
 import ApiBase from '../api-base';
 import User from '../model/User';
 import Desk from '../model/Desk';
@@ -15,13 +14,18 @@ export default class UserService {
    * Returns an Array of all users that have access to a Location. (Owner, Administrators,
    * Location Managers, and Clerks)
    *
-   * GET /locations/{id}/users
-   * @example <caption>Fetch the user list for location ID 1234</caption>
-   * const location = 1234;
-   * const users: Array<User> = await Qminder.users.list(location);
-   * @param {number} location  the Location to find all users for.
-   * @returns a Promise that resolves to a list of Users who have access
-   * to the location, or rejects when something went wrong.
+   * Calls this HTTP API: `GET /v1/locations/<ID>/users`
+   *
+   * For example:
+   *
+   * ```javascript
+   * // Fetch the user list for location ID 1234
+   * const locationId = 1234;
+   * const users = await Qminder.users.list(locationId);
+   * ```
+   * @param location the Location to find all users for.
+   * @returns a Promise that resolves to a list of Users who have access to the location, or
+   * rejects when something went wrong.
    */
   static list(location: (Location|number)): Promise<Array<User>> {
     let locationId: any = location instanceof Location ? location.id : location;
@@ -45,7 +49,8 @@ export default class UserService {
    * After creating the User, the person will receive an email asking them to reset their password.
    * When they reset their password, they can access Qminder based on their UserRoles.
    *
-   * POST /users/
+   * Calls the HTTP API `POST /v1/users/`
+   *
    * @param {User} user an object filled with user details: the first/last name, email and
    * an array of UserRoles are mandatory.
    * @returns {Promise.<User>} a Promise that resolves with the new created User, or rejects if
@@ -80,17 +85,27 @@ export default class UserService {
    * This method allows searching by both user ID and exact email address. When searching by email
    * address, only exact matches are considered.
    *
-   * GET /users/{user}
-   * @example <caption>Get user details by their email address</caption>
-   * const user: User = await Qminder.users.details("john@example.com");
-   * @example <caption>Get user details by user ID</caption>
-   * const user: User = await Qminder.users.details(14152);
-   * @example <caption>Get user details by User object</caption>
+   * Calls the HTTP API `GET /v1/users/<user>`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Get user details by their email address
+   * const user = await Qminder.users.details("john@example.com");
+   *
+   * // Example 2. Get user details by user ID
+   * const user = await Qminder.users.details(14152);
+   *
+   * // Example 3. Get user details by User object
    * const usersList: Array<User> = Qminder.users.list(1234);
-   * let firstUser: User = usersList[0];
+   * let firstUser = usersList[0];
    * firstUser = await Qminder.users.details(firstUser);
-   * @param {string} user The user, the user's ID, or the user's email address.
-   * @returns {Promise.<User>} a Promise that resolves to the user's details, and rejects when
+   * ```
+   * @param user The user, the user's ID, or the user's email address.
+   * @returns a Promise that resolves to the user's details, and rejects when
    * something goes wrong.
    * @throws Error when the user argument was invalid (not a string, not a number, or not a User)
    */
@@ -114,9 +129,10 @@ export default class UserService {
    *
    * They will be deleted from the database and will not be able to log in any more.
    *
-   * DELETE /users/{id}
-   * @param {User} user the user to delete
-   * @returns {Promise.<Object>} a Promise that resolves when the user was removed, and rejects when
+   * Calls the HTTP API `DELETE /users/<ID>`.
+   *
+   * @param user the user to delete
+   * @returns a Promise that resolves when the user was removed, and rejects when
    * something goes wrong.
    * @throws Error when the argument is invalid (either the user ID is not a number, or the User
    * object did not have an ID).
@@ -140,7 +156,7 @@ export default class UserService {
    *
    * @param user the User that you want to add roles to
    * @param role the UserRole you want to add for the user.
-   * @return {Promise.<Object>} a Promise that resolves when the role adding succeeded, and
+   * @return a Promise that resolves when the role adding succeeded, and
    * rejects when something went wrong.
    */
   static addRole(user: User | number, role: UserRole): Promise<{ success: true }> {
@@ -153,10 +169,18 @@ export default class UserService {
 
   /**
    * Adds a profile picture to the user.
-   * POST /v1/users/<ID>/picture
-   * @example <caption>Set the user's picture from a File input</caption>
+   * Calls the HTTP API `POST /v1/users/<ID>/picture`.
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example. Set the user's picture from a File input
    * const picture: File = document.querySelector('input[type="file"]').files[0];
    * await Qminder.users.addPicture(1425, picture);
+   * ```
    * @param user the user to add the profile picture to
    * @param {File} picture the picture data as a File object. Its file type will automatically
    * be added to the request's Content-Type.
@@ -173,12 +197,21 @@ export default class UserService {
 
   /**
    * Removes the profile picture from the user.
-   * DELETE /v1/users/<ID>/picture
-   * @example <caption>Remove the user's profile picture</caption>
+   *
+   * Calls the HTTP API `DELETE /v1/users/<ID>/picture`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * // Example 1. Remove the user's profile picture
    * await Qminder.users.removePicture(1425);
-   * @example <caption>Remove the user's profile picture, using the User object </caption>
+   * // Example 2. Remove the user's profile picture, using the User object
    * const user = await Qminder.users.details(1234);
    * await Qminder.users.removePicture(user);
+   * ```
    * @param user the user that the profile picture will be removed from.
    * @returns {Promise} a promise that resolves when it succeeds, and rejects when something
    * goes wrong.
@@ -193,13 +226,21 @@ export default class UserService {
   }
 
   /**
-   * Set the user's currently selected Desk. <br>
-   * POST /v1/users/<ID>/desk
-   * @example <caption>Set the user 14152's desk to Desk 4</caption>
+   * Set the user's currently selected Desk.
+   *
+   * Calls the HTTP API `POST /v1/users/<ID>/desk`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example. Set the user 14152's desk to Desk 4
    * await Qminder.users.selectDesk(14152, 4);
+   * ```
    * @param user The user to modify.
    * @param desk The desired desk.
-   * @returns {Promise.<Object>} A promise that resolves when setting the desk works, and rejects
+   * @returns A promise that resolves when setting the desk works, and rejects
    * if it failed.
    */
   static selectDesk(user: User | number, desk: Desk | number) {
@@ -220,10 +261,9 @@ export default class UserService {
    *
    * After this API call, the user will have no desk selected.
    *
-   * DELETE /v1/users/<ID>/desk
+   * Calls the HTTP API `DELETE /v1/users/<ID>/desk`.
    * @param user The user to modify
-   * @returns {Promise<Object>} A promise that resolves when setting the desk works, and rejects
-   * if it failed.
+   * @returns A promise that resolves when setting the desk works, and rejects if it failed.
    */
   static removeDesk(user: User | number): Promise<Object> {
     let userId: any = user instanceof User ? user.id : user;
