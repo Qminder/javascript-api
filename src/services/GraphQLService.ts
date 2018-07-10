@@ -1,4 +1,4 @@
-import ApiBase from '../api-base';
+import ApiBase, { GraphqlResponse } from '../api-base';
 
 /**
  * A service that lets the user query Qminder API via GraphQL statements.
@@ -39,7 +39,7 @@ export default class GraphQLService {
    * @returns a promise that resolves to the query's results, or rejects if the query failed
    * @throws when the 'query' argument is undefined or an empty string
    */
-  static query(query: string, variables?: { [key: string]: any }): Promise<Object> {
+  static query(query: string, variables?: { [key: string]: any }): Promise<GraphqlResponse> {
     if (!query || query.length === 0) {
       throw new Error('GraphQLService query expects a GraphQL query as its first argument');
     }

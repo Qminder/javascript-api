@@ -12,6 +12,31 @@ interface GraphqlQuery {
   variables?: GraphqlQueryVariables;
 }
 
+
+interface GraphqlError {
+  message: string;
+  errorType: string;
+  validationErrorType?: string;
+  queryPath: string[];
+  path?: any;
+  extensions?: any;
+  locations: {line: number, column: number, sourceName: string}[];
+}
+
+/**
+ * The shape of the JSON response from the GraphQL API.
+ */
+export interface GraphqlResponse {
+  /** If all went well, 200. The response may still have errors. */
+  statusCode: number;
+  /** true if the data was loaded, false if the data was not loaded. */
+  dataPresent: boolean;
+  /** An array that contains any GraphQL errors. */
+  errors: GraphqlError[];
+  /** If the data was loaded without any errors, contains the requested object. */
+  data?: object;
+}
+
 interface ErrorResponse {
   statusCode: number;
   message: string;
@@ -153,7 +178,7 @@ class ApiBase {
    * @throws when the API key is missing
    * @throws when the query is undefined or an empty string
    */
-  queryGraph(query: string, variables?: GraphqlQueryVariables): Promise<Object> {
+  queryGraph(query: string, variables?: GraphqlQueryVariables): Promise<GraphqlResponse> {
     if (!query) {
       throw new Error('ApiBase.queryGraph expected a query as its first argument.');
     }
@@ -176,8 +201,8 @@ class ApiBase {
       body: JSON.stringify(requestBody),
     };
 
-    return this.fetch(`https://${this.apiServer}/graphql`, init)
-      .then((response: Response) => response.json());
+    return (this.fetch(`https://${this.apiServer}/graphql`, init)
+      .then((response: Response) => response.json()) as Promise<GraphqlResponse>);
   }
 }
 
