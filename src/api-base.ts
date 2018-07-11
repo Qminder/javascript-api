@@ -1,5 +1,6 @@
 import * as querystring from 'querystring';
 import * as fetch from 'isomorphic-fetch';
+
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
 
 interface GraphqlQueryVariables {
@@ -102,6 +103,9 @@ class ApiBase {
    */
   constructor() {
     this.fetch = fetch;
+    if (typeof (fetch as any).default === 'function') {
+      this.fetch = ((fetch as any).default as Function);
+    }
     console.log('Fetch instantiated!', this.fetch);
     this.setServer('api.qminder.com');
   }

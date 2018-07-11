@@ -230,7 +230,7 @@ describe("Qminder.events", function () {
 
       expect(stub.calledWith(matcher, func)).toBeTruthy();
       stub.restore();
-      createIdStub.restore();
+      Qminder.events.createId.restore();
     });
     it('Adds the subscription to the subscriptions list', function () {
       Qminder.events.createSubscription('TICKET_CREATED', func, { line: 123 });
