@@ -10,7 +10,7 @@ sedi () {
 }
 
 # Clean before build
-rm -r build-node
+rm -rf build-node
 
 # Use sed to replace ENV in fetch/websocket imports to node for compiling
 sedi "s:../lib/websocket-web:../lib/websocket-node:" src/services/EventsService.ts
