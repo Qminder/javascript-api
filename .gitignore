@@ -31,7 +31,6 @@ build-node
 build-web
 build-es6
 node_modules
-docs
-
+yarn-error.log
 # IDEA GraphQL plugin config
 graphql.config.json

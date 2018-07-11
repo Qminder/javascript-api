@@ -28,7 +28,6 @@ if (!process.env.hasOwnProperty('API_KEY')) {
   API_KEY=apikeygoeshere node search-tickets.js`);
 }
 
-Qminder.setServer('api.local.qminder.com');
 Qminder.setKey(process.env.API_KEY);
 
 

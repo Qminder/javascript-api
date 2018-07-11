@@ -1,12 +1,11 @@
 {
   "name": "qminder-api",
-  "version": "2.1.19",
+  "version": "2.2.0",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "prepare": "npm run build",
     "test": "npm run test-web",
     "test-web": "./test/run-tests.sh",
     "test-node": "./test/run-node-tests.sh",
@@ -33,11 +32,21 @@
   "engines": {
     "node": ">=4.0.0"
   },
+  "browserslist": [
+    "ie 11",
+    "last 2 major versions"
+  ],
   "main": "build-node/qminder-api.js",
   "unpkg": "build-web/qminder-api.min.js",
   "module": "build-node/qminder-api.js",
-  "jsnext:main": "build-es6/qminder-api.js",
+  "module-browser": "build-es6/qminder-api.js",
   "browser": "build-es6/qminder-api.js",
+  "esnext": {
+    "main": "build-node/qminder-api.js",
+    "browser": "build-es6/qminder-api.js"
+  },
+  "es2015": "build-es6/qminder-api.js",
+  "types": "build-es6/qminder-api.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -64,17 +73,15 @@
     "babel-plugin-transform-es2015-template-literals": "^6.22.0",
     "babel-plugin-transform-es2015-typeof-symbol": "^6.23.0",
     "babel-plugin-transform-es2015-unicode-regex": "^6.24.1",
-    "babel-plugin-transform-flow-comments": "^6.22.0",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-regenerator": "^6.26.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-es2017": "^6.24.1",
-    "babel-preset-flow": "^6.23.0",
     "bluebird": "^3.5.0",
-    "documentation": "^5.1.0",
-    "flow-babel-webpack-plugin": "^1.1.0",
-    "jasmine": "^2.8.0",
-    "jasmine-core": "^2.7.0",
+    "esdoc": "^1.1.0",
+    "esdoc-standard-plugin": "^1.0.0",
+    "esdoc-typescript-plugin": "^1.0.1",
+    "jasmine": "3.1.0",
+    "jasmine-core": "3.1.0",
     "json-loader": "^0.5.7",
     "karma": "^1.7.0",
     "karma-chrome-launcher": "^2.2.0",
@@ -82,17 +89,21 @@
     "karma-sinon": "^1.0.5",
     "mocha": "^4.0.1",
     "sinon": "^3.2.0",
+    "ts-loader": "^4.4.0",
+    "typedoc": "^0.11.1",
+    "typescript": "^2.9.1",
     "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony-v2.8.22",
     "uglifyjs-webpack-plugin": "0.4.3",
-    "webpack": "^3.4.1",
+    "webpack": "4",
+    "webpack-cli": "^3.0.3",
     "webpack-node-externals": "^1.6.0"
   },
   "dependencies": {
+    "@types/isomorphic-fetch": "^0.0.34",
+    "@types/ws": "^5.1.2",
     "es6-promise": "^4.1.1",
-    "fetch-ie8": "^1.5.0",
-    "node-fetch": "^1.7.3",
+    "isomorphic-fetch": "^2.2.1",
     "querystring": "^0.2.0",
-    "whatwg-fetch": "^2.0.3",
     "ws": "^3.2.0"
   }
 }

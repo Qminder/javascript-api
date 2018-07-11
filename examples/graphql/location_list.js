@@ -1,4 +1,4 @@
-/**
+/*
  * An example of running GraphQL queries in a Node.js script.
  *
  * To run this script, make sure you have Node version 7.10.1 or up (because it uses async/await
@@ -34,7 +34,7 @@ async function getLocations() {
     }`);
 
     if (result.errors && result.errors.length > 0) {
-      /**
+      /*
        * result = {
        *   "statusCode": 200,
        *   "errors": [
@@ -47,7 +47,7 @@ async function getLocations() {
       return;
     }
 
-    /**
+    /*
      * result = {
      *   "statusCode": 200,
      *   "errors": [],

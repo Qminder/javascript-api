@@ -1,0 +1,956 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>EventsService | Qminder</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Qminder</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+							<input type="checkbox" id="tsd-filter-only-exported" />
+							<label class="tsd-widget" for="tsd-filter-only-exported">Only exported</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_services_eventsservice_.html">&quot;services/EventsService&quot;</a>
+				</li>
+				<li>
+					<a href="_services_eventsservice_.eventsservice.html">EventsService</a>
+				</li>
+			</ul>
+			<h1>Class EventsService</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>Interface for the Qminder WebSocket events API.</p>
+					</div>
+					<p>The events API allows listening to Qminder events over a WebSocket connection. The events can
+					be filtered so only relevant messages will reach the source code.</p>
+					<p>To start using the events API, simply set the API key and add an event callback.</p>
+					<p>For example:</p>
+					<pre><code>const apiKey = <span class="hljs-string">'asdfApiKey'</span>;
+Qminder.setKey(apiKey);
+Qminder.events.onTicketCalled(<span class="hljs-function"><span class="hljs-params">(event)</span> =&gt;</span> {
+   <span class="hljs-built_in">console</span>.log(event);
+}, { location: <span class="hljs-number">1234</span> });
+</code></pre><p>When the WebSocket connection drops, the API will automatically try to reconnect to the
+					socket repeatedly, until the connection has been established.</p>
+					<p>When the WebSocket connection is lost and regained, any events that happened in the meantime
+						will not be repeated to the client. However, the API will automatically re-subscribe to all
+					previously subscribed events.</p>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">EventsService</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-private"><a href="_services_eventsservice_.eventsservice.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onconnect" class="tsd-kind-icon">on<wbr>Connect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#ondisconnect" class="tsd-kind-icon">on<wbr>Disconnect</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onlineschanged" class="tsd-kind-icon">on<wbr>Lines<wbr>Changed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onlocationchanged" class="tsd-kind-icon">on<wbr>Location<wbr>Changed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onoverviewmonitorchanged" class="tsd-kind-icon">on<wbr>Overview<wbr>Monitor<wbr>Changed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onsignindevicechanged" class="tsd-kind-icon">on<wbr>Sign<wbr>InDevice<wbr>Changed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onticketcalled" class="tsd-kind-icon">on<wbr>Ticket<wbr>Called</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onticketcancelled" class="tsd-kind-icon">on<wbr>Ticket<wbr>Cancelled</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onticketchanged" class="tsd-kind-icon">on<wbr>Ticket<wbr>Changed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onticketcreated" class="tsd-kind-icon">on<wbr>Ticket<wbr>Created</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onticketrecalled" class="tsd-kind-icon">on<wbr>Ticket<wbr>Recalled</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_eventsservice_.eventsservice.html#onticketserved" class="tsd-kind-icon">on<wbr>Ticket<wbr>Served</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-private">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Events<wbr>Service<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_eventsservice_.eventsservice.html" class="tsd-signature-type">EventsService</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L122">services/EventsService.ts:122</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Construct the EventsService.
+									Initializes variables to their default values.</p>
+								</div>
+								<dl class="tsd-comment-tags">
+									<dt>constructor</dt>
+									<dd></dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="_services_eventsservice_.eventsservice.html" class="tsd-signature-type">EventsService</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onconnect" class="tsd-anchor"></a>
+					<h3>on<wbr>Connect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Connect<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L149">services/EventsService.ts:149</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a callback for when the Qminder API connects successfully.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+Qminder.events.onConnect(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'API has (re-)connected!'</span>);
+});
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the callback function, which will not receive any arguments or data</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="ondisconnect" class="tsd-anchor"></a>
+					<h3>on<wbr>Disconnect</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Disconnect<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">function</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L171">services/EventsService.ts:171</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Add a callback for when the Qminder Events API websocket disconnects.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+Qminder.events.onDisconnect(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params"></span>) </span>{
+  <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Connection lost.'</span>);
+});
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <span class="tsd-signature-type">function</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the callback function, which will not receive any arguments or data.</p>
+									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-siganture">
+											<ul class="tsd-signatures tsd-kind-type-literal">
+												<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+											</ul>
+											<ul class="tsd-descriptions">
+												<li class="tsd-description">
+													<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onlineschanged" class="tsd-anchor"></a>
+					<h3>on<wbr>Lines<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Lines<wbr>Changed<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L577">services/EventsService.ts:577</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a location&#39;s lines change.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+Qminder.events.onLinesChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Lines changed: "</span>, event);
+});
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time the lines change</p>
+									</div>
+								</li>
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The Location ID to listen to</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onlocationchanged" class="tsd-anchor"></a>
+					<h3>on<wbr>Location<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Location<wbr>Changed<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L597">services/EventsService.ts:597</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a location&#39;s settings change.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+<span class="hljs-keyword">const</span> locationId = <span class="hljs-number">1524</span>;
+Qminder.events.onLocationChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Location changed: "</span>, event);
+}, locationId);
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time the location settings change</p>
+									</div>
+								</li>
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the location&#39;s ID to listen to</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onoverviewmonitorchanged" class="tsd-anchor"></a>
+					<h3>on<wbr>Overview<wbr>Monitor<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Overview<wbr>Monitor<wbr>Changed<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L540">services/EventsService.ts:540</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when TV settings change.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+Qminder.events.onOverviewMonitorChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"TV changed: "</span>, event);
+});
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time TV settings change</p>
+									</div>
+								</li>
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The TV&#39;s ID to listen to</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onsignindevicechanged" class="tsd-anchor"></a>
+					<h3>on<wbr>Sign<wbr>InDevice<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Sign<wbr>InDevice<wbr>Changed<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span>, id<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L559">services/EventsService.ts:559</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when iPad settings change.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+Qminder.events.onSignInDeviceChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"iPad changed: "</span>, event);
+});
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">__type</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time the iPad settings change</p>
+									</div>
+								</li>
+								<li>
+									<h5>id: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The iPad&#39;s ID to listen to</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onticketcalled" class="tsd-anchor"></a>
+					<h3>on<wbr>Ticket<wbr>Called</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Ticket<wbr>Called<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L416">services/EventsService.ts:416</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a ticket is called to service.
+										It is possible to filter the tickets based on their line and location, which is a good
+										practice if you do not want events on all tickets for the entire account.
+										<code>`</code>javascript
+										import * as Qminder from &#39;qminder-api&#39;;
+										Qminder.setKey(&#39;API_KEY_HERE&#39;);
+										// 1. Listening to all called tickets in location 1234
+										Qminder.events.onTicketCalled(function(event) {
+										console.log(&quot;Ticket called in location 1234: &quot;, event);
+									}, { location: 1234 });</p>
+								</div>
+								<p>// 2. Listening to all called tickets in line 94502
+									Qminder.events.onTicketCalled(function(event) {
+									console.log(&quot;Ticket called in line 94502: &quot;, event);
+									}, { line: 94502 });
+								<code>`</code></p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time a new ticket is called</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an object that contains a location or line ID to filter the events</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onticketcancelled" class="tsd-anchor"></a>
+					<h3>on<wbr>Ticket<wbr>Cancelled</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Ticket<wbr>Cancelled<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L467">services/EventsService.ts:467</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a ticket is cancelled.
+										It is possible to filter the tickets based on their line and location, which is a good
+									practice if you do not want events on all tickets for the entire account.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+<span class="hljs-comment">// Example 1. Listening to all cancelled tickets in location 1234</span>
+Qminder.events.onTicketCancelled(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket cancelled in location 1234: "</span>, event);
+}, { <span class="hljs-attr">location</span>: <span class="hljs-number">1234</span> });
+
+<span class="hljs-comment">// Example 2. Listening to all cancelled tickets in line 94502</span>
+Qminder.events.onTicketCancelled(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket cancelled in line 94502: "</span>, event);
+}, { <span class="hljs-attr">line</span>: <span class="hljs-number">94502</span> });
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time a new ticket is cancelled</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an object that contains a location or line ID to filter the events</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onticketchanged" class="tsd-anchor"></a>
+					<h3>on<wbr>Ticket<wbr>Changed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Ticket<wbr>Changed<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L521">services/EventsService.ts:521</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a ticket has changed.
+										It is possible to filter the tickets based on their line and location, which is a good
+									practice if you do not want events on all tickets for the entire account.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+<span class="hljs-comment">// Example 1. Listening to all changed tickets in location 1234</span>
+Qminder.events.onTicketChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket changed in location 1234: "</span>, event);
+}, { <span class="hljs-attr">location</span>: <span class="hljs-number">1234</span> });
+
+<span class="hljs-comment">// Example 2. Listening to all changed tickets in line 94502</span>
+Qminder.events.onTicketChanged(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket changed in line 94502: "</span>, event);
+}, { <span class="hljs-attr">line</span>: <span class="hljs-number">94502</span> });
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time a ticket has changed</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an object that contains a location or line ID to filter the events</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onticketcreated" class="tsd-anchor"></a>
+					<h3>on<wbr>Ticket<wbr>Created</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Ticket<wbr>Created<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L392">services/EventsService.ts:392</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a new ticket is created.
+										It is possible to filter the tickets based on their line and location, which is a good
+									practice if you do not want events on all tickets for the entire account.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+<span class="hljs-comment">// 1. Listening to all created tickets in location 1234</span>
+Qminder.events.onTicketCreated(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket created in location 1234: "</span>, event);
+}, { <span class="hljs-attr">location</span>: <span class="hljs-number">1234</span> });
+
+<span class="hljs-comment">// 2. Listening to all created tickets in line 94502</span>
+Qminder.events.onTicketCreated(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket created in line 94502: "</span>, event);
+}, { <span class="hljs-attr">line</span>: <span class="hljs-number">94502</span> });
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time a new ticket is created</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an object that contains a location or line ID to filter the events</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onticketrecalled" class="tsd-anchor"></a>
+					<h3>on<wbr>Ticket<wbr>Recalled</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Ticket<wbr>Recalled<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L440">services/EventsService.ts:440</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a ticket is re-called.
+										It is possible to filter the tickets based on their line and location, which is a good
+										practice if you do not want events on all tickets for the entire account.
+										<code>`</code>javascript
+										import * as Qminder from &#39;qminder-api&#39;;
+										Qminder.setKey(&#39;API_KEY_HERE&#39;);
+										// 1. Listening to all recalled tickets in location 1234
+										Qminder.events.onTicketRecalled(function(event) {
+										console.log(&quot;Ticket recalled in location 1234: &quot;, event);
+									}, { location: 1234 });</p>
+								</div>
+								<p>// 2. Listening to all recalled tickets in line 94502
+									Qminder.events.onTicketRecalled(function(event) {
+									console.log(&quot;Ticket recalled in line 94502: &quot;, event);
+									}, { line: 94502 });
+								<code>`</code></p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time a new ticket is recalled</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an object that contains a location or line ID to filter the events</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="onticketserved" class="tsd-anchor"></a>
+					<h3>on<wbr>Ticket<wbr>Served</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">on<wbr>Ticket<wbr>Served<span class="tsd-signature-symbol">(</span>callback<span class="tsd-signature-symbol">: </span><a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, filter<span class="tsd-signature-symbol">?: </span><a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/services/EventsService.ts#L494">services/EventsService.ts:494</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Register a callback to get notified when a ticket is served.
+										It is possible to filter the tickets based on their line and location, which is a good
+									practice if you do not want events on all tickets for the entire account.</p>
+								</div>
+								<p>For example:</p>
+								<pre><code class="lang-javascript"><span class="hljs-keyword">import</span> * <span class="hljs-keyword">as</span> Qminder <span class="hljs-keyword">from</span> <span class="hljs-string">'qminder-api'</span>;
+Qminder.setKey(<span class="hljs-string">'API_KEY_HERE'</span>);
+<span class="hljs-comment">// Example 1. Listening to all served tickets in location 1234</span>
+Qminder.events.onTicketCancelled(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket served in location 1234: "</span>, event);
+}, { <span class="hljs-attr">location</span>: <span class="hljs-number">1234</span> });
+
+<span class="hljs-comment">// Example 2. Listening to all served tickets in line 94502</span>
+Qminder.events.onTicketCancelled(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">event</span>) </span>{
+    <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Ticket served in line 94502: "</span>, event);
+}, { <span class="hljs-attr">line</span>: <span class="hljs-number">94502</span> });
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>callback: <a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-signature-type">EventCallback</a><span class="tsd-signature-symbol">&lt;</span><a href="_model_ticket_.ticket.html" class="tsd-signature-type">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>a function that gets called every time a new ticket is served</p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> filter: <a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-signature-type">EventFilter</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>an object that contains a location or line ID to filter the events</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_api_base_.html">"api-<wbr>base"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_desk_.html">"model/<wbr>Desk"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_device_.html">"model/<wbr>Device"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_line_.html">"model/<wbr>Line"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_location_.html">"model/<wbr>Location"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_ticket_.html">"model/<wbr>Ticket"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_user_.html">"model/<wbr>User"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_model_webhook_.html">"model/<wbr>Webhook"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_qminder_api_.html">"qminder-<wbr>api"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_deviceservice_.html">"services/<wbr>Device<wbr>Service"</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_services_eventsservice_.html">"services/<wbr>Events<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_graphqlservice_.html">"services/<wbr>GraphQLService"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_lineservice_.html">"services/<wbr>Line<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_locationservice_.html">"services/<wbr>Location<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_ticketservice_.html">"services/<wbr>Ticket<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_userservice_.html">"services/<wbr>User<wbr>Service"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_services_webhooksservice_.html">"services/<wbr>Webhooks<wbr>Service"</a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="../modules/_lib_fetch_web_.html">"lib/fetch-<wbr>web"</a>
+					</li>
+					<li class=" tsd-kind-external-module tsd-is-external">
+						<a href="../modules/_lib_websocket_web_.html">"lib/websocket-<wbr>web"</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_services_eventsservice_.eventsservice.html" class="tsd-kind-icon">Events<wbr>Service</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-private">
+								<a href="_services_eventsservice_.eventsservice.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onconnect" class="tsd-kind-icon">on<wbr>Connect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#ondisconnect" class="tsd-kind-icon">on<wbr>Disconnect</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onlineschanged" class="tsd-kind-icon">on<wbr>Lines<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onlocationchanged" class="tsd-kind-icon">on<wbr>Location<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onoverviewmonitorchanged" class="tsd-kind-icon">on<wbr>Overview<wbr>Monitor<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onsignindevicechanged" class="tsd-kind-icon">on<wbr>Sign<wbr>InDevice<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onticketcalled" class="tsd-kind-icon">on<wbr>Ticket<wbr>Called</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onticketcancelled" class="tsd-kind-icon">on<wbr>Ticket<wbr>Cancelled</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onticketchanged" class="tsd-kind-icon">on<wbr>Ticket<wbr>Changed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onticketcreated" class="tsd-kind-icon">on<wbr>Ticket<wbr>Created</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onticketrecalled" class="tsd-kind-icon">on<wbr>Ticket<wbr>Recalled</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_eventsservice_.eventsservice.html#onticketserved" class="tsd-kind-icon">on<wbr>Ticket<wbr>Served</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-has-type-parameter tsd-is-not-exported">
+						<a href="../modules/_services_eventsservice_.html#eventcallback" class="tsd-kind-icon">Event<wbr>Callback</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_services_eventsservice_.html#eventfilter" class="tsd-kind-icon">Event<wbr>Filter</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_services_eventsservice_.html#eventsubscription" class="tsd-kind-icon">Event<wbr>Subscription</a>
+					</li>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_services_eventsservice_.html#eventtype" class="tsd-kind-icon">Event<wbr>Type</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

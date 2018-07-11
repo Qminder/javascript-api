@@ -5,13 +5,11 @@
  *    NormalModuleReplacementPlugin. Used to hotswap websockets & fetch polyfills
  * 3. Traverse the dep graph - include all files imported. For node.js, make sure to not include
  *    node packages (ws, node-fetch) in the bundle.
- * 4. Strip Flow.js types, compile ES2017 to ES5, concat and minify to produce one JS bundle.
- *    For node.js, skip the minification step.
+ * 4. Use Typescript compiler before Babel compiler, to get the bundled package.
  */
 
 const path = require('path');
 const webpack = require('webpack');
-const FlowBabelWebpackPlugin = require('flow-babel-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const uglify = new UglifyJsPlugin({
@@ -25,16 +23,11 @@ const versionDefinition = new webpack.DefinePlugin({
 });
 
 module.exports = function() {
-
-  const moduleReplacements = new webpack.NormalModuleReplacementPlugin(/(.*)-ENV/, function (resource) {
-    resource.request = resource.request.replace(/-ENV/, '-web');
-  });
-
   return ({
     target: 'web',
     entry: {
-      'qminder-api.min': ['es6-promise', 'whatwg-fetch', './src/qminder-api.js'],
-      'qminder-api': ['es6-promise', 'whatwg-fetch', './src/qminder-api.js'],
+      'qminder-api.min': ['es6-promise', 'whatwg-fetch', './src/qminder-api.ts'],
+      'qminder-api': ['es6-promise', 'whatwg-fetch', './src/qminder-api.ts'],
     },
 
     output: {
@@ -46,7 +39,7 @@ module.exports = function() {
     },
 
     module: {
-      loaders: [{
+      rules: [{
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
@@ -54,7 +47,12 @@ module.exports = function() {
       {
         test: /\.json$/,
         loader: 'json-loader'
-      }]
+      },
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader'
+      }
+      ]
     },
 
     stats: {
@@ -66,14 +64,12 @@ module.exports = function() {
         path.resolve('./node_modules'),
         path.resolve('./src'),
       ],
-      extensions: ['.js'],
+      extensions: ['.js', '.ts'],
     },
 
     devtool: 'source-map',
     plugins: [
       versionDefinition,
-      moduleReplacements,
-      new FlowBabelWebpackPlugin(),
       uglify
     ],
   });
