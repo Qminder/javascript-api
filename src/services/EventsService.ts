@@ -1,4 +1,5 @@
-import WebSocket from '../lib/websocket-web';
+// NOTE: some sed magic here will change between web and node sockets
+import WebSocket, { MessageData } from '../lib/websocket-web';
 import Ticket from '../model/Ticket';
 
 /**
@@ -237,7 +238,7 @@ class EventsService {
       }
     };
 
-    socket.onclose = (event: CloseEvent) => {
+    socket.onclose = (event: { code: number }) => {
       // NOTE: if the event code is 1006, it is any of the errors in the list here:
       // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
       console.log('[Qminder Events API] Connection lost: ' + event.code);
@@ -276,15 +277,19 @@ class EventsService {
       console.log('[Qminder Events API] An error occurred, the websocket will disconnect.');
     };
 
-    socket.onmessage = (rawMessage: MessageEvent) => {
+    socket.onmessage = (rawMessage: { data: MessageData }) => {
       if (rawMessage.data === 'PONG') {
         return;
       }
       try {
-        const message = JSON.parse(rawMessage.data);
-        const callback = this.subscriptionCallbackMap[message.subscriptionId];
-        if (callback && typeof callback === 'function') {
-          callback(message.data);
+        if (typeof rawMessage.data === 'string') {
+          const message = JSON.parse(rawMessage.data);
+          const callback = this.subscriptionCallbackMap[message.subscriptionId];
+          if (callback && typeof callback === 'function') {
+            callback(message.data);
+          }
+        } else {
+          console.warn('[Qminder API] Binary data received as a Websocket message.');
         }
       } catch (exc) {
         console.log(exc.stack);

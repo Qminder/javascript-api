@@ -1,6 +1,6 @@
 import * as querystring from 'querystring';
+import fetch from 'cross-fetch';
 
-import fetch from './lib/fetch-web';
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
 
 interface GraphqlQueryVariables {
