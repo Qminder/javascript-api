@@ -1,6 +1,5 @@
 import * as querystring from 'querystring';
-import fetch from 'cross-fetch';
-
+import * as fetch from 'isomorphic-fetch';
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
 
 interface GraphqlQueryVariables {
@@ -103,6 +102,7 @@ class ApiBase {
    */
   constructor() {
     this.fetch = fetch;
+    console.log('Fetch instantiated!', this.fetch);
     this.setServer('api.qminder.com');
   }
 
