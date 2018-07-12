@@ -76,9 +76,14 @@ module.exports = function(config) {
       },
     },
 
-    // NOTE: set it to true to see log statements from the browser.
     client: {
-      captureConsole: false
+      // NOTE: set it to true to see log statements from the browser.
+      captureConsole: false,
+
+      // This is needed to make sure setup & teardown sections run in sequence, for some reason.
+      jasmine: {
+        random: false
+      }
     },
 
 
