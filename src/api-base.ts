@@ -106,7 +106,6 @@ class ApiBase {
     if (typeof (fetch as any).default === 'function') {
       this.fetch = ((fetch as any).default as Function);
     }
-    console.log('Fetch instantiated!', this.fetch);
     this.setServer('api.qminder.com');
   }
 
