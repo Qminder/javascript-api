@@ -668,6 +668,36 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.edit(new Qminder.Ticket({}))).toThrow();
     });
 
+    it('allows resetting first name to empty with empty string', function() {
+      Qminder.tickets.edit(12345, { firstName: '' });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+                                sinon.match({ firstName: '' }))).toBeTruthy();
+    });
+
+    it('allows resetting last name to empty with empty string', function() {
+      Qminder.tickets.edit(12345, { lastName: '' });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ lastName: '' }))).toBeTruthy();
+    });
+
+    it('allows resetting first name to empty with null', function() {
+      Qminder.tickets.edit(12345, { firstName: null });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ firstName: null }))).toBeTruthy();
+    });
+
+    it('allows resetting last name to empty with null', function() {
+      Qminder.tickets.edit(12345, { lastName: null });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ lastName: null }))).toBeTruthy();
+    });
+
+    it('allows resetting phone number to empty with null', function() {
+      Qminder.tickets.edit(12345, { phoneNumber: null });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ phoneNumber: null }))).toBeTruthy();
+    });
+
     it('Sends the extras as a JSON array', function() {
       const changes = {
         phoneNumber: 3185551234,

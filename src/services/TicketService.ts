@@ -571,19 +571,19 @@ export default class TicketService {
     }
 
     const params: TicketEditingRequest = {};
-    if (changes.firstName) {
+    if (Object.prototype.hasOwnProperty.call(changes, 'firstName')) {
       params.firstName = changes.firstName;
     }
-    if (changes.lastName) {
+    if (Object.prototype.hasOwnProperty.call(changes, 'lastName')) {
       params.lastName = changes.lastName;
     }
-    if (changes.phoneNumber) {
+    if (Object.prototype.hasOwnProperty.call(changes, 'phoneNumber')) {
       params.phoneNumber = changes.phoneNumber;
     }
-    if (changes.line) {
+    if (Object.prototype.hasOwnProperty.call(changes, 'line')) {
       params.line = changes.line;
     }
-    if (changes.extra) {
+    if (Object.prototype.hasOwnProperty.call(changes, 'extra')) {
       params.extra = JSON.stringify(changes.extra);
     }
 
