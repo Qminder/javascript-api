@@ -1,24 +1,19 @@
 language: node_js
 node_js:
-- "8"
+- '8'
 sudo: true
 dist: trusty
-
 addons:
   chrome: stable
-
-language: node_js
-
 jobs:
   include:
-    - stage: build
-      script: npm run build
-
+  - stage: build
+    script: npm run build
 deploy:
   provider: npm
   email: info@qminderapp.com
   api_key:
-    secure: I+dkutiDxxPHg6v6mUSnoOUjJKi9fTdgFqqukvcxkq5r7YDVUFyIND7oifd66eVOI1Fcx92JDIIEnyxZo264DlbvzlM14aLOIJjvVvYsaAFOKq4K4mvzL47t9D+T51mOKVeKQnH8QlPj+rA+FIrMkIXn9NpynKk2HEIBBZ2k8ug=
+    secure: epHID6OvNKSt0P4u9YSQgjpJxT+xjvFYzD3CzmUx78Y5ySzQM5CxBOIsoVSvQDrl08UT6nukgMInL3MhQ9aWxl/JNDDXwEGoYJ4nAkydSBjS5T6qWxG7Awb4Opb65YC258B0BReW6nPtkCUqTUgCy9oK47TpjGK4ow4nwhPp0Ss=
   on:
     tags: true
     repo: Qminder/javascript-api
