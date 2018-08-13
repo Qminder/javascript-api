@@ -1,12 +1,19 @@
 /**
  * Represents a person in the queue. Every time someone is added to the queue, a ticket is created in Qminder.
- * The ticket contains the person's name, phone number, or other custom fields.
+ * The ticket contains the person's name, phone number, email address or other custom fields.
  *
  * Tickets belong to lines.
  * Tickets can have many TicketExtras.
  *
  * If the location has SMS enabled, some visitors may exchange messages with the location. Those
  * messages are stored with the ticket in the TicketMessages list.
+ *
+ * Methods that work with Tickets can be found under {@link TicketService}, or `Qminder.tickets`.
+ *
+ * For example:
+ *
+ * To create a Ticket, call {@link TicketService.create}.
+ * To search for tickets, call {@link TicketService.search}.
  */
 class Ticket {
   /**
@@ -50,6 +57,8 @@ class Ticket {
   lastName?: string;
   /** The phone number of the visitor. For example: 3725551111 */
   phoneNumber?: number;
+  /** The e-mail address of the visitor. For example: "jsmith224@example.com" */
+  email?: string;
 
 
   /**

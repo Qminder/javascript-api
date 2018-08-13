@@ -229,6 +229,7 @@ interface TicketCreationRequest {
   firstName?: string;
   lastName?: string;
   phoneNumber?: number;
+  email?: string;
   extra?: string;
   source?: string;
 }
@@ -483,6 +484,9 @@ export default class TicketService {
     if (ticket.extra) {
       params.extra = JSON.stringify(ticket.extra);
     }
+    if (Object.prototype.hasOwnProperty.call(ticket, 'email')) {
+      params.email = ticket.email;
+    }
 
     return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST')
                   .then((response: TicketCreationResponse) => {
@@ -580,6 +584,11 @@ export default class TicketService {
     if (Object.prototype.hasOwnProperty.call(changes, 'phoneNumber')) {
       params.phoneNumber = changes.phoneNumber;
     }
+
+    if (Object.prototype.hasOwnProperty.call(changes, 'email')) {
+      params.email = changes.email;
+    }
+
     if (Object.prototype.hasOwnProperty.call(changes, 'line')) {
       params.line = changes.line;
     }
