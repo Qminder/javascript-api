@@ -1,4 +1,11 @@
 describe("TicketService", function() {
+  const JON_SNOW = {
+    id: 12345,
+    line: 111111,
+    firstName: 'Jon',
+    lastName: 'Snow',
+    email: 'jon.snow@winterfell.is',
+  };
   beforeEach(function() {
     if (typeof Qminder === 'undefined') {
       Qminder = this.Qminder;
@@ -514,7 +521,7 @@ describe("TicketService", function() {
       lastName: 'Smith'
     };
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves(createResponseBody);
+      this.requestStub.resolves(createResponseBody);
     });
     it('calls the right URL when the line is specified as number', function(done) {
       Qminder.tickets.create(11111, createRequestBody).then(() => {
@@ -551,10 +558,6 @@ describe("TicketService", function() {
         phoneNumber: 3185551234,
         extra: [
           {
-            title: 'Email',
-            value: '2@qminder.com'
-          },
-          {
             title: 'Favorite soup',
             value: 'Borscht'
           }
@@ -569,13 +572,33 @@ describe("TicketService", function() {
     });
     it('Does not send undefined keys', function() {
       Qminder.tickets.create(1, {});
-      console.log(this.requestStub.firstCall.args);
       expect(this.requestStub.calledWithExactly('lines/1/ticket', sinon.match({
         firstName: undefined,
         lastName: undefined,
-        extra: undefined
+        extra: undefined,
+        email: undefined,
       }))).toBeFalsy();
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({}))).toBeTruthy();
+    });
+    it('sends email address if it is defined', function() {
+      const ticketWithEmail = {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: 'jsmith224@example.com',
+      };
+      Qminder.tickets.create(1, ticketWithEmail);
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticketWithEmail))).toBeTruthy();
+    });
+    it('does not send email address if it is not defined', function() {
+      const ticketWithoutEmail = {
+        firstName: 'Jane',
+        lastName: 'Smith',
+      };
+      Qminder.tickets.create(1, ticketWithoutEmail);
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticketWithoutEmail))).toBeTruthy();
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({
+        email: sinon.match.defined
+      }))).toBeFalsy();
     });
   });
   describe("details()", function() {
@@ -583,10 +606,11 @@ describe("TicketService", function() {
       id: "12345",
       line: 11111,
       firstName: 'John',
-      lastName: 'Smith'
+      lastName: 'Smith',
+      email: 'jsmith225@example.com'
     };
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves(detailsResponseBody);
+      this.requestStub.resolves(detailsResponseBody);
     });
     it('calls the right URL when ticket ID is passed in as number', function(done) {
       Qminder.tickets.details(12345).then(() => {
@@ -604,9 +628,8 @@ describe("TicketService", function() {
     it('resolves to a Ticket object', function(done) {
       Qminder.tickets.details(12345).then(response => {
         expect(response instanceof Qminder.Ticket).toBeTruthy();
-        expect(response.line).toBe(11111);
-        expect(response.id).toBe(12345);
         expect(typeof response.id).toBe("number");
+        expect(response).toEqual(jasmine.objectContaining(detailsResponseBody));
         done();
       });
     });
@@ -619,12 +642,25 @@ describe("TicketService", function() {
     it('throws when ticket is a Ticket object but id is undefined', function() {
       expect(() => Qminder.tickets.details(new Qminder.Ticket({}))).toThrow();
     });
+    it('does not set the email key when response does not include email', function() {
+      const responseBody = Object.assign({}, detailsResponseBody);
+      delete responseBody.email;
+
+      this.requestStub.resetBehavior();
+      this.requestStub.resolves(responseBody);
+
+      Qminder.tickets.details(12345).then(response => {
+        expect(response).toEqual(jasmine.objectContaining(responseBody));
+        expect(response.email).toBeUndefined();
+      });
+    });
   });
   describe("edit()", function() {
     const editedFields = {
       line: 11111,
       firstName: 'Johnny',
-      lastName: 'Smithicus'
+      lastName: 'Smithicus',
+      email: 'jsmithicus@example.com',
     };
     beforeEach(function() {
       this.requestStub.onCall(0).resolves({
@@ -680,6 +716,12 @@ describe("TicketService", function() {
         sinon.match({ lastName: '' }))).toBeTruthy();
     });
 
+    it('allows resetting email to empty with empty string', function() {
+      Qminder.tickets.edit(12345, { email: '' });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ email: '' }))).toBeTruthy();
+    });
+
     it('allows resetting first name to empty with null', function() {
       Qminder.tickets.edit(12345, { firstName: null });
       expect(this.requestStub.calledWith('tickets/12345/edit',
@@ -698,14 +740,16 @@ describe("TicketService", function() {
         sinon.match({ phoneNumber: null }))).toBeTruthy();
     });
 
+    it('allows resetting email to empty with null', function() {
+      Qminder.tickets.edit(12345, { email: null });
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ email: null }))).toBeTruthy();
+    });
+
     it('Sends the extras as a JSON array', function() {
       const changes = {
         phoneNumber: 3185551234,
         extra: [
-          {
-            title: 'Email',
-            value: '2@qminder.com'
-          },
           {
             title: 'Favorite soup',
             value: 'Borscht'
@@ -722,12 +766,7 @@ describe("TicketService", function() {
   });
   describe("callNext()", function() {
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves({
-        id: 12345,
-        line: 111111,
-        firstName: 'Jon',
-        lastName: 'Snow',
-      });
+      this.requestStub.onCall(0).resolves(JON_SNOW);
     });
 
     it('calls the API with only one line as ID', function(done) {
@@ -858,12 +897,7 @@ describe("TicketService", function() {
   });
   describe("call()", function() {
     beforeEach(function() {
-      this.requestStub.onCall(0).resolves({
-        id: 12345,
-        line: 111111,
-        firstName: 'Jon',
-        lastName: 'Snow',
-      });
+      this.requestStub.resolves(JON_SNOW);
     });
     it('calls the right URL with ticket ID as number', function(done) {
       Qminder.tickets.call(12345).then(() => {
@@ -874,6 +908,12 @@ describe("TicketService", function() {
     it('calls the right URL with a Ticket', function(done) {
       Qminder.tickets.call(new Qminder.Ticket({ id: 12345 })).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/call', undefined, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('Returns a ticket with all fields present', function(done) {
+      Qminder.tickets.call(12345).then((ticket) => {
+        expect(ticket).toEqual(jasmine.objectContaining(JON_SNOW));
         done();
       });
     });
@@ -1161,14 +1201,14 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.unassign(63020422, {})).toThrow();
     });
     it('throws an error when the response returns an error', function(done) {
-      this.requestStub.restore();
+      this.requestStub.resetBehavior();
       this.requestStub.onCall(0).rejects({ status: 400, message: '', developerMessage: '' });
       Qminder.tickets.unassign(63020422, 4950).then(
         () => done(new Error('Qminder.tickets.unassign promise should reject but resolved')),
         () => done());
     });
   });
-  describe('unassign()', function() {
+  describe('assignToUser()', function() {
     beforeEach(function() {
       this.requestStub.onCall(0).resolves({
         result: 'success'

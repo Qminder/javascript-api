@@ -73,12 +73,16 @@
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
 						<p>Represents a person in the queue. Every time someone is added to the queue, a ticket is created in Qminder.
-						The ticket contains the person&#39;s name, phone number, or other custom fields.</p>
+						The ticket contains the person&#39;s name, phone number, email address or other custom fields.</p>
 					</div>
 					<p>Tickets belong to lines.
 					Tickets can have many TicketExtras.</p>
 					<p>If the location has SMS enabled, some visitors may exchange messages with the location. Those
 					messages are stored with the ticket in the TicketMessages list.</p>
+					<p>Methods that work with Tickets can be found under <a href="_services_ticketservice_.ticketservice.html">TicketService</a>, or <code>Qminder.tickets</code>.</p>
+					<p>For example:</p>
+					<p>To create a Ticket, call <a href="_services_ticketservice_.ticketservice.html#create">TicketService.create</a>.
+					To search for tickets, call <a href="_services_ticketservice_.ticketservice.html#search">TicketService.search</a>.</p>
 				</div>
 			</section>
 			<section class="tsd-panel tsd-hierarchy">
@@ -106,6 +110,7 @@
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#called" class="tsd-kind-icon">called</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#cancelled" class="tsd-kind-icon">cancelled</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#created" class="tsd-kind-icon">created</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#email" class="tsd-kind-icon">email</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#extra" class="tsd-kind-icon">extra</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#firstname" class="tsd-kind-icon">first<wbr>Name</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_model_ticket_.ticket.html#id" class="tsd-kind-icon">id</a></li>
@@ -137,7 +142,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L153">model/Ticket.ts:153</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L162">model/Ticket.ts:162</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -159,7 +164,7 @@
 					<div class="tsd-signature tsd-kind-icon">assigned<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L114">model/Ticket.ts:114</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L123">model/Ticket.ts:123</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -190,7 +195,7 @@
 					<div class="tsd-signature tsd-kind-icon">called<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L89">model/Ticket.ts:89</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L98">model/Ticket.ts:98</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -207,7 +212,7 @@
 					<div class="tsd-signature tsd-kind-icon">cancelled<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L125">model/Ticket.ts:125</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L134">model/Ticket.ts:134</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -235,7 +240,7 @@
 					<div class="tsd-signature tsd-kind-icon">created<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L79">model/Ticket.ts:79</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L88">model/Ticket.ts:88</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -255,12 +260,27 @@
 					</div>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="email" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> email</h3>
+					<div class="tsd-signature tsd-kind-icon">email<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L61">model/Ticket.ts:61</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The e-mail address of the visitor. For example: &quot;<a href="mailto:jsmith224@example.com">jsmith224@example.com</a>&quot;</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
 					<a name="extra" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> extra</h3>
 					<div class="tsd-signature tsd-kind-icon">extra<span class="tsd-signature-symbol">:</span> <a href="../modules/_model_ticket_.html#ticketextra" class="tsd-signature-type">TicketExtra</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L134">model/Ticket.ts:134</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L143">model/Ticket.ts:143</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -280,7 +300,7 @@
 					<div class="tsd-signature tsd-kind-icon">first<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L48">model/Ticket.ts:48</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L55">model/Ticket.ts:55</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -295,7 +315,7 @@
 					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L15">model/Ticket.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L22">model/Ticket.ts:22</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -310,7 +330,7 @@
 					<div class="tsd-signature tsd-kind-icon">interactions<span class="tsd-signature-symbol">:</span> <a href="../modules/_model_ticket_.html#ticketinteraction" class="tsd-signature-type">TicketInteraction</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L147">model/Ticket.ts:147</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L156">model/Ticket.ts:156</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -330,7 +350,7 @@
 					<div class="tsd-signature tsd-kind-icon">labels<span class="tsd-signature-symbol">:</span> <a href="../modules/_model_ticket_.html#ticketlabel" class="tsd-signature-type">TicketLabel</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L140">model/Ticket.ts:140</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L149">model/Ticket.ts:149</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -350,7 +370,7 @@
 					<div class="tsd-signature tsd-kind-icon">last<wbr>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L50">model/Ticket.ts:50</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L57">model/Ticket.ts:57</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -365,7 +385,7 @@
 					<div class="tsd-signature tsd-kind-icon">line<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L45">model/Ticket.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L52">model/Ticket.ts:52</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -381,7 +401,7 @@
 					<div class="tsd-signature tsd-kind-icon">messages<span class="tsd-signature-symbol">:</span> <a href="../modules/_model_ticket_.html#ticketmessage" class="tsd-signature-type">TicketMessage</a><span class="tsd-signature-symbol">[]</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L153">model/Ticket.ts:153</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L162">model/Ticket.ts:162</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -401,7 +421,7 @@
 					<div class="tsd-signature tsd-kind-icon">number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L23">model/Ticket.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L30">model/Ticket.ts:30</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -421,7 +441,7 @@
 					<div class="tsd-signature tsd-kind-icon">order<wbr>After<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L71">model/Ticket.ts:71</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L80">model/Ticket.ts:80</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -446,7 +466,7 @@
 					<div class="tsd-signature tsd-kind-icon">phone<wbr>Number<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L52">model/Ticket.ts:52</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L59">model/Ticket.ts:59</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -461,7 +481,7 @@
 					<div class="tsd-signature tsd-kind-icon">served<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">object</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L97">model/Ticket.ts:97</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L106">model/Ticket.ts:106</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -485,7 +505,7 @@
 					<div class="tsd-signature tsd-kind-icon">source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">"PHONE"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"MANUAL"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"NAME"</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">"PRINTER"</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L39">model/Ticket.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L46">model/Ticket.ts:46</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -504,7 +524,7 @@
 					<div class="tsd-signature tsd-kind-icon">status<span class="tsd-signature-symbol">:</span> <a href="../modules/_model_ticket_.html#ticketstatus" class="tsd-signature-type">TicketStatus</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/8da63e8/src/model/Ticket.ts#L29">model/Ticket.ts:29</a></li>
+							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5b39121/src/model/Ticket.ts#L36">model/Ticket.ts:36</a></li>
 						</ul>
 					</aside>
 					<div class="tsd-comment tsd-typography">
@@ -579,9 +599,6 @@
 						<span>Externals</span>
 					</li>
 					<li class=" tsd-kind-external-module tsd-is-external">
-						<a href="../modules/_lib_fetch_web_.html">"lib/fetch-<wbr>web"</a>
-					</li>
-					<li class=" tsd-kind-external-module tsd-is-external">
 						<a href="../modules/_lib_websocket_web_.html">"lib/websocket-<wbr>web"</a>
 					</li>
 				</ul>
@@ -607,6 +624,9 @@
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_model_ticket_.ticket.html#created" class="tsd-kind-icon">created</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_model_ticket_.ticket.html#email" class="tsd-kind-icon">email</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class">
 								<a href="_model_ticket_.ticket.html#extra" class="tsd-kind-icon">extra</a>
