@@ -651,7 +651,7 @@ describe("TicketService", function() {
 
       Qminder.tickets.details(12345).then(response => {
         expect(response).toEqual(jasmine.objectContaining(responseBody));
-        expect(response).not.toMatch(sinon.match({ email: sinon.match.defined }));
+        expect(response.email).toBeUndefined();
       });
     });
   });
