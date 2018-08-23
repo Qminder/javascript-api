@@ -541,7 +541,6 @@ describe("TicketService", function() {
         expect(response instanceof Qminder.Ticket).toBeTruthy();
         expect(response.line).toBe(11111);
         expect(response.id).toBe(12345);
-        expect(typeof response.id).toBe("number");
         done();
       });
     });
@@ -628,7 +627,6 @@ describe("TicketService", function() {
     it('resolves to a Ticket object', function(done) {
       Qminder.tickets.details(12345).then(response => {
         expect(response instanceof Qminder.Ticket).toBeTruthy();
-        expect(typeof response.id).toBe("number");
         expect(response).toEqual(jasmine.objectContaining(detailsResponseBody));
         done();
       });
