@@ -19,7 +19,7 @@ class Ticket {
   /**
    * This ticket's unique ID. For example, 14995020
    */
-  id: number;
+  id: number | string;
 
   /**
    * This ticket's unique number. For example, 105.
@@ -162,13 +162,10 @@ class Ticket {
   messages?: TicketMessage[];
 
 
-  constructor(properties: number | Ticket) {
-    if (typeof properties === 'number') {
+  constructor(properties: number | string | Ticket) {
+    if (typeof properties !== 'object') {
       this.id = properties;
     } else {
-      if (typeof properties.id === 'string') {
-        properties.id = parseInt(properties.id, 10);
-      }
       Object.assign(this, properties);
     }
   }
