@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system",
   "directories": {
     "test": "test"
@@ -50,7 +50,7 @@
   "repository": "Qminder/javascript-api",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.25.0",
+    "babel-core": "^6.26.3",
     "babel-loader": "^7.1.1",
     "babel-plugin-check-es2015-constants": "^6.22.0",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
@@ -64,7 +64,7 @@
     "babel-plugin-transform-es2015-for-of": "^6.23.0",
     "babel-plugin-transform-es2015-function-name": "^6.24.1",
     "babel-plugin-transform-es2015-literals": "^6.22.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.0",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
     "babel-plugin-transform-es2015-object-super": "^6.24.1",
     "babel-plugin-transform-es2015-parameters": "^6.24.1",
     "babel-plugin-transform-es2015-shorthand-properties": "^6.24.1",
