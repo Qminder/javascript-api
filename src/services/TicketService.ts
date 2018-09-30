@@ -245,6 +245,7 @@ interface TicketEditingRequest extends TicketCreationRequest {
 interface TicketCallRequest {
   user?: number;
   desk?: number;
+  keepActiveTicketsOpen?: boolean;
 }
 
 interface CallNextRequest extends TicketCallRequest {
@@ -607,23 +608,41 @@ export default class TicketService {
    * lines are put in chronological order, making sure to keep "orderAfter" in mind, and the first
    * ticket is called.
    *
+   * By default, allows only one ticket to be in the 'CALLED' state, and marks other 'CALLED'
+   * tickets as served.
+   *
+   * Multiple tickets can be called by setting `keepActiveTicketsOpen` to true.
+   *
    * @param lines  the list of lines to search for tickets
    * @param user  the user that is calling the ticket. This is needed when the API is used with
    * the account API key, instead of a user-specific API key.
    * @param desk  the desk to call the user to.
+   * @param keepActiveTicketsOpen if tickets are currently being served, do not mark them served
+   * when calling a new ticket. This allows calling multiple tickets at the same time.
    * @returns a Promise that resolves to the ticket that was called, resolves to null if there
    * was no ticket to call, and rejects if something went wrong.
    */
   static callNext(lines: Array<Line|number>,
                   user?: (User | number),
-                  desk?: (Desk | number)): Promise<Ticket> {
+                  desk?: (Desk | number),
+                  keepActiveTicketsOpen?: boolean): Promise<Ticket> {
 
     function linesIsArrayOfNumber(lines: (Line|number)[]): lines is number[] {
-      return lines.every(line => typeof line === 'number');
+      for (let i = 0; i < lines.length; i++) {
+        if (typeof lines[i] !== 'number') {
+          return false;
+        }
+      }
+      return true;
     }
 
     function linesIsArrayOfLine(lines: (Line|number)[]): lines is Line[] {
-      return lines.every(line => line instanceof Line);
+      for (let i = 0; i < lines.length; i++) {
+        if (!(lines[i] instanceof Line)) {
+          return false;
+        }
+      }
+      return true;
     }
 
     if (!lines || lines.length === 0) {
@@ -670,6 +689,10 @@ export default class TicketService {
       throw new Error('Invalid Desk specified.');
     }
 
+    if (typeof keepActiveTicketsOpen !== 'undefined') {
+      request.keepActiveTicketsOpen = keepActiveTicketsOpen;
+    }
+
     return ApiBase.request('tickets/call', request, 'POST')
                   .then((response: Ticket) => response.hasOwnProperty('id') ? new Ticket(response) : null);
   }
@@ -682,17 +705,25 @@ export default class TicketService {
    *
    * Only tickets that are waiting (their status is 'NEW') can be called.
    *
+   * By default, allows only one ticket to be in the 'CALLED' state, and marks other 'CALLED'
+   * tickets as served.
+   *
+   * Multiple tickets can be called by setting `keepActiveTicketsOpen` to true.
+   *
    * @param ticket  The ticket to call. The ticket ID can be used instead of the Ticket object.
    * @param user  the user that is calling the ticket. This parameter is not needed if
    * Qminder.setKey was called with an API key belonging to a specific User. The user ID can be
    * used instead of the User object.
    * @param desk  the desk to call the ticket into. The desk ID can be used instead of the Desk
    * object.
+   * @param keepActiveTicketsOpen if tickets are currently being served, do not mark them served
+   * when calling a new ticket. This allows calling multiple tickets at the same time.
    * @returns  the ticket that was just called
    */
   static call(ticket: (Ticket | number),
               user?: (User | number),
-              desk?: (Desk | number)): Promise<Ticket> {
+              desk?: (Desk | number),
+              keepActiveTicketsOpen?: boolean): Promise<Ticket> {
     if (!ticket) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
@@ -728,8 +759,12 @@ export default class TicketService {
       }
     }
 
-    // If no user or desk specified, don't include the empty object.
-    if (!user && !desk) {
+    if (typeof keepActiveTicketsOpen !== 'undefined') {
+      request.keepActiveTicketsOpen = keepActiveTicketsOpen;
+    }
+
+    // If no request parameters specified, don't include the empty object.
+    if (!user && !desk && typeof keepActiveTicketsOpen === 'undefined') {
       request = undefined;
     }
 

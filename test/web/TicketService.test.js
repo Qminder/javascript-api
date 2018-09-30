@@ -892,6 +892,43 @@ describe("TicketService", function() {
         done();
       });
     });
+
+    it('includes keepActiveTicketsOpen if set to true', function(done) {
+      const request = sinon.match({
+        lines: '12345',
+        user: 14141,
+        desk: 3,
+        keepActiveTicketsOpen: true,
+      });
+      Qminder.tickets.callNext([ 12345 ], 14141, 3, true).then(() => {
+        expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('includes keepActiveTicketsOpen if set to false', function(done) {
+      const request = sinon.match({
+        lines: '12345',
+        user: 14141,
+        desk: 3,
+        keepActiveTicketsOpen: false,
+      });
+      Qminder.tickets.callNext([ 12345 ], 14141, 3, false).then(() => {
+        expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('excludes keepActiveTicketsOpen if not set', function(done) {
+      const request = sinon.match({
+        lines: '12345',
+        user: 14141,
+        desk: 3,
+      });
+      Qminder.tickets.callNext([ 12345 ], 14141, 3).then(() => {
+        expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
+        expect(this.requestStub.firstCall.args[1].keepActiveTicketsOpen).toBeUndefined();
+        done();
+      });
+    });
   });
   describe("call()", function() {
     beforeEach(function() {
@@ -982,6 +1019,41 @@ describe("TicketService", function() {
       const desk = new Qminder.Desk({ id: 3 });
       Qminder.tickets.call(ticket, user, desk).then(() => {
         expect(this.requestStub.calledWith('tickets/1/call', request, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('includes keepActiveTicketsOpen if set to true', function(done) {
+      const request = sinon.match({ keepActiveTicketsOpen: true });
+      Qminder.tickets.call(12345, null, null, true).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/call', request, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('includes keepActiveTicketsOpen if set to false', function(done) {
+      const request = sinon.match({ keepActiveTicketsOpen: false });
+      Qminder.tickets.call(12345, null, null, false).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/call', request, 'POST')).toBeTruthy();
+        done();
+      });
+    });
+    it('sends no request body if all params undefined', function(done) {
+      Qminder.tickets.call(12345, null, null).then(() => {
+        expect(this.requestStub.firstCall.args[1]).toBeUndefined();
+        done();
+      });
+    });
+    it('does not send keepActiveTicketsOpen if all params undefined', function(done) {
+      Qminder.tickets.call(12345, 12, 34).then(() => {
+        expect(this.requestStub.firstCall.args[1].user).toBe(12);
+        expect(this.requestStub.firstCall.args[1].desk).toBe(34);
+        expect(this.requestStub.firstCall.args[1].keepActiveTicketsOpen).toBeUndefined();
+        done();
+      });
+    });
+    it('includes keepActiveTicketsOpen with other params in request', function(done) {
+      const request = sinon.match({ user: 12, desk: 34, keepActiveTicketsOpen: false });
+      Qminder.tickets.call(12345, 12, 34, false).then(() => {
+        expect(this.requestStub.calledWith('tickets/12345/call', request, 'POST')).toBeTruthy();
         done();
       });
     });
