@@ -288,8 +288,7 @@ describe("ApiBase", function () {
           "extensions": null,
           "path": null
         }
-      ],
-      "dataPresent": false
+      ]
     };
 
     const API_URL = 'https://api.qminder.com/graphql';

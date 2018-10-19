@@ -39,8 +39,7 @@ async function getLocations() {
        *   "statusCode": 200,
        *   "errors": [
        *     { "message": "Validation error of /.../", ... }
-       *   ],
-       *   "dataPresent": false
+       *   ]
        * };
        */
       console.log(result.errors);
@@ -57,8 +56,7 @@ async function getLocations() {
      *       { "id": 14214, "name": "HQ" },
      *       { "id": 14399, "name": "London Branch" },
      *     ]
-     *   },
-     *   "dataPresent": true
+     *   }
      * }
      */
     console.log('Locations: ', result.data.locations.map(location => location.name));
