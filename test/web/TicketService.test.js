@@ -599,6 +599,26 @@ describe("TicketService", function() {
         email: sinon.match.defined
       }))).toBeFalsy();
     });
+    it('sends source if it is defined', function() {
+      const ticketWithSource = {
+        firstName: 'Jane',
+        lastName: 'Smith',
+        source: 'NAME',
+      };
+      Qminder.tickets.create(1, ticketWithSource);
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticketWithSource))).toBeTruthy();
+    });
+    it('does not send source if it is not defined', function() {
+      const ticketWithoutSource = {
+        firstName: 'Jane',
+        lastName: 'Smith',
+      };
+      Qminder.tickets.create(1, ticketWithoutSource);
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticketWithoutSource))).toBeTruthy();
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({
+        source: sinon.match.defined
+      }))).toBeFalsy();
+    });
   });
   describe("details()", function() {
     const detailsResponseBody = {
