@@ -43,6 +43,6 @@ export default class GraphQLService {
     if (!query || query.length === 0) {
       throw new Error('GraphQLService query expects a GraphQL query as its first argument');
     }
-    return ApiBase.queryGraph(query, variables);
+    return ApiBase.queryGraph(query.replace(/\s\s+/g, ' ').trim(), variables);
   }
 }

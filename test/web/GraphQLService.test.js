@@ -1,4 +1,4 @@
-describe("GraphQLService", function() {
+describe('GraphQLService', function() {
   const ME_ID_REQUEST = '{ me { id } }';
   const ME_ID_SUCCESS_RESPONSE = {
     statusCode: 200,
@@ -23,7 +23,7 @@ describe("GraphQLService", function() {
     this.requestStub = sinon.stub(Qminder.ApiBase, 'queryGraph');
   });
 
-  describe("Qminder.graphql", function() {
+  describe('Qminder.graphql', function() {
     beforeEach(function() {
       this.requestStub.onFirstCall().resolves(ME_ID_SUCCESS_RESPONSE);
     });
@@ -36,6 +36,18 @@ describe("GraphQLService", function() {
       const variables = { x: 5, y: 4 };
       Qminder.graphql(ME_ID_REQUEST, variables).then(() => {
         expect(this.requestStub.calledWith(ME_ID_REQUEST, variables)).toBeTruthy();
+      });
+    });
+    it('collapses whitespace and newlines', function() {
+      const query = `
+        {
+          me {
+            id
+          }
+        }
+      `;
+      Qminder.graphql(query).then(() => {
+        expect(this.requestStub.calledWith(ME_ID_REQUEST, undefined)).toBeTruthy();
       });
     });
 
