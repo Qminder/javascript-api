@@ -46,7 +46,9 @@ export {
   /** Create and manage employees, and their permissions in Qminder Dashboard. */
   UserService as users,
   /** Create and remove webhooks. */
-  WebhooksService as webhooks
+  WebhooksService as webhooks,
+  /** GraphQL */
+  GraphQLService as graphql
 };
 
 /**
@@ -79,4 +81,3 @@ declare var VERSION: string;
 /** @hidden */
 export const version = VERSION;
 
-export const graphql = GraphQLService.query;

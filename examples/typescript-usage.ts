@@ -9,7 +9,7 @@ async function main() {
   console.log('Example 1. Lines', lines);
 
   // Example 2. GraphQL API
-  const locationNames = await Qminder.graphql(`{ locations { name } }`);
+  const locationNames = await Qminder.graphql.query(`{ locations { name } }`);
   console.log('Example 2. Location names', locationNames);
 
   // Example 3. HTTP API - search for tickets
