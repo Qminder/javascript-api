@@ -23,18 +23,18 @@ describe('GraphQLService', function() {
     this.requestStub = sinon.stub(Qminder.ApiBase, 'queryGraph');
   });
 
-  describe('Qminder.graphql', function() {
+  describe('Qminder.graphql.query', function() {
     beforeEach(function() {
       this.requestStub.onFirstCall().resolves(ME_ID_SUCCESS_RESPONSE);
     });
     it('calls ApiBase.queryGraph with the correct parameters', function() {
-      Qminder.graphql(ME_ID_REQUEST).then(() => {
+      Qminder.graphql.query(ME_ID_REQUEST).then(() => {
         expect(this.requestStub.calledWith(ME_ID_REQUEST, undefined)).toBeTruthy();
       });
     });
     it('calls ApiBase.queryGraph with both query & variables', function() {
       const variables = { x: 5, y: 4 };
-      Qminder.graphql(ME_ID_REQUEST, variables).then(() => {
+      Qminder.graphql.query(ME_ID_REQUEST, variables).then(() => {
         expect(this.requestStub.calledWith(ME_ID_REQUEST, variables)).toBeTruthy();
       });
     });
@@ -46,13 +46,13 @@ describe('GraphQLService', function() {
           }
         }
       `;
-      Qminder.graphql(query).then(() => {
+      Qminder.graphql.query(query).then(() => {
         expect(this.requestStub.calledWith(ME_ID_REQUEST, undefined)).toBeTruthy();
       });
     });
 
     it('throws when query is missing', function() {
-      expect(() => Qminder.graphql()).toThrow();
+      expect(() => Qminder.graphql.query()).toThrow();
       expect(this.requestStub.callCount).toBe(0);
     });
 
