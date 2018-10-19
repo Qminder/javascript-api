@@ -29,8 +29,6 @@ interface GraphqlError {
 export interface GraphqlResponse {
   /** If all went well, 200. The response may still have errors. */
   statusCode: number;
-  /** true if the data was loaded, false if the data was not loaded. */
-  dataPresent: boolean;
   /** An array that contains any GraphQL errors. */
   errors: GraphqlError[];
   /** If the data was loaded without any errors, contains the requested object. */
