@@ -22,15 +22,6 @@ class Ticket {
   id: number | string;
 
   /**
-   * This ticket's unique number. For example, 105.
-   *
-   * Tickets with numbers have been deprecated.
-   * @deprecated
-   */
-  number?: number | undefined;
-
-
-  /**
    * The current status of this ticket.
    */
   status?: TicketStatus;
