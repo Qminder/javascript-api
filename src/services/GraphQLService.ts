@@ -1,5 +1,6 @@
 import WebSocket, {MessageData} from '../lib/websocket-web';
 import ApiBase, {GraphqlResponse} from '../api-base';
+import { Observable } from 'rxjs';
 
 interface OperationMessage {
     id?: string;
@@ -21,6 +22,7 @@ enum MessageType {
     // To Server
     GQL_CONNECTION_INIT = 'connection_init',
     GQL_START = 'start',
+    GQL_STOP = 'stop',
 
     // From Server
     GQL_CONNECTION_ACK = 'connection_ack',
@@ -56,7 +58,7 @@ class GraphQLService {
 
     private subscriptions: Subscription[] = [];
 
-    private subscriptionCallbackMap: { [id: string]: Function } = {};
+    private subscriptionHandlerMap: { [id: string]: Function } = {};
 
     /** A timeout object after which to retry connecting to Qminder API. */
     private retryTimeout: any;
@@ -104,11 +106,19 @@ class GraphQLService {
         return ApiBase.queryGraph(query.replace(/\s\s+/g, ' ').trim(), variables);
     }
 
-    subscribe(query: string, callback: Function) {
-        const id = this.generateOperationId();
-        this.subscriptions.push(new Subscription(id, query));
-        this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
-        this.subscriptionCallbackMap[id] = callback;
+    subscribe(query: string): Observable<object> {
+      const id = this.generateOperationId();
+      this.subscriptions.push(new Subscription(id, query));
+      this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
+
+      const observable = new Observable(observer => {
+        const handler = (e) => observer.next(e);
+        this.subscriptionHandlerMap[id] = handler;
+
+        return () => this.stopSubscription(id);
+      });
+
+      return observable;
     }
 
     /**
@@ -127,6 +137,16 @@ class GraphQLService {
      */
     setServer(apiServer: string) {
         this.apiServer = apiServer;
+    }
+
+    private stopSubscription(id: string) {
+        console.log(`Stopping subscription ${id}`)
+        this.sendMessage(id, MessageType.GQL_STOP, null);
+
+        delete this.subscriptionHandlerMap[id];
+        this.subscriptions = this.subscriptions.filter((sub) => {
+            return sub.id !== id;
+        });
     }
 
     private openSocket() {
@@ -170,6 +190,7 @@ class GraphQLService {
 
         socket.onerror = () => {
             console.log('[GraphQL subscription] An error occurred, the websocket will disconnect.');
+            // TODO: Error/complete all of the handlers
         };
 
         socket.onmessage = (rawMessage: { data: MessageData }) => {
@@ -183,9 +204,9 @@ class GraphQLService {
                     });
 
                 } else if (message.type === MessageType.GQL_DATA) {
-                    const callback = this.subscriptionCallbackMap[message.id];
-                    if (callback && typeof callback === 'function') {
-                        callback(message.payload.data);
+                    const handler = this.subscriptionHandlerMap[message.id];
+                    if (handler && typeof handler === 'function') {
+                        handler(message.payload.data);
                     }
                 } else if (message.type !== MessageType.GQL_CONNECTION_KEEP_ALIVE && message.type !== MessageType.GQL_COMPLETE) {
                     console.log('Message', message);
