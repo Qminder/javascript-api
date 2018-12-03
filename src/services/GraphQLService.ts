@@ -112,7 +112,7 @@ class GraphQLService {
       this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
 
       const observable = new Observable(observer => {
-        const handler = (e) => observer.next(e);
+        const handler = (e: object) => observer.next(e);
         this.subscriptionHandlerMap[id] = handler;
 
         return () => this.stopSubscription(id);
