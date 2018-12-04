@@ -1,6 +1,6 @@
 import WebSocket, {MessageData} from '../lib/websocket-web';
 import ApiBase, {GraphqlResponse} from '../api-base';
-import { Observable } from 'rxjs';
+import {Observable} from 'rxjs';
 
 interface OperationMessage {
     id?: string;
@@ -111,14 +111,11 @@ class GraphQLService {
       this.subscriptions.push(new Subscription(id, query));
       this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
 
-      const observable = new Observable(observer => {
-        const handler = (e: object) => observer.next(e);
-        this.subscriptionHandlerMap[id] = handler;
+      return new Observable<object>(observer => {
+          this.subscriptionHandlerMap[id] = (e: object) => observer.next(e);
 
-        return () => this.stopSubscription(id);
+          return () => this.stopSubscription(id);
       });
-
-      return observable;
     }
 
     /**
