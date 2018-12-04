@@ -137,7 +137,7 @@ class GraphQLService {
     }
 
     private stopSubscription(id: string) {
-        console.log(`Stopping subscription ${id}`)
+        console.log(`Stopping subscription ${id}`);
         this.sendMessage(id, MessageType.GQL_STOP, null);
 
         delete this.subscriptionHandlerMap[id];
@@ -187,7 +187,6 @@ class GraphQLService {
 
         socket.onerror = () => {
             console.log('[GraphQL subscription] An error occurred, the websocket will disconnect.');
-            // TODO: Error/complete all of the handlers
         };
 
         socket.onmessage = (rawMessage: { data: MessageData }) => {
