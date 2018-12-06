@@ -1,6 +1,6 @@
 import WebSocket, {MessageData} from '../lib/websocket-web';
 import ApiBase, {GraphqlResponse} from '../api-base';
-import {Observable} from 'rxjs';
+import {Observable, Observer} from 'rxjs';
 
 interface OperationMessage {
     id?: string;
@@ -58,7 +58,7 @@ class GraphQLService {
 
     private subscriptions: Subscription[] = [];
 
-    private subscriptionHandlerMap: { [id: string]: Function } = {};
+    private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
 
     /** A timeout object after which to retry connecting to Qminder API. */
     private retryTimeout: any;
@@ -107,15 +107,15 @@ class GraphQLService {
     }
 
     subscribe(query: string): Observable<object> {
-      const id = this.generateOperationId();
-      this.subscriptions.push(new Subscription(id, query));
-      this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
+        const id = this.generateOperationId();
+        this.subscriptions.push(new Subscription(id, query));
+        this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
 
-      return new Observable<object>(observer => {
-          this.subscriptionHandlerMap[id] = (e: object) => observer.next(e);
+        return new Observable<object>((observer: Observer<object>) => {
+            this.subscriptionObserverMap[id] = observer;
 
-          return () => this.stopSubscription(id);
-      });
+            return () => this.stopSubscription(id);
+        });
     }
 
     /**
@@ -137,10 +137,9 @@ class GraphQLService {
     }
 
     private stopSubscription(id: string) {
-        console.log(`Stopping subscription ${id}`);
         this.sendMessage(id, MessageType.GQL_STOP, null);
 
-        delete this.subscriptionHandlerMap[id];
+        delete this.subscriptionObserverMap[id];
         this.subscriptions = this.subscriptions.filter((sub) => {
             return sub.id !== id;
         });
@@ -178,7 +177,7 @@ class GraphQLService {
                     clearTimeout(this.retryTimeout);
                 }
 
-                console.log('[Qminder Events API] Reconnecting in ' + newTimeout/1000 + ' seconds...');
+                console.log('[GraphQL subscription] Reconnecting in ' + newTimeout / 1000 + ' seconds...');
                 this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
 
                 this.connectionRetries++;
@@ -192,20 +191,30 @@ class GraphQLService {
         socket.onmessage = (rawMessage: { data: MessageData }) => {
             if (typeof rawMessage.data === 'string') {
                 const message: OperationMessage = JSON.parse(rawMessage.data);
-                if (message.type === MessageType.GQL_CONNECTION_ACK) {
-                    this.subscriptions.forEach((subscription) => {
-                        const payload = {query: `subscription { ${subscription.query} }`};
-                        const message = JSON.stringify({ id: subscription.id, type: MessageType.GQL_START, payload });
-                        this.sendRawMessage(message);
-                    });
 
-                } else if (message.type === MessageType.GQL_DATA) {
-                    const handler = this.subscriptionHandlerMap[message.id];
-                    if (handler && typeof handler === 'function') {
-                        handler(message.payload.data);
-                    }
-                } else if (message.type !== MessageType.GQL_CONNECTION_KEEP_ALIVE && message.type !== MessageType.GQL_COMPLETE) {
-                    console.log('Message', message);
+                switch (message.type) {
+                    case MessageType.GQL_CONNECTION_KEEP_ALIVE:
+                        break;
+
+                    case MessageType.GQL_CONNECTION_ACK:
+
+                        this.subscriptions.forEach((subscription) => {
+                            const payload = {query: `subscription { ${subscription.query} }`};
+                            const message = JSON.stringify({id: subscription.id, type: MessageType.GQL_START, payload});
+                            this.sendRawMessage(message);
+                        });
+                        break;
+
+                    case MessageType.GQL_DATA:
+                        this.subscriptionObserverMap[message.id].next(message.payload.data);
+                        break;
+
+                    case MessageType.GQL_COMPLETE:
+                        this.subscriptionObserverMap[message.id].complete();
+                        break;
+
+                    default:
+                        this.subscriptionObserverMap[message.id].error(message.payload.data);
                 }
             }
 
