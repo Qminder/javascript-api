@@ -115,7 +115,7 @@ class GraphQLService {
      * import * as Qminder from 'qminder-api';
      * // 1. Be notified of any created tickets
      * try {
-     *     const observable = Qminder.graphql.subscribe("{ createdTickets(locationId: 123) { id firstName } }")
+     *     const observable = Qminder.graphql.subscribe("createdTickets(locationId: 123) { id firstName }")
      *
      *     observable.subscribe(data => console.log(data));
      *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
@@ -124,7 +124,7 @@ class GraphQLService {
      * }
      * ```
      *
-     * @param query required: the GraphQL query to send, for example `"{ createdTickets(locationId: 123) { id firstName } }`
+     * @param query required: the GraphQL query to send, for example `"createdTickets(locationId: 123) { id firstName }"`
      * @returns an RxJS Observable that will push data as
      * @throws when the 'query' argument is undefined or an empty string
      */
