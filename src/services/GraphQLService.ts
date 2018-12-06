@@ -106,7 +106,33 @@ class GraphQLService {
         return ApiBase.queryGraph(query.replace(/\s\s+/g, ' ').trim(), variables);
     }
 
+    /**
+     * Subscribe to Qminder Events API using GraphQL.
+     *
+     * For example
+     *
+     * ```javascript
+     * import * as Qminder from 'qminder-api';
+     * // 1. Be notified of any created tickets
+     * try {
+     *     const observable = Qminder.graphql.subscribe("{ createdTickets(locationId: 123) { id firstName } }")
+     *
+     *     observable.subscribe(data => console.log(data));
+     *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
+     * } catch (error) {
+     *     console.error(error);
+     * }
+     * ```
+     *
+     * @param query required: the GraphQL query to send, for example `"{ createdTickets(locationId: 123) { id firstName } }`
+     * @returns an RxJS Observable that will push data as
+     * @throws when the 'query' argument is undefined or an empty string
+     */
     subscribe(query: string): Observable<object> {
+        if (!query || query.length === 0) {
+            throw new Error('GraphQLService query expects a GraphQL query as its first argument');
+        }
+
         const id = this.generateOperationId();
         this.subscriptions.push(new Subscription(id, query));
         this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
