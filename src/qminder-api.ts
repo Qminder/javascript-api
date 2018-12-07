@@ -61,6 +61,7 @@ export {
 export const setKey = (key: string) => {
   ApiBase.setKey(key);
   EventsService.setKey(key);
+  GraphQLService.setKey(key);
 };
 
 /**
@@ -74,6 +75,7 @@ export const setKey = (key: string) => {
 export const setServer = (server: string) => {
   ApiBase.setServer(server);
   EventsService.setServer(`wss://${server}:443`);
+  GraphQLService.setServer(`wss://${server}:443`);
 };
 
 // VERSION is replaced with the version string from package.json during compile time

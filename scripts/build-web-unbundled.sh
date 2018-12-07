@@ -13,6 +13,6 @@ sedi () {
 }
 
 rm -rf build-es6
-tsc --declaration --outDir build-es6 --module esnext --target es2017 ./src/qminder-api.ts
+tsc --declaration --outDir build-es6 --module esnext --target es2017 --moduleResolution node ./src/qminder-api.ts
 
 sedi "s/VERSION/'$qminderVersion'/g" ./build-es6/qminder-api.js
