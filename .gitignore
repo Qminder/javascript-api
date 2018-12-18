@@ -34,3 +34,4 @@ node_modules
 yarn-error.log
 # IDEA GraphQL plugin config
 graphql.config.json
+.idea

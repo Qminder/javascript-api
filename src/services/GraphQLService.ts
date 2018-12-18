@@ -6,6 +6,7 @@ interface OperationMessage {
     id?: string;
     type: MessageType;
     payload?: any;
+    errors?: any[];
 }
 
 class Subscription {
@@ -240,7 +241,11 @@ class GraphQLService {
                         break;
 
                     default:
-                        this.subscriptionObserverMap[message.id].error(message.payload.data);
+                        if(message.payload && message.payload.data) {
+                            this.subscriptionObserverMap[message.id].error(message.payload.data);
+                        } else if(message.errors && message.errors.length > 0) {
+                            this.subscriptionObserverMap[message.id].error(message.errors);
+                        }
                 }
             }
 
