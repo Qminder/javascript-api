@@ -1,7 +1,7 @@
 {
   "name": "qminder-api",
   "version": "2.2.11",
-  "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system",
+  "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
   "directories": {
     "test": "test"
   },
