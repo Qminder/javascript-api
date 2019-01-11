@@ -68,6 +68,10 @@ class GraphQLService {
      *  exponential retry falloff. */
     private connectionRetries = 0;
 
+    constructor() {
+        this.setServer('api.qminder.com');
+    }
+
     /**
      * Query Qminder API with GraphQL.
      *
