@@ -69,7 +69,7 @@ class GraphQLService {
     private connectionRetries = 0;
 
     constructor() {
-        this.setServer('api.qminder.com');
+        this.setServer('wss://api.qminder.com:443');
     }
 
     /**
