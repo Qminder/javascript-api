@@ -1,6 +1,7 @@
 import WebSocket, {MessageData} from '../lib/websocket-web';
 import ApiBase, {GraphqlResponse} from '../api-base';
 import {Observable, Observer} from 'rxjs';
+import { GraphqlBatcher } from '../graphql-batcher';
 
 interface OperationMessage {
     id?: string;
@@ -68,6 +69,8 @@ class GraphQLService {
      *  exponential retry falloff. */
     private connectionRetries = 0;
 
+    private batcher = new GraphqlBatcher();
+
     constructor() {
         this.setServer('wss://api.qminder.com:443');
     }
@@ -108,7 +111,12 @@ class GraphQLService {
         if (!query || query.length === 0) {
             throw new Error('GraphQLService query expects a GraphQL query as its first argument');
         }
-        return ApiBase.queryGraph(query.replace(/\s\s+/g, ' ').trim(), variables);
+
+        if (variables || query.trim().startsWith('{')) {
+          return ApiBase.queryGraph(query.replace(/\s\s+/g, ' ').trim(), variables);
+        }
+
+        return this.batcher.submit(query);
     }
 
     /**
