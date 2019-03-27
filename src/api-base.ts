@@ -35,6 +35,15 @@ export interface GraphqlResponse {
   data?: object;
 }
 
+export interface GraphqlBatchResponse {
+  statusCode: number;
+  errors: GraphqlError[];
+  data: {
+    errors: GraphqlError[];
+    data?: object;
+  }[];
+}
+
 interface ErrorResponse {
   statusCode: number;
   message: string;
@@ -206,7 +215,7 @@ class ApiBase {
       .then((response: Response) => response.json()) as Promise<GraphqlResponse>);
   }
 
-  batchQueryGraph(batch: GraphqlQuery[]): Promise<GraphqlResponse> {
+  batchQueryGraph(batch: GraphqlQuery[]): Promise<GraphqlBatchResponse> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -221,7 +230,7 @@ class ApiBase {
     };
 
     return (this.fetch(`https://${this.apiServer}/graphql`, init)
-      .then((response: Response) => response.json()) as Promise<GraphqlResponse>);
+      .then((response: Response) => response.json()) as Promise<GraphqlBatchResponse>);
   }
 }
 

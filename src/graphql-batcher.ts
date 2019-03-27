@@ -4,7 +4,7 @@ import ApiBase from './api-base';
 interface PendingQuery {
   query: string;
   variables?: { [key: string]: any }
-  callbacks: [Function];
+  callbacks: {resolve: Function, reject: Function}[];
 }
 
 export class GraphqlBatcher {
@@ -16,9 +16,11 @@ export class GraphqlBatcher {
       this.timeout = setTimeout(this.runBatch.bind(this), 50);
     }
 
-    let callback: Function = null;
-    const promise = new Promise((resolve => {
-      callback = resolve;
+    let callbackResolve: Function = null;
+    let callbackReject: Function = null;
+    const promise = new Promise(((resolve, reject) => {
+      callbackResolve = resolve;
+      callbackReject = reject;
     })) as Promise<GraphqlResponse>;
 
     const packedQuery = query.replace(/\s\s+/g, ' ').trim();
@@ -26,7 +28,10 @@ export class GraphqlBatcher {
     if (!variables) {
       let existingPendingQuery = this.queries.find(q => q.query === packedQuery);
       if (existingPendingQuery) {
-        existingPendingQuery.callbacks.push(callback);
+        existingPendingQuery.callbacks.push({
+          resolve: callbackResolve,
+          reject: callbackReject,
+        });
         return promise;
       }
     }
@@ -34,13 +39,16 @@ export class GraphqlBatcher {
     this.queries.push({
       query: packedQuery,
       variables,
-      callbacks: [callback],
+      callbacks: [{
+        resolve: callbackResolve,
+        reject: callbackReject,
+      }],
     });
 
     return promise;
   }
 
-  private runBatch() {
+  private async runBatch() {
     const batch = this.queries.slice(0);
     this.queries = [];
     this.timeout = undefined;
@@ -56,13 +64,18 @@ export class GraphqlBatcher {
       batchedPayload.push(query);
     }
 
-    ApiBase.batchQueryGraph(batchedPayload).then((result: any) => {
+    try {
+      const result = await ApiBase.batchQueryGraph(batchedPayload);
       let i = 0;
       for (const pendingQuery of batch) {
         const data = result.data[i];
-        pendingQuery.callbacks.forEach(callback => callback(data));
+        pendingQuery.callbacks.forEach(callback => callback.resolve(data));
         i++;
       }
-    });
+    } catch (e) {
+      for (const pendingQuery of batch) {
+        pendingQuery.callbacks.forEach(callback => callback.reject(e));
+      }
+    }
   }
 }
