@@ -1,9 +1,9 @@
-import { GraphqlResponse } from './api-base';
+import { GraphqlQuery, GraphqlResponse } from './api-base';
 import ApiBase from './api-base';
 
 interface PendingQuery {
   query: string;
-  originalName: string;
+  variables?: { [key: string]: any }
   callbacks: [Function];
 }
 
@@ -11,7 +11,7 @@ export class GraphqlBatcher {
   private timeout: any;
   private queries: PendingQuery[] = [];
 
-  submit(query: string): Promise<GraphqlResponse> {
+  submit(query: string, variables?: { [key: string]: any }): Promise<GraphqlResponse> {
     if (!this.timeout) {
       this.timeout = setTimeout(this.runBatch.bind(this), 50);
     }
@@ -22,16 +22,18 @@ export class GraphqlBatcher {
     })) as Promise<GraphqlResponse>;
 
     const packedQuery = query.replace(/\s\s+/g, ' ').trim();
-    let existingPendingQuery = this.queries.find(q => q.query === packedQuery);
-    if (existingPendingQuery) {
-      existingPendingQuery.callbacks.push(callback);
-      return promise;
+
+    if (!variables) {
+      let existingPendingQuery = this.queries.find(q => q.query === packedQuery);
+      if (existingPendingQuery) {
+        existingPendingQuery.callbacks.push(callback);
+        return promise;
+      }
     }
 
-    const originalName = packedQuery.substr(0, packedQuery.indexOf('{')).trim();
     this.queries.push({
       query: packedQuery,
-      originalName,
+      variables,
       callbacks: [callback],
     });
 
@@ -43,21 +45,23 @@ export class GraphqlBatcher {
     this.queries = [];
     this.timeout = undefined;
 
-    let batchedQuery = '';
-    let id = 1;
+    let batchedPayload = [];
     for (const pendingQuery of batch) {
-      batchedQuery += `q${id}: ${pendingQuery.query} \n`;
-      id++;
+      const query: GraphqlQuery = {
+        query: pendingQuery.query,
+      };
+      if (pendingQuery.variables) {
+        query.variables = pendingQuery.variables;
+      }
+      batchedPayload.push(query);
     }
-    batchedQuery = `query { ${batchedQuery} }`;
 
-    ApiBase.queryGraph(batchedQuery.trim()).then((result: any) => {
-      let id = 1;
+    ApiBase.batchQueryGraph(batchedPayload).then((result: any) => {
+      let i = 0;
       for (const pendingQuery of batch) {
-        const data: { [id: string] : any } = {};
-        data[pendingQuery.originalName] = result.data[`q${id}`];
-        pendingQuery.callbacks.forEach(callback => callback({ data }));
-        id++;
+        const data = result.data[i];
+        pendingQuery.callbacks.forEach(callback => callback(data));
+        i++;
       }
     });
   }

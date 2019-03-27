@@ -7,7 +7,7 @@ interface GraphqlQueryVariables {
   [key: string]: any;
 }
 
-interface GraphqlQuery {
+export interface GraphqlQuery {
   query: string;
   variables?: GraphqlQueryVariables;
 }
@@ -200,6 +200,24 @@ class ApiBase {
       },
       mode: 'cors',
       body: JSON.stringify(requestBody),
+    };
+
+    return (this.fetch(`https://${this.apiServer}/graphql`, init)
+      .then((response: Response) => response.json()) as Promise<GraphqlResponse>);
+  }
+
+  batchQueryGraph(batch: GraphqlQuery[]): Promise<GraphqlResponse> {
+    if (!this.apiKey) {
+      throw new Error('Please set the API key before making any requests.');
+    }
+
+    const init: RequestInit = {
+      method: 'POST',
+      headers: {
+        'X-Qminder-REST-API-Key': this.apiKey,
+      },
+      mode: 'cors',
+      body: JSON.stringify(batch),
     };
 
     return (this.fetch(`https://${this.apiServer}/graphql`, init)
