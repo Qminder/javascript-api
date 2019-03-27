@@ -65,7 +65,7 @@ export class GraphqlBatcher {
     }
 
     try {
-      const result = await ApiBase.batchQueryGraph(batchedPayload);
+      const result = await ApiBase.queryGraph(batchedPayload);
       let i = 0;
       for (const pendingQuery of batch) {
         const data = result.data[i];
