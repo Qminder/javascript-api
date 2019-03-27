@@ -111,12 +111,7 @@ class GraphQLService {
         if (!query || query.length === 0) {
             throw new Error('GraphQLService query expects a GraphQL query as its first argument');
         }
-
-        if (variables || query.trim().startsWith('{')) {
-          return ApiBase.queryGraph(query.replace(/\s\s+/g, ' ').trim(), variables);
-        }
-
-        return this.batcher.submit(query);
+        return this.batcher.submit(query, variables);
     }
 
     /**
