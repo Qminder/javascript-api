@@ -7,7 +7,7 @@ interface GraphqlQueryVariables {
   [key: string]: any;
 }
 
-interface GraphqlQuery {
+export interface GraphqlQuery {
   query: string;
   variables?: GraphqlQueryVariables;
 }
@@ -33,6 +33,15 @@ export interface GraphqlResponse {
   errors: GraphqlError[];
   /** If the data was loaded without any errors, contains the requested object. */
   data?: object;
+}
+
+export interface GraphqlBatchResponse {
+  statusCode: number;
+  errors: GraphqlError[];
+  data: {
+    errors: GraphqlError[];
+    data?: object;
+  }[];
 }
 
 interface ErrorResponse {
@@ -168,29 +177,19 @@ class ApiBase {
   }
 
   /**
-   * Send a GraphQL query to the Qminder API.
+   * Sends list of GraphQL queries to the Qminder API.
    *
    * Sends the given query to the Qminder API, returning a Promise that resolves to the site's HTTP
    * response.
-   * @param query required: the GraphQL query, for example "{ me { email } }", or
+   * @param queries required: list of GraphQL queries, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
-   * @param variables optional: the GraphQL query's variables, for example { id: "4" }
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
    * @throws when the API key is missing
-   * @throws when the query is undefined or an empty string
    */
-  queryGraph(query: string, variables?: GraphqlQueryVariables): Promise<GraphqlResponse> {
-    if (!query) {
-      throw new Error('ApiBase.queryGraph expected a query as its first argument.');
-    }
+
+  queryGraph(queries: GraphqlQuery[]): Promise<GraphqlBatchResponse> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
-    }
-
-    const requestBody: GraphqlQuery = { query };
-
-    if (variables) {
-      requestBody.variables = variables;
     }
 
     const init: RequestInit = {
@@ -199,11 +198,11 @@ class ApiBase {
         'X-Qminder-REST-API-Key': this.apiKey,
       },
       mode: 'cors',
-      body: JSON.stringify(requestBody),
+      body: JSON.stringify(queries),
     };
 
     return (this.fetch(`https://${this.apiServer}/graphql`, init)
-      .then((response: Response) => response.json()) as Promise<GraphqlResponse>);
+      .then((response: Response) => response.json()) as Promise<GraphqlBatchResponse>);
   }
 }
 

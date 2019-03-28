@@ -6,40 +6,34 @@
  * - The expected fetch(url, init) init parameter
  * - The expected successful response
  *
- * Given the GraphQL query, HTTP response data (without boilerplate), and an object of
- * variables.
+ * Given the GraphQL query, HTTP response data (without boilerplate).
  *
  * @param {string} query a GraphQL query, for example '{ me { id } }'
  * @param {object} responseData the response data this query generates
- * @param {object} variables any variables needed for the GraphQL query
- * @returns an object with this shape: { request: string, variables: object, expectedFetch:
+ * @returns an object with this shape: { request: object, expectedFetch:
     * object, successfulResponse: object }
  */
-function generateRequestData(query, responseData, variables) {
+function generateRequestData(query, responseData) {
 
   const queryObject = {
     query
   };
-
-  if (variables) {
-    queryObject.variables = variables;
-  }
-
   return {
-    variables,
-    request: query,
+    request: [ queryObject ],
     expectedFetch: {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': 'testing',
       },
       mode: 'cors',
-      body: JSON.stringify(queryObject),
+      body: JSON.stringify([ queryObject ]),
     },
     successfulResponse: {
       statusCode: 200,
       errors: [],
-      data: responseData
+      data: [
+          responseData,
+      ]
     }
   };
 }
@@ -254,17 +248,6 @@ describe("ApiBase", function () {
         id: 12345
       }
     });
-    const LOCATION_ID_NAME = generateRequestData(
-      'query Location($id: ID!) { location($id) { id name } }',
-      {
-        location: {
-          id: 673,
-          name: 'Regional HQ'
-        },
-      },
-      {
-        id: 673
-      });
 
     const ERROR_UNDEFINED_FIELD = {
       "statusCode": 200,
@@ -309,17 +292,11 @@ describe("ApiBase", function () {
       this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
       expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).toThrow();
     });
-    it('sends a correct request with query and no variables', function() {
+    it('sends a correct request', function() {
       Qminder.ApiBase.setKey('testing');
       this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
       Qminder.ApiBase.queryGraph(ME_ID.request);
       expect(this.fetchSpy.calledWithExactly(API_URL, sinon.match(ME_ID.expectedFetch))).toBeTruthy();
-    });
-    it('sends a correct request with query and variables', function() {
-      Qminder.ApiBase.setKey('testing');
-      this.fetchSpy.onCall(0).resolves(new MockResponse(LOCATION_ID_NAME.successfulResponse));
-      Qminder.ApiBase.queryGraph(LOCATION_ID_NAME.request, LOCATION_ID_NAME.variables);
-      expect(this.fetchSpy.calledWithExactly(API_URL, sinon.match(LOCATION_ID_NAME.expectedFetch))).toBeTruthy();
     });
     it('resolves with the entire response object, not only response data', function(done) {
       Qminder.ApiBase.setKey('testing');

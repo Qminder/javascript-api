@@ -2,12 +2,16 @@ describe('GraphQLService', function() {
   const ME_ID_REQUEST = '{ me { id } }';
   const ME_ID_SUCCESS_RESPONSE = {
     statusCode: 200,
-    errors: [],
-    data: {
-      me: {
-        id: 123456
-      }
-    }
+    data: [
+        {
+            errors: [],
+            data: {
+              me: {
+                id: 123456
+              }
+            }
+        }
+    ]
   };
   beforeEach(function() {
     if (typeof Qminder === 'undefined') {
