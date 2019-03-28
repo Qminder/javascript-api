@@ -177,7 +177,7 @@ class ApiBase {
   }
 
   /**
-   * Sends list of GraphQL queroes to the Qminder API.
+   * Sends list of GraphQL queries to the Qminder API.
    *
    * Sends the given query to the Qminder API, returning a Promise that resolves to the site's HTTP
    * response.
