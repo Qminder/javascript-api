@@ -455,10 +455,11 @@ export default class TicketService {
    * ```
    * @param line  the ticket's desired line
    * @param ticket  the ticket data
+   * @param idempotencyKey  optional: a unique identifier that lets you safely retry creating the same ticket twice
    * @returns a promise that resolves to the ID of the new ticket.
    * @throws ERROR_NO_LINE_ID when the lineId parameter is undefined or not a number.
    */
-  static create(line: number | Line, ticket: Ticket): Promise<Ticket> {
+  static create(line: number | Line, ticket: Ticket, idempotencyKey?: string | number): Promise<Ticket> {
     if (line === undefined) {
       throw new Error(ERROR_NO_LINE_ID);
     }
