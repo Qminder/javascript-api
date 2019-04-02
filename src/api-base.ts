@@ -138,11 +138,13 @@ class ApiBase {
    * @param url  the URL part to append to the API server, for example "tickets/create"
    * @param data  the the request data, as a File or JS object (serialized to formdata)
    * @param method  the HTTP method to use, defaults to GET. POST and DELETE are used too.
+   * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
   request(url: string,
           data?: Object | File,
-          method: HTTPMethod = 'GET'): Promise<Object> {
+          method: HTTPMethod = 'GET',
+          idempotencyKey?: string | number): Promise<Object> {
 
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
@@ -166,6 +168,11 @@ class ApiBase {
         init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
       }
     }
+
+    if (idempotencyKey) {
+      init.headers['Idempotency-Key'] = `${idempotencyKey}`;
+    }
+
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
            .then((response: Response) => response.json())
            .then((responseJson: ApiResponse) => {
