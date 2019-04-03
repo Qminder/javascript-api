@@ -6,7 +6,7 @@ set -ex
 
 rm -rf docs
 
-exec ./node_modules/.bin/typedoc \
+./node_modules/.bin/typedoc \
      --mode modules \
      --out docs \
      --excludePrivate \
@@ -14,3 +14,7 @@ exec ./node_modules/.bin/typedoc \
      --name Qminder \
      --readme manual/apidoc-index.md \
      src
+
+# This is needed so GitHub Pages doesn't 404 every _* file/directory
+# https://help.github.com/en/articles/files-that-start-with-an-underscore-are-missing
+touch docs/.nojekyll
