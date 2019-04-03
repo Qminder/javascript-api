@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>TicketCreationResponse | Qminder</title>
+	<title>GraphqlBatcher | Qminder</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_services_ticketservice_.html">&quot;services/TicketService&quot;</a>
+					<a href="../modules/_graphql_batcher_.html">&quot;graphql-batcher&quot;</a>
 				</li>
 				<li>
-					<a href="_services_ticketservice_.ticketcreationresponse.html">TicketCreationResponse</a>
+					<a href="_graphql_batcher_.graphqlbatcher.html">GraphqlBatcher</a>
 				</li>
 			</ul>
-			<h1>Interface TicketCreationResponse</h1>
+			<h1>Class GraphqlBatcher</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">TicketCreationResponse</span>
+						<span class="target">GraphqlBatcher</span>
 					</li>
 				</ul>
 			</section>
@@ -81,26 +81,47 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Properties</h3>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_services_ticketservice_.ticketcreationresponse.html#id" class="tsd-kind-icon">id</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_graphql_batcher_.graphqlbatcher.html#submit" class="tsd-kind-icon">submit</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="id" class="tsd-anchor"></a>
-					<h3>id</h3>
-					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/994a098/src/services/TicketService.ts#L256">services/TicketService.ts:256</a></li>
-						</ul>
-					</aside>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="submit" class="tsd-anchor"></a>
+					<h3>submit</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">submit<span class="tsd-signature-symbol">(</span>query<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, variables<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_api_base_.graphqlresponse.html" class="tsd-signature-type">GraphqlResponse</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/994a098/src/graphql-batcher.ts#L14">graphql-batcher.ts:14</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>query: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> variables: <span class="tsd-signature-type">object</span></h5>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter-index-signature">
+											<h5><span class="tsd-signature-symbol">[</span>key: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">]: </span><span class="tsd-signature-type">any</span></h5>
+										</li>
+									</ul>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_api_base_.graphqlresponse.html" class="tsd-signature-type">GraphqlResponse</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -116,7 +137,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_api_base_.html">"api-<wbr>base"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_graphql_batcher_.html">"graphql-<wbr>batcher"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -158,7 +179,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_services_locationservice_.html">"services/<wbr>Location<wbr>Service"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_services_ticketservice_.html">"services/<wbr>Ticket<wbr>Service"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -177,50 +198,20 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_services_ticketservice_.ticketservice.html" class="tsd-kind-icon">Ticket<wbr>Service</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.callnextrequest.html" class="tsd-kind-icon">Call<wbr>Next<wbr>Request</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.ticketcallrequest.html" class="tsd-kind-icon">Ticket<wbr>Call<wbr>Request</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.ticketcountcriteria.html" class="tsd-kind-icon">Ticket<wbr>Count<wbr>Criteria</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.ticketcreationrequest.html" class="tsd-kind-icon">Ticket<wbr>Creation<wbr>Request</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.ticketcreationresponse.html" class="tsd-kind-icon">Ticket<wbr>Creation<wbr>Response</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_graphql_batcher_.graphqlbatcher.html" class="tsd-kind-icon">Graphql<wbr>Batcher</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_services_ticketservice_.ticketcreationresponse.html#id" class="tsd-kind-icon">id</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_graphql_batcher_.graphqlbatcher.html#submit" class="tsd-kind-icon">submit</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.ticketeditingrequest.html" class="tsd-kind-icon">Ticket<wbr>Editing<wbr>Request</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_services_ticketservice_.ticketsearchcriteria.html" class="tsd-kind-icon">Ticket<wbr>Search<wbr>Criteria</a>
-					</li>
-					<li class=" tsd-kind-type-alias tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_services_ticketservice_.html#desiredqueueposition" class="tsd-kind-icon">Desired<wbr>Queue<wbr>Position</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_services_ticketservice_.html#error_no_line_id" class="tsd-kind-icon">ERROR_<wbr>NO_<wbr>LINE_<wbr>ID</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_services_ticketservice_.html#error_no_queue_position" class="tsd-kind-icon">ERROR_<wbr>NO_<wbr>QUEUE_<wbr>POSITION</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
-						<a href="../modules/_services_ticketservice_.html#error_no_ticket_id" class="tsd-kind-icon">ERROR_<wbr>NO_<wbr>TICKET_<wbr>ID</a>
+						<a href="../interfaces/_graphql_batcher_.pendingquery.html" class="tsd-kind-icon">Pending<wbr>Query</a>
 					</li>
 				</ul>
 			</nav>
