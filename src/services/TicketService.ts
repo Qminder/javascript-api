@@ -493,7 +493,7 @@ export default class TicketService {
       params.email = ticket.email;
     }
 
-    return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST')
+    return ApiBase.request(`lines/${lineId}/ticket`, params, 'POST', idempotencyKey)
                   .then((response: TicketCreationResponse) => {
       const ticketId = parseInt(response.id, 10);
       const ticket = new Ticket(ticketId);
