@@ -618,12 +618,12 @@ describe("TicketService", function() {
     it('does not send Idempotency-Key if not provided', function() {
       const ticket = { firstName: 'Joe', lastName: 'Santana' };
       Qminder.tickets.create(1, ticket);
-      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), undefined)).toBeTruthy();
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), 'POST', undefined)).toBeTruthy();
     });
     it('sends Idempotency-Key if provided', function() {
       const ticket = { firstName: 'Joe', lastName: 'Santana' };
       Qminder.tickets.create(1, ticket, '9e3a333e');
-      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), '9e3a333e')).toBeTruthy();
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), 'POST', '9e3a333e')).toBeTruthy();
     });
   });
   describe("details()", function() {

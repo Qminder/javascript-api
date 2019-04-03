@@ -237,7 +237,9 @@ describe("ApiBase", function () {
         expect(this.fetchSpy.calledWithExactly(url, fileMatcher)).toBe(true);
       });
     });
-    it('sets the HTTP header Idempotency-Key if idempotencyKey has been provided', (done) => {
+    it('sets the HTTP header Idempotency-Key if idempotencyKey has been provided', function() {
+      Qminder.setKey(API_KEY);
+
       const body = {
         id: 5,
         firstName: "John",
@@ -252,10 +254,8 @@ describe("ApiBase", function () {
       });
       const url = 'https://api.qminder.com/v1/TEST';
 
-      Qminder.ApiBase.request('TEST', body, '9e3a333e').then(response => {
-        expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
-        done();
-      }); 
+      Qminder.ApiBase.request('TEST', body, undefined, '9e3a333e');
+      expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
     });
     afterEach(function() {
       this.fetchSpy.restore();
