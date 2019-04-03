@@ -516,9 +516,6 @@ describe("TicketService", function() {
     };
     const createResponseBody = {
       id: "12345",
-      line: 11111,
-      firstName: 'John',
-      lastName: 'Smith'
     };
     beforeEach(function() {
       this.requestStub.resolves(createResponseBody);
@@ -539,7 +536,6 @@ describe("TicketService", function() {
     it('resolves to a Ticket object', function(done) {
       Qminder.tickets.create(11111, createRequestBody).then(response => {
         expect(response instanceof Qminder.Ticket).toBeTruthy();
-        expect(response.line).toBe(11111);
         expect(response.id).toBe(12345);
         done();
       });
@@ -618,6 +614,16 @@ describe("TicketService", function() {
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({
         source: sinon.match.defined
       }))).toBeFalsy();
+    });
+    it('does not send Idempotency-Key if not provided', function() {
+      const ticket = { firstName: 'Joe', lastName: 'Santana' };
+      Qminder.tickets.create(1, ticket);
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), 'POST', undefined)).toBeTruthy();
+    });
+    it('sends Idempotency-Key if provided', function() {
+      const ticket = { firstName: 'Joe', lastName: 'Santana' };
+      Qminder.tickets.create(1, ticket, '9e3a333e');
+      expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), 'POST', '9e3a333e')).toBeTruthy();
     });
   });
   describe("details()", function() {
