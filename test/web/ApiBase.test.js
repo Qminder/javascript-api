@@ -263,6 +263,9 @@ describe("ApiBase", function () {
       const body = JSON.stringify([123, 456, 789]);
 
       const requestMatcher = sinon.match({
+        headers: {
+          'Content-Type': 'application/json'
+        },
         body,
       });
 
@@ -277,6 +280,9 @@ describe("ApiBase", function () {
       const body = {a: 'test'};
 
       const requestMatcher = sinon.match({
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
         body: 'a=test',
       });
 

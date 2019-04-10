@@ -170,7 +170,7 @@ class ApiBase {
         init.body = data;
         init.headers['Content-Type'] = 'application/json';
       } else {
-        throw new Error('Cannot determine Content-Type of data')
+        throw new Error('Cannot determine Content-Type of data');
       }
     }
 
