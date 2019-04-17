@@ -142,7 +142,7 @@ class ApiBase {
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
   request(url: string,
-          data?: Object | File,
+          data?: Object | File | string,
           method: HTTPMethod = 'GET',
           idempotencyKey?: string | number): Promise<Object> {
 
@@ -163,9 +163,14 @@ class ApiBase {
       if (typeof File !== "undefined" && data instanceof File && init.headers) {
         init.body = data;
         init.headers['Content-Type'] = data.type;
-      } else {
+      } else if (typeof data === 'object') {
         init.body = querystring.stringify(data);
         init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+      } else if (typeof data === 'string') {
+        init.body = data;
+        init.headers['Content-Type'] = 'application/json';
+      } else {
+        throw new Error('Cannot determine Content-Type of data');
       }
     }
 

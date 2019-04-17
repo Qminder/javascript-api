@@ -257,6 +257,40 @@ describe("ApiBase", function () {
       Qminder.ApiBase.request('TEST', body, undefined, '9e3a333e');
       expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
     });
+    it('sends strings as JSON', function() {
+      Qminder.setKey(API_KEY);
+
+      const body = JSON.stringify([123, 456, 789]);
+
+      const requestMatcher = sinon.match({
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body,
+      });
+
+      Qminder.ApiBase.request('TEST', body, 'POST');
+      const url = 'https://api.qminder.com/v1/TEST';
+
+      expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+    });
+    it('sends objects as www-form-urlencoded', function() {
+      Qminder.setKey(API_KEY);
+
+      const body = {a: 'test'};
+
+      const requestMatcher = sinon.match({
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: 'a=test',
+      });
+
+      Qminder.ApiBase.request('TEST', body, 'POST');
+      const url = 'https://api.qminder.com/v1/TEST';
+
+      expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+    });
     afterEach(function() {
       this.fetchSpy.restore();
     })

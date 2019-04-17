@@ -2,6 +2,7 @@ import ApiBase from '../api-base';
 import User from '../model/User';
 import Desk from '../model/Desk';
 import Location from '../model/Location';
+import Line from '../model/Line';
 import { UserRole } from '../model/User';
 
 /**
@@ -272,4 +273,45 @@ export default class UserService {
     }
     return ApiBase.request(`users/${userId}/desk`, undefined, 'DELETE');
   }
+
+  /**
+   * Set the lines selected by current user. All other lines that aren't specified are set to unselected.
+   *
+   * Calls the HTTP API `POST /v1/users/<ID>/lines`
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // Example. Set user 5342's selected lines to 12345, 54321, 98765
+   * await Qminder.users.setLines(5342, [12345, 54321, 98765])
+   * ```
+   * @param user The user whose lines to set.
+   * @param lines array of Line, or array of line IDs
+   * @returns A promise that resolves when setting the lines works, and rejects
+   * if it failed.
+   */
+
+  static setLines(user: User | number, lines: (Line | number)[]) {
+    let userId: any = user instanceof User ? user.id : user;
+    if (!userId || typeof userId !== 'number') {
+      throw new Error('User ID is invalid');
+    }
+
+    const isInstanceOfLines = lines.every((value: Line | number) => value instanceof Line);
+    const isInstanceOfLineIds = lines.every((value: Line | number) => typeof value === 'number');
+
+    if (isInstanceOfLines) {
+      const lineIds = lines.map((line: Line) => line.id);
+      return ApiBase.request(`users/${userId}/lines`, JSON.stringify(lineIds), 'POST');
+    }
+
+    if (isInstanceOfLineIds) {
+      return ApiBase.request(`users/${userId}/lines`, JSON.stringify(lines), 'POST');
+    }
+
+    throw new Error('Lines isn\'t a list of Line or Line IDs');
+  }
+
 };

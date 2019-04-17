@@ -143,4 +143,30 @@ describe("UserService", function() {
   describe("removePicture()", function() {
     // Qminder.users.removePicture(user)
   });
+  describe("setLines()" , function() {
+    it("Works with a list of Line IDs", function() {
+      Qminder.users.setLines(123, [1,2,3,4]);
+      expect(this.requestStub.calledWith('users/123/lines', sinon.match(JSON.stringify([1,2,3,4])))).toBeTruthy();
+    });
+
+    it("Works with a list of Lines", function() {
+      const lines = [
+        new Qminder.Line({id: 1, name: 'Test', color:'#fff', disabled:false}),
+        new Qminder.Line({id: 2, name: 'Test', color:'#fff', disabled:false}),
+        new Qminder.Line({id: 3, name: 'Test', color:'#f00', disabled:false}),
+      ];
+
+      Qminder.users.setLines(123, lines);
+      expect(this.requestStub.calledWith('users/123/lines', sinon.match(JSON.stringify([1,2,3])))).toBeTruthy();
+    });
+
+    it("Breaks when trying to use inconsistent types", function() {
+      const lines = [
+        1,
+        new Qminder.Line({id: 2, name: 'Test', color:'#fff', disabled:false}),
+        new Qminder.Line({id: 3, name: 'Test', color:'#f00', disabled:false}),
+      ];
+      expect(() => Qminder.users.setLines(123, lines)).toThrow();
+    });
+  });
 });
