@@ -1547,4 +1547,49 @@ export default class TicketService {
 
     return ApiBase.request(`tickets/${ticketId}/forward`, body);
   }
+
+  /**
+   * Add external data to a ticket.
+   *
+   * @param ticket  The ticket to add external data to. The ticket ID can be used instead of the Ticket object.
+   * @param provider  Provider of the data. One record per provider is allowed.
+   * @param title     Title for the data
+   * @param data      The data to set
+   * @returns promise that resolves to 'success' if all was OK and rejects if something else went wrong.
+   */
+  static setExternalData(ticket: (Ticket|number), provider: string, title: string, data: any): Promise<'success'> {
+    let ticketId: any = null;
+
+    // Get the ticket's ID
+    if (ticket instanceof Ticket) {
+      ticketId = ticket.id;
+    } else {
+      ticketId = ticket;
+    }
+
+    if (!ticketId || typeof ticketId !== 'number') {
+      throw new Error(ERROR_NO_TICKET_ID);
+    }
+
+    if (!provider || typeof provider !== 'string') {
+      throw new Error('No provider specified. The provider has to be a string.');
+    }
+
+    if (!title || typeof title !== 'string') {
+      throw new Error('No title specified. The title has to be a string.');
+    }
+
+    if (!data) {
+      throw new Error('No data provided.');
+    }
+
+    const payload = {
+      provider,
+      title,
+      data: JSON.stringify(data),
+    };
+
+    return ApiBase.request(`tickets/${ticketId}/external`, payload, 'POST')
+      .then((response: { result: 'success' }) => response.result);
+  }
 };
