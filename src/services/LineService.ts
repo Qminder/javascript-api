@@ -104,7 +104,7 @@ export default class LineService {
    * await Qminder.lines.enable(1425);
    * ```
    * @param line the Line or the ID of the line to be enabled.
-   * @returns A Promise that resolves when the line was deleted, and rejects
+   * @returns A Promise that resolves when the line was enabled, and rejects
    * when something went wrong.
    */
   static enable(line: Line | number): Promise<any> {
@@ -126,7 +126,7 @@ export default class LineService {
    * await Qminder.lines.disable(1425);
    * ```
    * @param line the Line or the ID of the line to be disabled.
-   * @returns A Promise that resolves when the line was deleted, and rejects
+   * @returns A Promise that resolves when the line was disabled, and rejects
    * when there active tickets in the line or something went wrong.
    */
   static disable(line: Line | number): Promise<any> {
