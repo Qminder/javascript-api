@@ -70,5 +70,53 @@ describe("LineService", function() {
     });
   });
 
+  describe("enable()", function () {
+    beforeEach(function(done) {
+      this.requestStub.withArgs('lines/71490/enable').resolves({});
+      done();
+    });
 
+    it("enables a line using ID", function () {
+      Qminder.lines.enable(71490);
+    });
+
+    it("enables a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.enable(new Qminder.Line(line));
+    });
+
+    it("fails to enable a line due to no ID", function () {
+      expect(() => Qminder.lines.enable(null)).toThrowError();
+    });
+
+    it("fails to enable a line due to line object lacking ID field", function () {
+      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.enable(new Qminder.Line(line))).toThrowError()
+    });
+  });
+
+  describe("disable()", function () {
+    beforeEach(function(done) {
+      this.requestStub.withArgs('lines/71490/disable').resolves({});
+      done();
+    });
+
+    it("disables a line using ID", function () {
+      Qminder.lines.disable(71490);
+    });
+
+    it("disables a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.disable(new Qminder.Line(line));
+    });
+
+    it("fails to disable a line due to no ID", function () {
+      expect(() => Qminder.lines.disable(null)).toThrowError();
+    });
+
+    it("fails to disable a line due to line object lacking ID field", function () {
+      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.disable(new Qminder.Line(line))).toThrowError()
+    });
+  });
 });

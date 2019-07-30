@@ -94,6 +94,50 @@ export default class LineService {
   }
 
   /**
+   * Enable a disabled Line.
+   *
+   * Calls the following HTTP API: `POST /lines/<ID>/enable`
+   *
+   * For example:
+   *
+   * ```javascript
+   * await Qminder.lines.enable(1425);
+   * ```
+   * @param line the Line or the ID of the line to be enabled.
+   * @returns A Promise that resolves when the line was enabled, and rejects
+   * when something went wrong.
+   */
+  static enable(line: Line | number): Promise<any> {
+    let lineId: any = line instanceof Line ? line.id : line;
+    if (!lineId || typeof lineId !== 'number') {
+      throw new Error('Line ID invalid or missing.');
+    }
+    return (ApiBase.request(`lines/${lineId}/enable`, undefined, 'POST') as Promise<any>);
+  }
+
+  /**
+   * Disable a Line.
+   *
+   * Calls the following HTTP API: `POST /lines/<ID>/disable`
+   *
+   * For example:
+   *
+   * ```javascript
+   * await Qminder.lines.disable(1425);
+   * ```
+   * @param line the Line or the ID of the line to be disabled.
+   * @returns A Promise that resolves when the line was disabled, and rejects
+   * when there active tickets in the line or something went wrong.
+   */
+  static disable(line: Line | number): Promise<any> {
+    let lineId: any = line instanceof Line ? line.id : line;
+    if (!lineId || typeof lineId !== 'number') {
+      throw new Error('Line ID invalid or missing.');
+    }
+    return (ApiBase.request(`lines/${lineId}/disable`, undefined, 'POST') as Promise<any>);
+  }
+
+  /**
    * Remove a Line.
    * This removes the line from the line list, from iPads and TVs, from the service screen and from
    * statistics. This action cannot be undone.
