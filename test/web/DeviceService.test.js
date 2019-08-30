@@ -1,25 +1,4 @@
 describe("Qminder.devices", function() {
-
-  const NAME_DEVICES = [
-    {
-      id: 1235,
-      type: "OVERVIEW_MONITOR",
-      name: "Large TV",
-      online: true
-    },
-    {
-      id: 3418,
-      type: "NAME_DEVICE",
-      name: "iPad name device",
-      needsUpdate: true,
-      battery: {
-        level: 5,
-        charging: false
-      },
-      online: false
-    }
-  ];
-
   const TV_DETAILS = {
     statusCode: 200,
     id: 41078,
@@ -37,36 +16,6 @@ describe("Qminder.devices", function() {
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
     this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
-  });
-
-  describe('list()', function() {
-    beforeEach(function() {
-      this.requestStub.onFirstCall().resolves({ data: NAME_DEVICES });
-    });
-
-    it('calls the right API URL', function() {
-      Qminder.devices.list(124);
-      expect(this.requestStub.calledWith('locations/124/devices/')).toBeTruthy();
-    });
-
-    it('throws an error when location ID is not provided', function() {
-      expect(() => Qminder.devices.list()).toThrow();
-    });
-
-    it('throws an error when location ID is not a number', function() {
-      expect(() => Qminder.devices.list({ id: 12345 })).toThrow();
-    });
-
-    it('takes the data out and parses it into Devices', function(done) {
-      Qminder.devices.list(1235).then((data) => {
-        expect(data.data).toBeUndefined();
-        expect(data.data).not.toBe(NAME_DEVICES);
-        done();
-      }, (error) => {
-        console.error('It broke', error.stack);
-        done(new Error('broke'));
-      });
-    });
   });
 
   describe('details()', function() {

@@ -1,4 +1,4 @@
-import Ticket, { TicketStatus, TicketAudit, TicketMessage } from '../model/Ticket';
+import Ticket, { TicketStatus, TicketMessage } from '../model/Ticket';
 import User from '../model/User';
 import Desk from '../model/Desk';
 import Line from '../model/Line';
@@ -1310,33 +1310,6 @@ export default class TicketService {
 
     return ApiBase.request(`tickets/${ticketId}/estimated-time`)
       .then((response: { estimatedTimeOfService: number }) => response.estimatedTimeOfService);
-  }
-
-  /**
-   * Get the audit logs for the given ticket.
-   *
-   * The list of audit logs shows who made changes to a ticket, and what changes have been made.
-   * @param ticket  the ticket to get audit logs for
-   * @returns the list of changes made to the Ticket. Each
-   * TicketAudit can have one or more actions. Similar actions (such as adding multiple labels)
-   * are grouped into one TicketAudit.
-   */
-  static getAuditLogs(ticket: (Ticket|number)): Promise<TicketAudit[]> {
-    let ticketId: any = null;
-
-    // Get the ticket's ID
-    if (ticket instanceof Ticket) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket;
-    }
-
-    if (typeof ticketId !== 'number') {
-      throw new Error(ERROR_NO_TICKET_ID);
-    }
-
-    return ApiBase.request(`tickets/${ticketId}/audit`)
-                  .then((response: { data: TicketAudit[] }) => response.data);
   }
 
   /**

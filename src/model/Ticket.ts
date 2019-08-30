@@ -300,19 +300,6 @@ export type TicketMessage = {
   userId?: number;
 };
 
-export type TicketAudit = {
-  created: string;
-  user: number;
-  changes: Array<TicketAuditChange>;
-};
-
-export type TicketAuditChange = {
-  color?: string;
-  field?: string;
-  value: string;
-  action: string;
-}
-
 
 /**
  * Represents the current status of a ticket.
