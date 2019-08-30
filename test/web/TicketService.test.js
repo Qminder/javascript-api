@@ -1390,54 +1390,6 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.getEstimatedTimeOfService()).toThrow();
     });
   });
-  describe("getAuditLogs()", function() {
-    beforeEach(function() {
-      this.requestStub.onCall(0).resolves({
-        data: [
-          {
-            "created": "2016-11-22T14:56:07Z",
-            "user": 1234,
-            "changes": [
-              {
-                "field": "Email",
-                "value": "user@example.com",
-                "action": "add.extra"
-              }
-            ]
-          },
-          {
-            "created": "2016-11-22T15:22:54Z",
-            "user": 1234,
-            "changes": [
-              {
-                "color": "39CCCC",
-                "value": "labelA",
-                "action": "add.label"
-              }
-            ]
-          }
-        ]
-      });
-    });
-    it('calls the right URL for getting audit logs', function(done) {
-      Qminder.tickets.getAuditLogs(12345).then(() => {
-        expect(this.requestStub.calledWith('tickets/12345/audit')).toBeTruthy();
-        done();
-      });
-    });
-    it('resolves with the audit logs from the response.data', function(done) {
-      Qminder.tickets.getAuditLogs(12345).then((data) => {
-        expect(data instanceof Array).toBeTruthy();
-        expect(data.length).toBe(2);
-        expect(data[0].user).toBe(1234);
-        expect(data[0].changes instanceof Array).toBe(true);
-        done();
-      });
-    });
-    it('throws when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.getAuditLogs()).toThrow();
-    });
-  });
   describe("getMessages()", function() {
     beforeEach(function() {
       this.requestStub.resolves({

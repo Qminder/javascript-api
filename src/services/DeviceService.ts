@@ -1,41 +1,11 @@
 import ApiBase from '../api-base';
 import Device from '../model/Device';
-import Location from '../model/Location';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder
  * Sign-In app installed, or Apple TVs with the Qminder TV app.
  */
 export default class DeviceService {
-
-  /**
-   * List all devices (TVs, iPads, ...) at the given location.
-   *
-   * Calls the HTTP API: `GET /v1/locations/<ID>/devices/`
-   *
-   * For example:
-   *
-   * ```javascript
-   * import * as Qminder from 'qminder-api';
-   * Qminder.setKey('API_KEY_HERE');
-   * const devices: Array<Device> = await Qminder.devices.list(152);
-   * const device: Device = devices[0];
-   * console.log(device.type); // 'MONITOR', or maybe something else
-   * ```
-   * @param location  the Location or location's ID
-   * @returns a Promise that resolves to the list of devices for the location, or rejects if
-   * something went wrong.
-   * @throws Error if the Location ID is not provided.
-   */
-  static list(location: Location | number): Promise<Array<Device>> {
-    let locationId: any = location instanceof Location ? location.id : location;
-    if (!locationId || typeof locationId !== 'number') {
-      throw new Error('Location ID not provided');
-    }
-    return ApiBase.request(`locations/${locationId}/devices/`)
-                  .then((response: { data: Device[] }) => response.data.map(each => new Device(each)));
-  }
-
   /**
    * Read the details of a particular TV based on its ID.
    * Returns the ID, name, theme and settings of the TV.
