@@ -165,6 +165,11 @@ class GraphQLService {
         this.apiKey = apiKey;
     }
 
+    /**
+     * Get subscription connection observable
+     * This returns an observable which fires with the connection status every time it changes.
+     * @returns an RxJS obserable that will fire with the connection status every time it changes
+     */
     getSubscriptionConnectionObservable(): Observable<'DISCONNECTED' | 'CONNECTING' | 'CONNECTED'> {
         return this.connection$;
     }
