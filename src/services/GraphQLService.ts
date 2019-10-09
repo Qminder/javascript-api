@@ -1,6 +1,6 @@
 import WebSocket, {MessageData} from '../lib/websocket-web';
 import ApiBase, {GraphqlResponse} from '../api-base';
-import {Observable, Observer} from 'rxjs';
+import {Observable, Observer, Subject} from 'rxjs';
 import { GraphqlBatcher } from '../graphql-batcher';
 
 interface OperationMessage {
@@ -33,10 +33,10 @@ enum MessageType {
     GQL_COMPLETE = 'complete'
 }
 
-enum ConnectionStatus {
-    DISCONNECTED,
-    CONNECTING,
-    CONNECTED
+export enum ConnectionStatus {
+    DISCONNECTED = 'DISCONNECTED',
+    CONNECTING = 'CONNECTING',
+    CONNECTED = 'CONNECTED',
 }
 
 /**
@@ -54,7 +54,9 @@ class GraphQLService {
 
     private socket: WebSocket = null;
 
-    private connectionStatus = ConnectionStatus.DISCONNECTED;
+    private connectionStatus: ConnectionStatus;
+    private connectionSubject = new Subject<ConnectionStatus>();
+    private connection$ = this.connectionSubject.pipe();
 
     private nextSubscriptionId: number = 1;
 
@@ -73,6 +75,7 @@ class GraphQLService {
 
     constructor() {
         this.setServer('wss://api.qminder.com:443');
+        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     }
 
     /**
@@ -162,6 +165,10 @@ class GraphQLService {
         this.apiKey = apiKey;
     }
 
+    getSubscriptionConnectionObservable(): Observable<'DISCONNECTED' | 'CONNECTING' | 'CONNECTED'> {
+        return this.connection$;
+    }
+
     /**
      * Set the WebSocket hostname the GraphQL service uses.
      * @hidden
@@ -183,13 +190,13 @@ class GraphQLService {
         if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
             return;
         }
-        this.connectionStatus = ConnectionStatus.CONNECTING;
+        this.setConnectionStatus(ConnectionStatus.CONNECTING);
         const socket = new WebSocket(`${this.apiServer}/graphql/subscription?rest-api-key=${this.apiKey}`);
         this.socket = socket;
 
         socket.onopen = () => {
             console.log('[GraphQL subscription] Connection established!');
-            this.connectionStatus = ConnectionStatus.CONNECTED;
+            this.setConnectionStatus(ConnectionStatus.CONNECTED);
             this.connectionRetries = 0;
             this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
         };
@@ -198,7 +205,7 @@ class GraphQLService {
             // NOTE: if the event code is 1006, it is any of the errors in the list here:
             // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
             console.log('[GraphQL subscription] Connection lost: ' + event.code);
-            this.connectionStatus = ConnectionStatus.DISCONNECTED;
+            this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
             this.socket = null;
 
             // If it wasn't a client-side close socket, retry connecting.
@@ -274,6 +281,11 @@ class GraphQLService {
 
     private generateOperationId(): string {
         return String(this.nextSubscriptionId++);
+    }
+
+    private setConnectionStatus(status: ConnectionStatus) {
+        this.connectionStatus = status;
+        this.connectionSubject.next(status);
     }
 }
 
