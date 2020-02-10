@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "2.2.19",
+  "version": "2.2.20",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
   "directories": {
     "test": "test"
@@ -104,7 +104,7 @@
     "es6-promise": "^4.1.1",
     "isomorphic-fetch": "^2.2.1",
     "querystring": "^0.2.0",
-    "rxjs": "6.5.2",
+    "rxjs": "6.5.3",
     "ws": "^3.2.0"
   }
 }
