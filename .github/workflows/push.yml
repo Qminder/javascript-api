@@ -1,0 +1,16 @@
+on: push
+name: Test on push
+jobs:
+  pr:
+    name: Build, Test, Staging
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Deps
+      run: |
+        yarn install --frozen-lockfile
+    - name: Build Library & Run Tests & Attempt to Package
+      run: |
+        yarn pack
+
+

@@ -1,0 +1,22 @@
+on:
+  release:
+    types: 
+    - published
+
+name: Release
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@master
+    - name: Install Deps
+      run: yarn
+    - name: Build Library
+      run: yarn build
+    - name: Publish package to NPM
+      run: |
+        yarn publish --production --non-interactive
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+

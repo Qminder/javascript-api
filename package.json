@@ -6,7 +6,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "npm run test-web",
+    "test": "yarn run test-web",
     "test-web": "./test/run-tests.sh",
     "test-node": "./test/run-node-tests.sh",
     "watch-tests": "./test/run-tests.sh --no-single-run",
@@ -14,9 +14,10 @@
     "build-web": "./node_modules/.bin/webpack",
     "build-web-unbundled": "sh ./scripts/build-web-unbundled.sh",
     "build-node": "sh ./scripts/build-node.sh",
-    "watch": "npm run watch-web",
+    "watch": "yarn run watch-web",
     "watch-web": "./node_modules/.bin/webpack --watch",
-    "docs": "sh ./scripts/build-documentation.sh"
+    "docs": "sh ./scripts/build-documentation.sh",
+    "prepack": "yarn run build"
   },
   "keywords": [
     "qminder",
