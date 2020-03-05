@@ -90,7 +90,7 @@ export default class LineService {
     if (!line.name || typeof line.name !== 'string') {
       throw new Error('Cannot create a line without a line name.');
     }
-    return (ApiBase.request(`locations/${locationId}/lines/`, line, 'POST') as Promise<Line>);
+    return (ApiBase.request(`locations/${locationId}/lines`, line, 'POST') as Promise<Line>);
   }
 
   /**
