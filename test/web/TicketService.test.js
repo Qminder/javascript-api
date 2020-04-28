@@ -661,7 +661,7 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.details(undefined)).toThrow();
     });
     it('throws when ticket is invalid', function() {
-      expect(() => Qminder.tickets.details("wheeee")).toThrow();
+      expect(() => Qminder.tickets.details(function() {})).toThrow();
     });
     it('throws when ticket is a Ticket object but id is undefined', function() {
       expect(() => Qminder.tickets.details(new Qminder.Ticket({}))).toThrow();
@@ -768,6 +768,13 @@ describe("TicketService", function() {
       Qminder.tickets.edit(12345, { email: null });
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ email: null }))).toBeTruthy();
+    });
+
+    it('sends the User ID if provided', function() {
+      Qminder.tickets.edit(12345, { user: 14141, email: null });
+
+      expect(this.requestStub.calledWith('tickets/12345/edit',
+        sinon.match({ email: null, user: 14141 }))).toBeTruthy();
     });
 
     it('Sends the extras as a JSON array', function() {
