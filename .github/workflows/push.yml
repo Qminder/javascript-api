@@ -1,16 +1,18 @@
 on: push
 name: Test on push
 jobs:
-  pr:
-    name: Build, Test, Staging
+  test:
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x, 13.x, 14.x]
+    name: Test on NodeJS ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
+    - uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
     - name: Install Deps
-      run: |
-        yarn install --frozen-lockfile
+      run: yarn install --frozen-lockfile
     - name: Build Library & Run Tests & Attempt to Package
-      run: |
-        yarn pack
-
-
+      run: yarn pack
