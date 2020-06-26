@@ -137,12 +137,6 @@ describe("UserService", function() {
   describe("addRole()", function() {
     // Qminder.users.addRole(user, role)
   });
-  describe("addPicture()", function() {
-    // Qminder.users.addPicture(user, picture)
-  });
-  describe("removePicture()", function() {
-    // Qminder.users.removePicture(user)
-  });
   describe("setLines()" , function() {
     it("Works with a list of Line IDs", function() {
       Qminder.users.setLines(123, [1,2,3,4]);
