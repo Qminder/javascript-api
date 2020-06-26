@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        node-version: [8.x, 10.x, 12.x, 13.x]
+        node-version: [8.x, 10.x, 12.x, 13.x, 14.x]
     name: Test on NodeJS ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     steps:
