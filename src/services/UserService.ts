@@ -169,64 +169,6 @@ export default class UserService {
   }
 
   /**
-   * Adds a profile picture to the user.
-   * Calls the HTTP API `POST /v1/users/<ID>/picture`.
-   *
-   * For example:
-   *
-   * ```javascript
-   * import * as Qminder from 'qminder-api';
-   * Qminder.setKey('API_KEY_HERE');
-   *
-   * // Example. Set the user's picture from a File input
-   * const picture: File = document.querySelector('input[type="file"]').files[0];
-   * await Qminder.users.addPicture(1425, picture);
-   * ```
-   * @param user the user to add the profile picture to
-   * @param {File} picture the picture data as a File object. Its file type will automatically
-   * be added to the request's Content-Type.
-   * @returns {Promise.<Object>} a Promise that resolves when adding the profile picture
-   * succeeded, or rejects if something went wrong.
-   */
-  static addPicture(user: User | number, picture: File): Promise<Object> {
-    let userId: any = user instanceof User ? user.id : user;
-    if (!userId || typeof userId !== 'number') {
-      throw new Error('User ID is invalid');
-    }
-    return ApiBase.request(`users/${userId}/picture`, picture);
-  }
-
-  /**
-   * Removes the profile picture from the user.
-   *
-   * Calls the HTTP API `DELETE /v1/users/<ID>/picture`
-   *
-   * For example:
-   *
-   * ```javascript
-   * import * as Qminder from 'qminder-api';
-   * Qminder.setKey('API_KEY_HERE');
-   *
-   * // Example 1. Remove the user's profile picture
-   * await Qminder.users.removePicture(1425);
-   * // Example 2. Remove the user's profile picture, using the User object
-   * const user = await Qminder.users.details(1234);
-   * await Qminder.users.removePicture(user);
-   * ```
-   * @param user the user that the profile picture will be removed from.
-   * @returns {Promise} a promise that resolves when it succeeds, and rejects when something
-   * goes wrong.
-   * @throws Error if the user object or user ID is invalid.
-   */
-  static removePicture(user: User | number): Promise<Object> {
-    let userId: any = user instanceof User ? user.id : user;
-    if (!userId || typeof userId !== 'number') {
-      throw new Error('User ID is invalid');
-    }
-    return ApiBase.request(`users/${userId}/picture`, undefined, 'DELETE');
-  }
-
-  /**
    * Set the user's currently selected Desk.
    *
    * Calls the HTTP API `POST /v1/users/<ID>/desk`
