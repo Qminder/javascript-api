@@ -1,13 +1,9 @@
 # Qminder Javascript API
-[![Build Status](https://travis-ci.org/Qminder/javascript-api.svg?branch=master)](https://travis-ci.org/Qminder/javascript-api)
 [![npm](https://img.shields.io/npm/v/qminder-api.svg)](https://www.npmjs.com/package/qminder-api)
-[![Bower](https://img.shields.io/bower/v/qminder-api.svg)](http://bower.io/search/?q=qminder-api)
 
-[Documentation][doc] | [API Reference][api] | [Support][support] | [1.0.18 link][old-api]
+[Documentation][doc] | [API Reference][api] | [Support][support]
 
 The Qminder Javascript API library, supporting both Node.js (from 5.12.0) and browsers.
-
-If you're looking for [Qminder API v1.0.18, please go here.][old-api]
 
 ### Setup
 
@@ -106,7 +102,7 @@ If you have any questions, please feel free to contact
 
 ## LICENSE
 
-Copyright 2019 Qminder Limited.
+Copyright 2020 Qminder Limited.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -123,5 +119,4 @@ limitations under the License.
 [doc]: https://api.qminder.com/
 [api]: https://qminder.github.io/javascript-api/
 [support]: mailto:support@qminder.com
-[old-api]: https://github.com/Qminder/javascript-api/tree/v1.0.18
 [integration]: https://dashboard.qminder.com/integration/
