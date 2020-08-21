@@ -206,7 +206,6 @@ export type TicketExtra = {
   title: string;
   value: string;
   url?: string;
-  editable?: boolean;
 };
 
 /**
