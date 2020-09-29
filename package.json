@@ -6,10 +6,9 @@
     "test": "test"
   },
   "scripts": {
-    "test": "yarn run test-web",
-    "test-web": "./test/run-tests.sh",
-    "test-node": "./test/run-node-tests.sh",
-    "watch-tests": "./test/run-tests.sh --no-single-run",
+    "test": "karma start --log-level error",
+    "test-node": "JASMINE_CONFIG_PATH=./jasmine.json jasmine",
+    "watch-tests": "yarn test --no-single-run",
     "build": "sh ./scripts/build-full.sh",
     "build-web": "./node_modules/.bin/webpack",
     "build-web-unbundled": "sh ./scripts/build-web-unbundled.sh",
