@@ -110,5 +110,8 @@
   },
   "peerDependencies": {
     "rxjs": "^6.5.3"
+  },
+  "resolutions": {
+    "lodash": "4.17.20"
   }
 }
