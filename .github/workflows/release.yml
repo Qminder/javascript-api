@@ -6,20 +6,25 @@ on:
 name: Release
 jobs:
   release:
-    name: Release
+    name: Publish to NPM Registry
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@master
     - uses: actions/setup-node@v1
       with:
         node-version: 12.x
+        always-auth: true
         registry-url: https://registry.npmjs.org
     - name: Install Deps
-      run: yarn
+      run: yarn install --frozen-lockfile --ignore-scripts
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     - name: Build Library
       run: yarn build
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     - name: Publish package to NPM
       run: yarn publish --production --non-interactive
       env:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
