@@ -196,7 +196,7 @@ class ApiBase {
    * @param queries required: list of GraphQL queries, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
-   * @throws when the API key is missing
+   * @throws when the API key is missing or invalid
    */
 
   queryGraph(queries: GraphqlQuery[]): Promise<GraphqlBatchResponse> {
@@ -214,7 +214,13 @@ class ApiBase {
     };
 
     return (this.fetch(`https://${this.apiServer}/graphql`, init)
-      .then((response: Response) => response.json()) as Promise<GraphqlBatchResponse>);
+        .then((response: Response) => response.json())
+        .then((responseJson: any) => {
+          if (responseJson.errorMessage) {
+            throw new Error(responseJson.errorMessage);
+          }
+          return responseJson as Promise<GraphqlBatchResponse>;
+        }));
   }
 }
 
