@@ -60,6 +60,15 @@ describe('GraphQLService', function() {
       expect(this.requestStub.callCount).toBe(0);
     });
 
+    it('throws when API key is invalid', function() {
+      this.requestStub.onFirstCall().resolves({
+        errorMessage: 'Invalid key',
+        developerMessage: 'Sent key is invalid'
+      });
+
+      expect(() => Qminder.graphql.query(ME_ID_REQUEST)).toThrowError('Invalid key');
+    });
+
   });
 
   afterEach(function() {
