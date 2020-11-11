@@ -1,4 +1,4 @@
-  {
+{
   "name": "qminder-api",
   "version": "2.2.24",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
@@ -17,7 +17,8 @@
     "watch": "yarn run watch-web",
     "watch-web": "./node_modules/.bin/webpack --watch",
     "docs": "sh ./scripts/build-documentation.sh",
-    "prepack": "yarn run build"
+    "prepack": "yarn run build",
+    "example-new-visitors": "ts-node examples/events/new-visitors.ts"
   },
   "keywords": [
     "qminder",
@@ -106,6 +107,7 @@
     "es6-promise": "^4.1.1",
     "isomorphic-fetch": "^2.2.1",
     "querystring": "^0.2.0",
+    "ts-node": "^9.0.0",
     "ws": "^3.2.0"
   },
   "peerDependencies": {
