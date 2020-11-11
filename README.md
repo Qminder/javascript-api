@@ -9,12 +9,15 @@ The Qminder Javascript API library, supporting both Node.js (from 5.12.0) and br
 
 The Qminder Javascript API can be installed from npm:
 
+    # for npm users
     npm install --save qminder-api
+    # for yarn users
+    yarn add qminder-api
 
 ### Usage
 
-You can use Qminder API by importing it into your source code. The API uses the UMD module 
-definition, which means it should work with all Javascript module bundlers. For easier use, the 
+You can use Qminder API by importing it into your source code. The API uses the UMD module
+definition, which means it should work with all Javascript module bundlers. For easier use, the
 API library can just be included in the page, and will be accessible via the global Qminder object.
 
     // CommonJS / Node.js
@@ -30,37 +33,37 @@ API library can just be included in the page, and will be accessible via the glo
         const Qminder = require('qminder-api');
         Qminder.setKey(...);
     });
-    
+
     // Root object
     // No including needed - just add the script tag to HTML.
     Qminder.setKey(...);
 
-After importing the Qminder API library, make sure to set the access token to connect to your 
-Qminder account. You can get the access token from your account's 
+After importing the Qminder API library, make sure to set the access token to connect to your
+Qminder account. You can get the access token from your account's
 [Integration settings][integration].
 
     Qminder.setKey('API Key');
 
-Check out the Qminder API reference for various API methods. The services (TicketService, 
+Check out the Qminder API reference for various API methods. The services (TicketService,
 UserService, LineService, LocationService) will be of interest.
 
 For starters, you can find all tickets in a line with ID 12345:
 
     const tickets = await Qminder.tickets.search({ status: ['NEW'], line: 12345 });
 
-Qminder.tickets refers to TicketService, for which you can find documentation in the 
+Qminder.tickets refers to TicketService, for which you can find documentation in the
 [API reference][api].
 
 Alternatively, you can send a [GraphQL](https://graphql.org/) query to the Qminder API:
 
-    const locations = await Qminder.graphql(`{
+    const locations = await Qminder.graphql.query(`{
         locations {
             id
             name
         }
     }`);
 
-The GraphQL API is self-documenting. Specialized query tools and IDE integrations can 
+The GraphQL API is self-documenting. Specialized query tools and IDE integrations can
 automatically query the API schema and validate queries before they are sent.
 
 ### Testing changes to Javascript API in another project

@@ -10,7 +10,6 @@ import Webhook from './model/Webhook';
 // Import services
 import ApiBase from './api-base';
 import DeviceService from './services/DeviceService';
-import EventsService from './services/EventsService';
 import LineService from './services/LineService';
 import LocationService from './services/LocationService';
 import TicketService from './services/TicketService';
@@ -34,8 +33,6 @@ export {
 export {
   /** List and manage Apple TVs attached to a location. */
   DeviceService as devices,
-  /** Listen to realtime events of your location and perform actions when they occur. */
-  EventsService as events,
   /** List, create or remove lines in a location. */
   LineService as lines,
   /** Get information about locations. */
@@ -60,7 +57,6 @@ export {
  */
 export const setKey = (key: string) => {
   ApiBase.setKey(key);
-  EventsService.setKey(key);
   GraphQLService.setKey(key);
 };
 
@@ -74,7 +70,6 @@ export const setKey = (key: string) => {
  */
 export const setServer = (server: string) => {
   ApiBase.setServer(server);
-  EventsService.setServer(`wss://${server}:443`);
   GraphQLService.setServer(`wss://${server}:443`);
 };
 

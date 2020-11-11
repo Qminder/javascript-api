@@ -22,18 +22,6 @@ describe('Configuration', function() {
       expect(this.requestStub.called).toBeTruthy();
     });
 
-    it('sets the API key for the websocket API', function() {
-      expect(Qminder.events.apiKey).toBe('EXAMPLE_API_KEY');
-    });
-    it('allows using the websocket API', function() {
-      expect(() => Qminder.events.onTicketCreated(() => {})).not.toThrow();
-    });
-
-    xit('uses the API key in the websocket handshake', function() {
-      Qminder.events.openSocket();
-      expect(this.webSocketStub.calledWith('wss://' + Qminder.events.apiServer + '/events?rest-api-key=EXAMPLE_API_KEY')).toBeTruthy();
-    });
-
     afterEach(function() {
       Qminder.ApiBase.request.restore();
     });
