@@ -1,4 +1,4 @@
-{
+  {
   "name": "qminder-api",
   "version": "2.2.24",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
@@ -30,7 +30,7 @@
   "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=12.0.0"
   },
   "browserslist": [
     "ie 11",
@@ -80,16 +80,16 @@
     "esdoc": "^1.1.0",
     "esdoc-standard-plugin": "^1.0.0",
     "esdoc-typescript-plugin": "^1.0.1",
-    "jasmine": "3.1.0",
-    "jasmine-core": "3.1.0",
+    "jasmine": "3.6.1",
+    "jasmine-core": "3.6.0",
     "json-loader": "^0.5.7",
-    "karma": "^1.7.0",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^1.1.0",
+    "karma": "^5.2.3",
+    "karma-chrome-launcher": "^3.1.0",
+    "karma-jasmine": "^4.0.1",
     "karma-sinon": "^1.0.5",
     "mocha": "^4.0.1",
     "rxjs": "^6.5.3",
-    "sinon": "^3.2.0",
+    "sinon": "^9.2.0",
     "ts-loader": "^4.4.0",
     "typedoc": "^0.11.1",
     "typescript": "^2.9.1",
@@ -109,5 +109,8 @@
   },
   "peerDependencies": {
     "rxjs": "^6.5.3"
+  },
+  "resolutions": {
+    "lodash": "4.17.20"
   }
 }
