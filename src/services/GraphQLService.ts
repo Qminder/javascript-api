@@ -148,6 +148,8 @@ class GraphQLService {
         this.subscriptions.push(new Subscription(id, query));
         this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
 
+        console.log(`[GraphQL subscription] Initializing subscription with id ${id}`);
+
         return new Observable<object>((observer: Observer<object>) => {
             this.subscriptionObserverMap[id] = observer;
 
@@ -238,6 +240,7 @@ class GraphQLService {
             if (typeof rawMessage.data === 'string') {
                 const message: OperationMessage = JSON.parse(rawMessage.data);
 
+                console.log(`[GraphQL subscription] received message with ID ${message.id} and type: ${message.type}`)
                 switch (message.type) {
                     case MessageType.GQL_CONNECTION_KEEP_ALIVE:
                         break;
