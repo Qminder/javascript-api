@@ -70,6 +70,41 @@ describe("LineService", function() {
     });
   });
 
+  describe("update()", function () {
+    beforeEach(function(done) {
+      this.requestStub.withArgs('lines/71490').resolves({});
+      done();
+    });
+
+    it("updates a line using ID", function () {
+      Qminder.lines.update(71490, "Second Front Desk", "#ffffff").then(() => {
+        expect(this.requestStub.calledWith('lines/71490')).toBeTruthy();
+      })
+    });
+
+    it("updates a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.update(new Qminder.Line(line), "Second Front Desk", "#ffffff");
+    });
+
+    it("fails to update a line due to no ID", function () {
+      expect(() => Qminder.lines.update(null, "Second Front Desk", "#ffffff")).toThrowError();
+    });
+
+    it("fails to update a line due to line object lacking ID field", function () {
+      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.update(new Qminder.Line(line), "Second Front Desk", "#ffffff")).toThrowError()
+    });
+
+    it("fails to update a line due to lacking name", function () {
+      expect(() => Qminder.lines.update(71490, null, "#ffffff")).toThrowError()
+    });
+
+    it("fails to update a line due to lacking color", function () {
+      expect(() => Qminder.lines.update(71490, "Second Front Desk", null)).toThrowError()
+    });
+  });
+
   describe("enable()", function () {
     beforeEach(function(done) {
       this.requestStub.withArgs('lines/71490/enable').resolves({});
