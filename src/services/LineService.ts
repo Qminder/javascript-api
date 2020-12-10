@@ -101,29 +101,34 @@ export default class LineService {
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.update(1425, 'Priority Service', '#ffffff');
+   * const line = { "id": 950, "name": "Front Desk", "color": "#ffffff" };
+   * await Qminder.lines.update(line);
    * ```
-   * @param line the Line or the ID of the line to be updated.
-   * @param newName the desired new name of the line.
-   * @param newColor the desired new color of the line.
+   * @param line the Line to be updated - must include the line id, the desired new name and color.
    * @returns A Promise that resolves when the line was updated, and rejects
    * when something went wrong.
    */
-  static update(line: Line | number, newName: string, newColor: string): Promise<any> {
-    let lineId = line instanceof Line ? line.id : line;
+  static update(line: Line): Promise<any> {
+    if (!line || typeof line !== 'object') {
+      throw new Error('Line is invalid or missing.');
+    }
+    
+    let lineId = line.id;
     if (!lineId || typeof lineId !== 'number') {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line ID is invalid or missing.');
     }
 
-    if (!newName || typeof newName !== 'string') {
+    let lineName = line.name;
+    if (!lineName || typeof lineName !== 'string') {
       throw new Error('Cannot update a line without a name.');
     }
 
-    if (!newColor || typeof newColor !== 'string') {
+    let lineColor = line.color;
+    if (!lineColor || typeof lineColor !== 'string') {
       throw new Error('Cannot update a line without a color.');
     }
 
-    let data = { name: newName, color: newColor };
+    let data = { name: lineName, color: lineColor };
     return (ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>);
   }
 
