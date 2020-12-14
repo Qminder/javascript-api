@@ -94,6 +94,45 @@ export default class LineService {
   }
 
   /**
+   * Update an existing Line name and color.
+   *
+   * Calls the following HTTP API: `POST /lines/<ID>`
+   *
+   * For example:
+   *
+   * ```javascript
+   * const line = { "id": 950, "name": "Front Desk", "color": "#ffffff" };
+   * await Qminder.lines.update(line);
+   * ```
+   * @param line the Line to be updated - must include the line id, the desired new name and color.
+   * @returns A Promise that resolves when the line was updated, and rejects
+   * when something went wrong.
+   */
+  static update(line: Line): Promise<any> {
+    if (!line || typeof line !== 'object') {
+      throw new Error('Line is invalid or missing.');
+    }
+    
+    let lineId = line.id;
+    if (!lineId || typeof lineId !== 'number') {
+      throw new Error('Line ID is invalid or missing.');
+    }
+
+    let lineName = line.name;
+    if (!lineName || typeof lineName !== 'string') {
+      throw new Error('Cannot update a line without a name.');
+    }
+
+    let lineColor = line.color;
+    if (!lineColor || typeof lineColor !== 'string') {
+      throw new Error('Cannot update a line without a color.');
+    }
+
+    let data = { name: lineName, color: lineColor };
+    return (ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>);
+  }
+
+  /**
    * Enable a disabled Line.
    *
    * Calls the following HTTP API: `POST /lines/<ID>/enable`

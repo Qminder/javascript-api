@@ -70,6 +70,33 @@ describe("LineService", function() {
     });
   });
 
+  describe("update()", function () {
+    beforeEach(function(done) {
+      this.requestStub.withArgs('lines/71490').resolves({});
+      done();
+    });
+
+    it("updates a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.update(new Qminder.Line(line));
+    });
+
+    it("fails to update a line due to lacking ID", function () {
+      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.update(new Qminder.Line(line))).toThrowError()
+    });
+
+    it("fails to update a line due to lacking name", function () {
+      let line = {"id":71490,"name":null,"color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.update(line)).toThrowError()
+    });
+
+    it("fails to update a line due to lacking color", function () {
+      let line = {"id":71490,"name":"Front Desk","color":null,"disabled":false};
+      expect(() => Qminder.lines.update(line)).toThrowError()
+    });
+  });
+
   describe("enable()", function () {
     beforeEach(function(done) {
       this.requestStub.withArgs('lines/71490/enable').resolves({});
