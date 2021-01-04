@@ -36,6 +36,7 @@ enum MessageType {
 export enum ConnectionStatus {
     DISCONNECTED = 'DISCONNECTED',
     CONNECTING = 'CONNECTING',
+    INITIALIZING = 'INITIALIZING',
     CONNECTED = 'CONNECTED',
 }
 
@@ -170,7 +171,7 @@ class GraphQLService {
      * This returns an observable which fires with the connection status every time it changes.
      * @returns an RxJS obserable that will fire with the connection status every time it changes
      */
-    getSubscriptionConnectionObservable(): Observable<'DISCONNECTED' | 'CONNECTING' | 'CONNECTED'> {
+    getSubscriptionConnectionObservable(): Observable<'DISCONNECTED' | 'CONNECTING' | 'INITIALIZING' | 'CONNECTED'> {
         return this.connection$;
     }
 
@@ -201,7 +202,7 @@ class GraphQLService {
 
         socket.onopen = () => {
             console.log('[GraphQL subscription] Connection established!');
-            this.setConnectionStatus(ConnectionStatus.CONNECTED);
+            this.setConnectionStatus(ConnectionStatus.INITIALIZING);
             this.connectionRetries = 0;
             this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
         };
@@ -243,7 +244,7 @@ class GraphQLService {
                         break;
 
                     case MessageType.GQL_CONNECTION_ACK:
-
+                        this.setConnectionStatus(ConnectionStatus.CONNECTED);
                         this.subscriptions.forEach((subscription) => {
                             const payload = {query: `subscription { ${subscription.query} }`};
                             const message = JSON.stringify({id: subscription.id, type: MessageType.GQL_START, payload});
@@ -276,7 +277,7 @@ class GraphQLService {
 
     private sendMessage(id: string, type: MessageType, payload: any) {
         const message = JSON.stringify({id, type, payload});
-        if (this.connectionStatus === ConnectionStatus.CONNECTED) {
+        if (this.connectionStatus === ConnectionStatus.CONNECTED || this.connectionStatus === ConnectionStatus.INITIALIZING) {
             this.sendRawMessage(message);
         } else {
             this.openSocket();
