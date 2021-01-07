@@ -146,4 +146,29 @@ describe("LineService", function() {
       expect(() => Qminder.lines.disable(new Qminder.Line(line))).toThrowError()
     });
   });
+
+  describe("archive()", function () {
+    beforeEach(function(done) {
+      this.requestStub.withArgs('lines/71490/archive').resolves({});
+      done();
+    });
+
+    it("archive a line using ID", function () {
+      Qminder.lines.archive(71490);
+    });
+
+    it("archive a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.archive(new Qminder.Line(line));
+    });
+
+    it("fails to archive a line due to no ID", function () {
+      expect(() => Qminder.lines.archive(null)).toThrowError();
+    });
+
+    it("fails to archive a line due to line object lacking ID field", function () {
+      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.archive(new Qminder.Line(line))).toThrowError()
+    });
+  });
 });
