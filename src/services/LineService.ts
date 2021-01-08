@@ -177,26 +177,26 @@ export default class LineService {
   }
 
   /**
-   * Remove a Line.
-   * This removes the line from the line list, from iPads and TVs, from the service screen and from
+   * Archive a Line.
+   * This archives the line and removes it from the line list, from iPads and TVs, from the service screen and from
    * statistics. This action cannot be undone.
    *
-   * Calls the following HTTP API: `DELETE /lines/<ID>`
+   * Calls the following HTTP API: `POST /lines/<ID>/archive`
    *
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.remove(1425);
+   * await Qminder.lines.archive(1425);
    * ```
-   * @param line  the Line or the line's ID to remove
-   * @returns A Promise that resolves when the line was deleted, and rejects
+   * @param line  the Line or the line's ID to archive
+   * @returns A Promise that resolves when the line was archived, and rejects
    * when something went wrong.
    */
-  static remove(line: Line | number): Promise<any> {
+  static archive(line: Line | number): Promise<any> {
     let lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}`, undefined, 'DELETE') as Promise<any>);
+    return (ApiBase.request(`lines/${lineId}/archive`, undefined, 'POST') as Promise<any>);
   }
 };
