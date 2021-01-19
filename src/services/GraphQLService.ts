@@ -2,6 +2,7 @@ import WebSocket, {MessageData} from '../lib/websocket-web';
 import ApiBase, {GraphqlResponse} from '../api-base';
 import {Observable, Observer, Subject} from 'rxjs';
 import { GraphqlBatcher } from '../graphql-batcher';
+import { shareReplay } from "rxjs/operators";
 
 interface OperationMessage {
     id?: string;
@@ -57,7 +58,7 @@ class GraphQLService {
 
     private connectionStatus: ConnectionStatus;
     private connectionSubject = new Subject<ConnectionStatus>();
-    private connection$ = this.connectionSubject.pipe();
+    private connection$ = this.connectionSubject.pipe(shareReplay(1));
 
     private nextSubscriptionId: number = 1;
 
