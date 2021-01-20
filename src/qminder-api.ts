@@ -15,7 +15,7 @@ import LocationService from './services/LocationService';
 import TicketService from './services/TicketService';
 import UserService from './services/UserService';
 import WebhooksService from './services/WebhooksService';
-import GraphQLService from './services/GraphQLService';
+import GraphQLService, { ConnectionStatus } from './services/GraphQLService';
 
 // Export all data structures
 export {
@@ -27,6 +27,11 @@ export {
   Ticket,
   User,
   Webhook
+};
+
+// Export misc structures
+export {
+  ConnectionStatus
 };
 
 // Export all services
