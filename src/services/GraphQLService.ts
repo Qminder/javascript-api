@@ -146,11 +146,10 @@ class GraphQLService {
             throw new Error('GraphQLService query expects a GraphQL query as its first argument');
         }
 
-        const id = this.generateOperationId();
-        this.subscriptions.push(new Subscription(id, query));
-        this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
-
         return new Observable<object>((observer: Observer<object>) => {
+            const id = this.generateOperationId();
+            this.subscriptions.push(new Subscription(id, query));
+            this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
             this.subscriptionObserverMap[id] = observer;
 
             return () => this.stopSubscription(id);
@@ -254,9 +253,6 @@ class GraphQLService {
                         break;
 
                     case MessageType.GQL_DATA:
-                        if (!this.subscriptionObserverMap[message.id]) {
-                            console.error(`[GraphQL subscription] Received data message with ID not in local map: ${message.id}, keys in map: ${Object.keys(this.subscriptionObserverMap)}`);
-                        }
                         this.subscriptionObserverMap[message.id].next(message.payload.data);
                         break;
 
