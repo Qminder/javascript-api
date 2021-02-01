@@ -253,9 +253,6 @@ class GraphQLService {
                         break;
 
                     case MessageType.GQL_DATA:
-                        if (!this.subscriptionObserverMap[message.id]) {
-                            console.error(`[GraphQL subscription] Received data message with ID not in local map: ${message.id}, keys in map: ${Object.keys(this.subscriptionObserverMap)}`);
-                        }
                         this.subscriptionObserverMap[message.id].next(message.payload.data);
                         break;
 
