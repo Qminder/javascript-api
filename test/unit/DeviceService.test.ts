@@ -9,20 +9,21 @@ describe("Qminder.devices", function() {
     theme: "standard"
   };
 
+  let requestStub: sinon.SinonStub;
   beforeEach(function() {
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
-    this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
   });
 
   describe('details()', function() {
     beforeEach(function() {
-      this.requestStub.onFirstCall().resolves(TV_DETAILS);
+      requestStub.onFirstCall().resolves(TV_DETAILS);
     });
 
     it('requests the correct API URL', function() {
       Qminder.devices.details(1234);
-      expect(this.requestStub.calledWith('tv/1234')).toBeTruthy();
+      expect(requestStub.calledWith('tv/1234')).toBeTruthy();
     });
 
     it('throws when the TV ID is not passed in', function() {
@@ -43,6 +44,6 @@ describe("Qminder.devices", function() {
   });
 
   afterEach(function() {
-    (Qminder.ApiBase.request as sinon.SinonStub).restore();
+    requestStub.restore();
   });
 });

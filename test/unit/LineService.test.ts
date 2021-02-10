@@ -11,13 +11,16 @@ describe("LineService", function() {
     {"id":71615,"name":"Lab Notifications","color":"#aaaaaa","disabled":false},
   ];
   const LOCATION_ID = 673;
+  let requestStub: sinon.SinonStub;
+
+  let reply: any;
 
   beforeEach(function() {
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
 
     // Stub ApiBase.request to feed specific data to API
-    this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
   });
 
   afterEach(function() {
@@ -26,20 +29,20 @@ describe("LineService", function() {
 
   describe("list()", function() {
     beforeEach(function(done) {
-      this.requestStub.withArgs(`locations/${LOCATION_ID}/lines`).resolves({ data: LINES });
+      requestStub.withArgs(`locations/${LOCATION_ID}/lines`).resolves({ data: LINES });
       Qminder.lines.list(LOCATION_ID).then(lines => {
-        this.lines = lines;
+        reply = lines;
         done();
       });
     });
 
     it("returns a list of Qminder.Line objects", function () {
-      const allAreInstances = this.lines.every((line: unknown) => (line instanceof Qminder.Line));
+      const allAreInstances = reply.every((line: unknown) => (line instanceof Qminder.Line));
       expect(allAreInstances).toBeTruthy();
     });
 
     it("returns the right line IDs", function () {
-      const lines = this.lines.map((x: Qminder.Line) => x.id);
+      const lines = reply.map((x: Qminder.Line) => x.id);
       const correctLines = LINES.map(x => x.id);
 
       for (let i = 0; i < correctLines.length; i++) {
@@ -48,7 +51,7 @@ describe("LineService", function() {
     });
 
     it("the name of the line is correct", function () {
-      const names = this.lines.map((x: Qminder.Line) => x.name);
+      const names = reply.map((x: Qminder.Line) => x.name);
       const correctNames = LINES.map(x => x.name);
 
       for (let i = 0; i < correctNames.length; i++) {
@@ -57,7 +60,7 @@ describe("LineService", function() {
     });
 
     it("the color of the line is correct", function () {
-      const colors = this.lines.map((x: Qminder.Line) => x.color);
+      const colors = reply.map((x: Qminder.Line) => x.color);
       const correctColors = LINES.map(x => x.color);
 
       for (let i = 0; i < correctColors.length; i++) {
@@ -68,7 +71,7 @@ describe("LineService", function() {
 
   describe("update()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490').resolves({});
+      requestStub.withArgs('lines/71490').resolves({});
       done();
     });
 
@@ -95,7 +98,7 @@ describe("LineService", function() {
 
   describe("enable()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490/enable').resolves({});
+      requestStub.withArgs('lines/71490/enable').resolves({});
       done();
     });
 
@@ -120,7 +123,7 @@ describe("LineService", function() {
 
   describe("disable()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490/disable').resolves({});
+      requestStub.withArgs('lines/71490/disable').resolves({});
       done();
     });
 
@@ -145,7 +148,7 @@ describe("LineService", function() {
 
   describe("archive()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490/archive').resolves({});
+      requestStub.withArgs('lines/71490/archive').resolves({});
       done();
     });
 

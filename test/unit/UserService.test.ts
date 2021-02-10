@@ -31,13 +31,14 @@ describe("UserService", function() {
   ];
   const pictureSizes = { small: 1, medium: 2, large: 3 };
   const pictureSort = (a: { size: string }, b: { size: string }) => pictureSizes[a.size as 'small' | 'medium' | 'large'] - pictureSizes[b.size as 'small' | 'medium' | 'large'];
+  let requestStub: sinon.SinonStub;
 
   beforeEach(function() {
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
 
     // Stub ApiBase.request to feed specific data to API
-    this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
   });
 
   afterEach(function() {
@@ -45,21 +46,22 @@ describe("UserService", function() {
   });
 
   describe("list()", function() {
+    let usersReply: any;
     beforeEach(function(done) {
-      this.requestStub.withArgs(`locations/${LOCATION_ID}/users`).resolves({ data: USERS });
+      requestStub.withArgs(`locations/${LOCATION_ID}/users`).resolves({ data: USERS });
 
       Qminder.users.list(LOCATION_ID).then((users: Qminder.User[]) => {
-        this.users = users;
+        usersReply = users;
         done();
       });
     });
 
     it("returns a list of Qminder.User objects", function() {
-      const allAreInstances = this.users.every((user: unknown) => user instanceof Qminder.User);
+      const allAreInstances = usersReply.every((user: unknown) => user instanceof Qminder.User);
       expect(allAreInstances).toBeTruthy();
     });
     it("returns the right user IDs", function() {
-      const returnedIds = this.users.map((user: Qminder.User) => user.id);
+      const returnedIds = usersReply.map((user: Qminder.User) => user.id);
       const groundTruth = USERS.map(user => user.id);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -67,7 +69,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right email addresses", function() {
-      const returned = this.users.map((user: Qminder.User) => user.email);
+      const returned = usersReply.map((user: Qminder.User) => user.email);
       const groundTruth = USERS.map(user => user.email);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -75,7 +77,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right first names", function() {
-      const returned = this.users.map((user: Qminder.User) => user.firstName);
+      const returned = usersReply.map((user: Qminder.User) => user.firstName);
       const groundTruth = USERS.map(user => user.firstName);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -83,7 +85,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right last names", function() {
-      const returned = this.users.map((user: Qminder.User) => user.lastName);
+      const returned = usersReply.map((user: Qminder.User) => user.lastName);
       const groundTruth = USERS.map(user => user.lastName);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -91,7 +93,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right pictures", function() {
-      const returned = this.users.map((user: Qminder.User) => user.picture[0]).sort(pictureSort);
+      const returned = usersReply.map((user: Qminder.User) => user.picture[0]).sort(pictureSort);
       const groundTruth = USERS.map(user => user.picture[0]).sort(pictureSort);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -122,7 +124,7 @@ describe("UserService", function() {
       } as any);
 
       Qminder.users.create(user);
-      expect(this.requestStub.calledWith('users/', sinon.match({
+      expect(requestStub.calledWith('users/', sinon.match({
         roles: JSON.stringify(user.roles)
       }))).toBeTruthy();
     });
@@ -139,7 +141,7 @@ describe("UserService", function() {
   describe("setLines()" , function() {
     it("Works with a list of Line IDs", function() {
       Qminder.users.setLines(123, [1,2,3,4]);
-      expect(this.requestStub.calledWith('users/123/lines', sinon.match(JSON.stringify([1,2,3,4])))).toBeTruthy();
+      expect(requestStub.calledWith('users/123/lines', sinon.match(JSON.stringify([1,2,3,4])))).toBeTruthy();
     });
 
     it("Works with a list of Lines", function() {
@@ -150,7 +152,7 @@ describe("UserService", function() {
       ];
 
       Qminder.users.setLines(123, lines);
-      expect(this.requestStub.calledWith('users/123/lines', sinon.match(JSON.stringify([1,2,3])))).toBeTruthy();
+      expect(requestStub.calledWith('users/123/lines', sinon.match(JSON.stringify([1,2,3])))).toBeTruthy();
     });
 
     it("Breaks when trying to use inconsistent types", function() {
