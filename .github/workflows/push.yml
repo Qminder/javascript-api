@@ -14,5 +14,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - name: Install Deps
       run: yarn install --frozen-lockfile
-    - name: Build Library & Run Tests & Attempt to Package
+    - name: Run tests (browser)
+      run: yarn test
+    - name: Run tests (node)
+      run: yarn test-node
+    - name: Build the package
       run: yarn pack
