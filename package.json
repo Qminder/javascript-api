@@ -2,18 +2,13 @@
   "name": "qminder-api",
   "version": "3.0.3",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
-  "directories": {
-    "test": "test"
-  },
+  "files": [
+    "./build/*"
+  ],
   "scripts": {
     "test": "jest",
     "test-node": "jest --env=node",
-    "build": "sh ./scripts/build-full.sh",
-    "build-web": "yarn run webpack",
-    "build-web-unbundled": "sh ./scripts/build-web-unbundled.sh",
-    "build-node": "sh ./scripts/build-node.sh",
-    "watch": "yarn run watch-web",
-    "watch-web": "yarn run webpack --watch",
+    "build": "sh ./scripts/build.sh",
     "docs": "sh ./scripts/build-documentation.sh",
     "prepack": "yarn run build",
     "example-new-visitors": "ts-node examples/events/new-visitors.ts"
@@ -30,23 +25,13 @@
   "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=12.0.0"
+    "node": ">=14.0.0"
   },
   "browserslist": [
-    "ie 11",
     "last 2 major versions"
   ],
-  "main": "build-node/qminder-api.js",
-  "unpkg": "build-web/qminder-api.min.js",
-  "module": "build-node/qminder-api.js",
-  "module-browser": "build-es6/qminder-api.js",
-  "browser": "build-es6/qminder-api.js",
-  "esnext": {
-    "main": "build-node/qminder-api.js",
-    "browser": "build-es6/qminder-api.js"
-  },
-  "es2015": "build-es6/qminder-api.js",
-  "types": "build-es6/qminder-api.d.ts",
+  "main": "build/qminder-api.js",
+  "types": "build/qminder-api.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
     "@babel/core": "^7.12.13",
@@ -54,22 +39,13 @@
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.25",
     "@types/sinon": "^9.0.10",
-    "babel-loader": "^8.2.2",
     "jest": "^26.6.3",
     "jest-sinon": "^1.0.4",
-    "json-loader": "^0.5.7",
     "rxjs": "6.5.5",
     "sinon": "^9.2.4",
     "ts-jest": "^26.5.1",
-    "ts-loader": "^4.4.0",
-    "ts-node": "^9.0.0",
     "typedoc": "^0.11.1",
-    "typescript": "^4.1.4",
-    "uglify-js": "git://github.com/mishoo/UglifyJS2#harmony-v2.8.22",
-    "uglifyjs-webpack-plugin": "0.4.3",
-    "webpack": "4.18.0",
-    "webpack-cli": "^3.0.3",
-    "webpack-node-externals": "^1.6.0"
+    "typescript": "^4.1.4"
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.34",
@@ -82,7 +58,8 @@
   "peerDependencies": {
     "rxjs": "6.5.5"
   },
-  "resolutions": {
-    "lodash": "4.17.20"
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
   }
 }

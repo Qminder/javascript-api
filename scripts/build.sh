@@ -12,7 +12,7 @@ sedi () {
     sed --version >/dev/null 2>&1 && sed -i -- "$@" || sed -i "" "$@"
 }
 
-rm -rf build-es6
-tsc --declaration --outDir build-es6 --module esnext --target es2017 --moduleResolution node ./src/qminder-api.ts
+rm -rf build
+tsc --declaration --outDir build --module esnext --target es2017 --moduleResolution node ./src/qminder-api.ts
 
-sedi "s/VERSION/'$qminderVersion'/g" ./build-es6/qminder-api.js
+sedi "s/VERSION/'$qminderVersion'/g" ./build/qminder-api.js
