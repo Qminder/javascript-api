@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe("UserService", function() {
   const LOCATION_ID = 673;
@@ -29,7 +30,7 @@ describe("UserService", function() {
     }
   ];
   const pictureSizes = { small: 1, medium: 2, large: 3 };
-  const pictureSort = (a, b) => pictureSizes[a.size] - pictureSizes[b.size];
+  const pictureSort = (a: { size: string }, b: { size: string }) => pictureSizes[a.size as 'small' | 'medium' | 'large'] - pictureSizes[b.size as 'small' | 'medium' | 'large'];
 
   beforeEach(function() {
     Qminder.setKey('EXAMPLE_API_KEY');
@@ -40,25 +41,25 @@ describe("UserService", function() {
   });
 
   afterEach(function() {
-    Qminder.ApiBase.request.restore();
+    (Qminder.ApiBase.request as sinon.SinonStub).restore();
   });
 
   describe("list()", function() {
     beforeEach(function(done) {
       this.requestStub.withArgs(`locations/${LOCATION_ID}/users`).resolves({ data: USERS });
 
-      Qminder.users.list(LOCATION_ID).then(users => {
+      Qminder.users.list(LOCATION_ID).then((users: Qminder.User[]) => {
         this.users = users;
         done();
       });
     });
 
     it("returns a list of Qminder.User objects", function() {
-      const allAreInstances = this.users.reduce((acc, user) => acc && (user instanceof Qminder.User));
+      const allAreInstances = this.users.every((user: unknown) => user instanceof Qminder.User);
       expect(allAreInstances).toBeTruthy();
     });
     it("returns the right user IDs", function() {
-      const returnedIds = this.users.map(user => user.id);
+      const returnedIds = this.users.map((user: Qminder.User) => user.id);
       const groundTruth = USERS.map(user => user.id);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -66,7 +67,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right email addresses", function() {
-      const returned = this.users.map(user => user.email);
+      const returned = this.users.map((user: Qminder.User) => user.email);
       const groundTruth = USERS.map(user => user.email);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -74,7 +75,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right first names", function() {
-      const returned = this.users.map(user => user.firstName);
+      const returned = this.users.map((user: Qminder.User) => user.firstName);
       const groundTruth = USERS.map(user => user.firstName);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -82,7 +83,7 @@ describe("UserService", function() {
       }
     });
     it("returns the right last names", function() {
-      const returned = this.users.map(user => user.lastName);
+      const returned = this.users.map((user: Qminder.User) => user.lastName);
       const groundTruth = USERS.map(user => user.lastName);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -90,8 +91,8 @@ describe("UserService", function() {
       }
     });
     it("returns the right pictures", function() {
-      const returned = this.users.map(user => user.picture).sort(pictureSort);
-      const groundTruth = USERS.map(user => user.picture).sort(pictureSort);
+      const returned = this.users.map((user: Qminder.User) => user.picture[0]).sort(pictureSort);
+      const groundTruth = USERS.map(user => user.picture[0]).sort(pictureSort);
 
       for (let i = 0; i < groundTruth.length; i++) {
         expect(returned[i].url).toBe(groundTruth[i].url);
@@ -108,15 +109,17 @@ describe("UserService", function() {
         lastName: 'Snow',
         roles: [
           {
+            id: 1234,
             type: 'CLERK',
             location: 1234
           },
           {
+            id: 1235,
             type: 'CLERK',
             location: 1235
           }
         ]
-      });
+      } as any);
 
       Qminder.users.create(user);
       expect(this.requestStub.calledWith('users/', sinon.match({

@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe('Configuration', function() {
   describe('Qminder.setKey', function() {
@@ -18,7 +19,7 @@ describe('Configuration', function() {
     });
 
     afterEach(function() {
-      Qminder.ApiBase.request.restore();
+      (Qminder.ApiBase.request as sinon.SinonStub).restore();
     });
   });
 });

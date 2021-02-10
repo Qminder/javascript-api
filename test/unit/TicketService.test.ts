@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe("TicketService", function() {
   const JON_SNOW = {
@@ -56,7 +57,7 @@ describe("TicketService", function() {
       });
     });
     it('searches based on statuses', function(done) {
-      const request = { status: ['NEW', 'CALLED', 'SERVED'] };
+      const request: any = { status: ['NEW', 'CALLED', 'SERVED'] };
       this.requestStub.onCall(0).resolves(tickets);
       Qminder.tickets.search(request).then(() => {
         expect(this.requestStub.calledWith('tickets/search?status=NEW%2CCALLED%2CSERVED')).toBeTruthy();
@@ -238,7 +239,7 @@ describe("TicketService", function() {
       });
     });
     it('combines multiple searched parameters successfully', function(done) {
-      const request = {
+      const request: any = {
         responseScope: 'MESSAGES',
         line: [123, 234, 345],
         status: ['NEW','CALLED','SERVED'],
@@ -257,7 +258,7 @@ describe("TicketService", function() {
     });
     // ---
     it('transforms its return list into Tickets', function(done) {
-      const response = { data: [ { id: 1, line: 1234, firstName: 'Jo', lastName: 'Smi', source: 'NAME', extra: [] }]};
+      const response: any = { data: [ { id: 1, line: 1234, firstName: 'Jo', lastName: 'Smi', source: 'NAME', extra: [] }]};
       this.requestStub.onCall(0).resolves(response);
       Qminder.tickets.search({ line: [1234] }).then(response => {
         expect(response instanceof Array).toBeTruthy();
@@ -310,7 +311,7 @@ describe("TicketService", function() {
       });
     });
     it('searches based on statuses', function(done) {
-      const request = { status: ['NEW', 'CALLED', 'SERVED'] };
+      const request: any = { status: ['NEW', 'CALLED', 'SERVED'] };
       this.requestStub.onCall(0).resolves(tickets);
       Qminder.tickets.count(request).then(() => {
         expect(this.requestStub.calledWith('tickets/count?status=NEW%2CCALLED%2CSERVED')).toBeTruthy();
@@ -481,7 +482,7 @@ describe("TicketService", function() {
       });
     });
     it('combines multiple searched parameters successfully', function(done) {
-      const request = {
+      const request: any = {
         line: [123, 234, 345],
         status: ['NEW','CALLED','SERVED'],
         caller: new Qminder.User(111),
@@ -506,11 +507,11 @@ describe("TicketService", function() {
     });
   });
   describe("create()", function() {
-    const createRequestBody = {
+    const createRequestBody: any = {
       firstName: 'John',
       lastName: 'Smith'
     };
-    const createResponseBody = {
+    const createResponseBody: any = {
       id: "12345",
     };
     beforeEach(function() {
@@ -523,7 +524,7 @@ describe("TicketService", function() {
       });
     });
     it('calls the right URL when the line is specified as Line', function(done) {
-      const line = new Qminder.Line({ id: 11111 });
+      const line = new Qminder.Line({ id: 11111 } as any);
       Qminder.tickets.create(line.id, createRequestBody).then(() => {
         expect(this.requestStub.calledWith('lines/11111/ticket', createRequestBody));
         done();
@@ -537,13 +538,13 @@ describe("TicketService", function() {
       });
     });
     it('throws when line ID is missing', function() {
-      expect(() => Qminder.tickets.create(undefined, {})).toThrow();
+      expect(() => (Qminder.tickets.create as any)(undefined, {})).toThrow();
     });
     it('throws when line is a Qminder.Line with undefined ID', function() {
-      expect(() => Qminder.tickets.create(new Qminder.Line({}))).toThrow();
+      expect(() => (Qminder.tickets.create as any)(new Qminder.Line({} as any))).toThrow();
     });
     it('Sends the extras as a JSON array', function() {
-      const ticket = {
+      const ticket: any = {
         firstName: 'Jon',
         lastName: 'Snow',
         phoneNumber: 3185551234,
@@ -562,7 +563,7 @@ describe("TicketService", function() {
       }))).toBeTruthy();
     });
     it('Does not send undefined keys', function() {
-      Qminder.tickets.create(1, {});
+      Qminder.tickets.create(1, {} as any);
       expect(this.requestStub.calledWithExactly('lines/1/ticket', sinon.match({
         firstName: undefined,
         lastName: undefined,
@@ -572,7 +573,7 @@ describe("TicketService", function() {
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match({}))).toBeTruthy();
     });
     it('sends email address if it is defined', function() {
-      const ticketWithEmail = {
+      const ticketWithEmail: any = {
         firstName: 'Jane',
         lastName: 'Smith',
         email: 'jsmith224@example.com',
@@ -581,7 +582,7 @@ describe("TicketService", function() {
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticketWithEmail))).toBeTruthy();
     });
     it('does not send email address if it is not defined', function() {
-      const ticketWithoutEmail = {
+      const ticketWithoutEmail: any = {
         firstName: 'Jane',
         lastName: 'Smith',
       };
@@ -592,7 +593,7 @@ describe("TicketService", function() {
       }))).toBeFalsy();
     });
     it('sends source if it is defined', function() {
-      const ticketWithSource = {
+      const ticketWithSource: any = {
         firstName: 'Jane',
         lastName: 'Smith',
         source: 'NAME',
@@ -601,7 +602,7 @@ describe("TicketService", function() {
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticketWithSource))).toBeTruthy();
     });
     it('does not send source if it is not defined', function() {
-      const ticketWithoutSource = {
+      const ticketWithoutSource: any = {
         firstName: 'Jane',
         lastName: 'Smith',
       };
@@ -612,12 +613,12 @@ describe("TicketService", function() {
       }))).toBeFalsy();
     });
     it('does not send Idempotency-Key if not provided', function() {
-      const ticket = { firstName: 'Joe', lastName: 'Santana' };
+      const ticket: any = { firstName: 'Joe', lastName: 'Santana' };
       Qminder.tickets.create(1, ticket);
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), 'POST', undefined)).toBeTruthy();
     });
     it('sends Idempotency-Key if provided', function() {
-      const ticket = { firstName: 'Joe', lastName: 'Santana' };
+      const ticket: any = { firstName: 'Joe', lastName: 'Santana' };
       Qminder.tickets.create(1, ticket, '9e3a333e');
       expect(this.requestStub.calledWith('lines/1/ticket', sinon.match(ticket), 'POST', '9e3a333e')).toBeTruthy();
     });
@@ -640,7 +641,7 @@ describe("TicketService", function() {
       });
     });
     it('calls the right URL when ticket is passed in as a Ticket', function(done) {
-      const ticket = new Qminder.Ticket({ id: 12345 });
+      const ticket = new Qminder.Ticket({ id: 12345 } as any);
       Qminder.tickets.details(ticket).then(() => {
         expect(this.requestStub.calledWith('tickets/12345')).toBeTruthy();
         done();
@@ -657,10 +658,10 @@ describe("TicketService", function() {
       expect(() => Qminder.tickets.details(undefined)).toThrow();
     });
     it('throws when ticket is invalid', function() {
-      expect(() => Qminder.tickets.details(function() {})).toThrow();
+      expect(() => (Qminder.tickets.details as any)(function() {})).toThrow();
     });
     it('throws when ticket is a Ticket object but id is undefined', function() {
-      expect(() => Qminder.tickets.details(new Qminder.Ticket({}))).toThrow();
+      expect(() => Qminder.tickets.details(new Qminder.Ticket({} as any))).toThrow();
     });
     it('does not set the email key when response does not include email', function() {
       const responseBody = Object.assign({}, detailsResponseBody);
@@ -676,7 +677,7 @@ describe("TicketService", function() {
     });
   });
   describe("edit()", function() {
-    const editedFields = {
+    const editedFields: any = {
       line: 11111,
       firstName: 'Johnny',
       lastName: 'Smithicus',
@@ -696,7 +697,7 @@ describe("TicketService", function() {
       });
     });
     it('calls the right URL when ticket is passed as a Ticket object', function(done) {
-      const ticket = new Qminder.Ticket({ id: 12345 });
+      const ticket = new Qminder.Ticket({ id: 12345 } as any);
       Qminder.tickets.edit(ticket, editedFields).then(response => {
         console.log(this.requestStub.firstCall.args);
         expect(this.requestStub.calledWith('tickets/12345/edit', editedFields)).toBeTruthy();
@@ -706,10 +707,10 @@ describe("TicketService", function() {
     });
     it("throws when ticket is missing", function() {
       expect(function() {
-        Qminder.tickets.edit(undefined);
+        (Qminder.tickets.edit as any)(undefined);
       }).toThrow();
       expect(function() {
-        Qminder.tickets.edit(undefined, { lastName: 'wow' });
+        (Qminder.tickets.edit as any)(undefined, { lastName: 'wow' });
       }).toThrow();
     });
     it("throws when there's no changes", function() {
@@ -718,63 +719,63 @@ describe("TicketService", function() {
       }).toThrow();
     });
     it('throws when ticket is invalid', function() {
-      expect(() => Qminder.tickets.edit("wheeee")).toThrow();
+      expect(() => (Qminder.tickets.edit as any)("wheeee")).toThrow();
     });
     it('throws when ticket is a Ticket object but id is undefined', function() {
-      expect(() => Qminder.tickets.edit(new Qminder.Ticket({}))).toThrow();
+      expect(() => (Qminder.tickets.edit as any)(new Qminder.Ticket({} as any))).toThrow();
     });
 
     it('allows resetting first name to empty with empty string', function() {
-      Qminder.tickets.edit(12345, { firstName: '' });
+      Qminder.tickets.edit(12345, { firstName: '' } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
                                 sinon.match({ firstName: '' }))).toBeTruthy();
     });
 
     it('allows resetting last name to empty with empty string', function() {
-      Qminder.tickets.edit(12345, { lastName: '' });
+      Qminder.tickets.edit(12345, { lastName: '' } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ lastName: '' }))).toBeTruthy();
     });
 
     it('allows resetting email to empty with empty string', function() {
-      Qminder.tickets.edit(12345, { email: '' });
+      Qminder.tickets.edit(12345, { email: '' } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ email: '' }))).toBeTruthy();
     });
 
     it('allows resetting first name to empty with null', function() {
-      Qminder.tickets.edit(12345, { firstName: null });
+      Qminder.tickets.edit(12345, { firstName: null } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ firstName: null }))).toBeTruthy();
     });
 
     it('allows resetting last name to empty with null', function() {
-      Qminder.tickets.edit(12345, { lastName: null });
+      Qminder.tickets.edit(12345, { lastName: null } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ lastName: null }))).toBeTruthy();
     });
 
     it('allows resetting phone number to empty with null', function() {
-      Qminder.tickets.edit(12345, { phoneNumber: null });
+      Qminder.tickets.edit(12345, { phoneNumber: null } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ phoneNumber: null }))).toBeTruthy();
     });
 
     it('allows resetting email to empty with null', function() {
-      Qminder.tickets.edit(12345, { email: null });
+      Qminder.tickets.edit(12345, { email: null } as any);
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ email: null }))).toBeTruthy();
     });
 
     it('sends the User ID if provided', function() {
-      Qminder.tickets.edit(12345, { user: 14141, email: null });
+      Qminder.tickets.edit(12345, { user: 14141, email: null } as any);
 
       expect(this.requestStub.calledWith('tickets/12345/edit',
         sinon.match({ email: null, user: 14141 }))).toBeTruthy();
     });
 
     it('Sends the extras as a JSON array', function() {
-      const changes = {
+      const changes: any = {
         phoneNumber: 3185551234,
         extra: [
           {
@@ -804,7 +805,7 @@ describe("TicketService", function() {
       });
     });
     it('calls the API with only one line as Line', function(done) {
-      Qminder.tickets.callNext([new Qminder.Line({ id: 12345 })]).then(() => {
+      Qminder.tickets.callNext([new Qminder.Line({ id: 12345 } as any)]).then(() => {
         const request = sinon.match({ lines: '12345' });
         expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
         done();
@@ -818,8 +819,8 @@ describe("TicketService", function() {
       });
     });
     it('calls the API with more than one line as Lines', function(done) {
-      const lineA = new Qminder.Line({ id: 12345 });
-      const lineB = new Qminder.Line({ id: 12346 });
+      const lineA = new Qminder.Line({ id: 12345 } as any);
+      const lineB = new Qminder.Line({ id: 12346 } as any);
       Qminder.tickets.callNext([lineA, lineB]).then(() => {
         const request = sinon.match({ lines: '12345,12346' });
         expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
@@ -827,12 +828,12 @@ describe("TicketService", function() {
       });
     });
     it('throws when mixing ID and Line in the lines array', function() {
-      const lineA = new Qminder.Line({ id: 12345 });
+      const lineA = new Qminder.Line({ id: 12345 } as any);
       expect(() => Qminder.tickets.callNext([lineA, 12346])).toThrow();
     });
     it('throws when the lines array has a Line with no ID', function() {
-      const lineA = new Qminder.Line({ id: 12345 });
-      const lineB = new Qminder.Line({ });
+      const lineA = new Qminder.Line({ id: 12345 } as any);
+      const lineB = new Qminder.Line({} as any);
       expect(() => Qminder.tickets.callNext([lineA, lineB])).toThrow();
     });
     it('throws when the lines array has an undefined value', function() {
@@ -847,17 +848,17 @@ describe("TicketService", function() {
       });
     });
     it('calls the API with one line and caller user as User', function(done) {
-      Qminder.tickets.callNext([12345], new Qminder.User({ id: 14141 })).then(() => {
+      Qminder.tickets.callNext([12345], new Qminder.User({ id: 14141 } as any)).then(() => {
         const request = sinon.match({ lines: '12345', user: 14141 });
         expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
         done();
       });
     });
     it('throws when the caller User has no ID', function() {
-      expect(() => Qminder.tickets.callNext([12345], new Qminder.User({ }))).toThrow();
+      expect(() => Qminder.tickets.callNext([12345], new Qminder.User({ } as any))).toThrow();
     });
     it('throws when the caller User is invalid', function() {
-      expect(() => Qminder.tickets.callNext([12345], "Helloooo")).toThrow();
+      expect(() => Qminder.tickets.callNext([12345], "Helloooo" as any)).toThrow();
     });
 
     it('calls the API with one line, caller user, and desk as ID', function(done) {
@@ -868,17 +869,17 @@ describe("TicketService", function() {
       });
     });
     it('calls the API with one line, caller user, and Desk', function(done) {
-      Qminder.tickets.callNext([12345], 14141, new Qminder.Desk({ id: 3 })).then(() => {
+      Qminder.tickets.callNext([12345], 14141, new Qminder.Desk({ id: 3 } as any)).then(() => {
         const request = sinon.match({ lines: '12345', user: 14141, desk: 3 });
         expect(this.requestStub.calledWith('tickets/call', request, 'POST')).toBeTruthy();
         done();
       });
     });
     it('throws when the Desk has no ID', function() {
-      expect(() => Qminder.tickets.callNext([12345], 14141, new Qminder.Desk({ }))).toThrow();
+      expect(() => Qminder.tickets.callNext([12345], 14141, new Qminder.Desk({ } as any))).toThrow();
     });
     it('throws when the Desk is invalid', function() {
-      expect(() => Qminder.tickets.callNext([12345], 14141, "Heyoooo")).toThrow();
+      expect(() => Qminder.tickets.callNext([12345], 14141, "Heyoooo" as any)).toThrow();
     });
 
     it('calls the API with many lines, caller user, and desk all as IDs', function(done) {
@@ -890,12 +891,12 @@ describe("TicketService", function() {
     });
     it('calls the API with many lines, caller user, and desk all as objects', function(done) {
       const lines = [];
-      lines.push(new Qminder.Line({ id: 12345 }));
-      lines.push(new Qminder.Line({ id: 67890 }));
-      lines.push(new Qminder.Line({ id: 14141 }));
-      lines.push(new Qminder.Line({ id: 23 }));
-      const user = new Qminder.User({ id: 14141 });
-      const desk = new Qminder.Desk({ id: 5 });
+      lines.push(new Qminder.Line({ id: 12345 } as any));
+      lines.push(new Qminder.Line({ id: 67890 } as any));
+      lines.push(new Qminder.Line({ id: 14141 } as any));
+      lines.push(new Qminder.Line({ id: 23 } as any));
+      const user = new Qminder.User({ id: 14141 } as any);
+      const desk = new Qminder.Desk({ id: 5 } as any);
       const request = sinon.match({
         lines: '12345,67890,14141,23',
         user: 14141,
@@ -970,7 +971,7 @@ describe("TicketService", function() {
       });
     });
     it('calls the right URL with a Ticket', function(done) {
-      Qminder.tickets.call(new Qminder.Ticket({ id: 12345 })).then(() => {
+      Qminder.tickets.call(new Qminder.Ticket({ id: 12345 } as any)).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/call', undefined, 'POST')).toBeTruthy();
         done();
       });
@@ -982,10 +983,10 @@ describe("TicketService", function() {
       });
     });
     it('throws when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.call()).toThrow();
+      expect(() => (Qminder.tickets.call as any)()).toThrow();
     });
     it('throws when the Ticket has no ID', function() {
-      expect(() => Qminder.tickets.call(new Qminder.Ticket({}))).toThrow();
+      expect(() => Qminder.tickets.call(new Qminder.Ticket({} as any))).toThrow();
     });
     it('throws when the ticket ID is invalid', function() {
       expect(() => Qminder.tickets.call("Heyoooo")).toThrow();
@@ -1000,16 +1001,16 @@ describe("TicketService", function() {
     });
     it('calls the right URL with ticket and User', function(done) {
       const request = sinon.match({ user: 686 });
-      Qminder.tickets.call(12345, new Qminder.User({ id: 686 })).then(() => {
+      Qminder.tickets.call(12345, new Qminder.User({ id: 686 } as any)).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/call', request, 'POST')).toBeTruthy();
         done();
       });
     });
     it('throws when the User has no ID', function() {
-      expect(() => Qminder.tickets.call(12345, new Qminder.User({}))).toThrow();
+      expect(() => Qminder.tickets.call(12345, new Qminder.User({} as any))).toThrow();
     });
     it('throws when the User is invalid', function() {
-      expect(() => Qminder.tickets.call(12345, "Heyoooooooooooo")).toThrow();
+      expect(() => Qminder.tickets.call(12345, "Heyoooooooooooo" as any)).toThrow();
     });
 
     it('calls the right URL with ticket, user and desk ID as number', function(done) {
@@ -1021,17 +1022,17 @@ describe("TicketService", function() {
     });
     it('calls the right URL with ticket, user and Desk', function(done) {
       const request = sinon.match({ user: 666, desk: 3 });
-      const desk = new Qminder.Desk({ id: 3 });
+      const desk = new Qminder.Desk({ id: 3 } as any);
       Qminder.tickets.call(12345, 666, desk).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/call', request, 'POST')).toBeTruthy();
         done();
       });
     });
     it('throws when the Desk has no ID', function() {
-      expect(() => Qminder.tickets.call(12345, 1234, new Qminder.Desk({}))).toThrow();
+      expect(() => Qminder.tickets.call(12345, 1234, new Qminder.Desk({} as any))).toThrow();
     });
     it('throws when the Desk is invalid', function() {
-      expect(() => Qminder.tickets.call(12345, 1234, "HEyo")).toThrow();
+      expect(() => Qminder.tickets.call(12345, 1234, "HEyo" as any)).toThrow();
     });
 
     it('calls the right URL with ticket, user, desk all numbers', function(done) {
@@ -1043,9 +1044,9 @@ describe("TicketService", function() {
     });
     it('calls the right URL with ticket, user, desk all objects', function(done) {
       const request = sinon.match({ user: 2, desk: 3 });
-      const ticket = new Qminder.Ticket({ id: 1 });
-      const user = new Qminder.User({ id: 2 });
-      const desk = new Qminder.Desk({ id: 3 });
+      const ticket = new Qminder.Ticket({ id: 1 } as any);
+      const user = new Qminder.User({ id: 2 } as any);
+      const desk = new Qminder.Desk({ id: 3 } as any);
       Qminder.tickets.call(ticket, user, desk).then(() => {
         expect(this.requestStub.calledWith('tickets/1/call', request, 'POST')).toBeTruthy();
         done();
@@ -1100,7 +1101,7 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.recall()).toThrow();
+      expect(() => (Qminder.tickets.recall as any)()).toThrow();
     });
   });
   describe("markServed()", function() {
@@ -1116,7 +1117,7 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.markServed()).toThrow();
+      expect(() => (Qminder.tickets.markServed as any)()).toThrow();
     });
   });
   describe("markNoShow()", function() {
@@ -1132,7 +1133,7 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.markNoShow()).toThrow();
+      expect(() => (Qminder.tickets.markNoShow as any)()).toThrow();
     });
   });
   describe("cancel()", function() {
@@ -1149,10 +1150,10 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.cancel()).toThrow();
+      expect(() => (Qminder.tickets.cancel as any)()).toThrow();
     });
     it('throws an error when the ticket parameter is passed a random object', function() {
-      expect(() => Qminder.tickets.cancel({ test: 5 }, 14141).toThrow());
+      expect(() => Qminder.tickets.cancel({ test: 5 } as any, 14141)).toThrow();
     });
     it('works when the ticket parameter is a Qminder.Ticket', function() {
       const t = new Qminder.Ticket(12345);
@@ -1180,16 +1181,16 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.returnToQueue()).toThrow();
+      expect(() => (Qminder.tickets.returnToQueue as any)()).toThrow();
     });
     it('throws an error when the user is missing', function() {
-      expect(() => Qminder.tickets.returnToQueue(12345)).toThrow();
+      expect(() => (Qminder.tickets.returnToQueue as any)(12345)).toThrow();
     });
     it('does not throw an error when the user is a number', function() {
       expect(() => Qminder.tickets.returnToQueue(12345, 1234, "FIRST")).not.toThrow();
     });
     it('throws an error when the position is missing', function() {
-      expect(() => Qminder.tickets.returnToQueue(12345, 1234)).toThrow();
+      expect(() => (Qminder.tickets.returnToQueue as any)(12345, 1234)).toThrow();
     });
   });
   describe("addLabel()", function() {
@@ -1205,13 +1206,13 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.addLabel()).toThrow();
+      expect(() => (Qminder.tickets.addLabel as any)()).toThrow();
     });
     it('throws an error when the label text is missing', function() {
-      expect(() => Qminder.tickets.addLabel(12345)).toThrow();
+      expect(() => (Qminder.tickets.addLabel as any)(12345)).toThrow();
     });
     it('does not throw an error when the user is missing (#147)', function() {
-      expect(() => Qminder.tickets.addLabel(12345, 'LABEL')).not.toThrow();
+      expect(() => (Qminder.tickets.addLabel as any)(12345, 'LABEL')).not.toThrow();
     });
     it('does not throw an error when the user is a Qminder.User', function() {
       expect(() => Qminder.tickets.addLabel(12345, 'LABEL', new Qminder.User(41414))).not.toThrow();
@@ -1244,16 +1245,16 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.removeLabel()).toThrow();
+      expect(() => (Qminder.tickets.removeLabel as any)()).toThrow();
     });
     it('throws an error when the label text is missing', function() {
-      expect(() => Qminder.tickets.removeLabel(12345)).toThrow();
+      expect(() => (Qminder.tickets.removeLabel as any)(12345)).toThrow();
     });
     it('throws an error when the user is missing', function() {
-      expect(() => Qminder.tickets.removeLabel(12345, 'LABEL')).toThrow();
+      expect(() => (Qminder.tickets.removeLabel as any)(12345, 'LABEL')).toThrow();
     });
     it('does not throw an error when the user is a number', function() {
-      expect(() => Qminder.tickets.removeLabel(12345, 'LABEL', 1234)).not.toThrow();
+      expect(() => (Qminder.tickets.removeLabel as any)(12345, 'LABEL', 1234)).not.toThrow();
     });
   });
   describe("unassign()", function() {
@@ -1269,10 +1270,10 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.unassign()).toThrow();
+      expect(() => (Qminder.tickets.unassign as any)()).toThrow();
     });
     it('throws an error when the assigner is missing', function() {
-      expect(() => Qminder.tickets.unassign(63020424)).toThrow();
+      expect(() => (Qminder.tickets.unassign as any)(63020424)).toThrow();
     });
     it('works with User object passed as User parameter', function(done) {
       const unassigner = new Qminder.User(4100);
@@ -1297,7 +1298,7 @@ describe("TicketService", function() {
       });
     });
     it('throws an error when the unassigner is invalid', function() {
-      expect(() => Qminder.tickets.unassign(63020422, {})).toThrow();
+      expect(() => Qminder.tickets.unassign(63020422, {} as any)).toThrow();
     });
     it('throws an error when the response returns an error', function(done) {
       this.requestStub.resetBehavior();
@@ -1313,17 +1314,17 @@ describe("TicketService", function() {
         result: 'success'
       });
     });
-    it('TODO calls the right URL with POST and parameters', function(done) {
+    it('calls the right URL with POST and parameters', function(done) {
       Qminder.tickets.assignToUser(12345, 41413, 41414).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/assign', { assigner: 41413, assignee: 41414 }, 'POST')).toBeTruthy();
         done();
       });
     });
-    it('TODO throws an error when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.assignToUser()).toThrow();
+    it('throws an error when the ticket ID is missing', function() {
+      expect(() => (Qminder.tickets.assignToUser as any)()).toThrow();
     });
-    it('TODO throws an error when the assigner is missing', function() {
-      expect(() => Qminder.tickets.assignToUser(12345)).toThrow();
+    it('throws an error when the assigner is missing', function() {
+      expect(() => (Qminder.tickets.assignToUser as any)(12345)).toThrow();
     });
 
   });
@@ -1362,7 +1363,7 @@ describe("TicketService", function() {
       });
     });
     it('calls the right URL when reordering to be first', function(done) {
-      Qminder.tickets.reorder(12345).then(() => {
+      Qminder.tickets.reorder(12345, null as any).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/reorder', undefined, 'POST')).toBeTruthy();
         done();
       });
@@ -1374,7 +1375,7 @@ describe("TicketService", function() {
       });
     });
     it('throws when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.reorder()).toThrow();
+      expect(() => (Qminder.tickets.reorder as any)()).toThrow();
     });
   });
   describe("getEstimatedTimeOfService()", function() {
@@ -1390,7 +1391,7 @@ describe("TicketService", function() {
       });
     });
     it('throws when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.getEstimatedTimeOfService()).toThrow();
+      expect(() => (Qminder.tickets.getEstimatedTimeOfService as any)()).toThrow();
     });
   });
   describe("getMessages()", function() {
@@ -1450,7 +1451,7 @@ describe("TicketService", function() {
       });
     });
     it('throws when the ticket ID is missing', function() {
-      expect(() => Qminder.tickets.getMessages()).toThrow();
+      expect(() => (Qminder.tickets.getMessages as any)()).toThrow();
     });
   });
   describe("sendMessage()", function() {
@@ -1461,7 +1462,7 @@ describe("TicketService", function() {
     });
 
     it('calls the right URL for sending a message with User object', function(done) {
-      Qminder.tickets.sendMessage(12345, 'Hello!', new Qminder.User({ id: 41414 })).then(() => {
+      Qminder.tickets.sendMessage(12345, 'Hello!', new Qminder.User({ id: 41414 } as any)).then(() => {
         expect(this.requestStub.calledWith('tickets/12345/messages', { message: 'Hello!', user: 41414 }, 'POST')).toBeTruthy();
         done();
       });
@@ -1475,23 +1476,23 @@ describe("TicketService", function() {
     });
 
     it('throws when the ticket ID is not specified', function() {
-      expect(() => Qminder.tickets.sendMessage()).toThrow();
+      expect(() => (Qminder.tickets.sendMessage as any)()).toThrow();
     });
 
     it('throws when the message body is not specified', function() {
-      expect(() => Qminder.tickets.sendMessage(12345)).toThrow();
+      expect(() => (Qminder.tickets.sendMessage as any)(12345)).toThrow();
     });
 
     it('throws when the sending user is not specified', function() {
-      expect(() => Qminder.tickets.sendMessage(12345, 'Hello')).toThrow();
+      expect(() => (Qminder.tickets.sendMessage as any)(12345, 'Hello')).toThrow();
     });
 
     it('does not throw when the sending user is specified as ID', function() {
-      expect(() => Qminder.tickets.sendMessage(12345, 'Hello', 41414)).not.toThrow();
+      expect(() => (Qminder.tickets.sendMessage as any)(12345, 'Hello', 41414)).not.toThrow();
     });
 
     it('throws when the sending user is specified as some random object', function() {
-      expect(() => Qminder.tickets.sendMessage(12345, 'Hello', { test: 5 })).toThrow();
+      expect(() => (Qminder.tickets.sendMessage as any)(12345, 'Hello', { test: 5 })).toThrow();
     })
   });
 

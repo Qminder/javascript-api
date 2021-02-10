@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe("Qminder.devices", function() {
   const TV_DETAILS = {
@@ -25,12 +26,12 @@ describe("Qminder.devices", function() {
     });
 
     it('throws when the TV ID is not passed in', function() {
-      expect(() => Qminder.devices.details()).toThrow();
+      expect(() => (Qminder.devices.details as any)()).toThrow();
     });
 
     it('throws when the TV ID is not a number', function() {
-      expect(() => Qminder.devices.details({ id: 5 })).toThrow();
-      expect(() => Qminder.devices.details("Yo")).toThrow();
+      expect(() => (Qminder.devices.details as any)({ id: 5 })).toThrow();
+      expect(() => (Qminder.devices.details as any)("Yo")).toThrow();
     });
 
     it('constructs a Device for the response', function(done) {
@@ -42,6 +43,6 @@ describe("Qminder.devices", function() {
   });
 
   afterEach(function() {
-    Qminder.ApiBase.request.restore();
+    (Qminder.ApiBase.request as sinon.SinonStub).restore();
   });
 });

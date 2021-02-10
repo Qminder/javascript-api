@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe("Qminder.locations", function() {
 
@@ -63,7 +64,7 @@ describe("Qminder.locations", function() {
     it("resolves with an Array of Location objects", function(done) {
       Qminder.locations.list().then(locations => {
         expect(locations instanceof Array).toBeTruthy();
-        expect(locations.reduce((acc, each) => acc && (each instanceof Qminder.Location))).toBeTruthy();
+        expect(locations.every((location) => (location instanceof Qminder.Location))).toBeTruthy();
         done();
       });
     });
@@ -134,11 +135,11 @@ describe("Qminder.locations", function() {
       });
     });
     it("returns a list of Qminder.Desk objects", function() {
-      const allAreInstances = this.desks.reduce((acc, desk) => acc && (desk instanceof Qminder.Desk));
+      const allAreInstances = this.desks.every((desk: unknown) => (desk instanceof Qminder.Desk));
       expect(allAreInstances).toBeTruthy();
     });
     it("returns the right desks", function() {
-      const returned = this.desks.map(desk => desk.name);
+      const returned = this.desks.map((desk: Qminder.Desk) => desk.name);
       const groundTruth = DESKS.map(desk => desk.name);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -156,10 +157,10 @@ describe("Qminder.locations", function() {
       this.requestStub.withArgs(`locations/${LOCATION_ID}/input-fields`).resolves({ fields });
     });
     it('throws with undefined location ID', function() {
-      expect(() => Qminder.locations.getInputFields()).toThrow();
+      expect(() => (Qminder.locations.getInputFields as any)()).toThrow();
     });
     it('throws with an object that doesn\'t fit', function() {
-      expect(() => Qminder.locations.getInputFields({ statusCode: 200 })).toThrow();
+      expect(() => (Qminder.locations.getInputFields as any)({ statusCode: 200 })).toThrow();
     });
     it('does not throw with numeric location ID', function() {
       expect(() => Qminder.locations.getInputFields(LOCATION_ID)).not.toThrow();

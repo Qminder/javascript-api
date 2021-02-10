@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe("LineService", function() {
 
@@ -20,7 +21,7 @@ describe("LineService", function() {
   });
 
   afterEach(function() {
-    Qminder.ApiBase.request.restore();
+    (Qminder.ApiBase.request as sinon.SinonStub).restore();
   });
 
   describe("list()", function() {
@@ -33,13 +34,12 @@ describe("LineService", function() {
     });
 
     it("returns a list of Qminder.Line objects", function () {
-      const allAreInstances = this.lines.reduce(
-        (acc, line) => acc && (line instanceof Qminder.Line));
+      const allAreInstances = this.lines.every((line: unknown) => (line instanceof Qminder.Line));
       expect(allAreInstances).toBeTruthy();
     });
 
     it("returns the right line IDs", function () {
-      const lines = this.lines.map(x => x.id);
+      const lines = this.lines.map((x: Qminder.Line) => x.id);
       const correctLines = LINES.map(x => x.id);
 
       for (let i = 0; i < correctLines.length; i++) {
@@ -48,7 +48,7 @@ describe("LineService", function() {
     });
 
     it("the name of the line is correct", function () {
-      const names = this.lines.map(x => x.name);
+      const names = this.lines.map((x: Qminder.Line) => x.name);
       const correctNames = LINES.map(x => x.name);
 
       for (let i = 0; i < correctNames.length; i++) {
@@ -57,7 +57,7 @@ describe("LineService", function() {
     });
 
     it("the color of the line is correct", function () {
-      const colors = this.lines.map(x => x.color);
+      const colors = this.lines.map((x: Qminder.Line) => x.color);
       const correctColors = LINES.map(x => x.color);
 
       for (let i = 0; i < correctColors.length; i++) {
@@ -73,22 +73,22 @@ describe("LineService", function() {
     });
 
     it("updates a line using Line object", function () {
-      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
       Qminder.lines.update(new Qminder.Line(line));
     });
 
     it("fails to update a line due to lacking ID", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: any = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.update(new Qminder.Line(line))).toThrowError()
     });
 
     it("fails to update a line due to lacking name", function () {
-      let line = {"id":71490,"name":null,"color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":71490,"name":null,"color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.update(line)).toThrowError()
     });
 
     it("fails to update a line due to lacking color", function () {
-      let line = {"id":71490,"name":"Front Desk","color":null,"disabled":false};
+      let line: Qminder.Line = {"id":71490,"name":"Front Desk","color":null,"disabled":false};
       expect(() => Qminder.lines.update(line)).toThrowError()
     });
   });
@@ -113,7 +113,7 @@ describe("LineService", function() {
     });
 
     it("fails to enable a line due to line object lacking ID field", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.enable(new Qminder.Line(line))).toThrowError()
     });
   });
@@ -138,7 +138,7 @@ describe("LineService", function() {
     });
 
     it("fails to disable a line due to line object lacking ID field", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.disable(new Qminder.Line(line))).toThrowError()
     });
   });
@@ -163,7 +163,7 @@ describe("LineService", function() {
     });
 
     it("fails to archive a line due to line object lacking ID field", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.archive(new Qminder.Line(line))).toThrowError()
     });
   });

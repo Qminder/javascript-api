@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe('Qminder.webhooks', function() {
   beforeEach(function() {
@@ -8,7 +9,7 @@ describe('Qminder.webhooks', function() {
   });
 
   afterEach(function() {
-    Qminder.ApiBase.request.restore();
+    (Qminder.ApiBase.request as sinon.SinonStub).restore();
   });
 
   describe('create(url)', function() {
@@ -16,11 +17,11 @@ describe('Qminder.webhooks', function() {
       this.requestStub.onFirstCall().resolves({ id: 512, secret: 'SECRET!' });
     });
     it('throws and does not send a HTTP request if the URL is not provided', function() {
-      expect(() => Qminder.webhooks.create()).toThrow();
+      expect(() => (Qminder.webhooks.create as any)()).toThrow();
       expect(this.requestStub.called).toBeFalsy();
     });
     it('throws and does not send a HTTP request if the URL is not a string', function() {
-      expect(() => Qminder.webhooks.create({ url: 'https://g.co' })).toThrow();
+      expect(() => Qminder.webhooks.create({ url: 'https://g.co' } as any)).toThrow();
       expect(this.requestStub.called).toBeFalsy();
     });
     it('creates a request with the URL in formdata when provided', function(done) {
@@ -40,13 +41,13 @@ describe('Qminder.webhooks', function() {
       this.requestStub.onFirstCall().resolves({ status: 'success' });
     });
     it('throws and does not send a HTTP request if the ID is not provided', function() {
-      expect( () => Qminder.webhooks.remove()).toThrow();
+      expect( () => (Qminder.webhooks.remove as any)()).toThrow();
       expect(this.requestStub.called).toBeFalsy();
     });
     it('throws and does not send a HTTP request if the ID is not a number', function() {
-      expect( () => Qminder.webhooks.remove("fefefe")).toThrow();
-      expect( () => Qminder.webhooks.remove({ x: 5 })).toThrow();
-      expect( () => Qminder.webhooks.remove({ id: 666 })).toThrow();
+      expect( () => (Qminder.webhooks.remove as any)("fefefe")).toThrow();
+      expect( () => (Qminder.webhooks.remove as any)({ x: 5 })).toThrow();
+      expect( () => (Qminder.webhooks.remove as any)({ id: 666 })).toThrow();
       expect(this.requestStub.called).toBeFalsy();
     });
     it('creates a request with the correct URL', function(done) {

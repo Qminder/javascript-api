@@ -1,8 +1,9 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 describe('GraphQLService', function() {
   const ME_ID_REQUEST = '{ me { id } }';
-  const ME_ID_SUCCESS_RESPONSE = {
+  const ME_ID_SUCCESS_RESPONSE: any = {
     statusCode: 200,
     data: [
         {
@@ -52,13 +53,13 @@ describe('GraphQLService', function() {
     });
 
     it('throws when query is missing', function() {
-      expect(() => Qminder.graphql.query()).toThrow();
+      expect(() => (Qminder.graphql.query as any)()).toThrow();
       expect(this.requestStub.callCount).toBe(0);
     });
 
   });
 
   afterEach(function() {
-    Qminder.ApiBase.queryGraph.restore();
+    (Qminder.ApiBase.queryGraph as sinon.SinonStub).restore();
   });
 });
