@@ -3,7 +3,6 @@ import User from '../model/User';
 import Desk from '../model/Desk';
 import Line from '../model/Line';
 import ApiBase from '../api-base';
-import * as querystring from 'querystring';
 
 
 /**
@@ -360,7 +359,7 @@ export default class TicketService {
       search.responseScope = search.responseScope.join(',');
     }
 
-    const queryStr = querystring.stringify(search);
+    const queryStr = new URLSearchParams(search as Record<string, string>).toString();
 
     return ApiBase.request(`tickets/search?${queryStr}`).then((response: { data: Ticket[] }) => {
       return response.data.map(ticket => new Ticket(ticket))
@@ -408,7 +407,7 @@ export default class TicketService {
     if ((search as TicketSearchCriteria).responseScope) {
       delete (search as TicketSearchCriteria).responseScope;
     }
-    const queryStr = querystring.stringify(search);
+    const queryStr = new URLSearchParams(search as Record<string, string>).toString();
     return ApiBase.request(`tickets/count?${queryStr}`)
                   .then((response: { count: number }) => response.count);
   }
@@ -927,7 +926,10 @@ export default class TicketService {
       throw new Error(ERROR_NO_QUEUE_POSITION);
     }
 
-    const query = querystring.stringify({ position, user: userId });
+    const query = new URLSearchParams({
+      position: `${position}`,
+      user: `${userId}`,
+    }).toString();
     return ApiBase.request(`tickets/${ticketId}/returntoqueue?${query}`, undefined, 'POST')
       .then((response: { result: 'success' }) => response.result);
   }
@@ -1451,7 +1453,7 @@ export default class TicketService {
    */
   static forward(ticket: (Pick<Ticket, 'id'> | number | string),
                  line: (Line|number),
-                 user?: (User|number)): Promise<Object> {
+                 user?: (User|number)): Promise<object> {
     let ticketId: string | number = null;
     let lineId: any = null;
     let userId: any = null;

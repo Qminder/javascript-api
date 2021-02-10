@@ -1,4 +1,3 @@
-import * as querystring from 'querystring';
 import * as fetch from 'isomorphic-fetch';
 
 type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
@@ -142,9 +141,9 @@ class ApiBase {
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
   request(url: string,
-          data?: Object | File | string,
+          data?: object | File | string,
           method: HTTPMethod = 'GET',
-          idempotencyKey?: string | number): Promise<Object> {
+          idempotencyKey?: string | number): Promise<object> {
 
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
@@ -160,11 +159,11 @@ class ApiBase {
 
     if (data) {
       init.method = 'POST';
-      if (typeof File !== "undefined" && data instanceof File && init.headers) {
+      if (data instanceof File) {
         init.body = data;
         init.headers['Content-Type'] = data.type;
       } else if (typeof data === 'object') {
-        init.body = querystring.stringify(data);
+        init.body = new URLSearchParams(data as any).toString();
         init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
       } else if (typeof data === 'string') {
         init.body = data;
