@@ -1,13 +1,8 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe('Configuration', function() {
   describe('Qminder.setKey', function() {
     beforeEach(function() {
-      if (typeof Qminder === 'undefined') {
-        Qminder = this.Qminder;
-      }
-      if (typeof sinon === 'undefined') {
-        sinon = this.sinon;
-      }
-
       Qminder.setKey('EXAMPLE_API_KEY');
       this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
       this.requestStub.onFirstCall().resolves({ data: [] });

@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe("Qminder.devices", function() {
   const TV_DETAILS = {
     statusCode: 200,
@@ -7,12 +9,6 @@ describe("Qminder.devices", function() {
   };
 
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
     this.requestStub = sinon.stub(Qminder.ApiBase, 'request');

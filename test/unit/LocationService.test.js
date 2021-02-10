@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe("Qminder.locations", function() {
 
   const LOCATIONS = [
@@ -43,12 +45,6 @@ describe("Qminder.locations", function() {
   const DESKS = [1, 2, 3, 4].map(x => ({ name: `${x}` }));
 
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
     this.requestStub = sinon.stub(Qminder.ApiBase, 'request');

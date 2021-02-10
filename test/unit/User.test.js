@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 function getUserWithRoles(roles) {
   let user = new Qminder.User();
   user.roles = roles;
@@ -9,15 +11,6 @@ describe("User model", function () {
   const MANAGER_ROLE = { type: 'MANAGER', id: 14121, location: 12345 };
   const ANOTHER_MANAGER_ROLE = { type: 'MANAGER', id: 15, location: 1234 };
   const CLERK_ROLE = { type: 'CLERK', id: 400, location: 12345 };
-
-  beforeEach(function () {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
-  });
 
   describe('isAdmin()', function() {
     it('returns true if the user is only an admin', function() {

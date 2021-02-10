@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe("TicketService", function() {
   const JON_SNOW = {
     id: 12345,
@@ -7,12 +9,6 @@ describe("TicketService", function() {
     email: 'jon.snow@winterfell.is',
   };
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
     this.requestStub = sinon.stub(Qminder.ApiBase, 'request');

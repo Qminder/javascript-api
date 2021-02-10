@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe("LineService", function() {
 
   const LINES = [
@@ -10,12 +12,6 @@ describe("LineService", function() {
   const LOCATION_ID = 673;
 
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
 

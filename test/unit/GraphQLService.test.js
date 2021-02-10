@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe('GraphQLService', function() {
   const ME_ID_REQUEST = '{ me { id } }';
   const ME_ID_SUCCESS_RESPONSE = {
@@ -14,12 +16,6 @@ describe('GraphQLService', function() {
     ]
   };
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
 

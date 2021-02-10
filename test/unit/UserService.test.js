@@ -1,3 +1,5 @@
+import * as Qminder from '../../src/qminder-api';
+
 describe("UserService", function() {
   const LOCATION_ID = 673;
   const USERS = [
@@ -30,12 +32,6 @@ describe("UserService", function() {
   const pictureSort = (a, b) => pictureSizes[a.size] - pictureSizes[b.size];
 
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
 
