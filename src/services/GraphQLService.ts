@@ -1,4 +1,4 @@
-import WebSocket, {MessageData} from '../lib/websocket-web';
+import * as WebSocket from 'isomorphic-ws';
 import ApiBase, {GraphqlResponse} from '../api-base';
 import {Observable, Observer, Subject} from 'rxjs';
 import { GraphqlBatcher } from '../graphql-batcher';
@@ -235,7 +235,7 @@ class GraphQLService {
             console.log('[GraphQL subscription] An error occurred, the websocket will disconnect.');
         };
 
-        socket.onmessage = (rawMessage: { data: MessageData }) => {
+        socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
             if (typeof rawMessage.data === 'string') {
                 const message: OperationMessage = JSON.parse(rawMessage.data);
 
