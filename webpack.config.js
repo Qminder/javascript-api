@@ -26,8 +26,8 @@ module.exports = function() {
   return ({
     target: 'web',
     entry: {
-      'qminder-api.min': ['es6-promise', 'whatwg-fetch', './src/qminder-api.ts'],
-      'qminder-api': ['es6-promise', 'whatwg-fetch', './src/qminder-api.ts'],
+      'qminder-api.min': ['whatwg-fetch', './src/qminder-api.ts'],
+      'qminder-api': ['whatwg-fetch', './src/qminder-api.ts'],
     },
 
     output: {
