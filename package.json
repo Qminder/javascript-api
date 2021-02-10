@@ -2,9 +2,6 @@
   "name": "qminder-api",
   "version": "3.0.3",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
-  "files": [
-    "./build/*"
-  ],
   "scripts": {
     "test": "jest",
     "test-node": "jest --env=node",
