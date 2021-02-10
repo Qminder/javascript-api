@@ -159,7 +159,7 @@ class ApiBase {
 
     if (data) {
       init.method = 'POST';
-      if (data instanceof File) {
+      if (typeof File !== 'undefined' && data instanceof File) {
         init.body = data;
         init.headers['Content-Type'] = data.type;
       } else if (typeof data === 'object') {
