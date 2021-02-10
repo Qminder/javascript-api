@@ -1,4 +1,5 @@
 import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 /**
  * A function that generates an object with the following keys:
@@ -13,7 +14,7 @@ import * as Qminder from '../../src/qminder-api';
  * @returns an object with this shape: { request: object, expectedFetch:
     * object, successfulResponse: object }
  */
-function generateRequestData(query, responseData) {
+function generateRequestData(query: string, responseData: any): any {
 
   const queryObject = {
     query
@@ -51,9 +52,7 @@ function generateRequestData(query, responseData) {
  * the object passed as parameter.
  */
 class MockResponse {
-  constructor(data) {
-    this.data = data;
-  }
+  constructor(private data: any) {}
   json() {
     return this.data;
   }
@@ -63,7 +62,7 @@ describe("ApiBase", function () {
   const API_KEY = 'testing';
   beforeEach(function() {
     // Manual reset for ApiBase - Karma doesn't reload the environment between tests.
-    Qminder.ApiBase.initialized = false;
+    (Qminder.ApiBase as any).initialized = false;
     Qminder.ApiBase.apiKey = undefined;
     Qminder.ApiBase.apiServer = 'api.qminder.com';
   });
@@ -76,7 +75,7 @@ describe("ApiBase", function () {
 
   describe("constructor()", function () {
     it("after constructing, it has initialized = false", function () {
-      expect(Qminder.ApiBase.initialized).toBe(false);
+      expect((Qminder.ApiBase as any).initialized).toBe(false);
     });
     it("after constructing, it has server = api.qminder.com", function () {
       expect(Qminder.ApiBase.apiServer).toBe("api.qminder.com");
@@ -120,7 +119,7 @@ describe("ApiBase", function () {
 
       Qminder.ApiBase.request('TEST').then(response => {
         expect(jsonSpy.called).toBe(true);
-        expect(response.message).toBe('Worked');
+        expect((response as any).message).toBe('Worked');
         jsonSpy.restore();
         done();
       });
@@ -297,7 +296,7 @@ describe("ApiBase", function () {
       }
     });
 
-    const ERROR_UNDEFINED_FIELD = {
+    const ERROR_UNDEFINED_FIELD: any = {
       "statusCode": 200,
       "errors": [
         {
@@ -329,7 +328,7 @@ describe("ApiBase", function () {
     });
     it('throws when no query is passed', function() {
       Qminder.ApiBase.setKey('testing');
-      expect(() => Qminder.ApiBase.queryGraph()).toThrow();
+      expect(() => (Qminder.ApiBase.queryGraph as any)()).toThrow();
     });
     it('does not throw when no variables are passed', function() {
       Qminder.ApiBase.setKey('testing');
