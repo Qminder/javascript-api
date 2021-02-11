@@ -1,3 +1,6 @@
+import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
+
 describe("LineService", function() {
 
   const LINES = [
@@ -8,42 +11,38 @@ describe("LineService", function() {
     {"id":71615,"name":"Lab Notifications","color":"#aaaaaa","disabled":false},
   ];
   const LOCATION_ID = 673;
+  let requestStub: sinon.SinonStub;
+
+  let reply: any;
 
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
 
     // Stub ApiBase.request to feed specific data to API
-    this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
   });
 
   afterEach(function() {
-    Qminder.ApiBase.request.restore();
+    (Qminder.ApiBase.request as sinon.SinonStub).restore();
   });
 
   describe("list()", function() {
     beforeEach(function(done) {
-      this.requestStub.withArgs(`locations/${LOCATION_ID}/lines`).resolves({ data: LINES });
+      requestStub.withArgs(`locations/${LOCATION_ID}/lines`).resolves({ data: LINES });
       Qminder.lines.list(LOCATION_ID).then(lines => {
-        this.lines = lines;
+        reply = lines;
         done();
       });
     });
 
     it("returns a list of Qminder.Line objects", function () {
-      const allAreInstances = this.lines.reduce(
-        (acc, line) => acc && (line instanceof Qminder.Line));
+      const allAreInstances = reply.every((line: unknown) => (line instanceof Qminder.Line));
       expect(allAreInstances).toBeTruthy();
     });
 
     it("returns the right line IDs", function () {
-      const lines = this.lines.map(x => x.id);
+      const lines = reply.map((x: Qminder.Line) => x.id);
       const correctLines = LINES.map(x => x.id);
 
       for (let i = 0; i < correctLines.length; i++) {
@@ -52,7 +51,7 @@ describe("LineService", function() {
     });
 
     it("the name of the line is correct", function () {
-      const names = this.lines.map(x => x.name);
+      const names = reply.map((x: Qminder.Line) => x.name);
       const correctNames = LINES.map(x => x.name);
 
       for (let i = 0; i < correctNames.length; i++) {
@@ -61,7 +60,7 @@ describe("LineService", function() {
     });
 
     it("the color of the line is correct", function () {
-      const colors = this.lines.map(x => x.color);
+      const colors = reply.map((x: Qminder.Line) => x.color);
       const correctColors = LINES.map(x => x.color);
 
       for (let i = 0; i < correctColors.length; i++) {
@@ -72,34 +71,34 @@ describe("LineService", function() {
 
   describe("update()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490').resolves({});
+      requestStub.withArgs('lines/71490').resolves({});
       done();
     });
 
     it("updates a line using Line object", function () {
-      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
       Qminder.lines.update(new Qminder.Line(line));
     });
 
     it("fails to update a line due to lacking ID", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: any = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.update(new Qminder.Line(line))).toThrowError()
     });
 
     it("fails to update a line due to lacking name", function () {
-      let line = {"id":71490,"name":null,"color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":71490,"name":null,"color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.update(line)).toThrowError()
     });
 
     it("fails to update a line due to lacking color", function () {
-      let line = {"id":71490,"name":"Front Desk","color":null,"disabled":false};
+      let line: Qminder.Line = {"id":71490,"name":"Front Desk","color":null,"disabled":false};
       expect(() => Qminder.lines.update(line)).toThrowError()
     });
   });
 
   describe("enable()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490/enable').resolves({});
+      requestStub.withArgs('lines/71490/enable').resolves({});
       done();
     });
 
@@ -117,14 +116,14 @@ describe("LineService", function() {
     });
 
     it("fails to enable a line due to line object lacking ID field", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.enable(new Qminder.Line(line))).toThrowError()
     });
   });
 
   describe("disable()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490/disable').resolves({});
+      requestStub.withArgs('lines/71490/disable').resolves({});
       done();
     });
 
@@ -142,14 +141,14 @@ describe("LineService", function() {
     });
 
     it("fails to disable a line due to line object lacking ID field", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.disable(new Qminder.Line(line))).toThrowError()
     });
   });
 
   describe("archive()", function () {
     beforeEach(function(done) {
-      this.requestStub.withArgs('lines/71490/archive').resolves({});
+      requestStub.withArgs('lines/71490/archive').resolves({});
       done();
     });
 
@@ -167,7 +166,7 @@ describe("LineService", function() {
     });
 
     it("fails to archive a line due to line object lacking ID field", function () {
-      let line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
       expect(() => Qminder.lines.archive(new Qminder.Line(line))).toThrowError()
     });
   });

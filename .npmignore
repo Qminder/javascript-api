@@ -1,1 +1,14 @@
 node_modules
+.github
+docs
+examples
+manual
+scripts
+src
+test
+.babelrc
+.gitignore
+jest.config.js
+tsconfig.json
+*.log
+*.lock

@@ -7,16 +7,6 @@ code.
 
 ## Including in your project
 
-The Node.js package includes three distributions:
-
-- build-web: bundled, minified ES5 ready package, ready for inclusion via a `<script>` tag.
-  This distribution includes one script file that can be included directly on the web page.
-- build-node: separated, minified Node.js package, including type declarations and sourcemaps.
-  This distribution will be used when you are creating a Node.js project.
-- build-es6: separated, minified ES6+ package, using imports and async syntax, including type
-  declarations and sourcemaps. This distribution will be used if you use webpack or similar software
-  to package your code.
-
 This package is set up in a way that you should be able to simply use the following code to include
 Qminder API in your project:
 

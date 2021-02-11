@@ -1,3 +1,6 @@
+import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
+
 describe("Qminder.locations", function() {
 
   const LOCATIONS = [
@@ -42,32 +45,28 @@ describe("Qminder.locations", function() {
 
   const DESKS = [1, 2, 3, 4].map(x => ({ name: `${x}` }));
 
+  let requestStub: sinon.SinonStub;
+
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
-    this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
   });
 
   describe("list() - OK", function() {
     beforeEach(function() {
-      this.requestStub.withArgs('locations/').resolves({ data: LOCATIONS });
+      requestStub.withArgs('locations/').resolves({ data: LOCATIONS });
     });
 
     it("calls ApiBase.request with GET locations/", function() {
       Qminder.locations.list();
-      expect(this.requestStub.calledWith('locations/')).toBeTruthy();
+      expect(requestStub.calledWith('locations/')).toBeTruthy();
     });
 
     it("resolves with an Array of Location objects", function(done) {
       Qminder.locations.list().then(locations => {
         expect(locations instanceof Array).toBeTruthy();
-        expect(locations.reduce((acc, each) => acc && (each instanceof Qminder.Location))).toBeTruthy();
+        expect(locations.every((location) => (location instanceof Qminder.Location))).toBeTruthy();
         done();
       });
     });
@@ -88,7 +87,7 @@ describe("Qminder.locations", function() {
 
   describe("list() - Fails", function() {
     it("rejects when the server errors", function(done) {
-      this.requestStub.withArgs('locations/').rejects({ statusCode: 500 });
+      requestStub.withArgs('locations/').rejects({ statusCode: 500 });
       Qminder.locations.list().then(response => {
         expect(response).toBeUndefined();
         expect(true).toBe(false);
@@ -102,47 +101,49 @@ describe("Qminder.locations", function() {
   });
 
   describe("details() - plain location", function() {
+    let locationDetailsReply: any;
     beforeEach(function(done) {
-      this.requestStub.withArgs(`locations/${LOCATION_ID}/`).resolves(DETAILS);
+      requestStub.withArgs(`locations/${LOCATION_ID}/`).resolves(DETAILS);
 
       Qminder.locations.details(LOCATION_ID).then(details => {
-        this.locationDetails = details;
+        locationDetailsReply = details;
         done();
       });
     });
 
     it("resolves with a Location instance", function() {
-      expect(this.locationDetails instanceof Qminder.Location).toBeTruthy();
+      expect(locationDetailsReply instanceof Qminder.Location).toBeTruthy();
     });
 
     it("resolves with correct ID", function() {
-      expect(this.locationDetails.id).toBe(673);
+      expect(locationDetailsReply.id).toBe(673);
     });
 
     it("includes location name", function() {
-      expect(this.locationDetails.name).toBe("Tartu HQ");
+      expect(locationDetailsReply.name).toBe("Tartu HQ");
     });
 
     it("includes location timezone offset", function() {
-      expect(this.locationDetails.timezoneOffset).toBe(120);
+      expect(locationDetailsReply.timezoneOffset).toBe(120);
     });
   });
 
   describe("getDesks()", function() {
+    let desksReply: any[];
     beforeEach(function(done) {
-      this.requestStub.withArgs(`locations/${LOCATION_ID}/desks`).resolves({ desks: DESKS });
+      requestStub.withArgs(`locations/${LOCATION_ID}/desks`).resolves({ desks: DESKS });
 
       Qminder.locations.getDesks(new Qminder.Location(LOCATION_ID)).then(desks => {
-        this.desks = desks;
+        desksReply = desks;
         done();
       });
     });
     it("returns a list of Qminder.Desk objects", function() {
-      const allAreInstances = this.desks.reduce((acc, desk) => acc && (desk instanceof Qminder.Desk));
+      const allAreInstances = desksReply.every((desk: unknown) => (desk instanceof Qminder.Desk));
       expect(allAreInstances).toBeTruthy();
     });
     it("returns the right desks", function() {
-      const returned = this.desks.map(desk => desk.name);
+      const returned = desksReply.map((desk: Qminder.Desk) => desk.name);
       const groundTruth = DESKS.map(desk => desk.name);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -157,13 +158,13 @@ describe("Qminder.locations", function() {
       { type: 'lastName' },
     ];
     beforeEach(function() {
-      this.requestStub.withArgs(`locations/${LOCATION_ID}/input-fields`).resolves({ fields });
+      requestStub.withArgs(`locations/${LOCATION_ID}/input-fields`).resolves({ fields });
     });
     it('throws with undefined location ID', function() {
-      expect(() => Qminder.locations.getInputFields()).toThrow();
+      expect(() => (Qminder.locations.getInputFields as any)()).toThrow();
     });
     it('throws with an object that doesn\'t fit', function() {
-      expect(() => Qminder.locations.getInputFields({ statusCode: 200 })).toThrow();
+      expect(() => (Qminder.locations.getInputFields as any)({ statusCode: 200 })).toThrow();
     });
     it('does not throw with numeric location ID', function() {
       expect(() => Qminder.locations.getInputFields(LOCATION_ID)).not.toThrow();
@@ -173,7 +174,7 @@ describe("Qminder.locations", function() {
     });
     it('calls the right URL with numeric location ID', function(done) {
       Qminder.locations.getInputFields(LOCATION_ID).then(() => {
-        expect(this.requestStub.calledWith(`locations/${LOCATION_ID}/input-fields`)).toBeTruthy();
+        expect(requestStub.calledWith(`locations/${LOCATION_ID}/input-fields`)).toBeTruthy();
         done();
       }, (err) => {
         expect(err).toBeUndefined();
@@ -192,6 +193,6 @@ describe("Qminder.locations", function() {
   });
 
   afterEach(function() {
-    this.requestStub.restore();
+    requestStub.restore();
   })
 });

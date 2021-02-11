@@ -1,16 +1,13 @@
+import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
+
 describe('Configuration', function() {
   describe('Qminder.setKey', function() {
+    let requestStub: sinon.SinonStub;
     beforeEach(function() {
-      if (typeof Qminder === 'undefined') {
-        Qminder = this.Qminder;
-      }
-      if (typeof sinon === 'undefined') {
-        sinon = this.sinon;
-      }
-
       Qminder.setKey('EXAMPLE_API_KEY');
-      this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
-      this.requestStub.onFirstCall().resolves({ data: [] });
+      requestStub = sinon.stub(Qminder.ApiBase, 'request');
+      requestStub.onFirstCall().resolves({ data: [] });
     });
 
     it('sets the API key for the REST API', function() {
@@ -19,11 +16,11 @@ describe('Configuration', function() {
 
     it('allows using the REST API', function() {
       expect(() => Qminder.locations.list()).not.toThrow();
-      expect(this.requestStub.called).toBeTruthy();
+      expect(requestStub.called).toBeTruthy();
     });
 
     afterEach(function() {
-      Qminder.ApiBase.request.restore();
+      (Qminder.ApiBase.request as sinon.SinonStub).restore();
     });
   });
 });

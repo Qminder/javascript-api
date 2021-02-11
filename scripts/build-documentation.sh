@@ -6,11 +6,10 @@ set -ex
 
 rm -rf docs
 
-./node_modules/.bin/typedoc \
+yarn run typedoc \
      --mode modules \
      --out docs \
      --excludePrivate \
-     --exclude "**/lib/*.ts" \
      --name Qminder \
      --readme manual/apidoc-index.md \
      src

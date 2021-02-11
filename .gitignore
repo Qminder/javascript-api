@@ -27,11 +27,10 @@ Network Trash Folder
 Temporary Items
 .apdisk
 
-build-node
-build-web
-build-es6
 node_modules
 yarn-error.log
 # IDEA GraphQL plugin config
 graphql.config.json
 .idea
+
+build

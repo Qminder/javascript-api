@@ -1,4 +1,5 @@
-
+import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
 
 /**
  * A function that generates an object with the following keys:
@@ -13,7 +14,7 @@
  * @returns an object with this shape: { request: object, expectedFetch:
     * object, successfulResponse: object }
  */
-function generateRequestData(query, responseData) {
+function generateRequestData(query: string, responseData: any): any {
 
   const queryObject = {
     query
@@ -51,9 +52,7 @@ function generateRequestData(query, responseData) {
  * the object passed as parameter.
  */
 class MockResponse {
-  constructor(data) {
-    this.data = data;
-  }
+  constructor(private data: any) {}
   json() {
     return this.data;
   }
@@ -62,14 +61,8 @@ class MockResponse {
 describe("ApiBase", function () {
   const API_KEY = 'testing';
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     // Manual reset for ApiBase - Karma doesn't reload the environment between tests.
-    Qminder.ApiBase.initialized = false;
+    (Qminder.ApiBase as any).initialized = false;
     Qminder.ApiBase.apiKey = undefined;
     Qminder.ApiBase.apiServer = 'api.qminder.com';
   });
@@ -82,7 +75,7 @@ describe("ApiBase", function () {
 
   describe("constructor()", function () {
     it("after constructing, it has initialized = false", function () {
-      expect(Qminder.ApiBase.initialized).toBe(false);
+      expect((Qminder.ApiBase as any).initialized).toBe(false);
     });
     it("after constructing, it has server = api.qminder.com", function () {
       expect(Qminder.ApiBase.apiServer).toBe("api.qminder.com");
@@ -101,13 +94,19 @@ describe("ApiBase", function () {
     });
   });
   describe("request()", function() {
+    let fetchSpy: sinon.SinonStub;
     beforeEach(function() {
-      this.fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch');
-      this.fetchSpy.onCall(0).resolves(FAKE_RESPONSE);
+      fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch');
+      fetchSpy.onCall(0).resolves(FAKE_RESPONSE);
     });
+
+    afterEach(function () {
+      fetchSpy.restore();
+    })
+
     it("throws an error when setKey has not been called", function() {
       expect(() => Qminder.ApiBase.request("locations/673/")).toThrow();
-      expect(this.fetchSpy.called).toBe(false);
+      expect(fetchSpy.called).toBe(false);
     });
     it("does not throw an error when setKey has been called", function() {
       Qminder.setKey(API_KEY);
@@ -117,7 +116,7 @@ describe("ApiBase", function () {
       Qminder.setKey(API_KEY);
       Qminder.ApiBase.request('TEST');
       expect(Qminder.ApiBase.apiServer).toBe('api.qminder.com');
-      expect(this.fetchSpy.calledWith(`https://api.qminder.com/v1/TEST`)).toBeTruthy();
+      expect(fetchSpy.calledWith(`https://api.qminder.com/v1/TEST`)).toBeTruthy();
     });
     it("calls the Response.json() function to resolve the JSON", function(done) {
       Qminder.setKey(API_KEY);
@@ -126,7 +125,7 @@ describe("ApiBase", function () {
 
       Qminder.ApiBase.request('TEST').then(response => {
         expect(jsonSpy.called).toBe(true);
-        expect(response.message).toBe('Worked');
+        expect((response as any).message).toBe('Worked');
         jsonSpy.restore();
         done();
       });
@@ -142,7 +141,7 @@ describe("ApiBase", function () {
       };
 
       Qminder.ApiBase.request('TEST').then(response => {
-        expect(this.fetchSpy.calledWithExactly('https://api.qminder.com/v1/TEST', init)).toBe(true);
+        expect(fetchSpy.calledWithExactly('https://api.qminder.com/v1/TEST', init)).toBe(true);
 
         done();
       });
@@ -157,7 +156,7 @@ describe("ApiBase", function () {
       const url = 'https://api.qminder.com/v1/TEST';
 
       Qminder.ApiBase.request('TEST', { id: 1 }).then(response => {
-        expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+        expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
         done();
       });
     });
@@ -170,7 +169,7 @@ describe("ApiBase", function () {
       const url = 'https://api.qminder.com/v1/TEST';
 
       Qminder.ApiBase.request('TEST', undefined, 'POST').then(response => {
-        expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+        expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
         done();
       });
     });
@@ -189,7 +188,7 @@ describe("ApiBase", function () {
       const url = 'https://api.qminder.com/v1/TEST';
 
       Qminder.ApiBase.request('TEST', body).then(response => {
-        expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+        expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
         done();
       });
     });
@@ -210,7 +209,7 @@ describe("ApiBase", function () {
       const url = 'https://api.qminder.com/v1/TEST';
 
       Qminder.ApiBase.request('TEST', body).then(response => {
-        expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+        expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
         done();
       });
     });
@@ -233,8 +232,8 @@ describe("ApiBase", function () {
 
       Qminder.ApiBase.request('TEST', file).then(response => {
         console.log(response);
-        console.log(this.fetchSpy.firstCall.args);
-        expect(this.fetchSpy.calledWithExactly(url, fileMatcher)).toBe(true);
+        console.log(fetchSpy.firstCall.args);
+        expect(fetchSpy.calledWithExactly(url, fileMatcher)).toBe(true);
       });
     });
     it('sets the HTTP header Idempotency-Key if idempotencyKey has been provided', function() {
@@ -255,7 +254,7 @@ describe("ApiBase", function () {
       const url = 'https://api.qminder.com/v1/TEST';
 
       Qminder.ApiBase.request('TEST', body, undefined, '9e3a333e');
-      expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+      expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
     });
     it('sends strings as JSON', function() {
       Qminder.setKey(API_KEY);
@@ -272,7 +271,7 @@ describe("ApiBase", function () {
       Qminder.ApiBase.request('TEST', body, 'POST');
       const url = 'https://api.qminder.com/v1/TEST';
 
-      expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+      expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
     });
     it('sends objects as www-form-urlencoded', function() {
       Qminder.setKey(API_KEY);
@@ -289,11 +288,8 @@ describe("ApiBase", function () {
       Qminder.ApiBase.request('TEST', body, 'POST');
       const url = 'https://api.qminder.com/v1/TEST';
 
-      expect(this.fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+      expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
     });
-    afterEach(function() {
-      this.fetchSpy.restore();
-    })
   });
 
   describe("queryGraph()", function() {
@@ -303,7 +299,7 @@ describe("ApiBase", function () {
       }
     });
 
-    const ERROR_UNDEFINED_FIELD = {
+    const ERROR_UNDEFINED_FIELD: any = {
       "statusCode": 200,
       "errors": [
         {
@@ -329,32 +325,38 @@ describe("ApiBase", function () {
     };
 
     const API_URL = 'https://api.qminder.com/graphql';
+    let fetchSpy: sinon.SinonStub;
 
     beforeEach(function() {
-      this.fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch');
+      fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch');
     });
+
+    afterEach(function() {
+      fetchSpy.restore();
+    })
+
     it('throws when no query is passed', function() {
       Qminder.ApiBase.setKey('testing');
-      expect(() => Qminder.ApiBase.queryGraph()).toThrow();
+      expect(() => (Qminder.ApiBase.queryGraph as any)()).toThrow();
     });
     it('does not throw when no variables are passed', function() {
       Qminder.ApiBase.setKey('testing');
-      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
       expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).not.toThrow();
     });
     it('throws when API key is not defined', function() {
-      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
       expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).toThrow();
     });
     it('sends a correct request', function() {
       Qminder.ApiBase.setKey('testing');
-      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
       Qminder.ApiBase.queryGraph(ME_ID.request);
-      expect(this.fetchSpy.calledWithExactly(API_URL, sinon.match(ME_ID.expectedFetch))).toBeTruthy();
+      expect(fetchSpy.calledWithExactly(API_URL, sinon.match(ME_ID.expectedFetch))).toBeTruthy();
     });
     it('resolves with the entire response object, not only response data', function(done) {
       Qminder.ApiBase.setKey('testing');
-      this.fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
+      fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
       Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
         expect(response).toEqual(ME_ID.successfulResponse);
         done();
@@ -362,7 +364,7 @@ describe("ApiBase", function () {
     });
     it('does not throw an error when getting errors as response', function(done) {
       Qminder.ApiBase.setKey('testing');
-      this.fetchSpy.resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
+      fetchSpy.resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
       expect(() => Qminder.ApiBase.queryGraph(ME_ID.request).then(
         () => done(),
         () => done(new Error('QueryGraph should not have thrown')))
@@ -370,14 +372,11 @@ describe("ApiBase", function () {
     });
     it('resolves with response, even if response has errors', function(done) {
       Qminder.ApiBase.setKey('testing');
-      this.fetchSpy.onCall(0).resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
+      fetchSpy.onCall(0).resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
       Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
         expect(response).toEqual(ERROR_UNDEFINED_FIELD);
         done();
       })
-    });
-    afterEach(function() {
-      this.fetchSpy.restore();
     });
   });
 });

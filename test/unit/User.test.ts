@@ -1,5 +1,7 @@
-function getUserWithRoles(roles) {
-  let user = new Qminder.User();
+import * as Qminder from '../../src/qminder-api';
+
+function getUserWithRoles(roles: any) {
+  let user = new Qminder.User(1);
   user.roles = roles;
   return user;
 }
@@ -9,15 +11,6 @@ describe("User model", function () {
   const MANAGER_ROLE = { type: 'MANAGER', id: 14121, location: 12345 };
   const ANOTHER_MANAGER_ROLE = { type: 'MANAGER', id: 15, location: 1234 };
   const CLERK_ROLE = { type: 'CLERK', id: 400, location: 12345 };
-
-  beforeEach(function () {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
-  });
 
   describe('isAdmin()', function() {
     it('returns true if the user is only an admin', function() {
@@ -126,23 +119,22 @@ describe("User model", function () {
     });
 
     it('works when a Location object is passed', function() {
-      const location = new Qminder.Location();
-      location.id = 12345;
+      const location = new Qminder.Location(12345);
       const user = getUserWithRoles([CLERK_ROLE, ADMIN_ROLE]);
       expect(() => user.isManager(12345)).not.toThrow();
     });
 
     it('throws when no location is passed', function() {
       const user = getUserWithRoles([CLERK_ROLE, ADMIN_ROLE]);
-      expect(() => user.isManager()).toThrow();
+      expect(() => (user.isManager as any)()).toThrow();
     });
 
     it('throws when an invalid object is passed', function() {
       const user = getUserWithRoles([CLERK_ROLE, ADMIN_ROLE]);
-      expect(() => user.isManager([])).toThrow();
-      expect(() => user.isManager({})).toThrow();
-      expect(() => user.isManager(Qminder.User)).toThrow();
-      expect(() => user.isManager('hello, world')).toThrow();
+      expect(() => (user.isManager as any)([])).toThrow();
+      expect(() => (user.isManager as any)({})).toThrow();
+      expect(() => (user.isManager as any)(Qminder.User)).toThrow();
+      expect(() => (user.isManager as any)('hello, world')).toThrow();
     });
   });
 });

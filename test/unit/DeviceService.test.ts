@@ -1,3 +1,6 @@
+import * as Qminder from '../../src/qminder-api';
+import * as sinon from 'sinon';
+
 describe("Qminder.devices", function() {
   const TV_DETAILS = {
     statusCode: 200,
@@ -6,35 +9,30 @@ describe("Qminder.devices", function() {
     theme: "standard"
   };
 
+  let requestStub: sinon.SinonStub;
   beforeEach(function() {
-    if (typeof Qminder === 'undefined') {
-      Qminder = this.Qminder;
-    }
-    if (typeof sinon === 'undefined') {
-      sinon = this.sinon;
-    }
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
-    this.requestStub = sinon.stub(Qminder.ApiBase, 'request');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
   });
 
   describe('details()', function() {
     beforeEach(function() {
-      this.requestStub.onFirstCall().resolves(TV_DETAILS);
+      requestStub.onFirstCall().resolves(TV_DETAILS);
     });
 
     it('requests the correct API URL', function() {
       Qminder.devices.details(1234);
-      expect(this.requestStub.calledWith('tv/1234')).toBeTruthy();
+      expect(requestStub.calledWith('tv/1234')).toBeTruthy();
     });
 
     it('throws when the TV ID is not passed in', function() {
-      expect(() => Qminder.devices.details()).toThrow();
+      expect(() => (Qminder.devices.details as any)()).toThrow();
     });
 
     it('throws when the TV ID is not a number', function() {
-      expect(() => Qminder.devices.details({ id: 5 })).toThrow();
-      expect(() => Qminder.devices.details("Yo")).toThrow();
+      expect(() => (Qminder.devices.details as any)({ id: 5 })).toThrow();
+      expect(() => (Qminder.devices.details as any)("Yo")).toThrow();
     });
 
     it('constructs a Device for the response', function(done) {
@@ -46,6 +44,6 @@ describe("Qminder.devices", function() {
   });
 
   afterEach(function() {
-    Qminder.ApiBase.request.restore();
+    requestStub.restore();
   });
 });

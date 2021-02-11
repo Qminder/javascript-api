@@ -3,7 +3,7 @@
 
 [Documentation][doc] | [API Reference][api] | [Support][support]
 
-The Qminder Javascript API library, supporting both Node.js (from 5.12.0) and browsers.
+The Qminder Javascript API library, supporting both Node.js (from 10.0) and browsers.
 
 ### Setup
 
@@ -16,9 +16,7 @@ The Qminder Javascript API can be installed from npm:
 
 ### Usage
 
-You can use Qminder API by importing it into your source code. The API uses the UMD module
-definition, which means it should work with all Javascript module bundlers. For easier use, the
-API library can just be included in the page, and will be accessible via the global Qminder object.
+You can use Qminder API by importing it with the node.js module system.
 
     // CommonJS / Node.js
     const Qminder = require('qminder-api');
@@ -26,16 +24,6 @@ API library can just be included in the page, and will be accessible via the glo
 
     // ES6
     import Qminder from 'qminder-api';
-    Qminder.setKey(...);
-
-    // AMD
-    define(function(require) {
-        const Qminder = require('qminder-api');
-        Qminder.setKey(...);
-    });
-
-    // Root object
-    // No including needed - just add the script tag to HTML.
     Qminder.setKey(...);
 
 After importing the Qminder API library, make sure to set the access token to connect to your
@@ -73,13 +61,16 @@ library. To include your local dev version of the Javascript API for the project
 
 ```bash
 # 1. Build
-npm run build
+yarn build
+yarn link
 # 2. cd into the project you want to use API on
 cd $PROJECT
 # 3. install the local JS API folder, and keep track of its changes
-npm install $JAVASCRIPT_API
+yarn link qminder-api
 # 4. Recompile the code
-webpack
+# ./build.sh
+# webpack
+# ... whatever build tool you use
 # The project now uses your local development copy of the Javascript API.
 # The JS API will be symlinked into your project, which means you can keep changing the
 # JS API until your new feature works.
@@ -91,12 +82,9 @@ To contribute to the Qminder API, set up your development environment, then clon
 
 To run various tasks on the code, use the following commands:
 
-**Build the web version**: `npm run build-web`
-**Build the node version**: `npm run build-node`
-**Test the web version**: `npm run test-web` or `npm run test`
-**Build web when code changes**: `npm run watch-web`
-**Test web when code changes**: `npm run watch-tests`
-**Compile documentation into the docs/ folder:**: `npm run docs`
+**Build the library**: `yarn build`
+**Test the library**: `yarn test` or `yarn test-node`
+**Compile documentation into the docs/ folder:**: `yarn docs`
 
 ## Questions?
 
