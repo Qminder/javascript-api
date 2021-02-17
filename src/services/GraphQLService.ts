@@ -253,18 +253,18 @@ export class GraphQLService {
                         break;
 
                     case MessageType.GQL_DATA:
-                        this.subscriptionObserverMap[message.id].next(message.payload.data);
+                        this.subscriptionObserverMap[message.id]?.next(message.payload.data);
                         break;
 
                     case MessageType.GQL_COMPLETE:
-                        this.subscriptionObserverMap[message.id].complete();
+                        this.subscriptionObserverMap[message.id]?.complete();
                         break;
 
                     default:
                         if(message.payload && message.payload.data) {
-                            this.subscriptionObserverMap[message.id].error(message.payload.data);
+                            this.subscriptionObserverMap[message.id]?.error(message.payload.data);
                         } else if(message.errors && message.errors.length > 0) {
-                            this.subscriptionObserverMap[message.id].error(message.errors);
+                            this.subscriptionObserverMap[message.id]?.error(message.errors);
                         }
                 }
             }
