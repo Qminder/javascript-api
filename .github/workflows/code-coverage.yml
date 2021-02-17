@@ -1,0 +1,19 @@
+on:
+  - push
+  - release
+name: Report code coverage
+jobs:
+  code-coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: 14.x
+      - run: yarn install --frozen-lockfile
+      - run: yarn jest --coverage
+      - uses: codecov/codecov-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          fail_ci_if_error: true
