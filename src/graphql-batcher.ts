@@ -7,6 +7,12 @@ interface PendingQuery {
   callbacks: {resolve: Function, reject: Function}[];
 }
 
+export class GraphqlBatcherError extends Error {
+  constructor(public message: string, public errors?: unknown[]) {
+    super(message);
+  }
+}
+
 export class GraphqlBatcher {
   private timeout: any;
   private queries: PendingQuery[] = [];
@@ -66,6 +72,14 @@ export class GraphqlBatcher {
 
     try {
       const result = await ApiBase.queryGraph(batchedPayload);
+      if (!result.data || 
+          (result.errors?.length > 0)) {
+        for (const pendingQuery of batch) {
+          for (const callback of pendingQuery.callbacks) {
+            callback.reject(new GraphqlBatcherError('GraphQL query failed', result.errors));
+          }
+        }
+      }
       let i = 0;
       for (const pendingQuery of batch) {
         const data = result.data[i];
