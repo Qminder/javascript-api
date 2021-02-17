@@ -48,7 +48,7 @@ export enum ConnectionStatus {
  * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
  * trying to import GraphQLService.
  */
-class GraphQLService {
+export class GraphQLService {
 
     private apiKey: string;
 
