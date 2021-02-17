@@ -1,5 +1,7 @@
-on: push
-name: Test on push
+on:
+  - push
+  - release
+name: Report code coverage
 jobs:
   code-coverage:
     name: Code Coverage
@@ -13,5 +15,5 @@ jobs:
       - run: yarn jest --coverage
       - uses: codecov/codecov-action@v1
         with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
-          verbose: true
