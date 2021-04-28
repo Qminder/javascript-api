@@ -20,14 +20,14 @@ function generateRequestData(query: string, responseData: any): any {
     query
   };
   return {
-    request: [ queryObject ],
+    request: queryObject,
     expectedFetch: {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': 'testing',
       },
       mode: 'cors',
-      body: JSON.stringify([ queryObject ]),
+      body: JSON.stringify(queryObject),
     },
     successfulResponse: {
       statusCode: 200,

@@ -192,13 +192,12 @@ class ApiBase {
    *
    * Sends the given query to the Qminder API, returning a Promise that resolves to the site's HTTP
    * response.
-   * @param queries required: list of GraphQL queries, for example "{ me { email } }", or
+   * @param query required: GraphQL query, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
    * @throws when the API key is missing or invalid
    */
-
-  queryGraph(queries: GraphqlQuery[]): Promise<GraphqlBatchResponse> {
+  queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -209,7 +208,7 @@ class ApiBase {
         'X-Qminder-REST-API-Key': this.apiKey,
       },
       mode: 'cors',
-      body: JSON.stringify(queries),
+      body: JSON.stringify(query)
     };
 
     return (this.fetch(`https://${this.apiServer}/graphql`, init)
@@ -218,7 +217,7 @@ class ApiBase {
           if (responseJson.errorMessage) {
             throw new Error(responseJson.errorMessage);
           }
-          return responseJson as Promise<GraphqlBatchResponse>;
+          return responseJson as Promise<GraphqlResponse>;
         }));
   }
 }
