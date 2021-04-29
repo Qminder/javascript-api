@@ -1,7 +1,6 @@
 import * as WebSocket from 'isomorphic-ws';
-import ApiBase, {GraphqlResponse} from '../api-base';
+import ApiBase, {GraphqlQuery, GraphqlResponse} from '../api-base';
 import {Observable, Observer, Subject} from 'rxjs';
-import { GraphqlBatcher } from '../graphql-batcher';
 import { shareReplay } from "rxjs/operators";
 
 interface OperationMessage {
@@ -73,8 +72,6 @@ export class GraphQLService {
      *  exponential retry falloff. */
     private connectionRetries = 0;
 
-    private batcher = new GraphqlBatcher();
-
     constructor() {
         this.setServer('wss://api.qminder.com:443');
         this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
@@ -116,7 +113,17 @@ export class GraphQLService {
         if (!query || query.length === 0) {
             throw new Error('GraphQLService query expects a GraphQL query as its first argument');
         }
-        return this.batcher.submit(query, variables);
+
+        const packedQuery = query.replace(/\s\s+/g, ' ').trim();
+        const graphqlQuery: GraphqlQuery = {
+            query: packedQuery
+        };
+
+        if (variables) {
+            graphqlQuery.variables = variables;
+        }
+
+        return ApiBase.queryGraph(graphqlQuery);
     }
 
     /**
