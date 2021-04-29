@@ -197,7 +197,7 @@ class ApiBase {
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
    * @throws when the API key is missing or invalid
    */
-  queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
+  async queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -211,14 +211,13 @@ class ApiBase {
       body: JSON.stringify(query)
     };
 
-    return (this.fetch(`https://${this.apiServer}/graphql`, init)
-        .then((response: Response) => response.json())
-        .then((responseJson: any) => {
-          if (responseJson.errorMessage) {
-            throw new Error(responseJson.errorMessage);
-          }
-          return responseJson as Promise<GraphqlResponse>;
-        }));
+    const result = await this.fetch(`https://${this.apiServer}/graphql`, init);
+    const responseJson = await result.json();
+    if (responseJson.errorMessage) {
+      throw new Error(responseJson.errorMessage);
+    }
+
+    return responseJson as GraphqlResponse;
   }
 }
 
