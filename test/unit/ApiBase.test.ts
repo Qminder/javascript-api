@@ -328,11 +328,7 @@ describe("ApiBase", function () {
     let fetchSpy: sinon.SinonStub;
 
     beforeEach(function() {
-      fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch').resolves({
-        async json() {
-          return {};
-        }
-      });
+      fetchSpy = sinon.stub(Qminder.ApiBase, 'fetch');
     });
 
     afterEach(function() {
@@ -341,7 +337,7 @@ describe("ApiBase", function () {
 
     it('throws when no query is passed', function() {
       Qminder.ApiBase.setKey('testing');
-      expect(() => (Qminder.ApiBase.queryGraph as any)()).not.toThrow();
+      expect(() => (Qminder.ApiBase.queryGraph as any)()).toThrow();
     });
     it('does not throw when no variables are passed', function() {
       Qminder.ApiBase.setKey('testing');
@@ -350,7 +346,7 @@ describe("ApiBase", function () {
     });
     it('throws when API key is not defined', function() {
       fetchSpy.onCall(0).resolves(new MockResponse(ME_ID.successfulResponse));
-      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).rejects.toThrow();
+      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).toThrow();
     });
     it('sends a correct request', function() {
       Qminder.ApiBase.setKey('testing');
