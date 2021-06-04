@@ -132,9 +132,6 @@ describe("UserService", function() {
   describe("details()", function() {
     // Qminder.users.details(userId|userEmail)
   });
-  describe("remove()", function() {
-    // Qminder.users.remove(user)
-  });
   describe("addRole()", function() {
     // Qminder.users.addRole(user, role)
   });

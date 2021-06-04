@@ -126,27 +126,6 @@ export default class UserService {
   }
 
   /**
-   * Removes the user.
-   *
-   * They will be deleted from the database and will not be able to log in any more.
-   *
-   * Calls the HTTP API `DELETE /users/<ID>`.
-   *
-   * @param user the user to delete
-   * @returns a Promise that resolves when the user was removed, and rejects when
-   * something goes wrong.
-   * @throws Error when the argument is invalid (either the user ID is not a number, or the User
-   * object did not have an ID).
-   */
-  static remove(user: (User|number)): Promise<{ success: true }> {
-    let userId: any = user instanceof User ? user.id : user;
-    if (!userId || typeof userId !== 'number') {
-      throw new Error('User ID was invalid');
-    }
-    return (ApiBase.request(`users/${userId}/`, undefined, 'DELETE') as Promise<{ success: true }>);
-  }
-
-  /**
    * Adds a new role to the user.
    * Roles are the method by which Qminder controls who can access which location, at what
    * access level.
