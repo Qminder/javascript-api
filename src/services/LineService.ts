@@ -112,7 +112,7 @@ export default class LineService {
     if (!line || typeof line !== 'object') {
       throw new Error('Line is invalid or missing.');
     }
-    
+
     let lineId = line.id;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID is invalid or missing.');
@@ -179,7 +179,7 @@ export default class LineService {
   /**
    * Archive a Line.
    * This archives the line and removes it from the line list, from iPads and TVs, from the service screen and from
-   * statistics. This action cannot be undone.
+   * statistics. The line can be unarchived.
    *
    * Calls the following HTTP API: `POST /lines/<ID>/archive`
    *
@@ -188,7 +188,7 @@ export default class LineService {
    * ```javascript
    * await Qminder.lines.archive(1425);
    * ```
-   * @param line  the Line or the line's ID to archive
+   * @param line the Line or the line's ID to archive
    * @returns A Promise that resolves when the line was archived, and rejects
    * when something went wrong.
    */
@@ -198,5 +198,51 @@ export default class LineService {
       throw new Error('Line ID invalid or missing.');
     }
     return (ApiBase.request(`lines/${lineId}/archive`, undefined, 'POST') as Promise<any>);
+  }
+
+  /**
+   * Unarchive a Line.
+   *
+   * Calls the following HTTP API: `POST /lines/<ID>/unarchive`
+   *
+   * For example:
+   *
+   * ```javascript
+   * await Qminder.lines.unarchive(1425);
+   * ```
+   * @param line the Line or the line's ID to unarchive
+   * @returns A Promise that resolves when the line was unarchived, and rejects
+   * when something went wrong.
+   */
+  static unarchive(line: Line | number): Promise<any> {
+    let lineId: any = line instanceof Line ? line.id : line;
+    if (!lineId || typeof lineId !== 'number') {
+      throw new Error('Line ID invalid or missing.');
+    }
+    return (ApiBase.request(`lines/${lineId}/unarchive`, undefined, 'POST') as Promise<any>);
+  }
+
+  /**
+   * Delete a Line.
+   * This deletes the line and removes it from the line list, from iPads and TVs, from the service screen and from
+   * statistics. This action cannot be undone.
+   *
+   * Calls the following HTTP API: `DELETE /lines/<ID>`
+   *
+   * For example:
+   *
+   * ```javascript
+   * await Qminder.lines.delete(1425);
+   * ```
+   * @param line the Line or the line's ID to delete
+   * @returns A Promise that resolves when the line was deleted, and rejects
+   * when something went wrong.
+   */
+  static delete(line: Line | number): Promise<any> {
+    let lineId: any = line instanceof Line ? line.id : line;
+    if (!lineId || typeof lineId !== 'number') {
+      throw new Error('Line ID invalid or missing.');
+    }
+    return (ApiBase.request(`lines/${lineId}`, undefined, 'DELETE') as Promise<any>);
   }
 };
