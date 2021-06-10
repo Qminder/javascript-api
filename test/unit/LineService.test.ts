@@ -170,4 +170,54 @@ describe("LineService", function() {
       expect(() => Qminder.lines.archive(new Qminder.Line(line))).toThrowError()
     });
   });
+
+  describe("unarchive()", function () {
+    beforeEach(function(done) {
+      requestStub.withArgs('lines/71490/unarchive').resolves({});
+      done();
+    });
+
+    it("unarchive a line using ID", function () {
+      Qminder.lines.unarchive(71490);
+    });
+
+    it("unarchive a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.unarchive(new Qminder.Line(line));
+    });
+
+    it("fails to unarchive a line due to no ID", function () {
+      expect(() => Qminder.lines.unarchive(null)).toThrowError();
+    });
+
+    it("fails to unarchive a line due to line object lacking ID field", function () {
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.unarchive(new Qminder.Line(line))).toThrowError()
+    });
+  });
+
+  describe("delete()", function () {
+    beforeEach(function(done) {
+      requestStub.withArgs('lines/71490/delete').resolves({});
+      done();
+    });
+
+    it("delete a line using ID", function () {
+      Qminder.lines.delete(71490);
+    });
+
+    it("delete a line using Line object", function () {
+      let line = {"id":71490,"name":"Front Desk","color":"#39cccc","disabled":false};
+      Qminder.lines.delete(new Qminder.Line(line));
+    });
+
+    it("fails to delete a line due to no ID", function () {
+      expect(() => Qminder.lines.delete(null)).toThrowError();
+    });
+
+    it("fails to delete a line due to line object lacking ID field", function () {
+      let line: Qminder.Line = {"id":null,"name":"Front Desk","color":"#39cccc","disabled":false};
+      expect(() => Qminder.lines.delete(new Qminder.Line(line))).toThrowError()
+    });
+  });
 });
