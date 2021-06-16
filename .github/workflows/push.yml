@@ -20,3 +20,25 @@ jobs:
         run: yarn test-node
       - name: Build the package
         run: yarn pack
+  prettier:
+    name: Check prettier
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Deps
+        run: |
+          yarn install --frozen-lockfile
+      - name: Prettier check
+        run: |
+          yarn run lint-prettier
+  eslint:
+    name: Check eslint
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@master
+      - name: Install Deps
+        run: |
+          yarn install --frozen-lockfile
+      - name: Eslint check
+        run: |
+          yarn run lint-eslint
