@@ -30,7 +30,6 @@ if (!process.env.hasOwnProperty('API_KEY')) {
 
 Qminder.setKey(process.env.API_KEY);
 
-
 async function perform() {
   // 1. Look up all locations
   const locations = await Qminder.locations.list();
@@ -44,12 +43,14 @@ async function perform() {
   // 2. Search for tickets with the given criteria:
   const tickets = await Qminder.tickets.search({
     location: locationId,
-    minCreated: "2017-10-19T12:40:00Z",
-    status: ['NEW']
+    minCreated: '2017-10-19T12:40:00Z',
+    status: ['NEW'],
   });
 
   // 3. Output the ticket results
-  console.log(`Searched for all new tickets since 2017-10-19T12:40:00Z in location ${locationId}`);
+  console.log(
+    `Searched for all new tickets since 2017-10-19T12:40:00Z in location ${locationId}`,
+  );
   console.log(tickets);
 }
 

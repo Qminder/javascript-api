@@ -38,9 +38,11 @@ export default class LocationService {
    * @returns A promise that resolves to an array of locations.
    */
   static list(): Promise<Location[]> {
-    return ApiBase.request('locations/').then((locations: { data: Location[] }) => {
-      return locations.data.map(each => new Location(each));
-    });
+    return ApiBase.request('locations/').then(
+      (locations: { data: Location[] }) => {
+        return locations.data.map((each) => new Location(each));
+      },
+    );
   }
 
   /**
@@ -62,7 +64,9 @@ export default class LocationService {
    * @returns A promise that resolves to the location.
    */
   static details(locationId: number): Promise<Location> {
-    return ApiBase.request(`locations/${locationId}/`).then((details: Location) => new Location(details));
+    return ApiBase.request(`locations/${locationId}/`).then(
+      (details: Location) => new Location(details),
+    );
   }
 
   /**
@@ -84,13 +88,15 @@ export default class LocationService {
    *
    * @returns a Promise that resolves to the list of desks in this location
    */
-  static getDesks(location: Location) : Promise<Desk[]> {
-    return ApiBase.request(`locations/${location.id}/desks`).then((response: { desks: Desk[] }) => {
-      if (!response.desks) {
-        throw new Error(`Desk list response was invalid - ${response}`);
-      }
-      return response.desks.map(each => new Desk(each));
-    });
+  static getDesks(location: Location): Promise<Desk[]> {
+    return ApiBase.request(`locations/${location.id}/desks`).then(
+      (response: { desks: Desk[] }) => {
+        if (!response.desks) {
+          throw new Error(`Desk list response was invalid - ${response}`);
+        }
+        return response.desks.map((each) => new Desk(each));
+      },
+    );
   }
 
   /**
@@ -112,7 +118,7 @@ export default class LocationService {
    * @returns a Promise that resolves to an array of input fields, or rejects if something went
    * wrong.
    */
-  static getInputFields(location: (Location | number)): Promise<InputField[]> {
+  static getInputFields(location: Location | number): Promise<InputField[]> {
     let locationId: any = null;
     // Get the location's ID
     if (location instanceof Location) {
@@ -123,7 +129,8 @@ export default class LocationService {
     if (!locationId || typeof locationId !== 'number') {
       throw new Error(ERROR_NO_LOCATION_ID);
     }
-    return ApiBase.request(`locations/${locationId}/input-fields`)
-                  .then((response: { fields: InputField[] }) => response.fields);
+    return ApiBase.request(`locations/${locationId}/input-fields`).then(
+      (response: { fields: InputField[] }) => response.fields,
+    );
   }
-};
+}

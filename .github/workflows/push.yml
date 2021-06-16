@@ -8,15 +8,15 @@ jobs:
     name: Test on NodeJS ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@master
-    - uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install Deps
-      run: yarn install --frozen-lockfile
-    - name: Run tests (browser)
-      run: yarn test
-    - name: Run tests (node)
-      run: yarn test-node
-    - name: Build the package
-      run: yarn pack
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Install Deps
+        run: yarn install --frozen-lockfile
+      - name: Run tests (browser)
+        run: yarn test
+      - name: Run tests (node)
+        run: yarn test-node
+      - name: Build the package
+        run: yarn pack

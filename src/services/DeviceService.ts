@@ -30,7 +30,9 @@ export default class DeviceService {
       throw new Error('TV ID not provided');
     }
 
-    return ApiBase.request(`tv/${tvId}`).then((response: Device) => new Device(response));
+    return ApiBase.request(`tv/${tvId}`).then(
+      (response: Device) => new Device(response),
+    );
   }
 
   /**
@@ -60,7 +62,11 @@ export default class DeviceService {
     if (!newName || typeof newName !== 'string') {
       throw new Error('TV name not provided');
     }
-    return (ApiBase.request(`tv/${tvId}`, { name: newName }, 'POST') as Promise<Device>);
+    return ApiBase.request(
+      `tv/${tvId}`,
+      { name: newName },
+      'POST',
+    ) as Promise<Device>;
   }
 
   /**
@@ -88,6 +94,8 @@ export default class DeviceService {
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
-    return (ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{ statusCode: number }>);
+    return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{
+      statusCode: number;
+    }>;
   }
 }

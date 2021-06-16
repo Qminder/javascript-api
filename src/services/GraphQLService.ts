@@ -1,43 +1,43 @@
 import * as WebSocket from 'isomorphic-ws';
-import ApiBase, {GraphqlQuery, GraphqlResponse} from '../api-base';
-import {Observable, Observer, Subject} from 'rxjs';
-import { shareReplay } from "rxjs/operators";
+import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
+import { Observable, Observer, Subject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 
 interface OperationMessage {
-    id?: string;
-    type: MessageType;
-    payload?: any;
-    errors?: any[];
+  id?: string;
+  type: MessageType;
+  payload?: any;
+  errors?: any[];
 }
 
 class Subscription {
-    public id: string;
-    query: string;
+  public id: string;
+  query: string;
 
-    constructor(id: string, query: string) {
-        this.id = id;
-        this.query = query;
-    }
+  constructor(id: string, query: string) {
+    this.id = id;
+    this.query = query;
+  }
 }
 
 enum MessageType {
-    // To Server
-    GQL_CONNECTION_INIT = 'connection_init',
-    GQL_START = 'start',
-    GQL_STOP = 'stop',
+  // To Server
+  GQL_CONNECTION_INIT = 'connection_init',
+  GQL_START = 'start',
+  GQL_STOP = 'stop',
 
-    // From Server
-    GQL_CONNECTION_ACK = 'connection_ack',
-    GQL_DATA = 'data',
-    GQL_CONNECTION_KEEP_ALIVE = 'ka',
-    GQL_COMPLETE = 'complete'
+  // From Server
+  GQL_CONNECTION_ACK = 'connection_ack',
+  GQL_DATA = 'data',
+  GQL_CONNECTION_KEEP_ALIVE = 'ka',
+  GQL_COMPLETE = 'complete',
 }
 
 export enum ConnectionStatus {
-    DISCONNECTED = 'DISCONNECTED',
-    CONNECTING = 'CONNECTING',
-    INITIALIZING = 'INITIALIZING',
-    CONNECTED = 'CONNECTED',
+  DISCONNECTED = 'DISCONNECTED',
+  CONNECTING = 'CONNECTING',
+  INITIALIZING = 'INITIALIZING',
+  CONNECTED = 'CONNECTED',
 }
 
 /**
@@ -48,258 +48,288 @@ export enum ConnectionStatus {
  * trying to import GraphQLService.
  */
 export class GraphQLService {
+  private apiKey: string;
 
-    private apiKey: string;
+  private apiServer: string;
 
-    private apiServer: string;
+  private socket: WebSocket = null;
 
-    private socket: WebSocket = null;
+  private connectionStatus: ConnectionStatus;
+  private connectionSubject = new Subject<ConnectionStatus>();
+  private connection$ = this.connectionSubject.pipe(shareReplay(1));
 
-    private connectionStatus: ConnectionStatus;
-    private connectionSubject = new Subject<ConnectionStatus>();
-    private connection$ = this.connectionSubject.pipe(shareReplay(1));
+  private nextSubscriptionId: number = 1;
 
-    private nextSubscriptionId: number = 1;
+  private subscriptions: Subscription[] = [];
 
-    private subscriptions: Subscription[] = [];
+  private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
 
-    private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
+  /** A timeout object after which to retry connecting to Qminder API. */
+  private retryTimeout: any;
 
-    /** A timeout object after which to retry connecting to Qminder API. */
-    private retryTimeout: any;
+  /** Counts the amount of times the event emitter retried connecting. This is used for
+   *  exponential retry falloff. */
+  private connectionRetries = 0;
 
-    /** Counts the amount of times the event emitter retried connecting. This is used for
-     *  exponential retry falloff. */
-    private connectionRetries = 0;
+  constructor() {
+    this.setServer('wss://api.qminder.com:443');
+    this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+  }
 
-    constructor() {
-        this.setServer('wss://api.qminder.com:443');
-        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+  /**
+   * Query Qminder API with GraphQL.
+   *
+   * Send a GraphQL query to the Qminder API.
+   *
+   * When the query contains variables, make sure to fill them all in the second parameter.
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   * // 1. Figure out the selected location ID of the current user, with async/await
+   * try {
+   *     const response = await Qminder.graphql.query(`{ me { selectedLocation } }`);
+   *     console.log(response.me.selectedLocation); // "12345"
+   * } catch (error) {
+   *     console.log(error);
+   * }
+   * // 2. Figure out the selected location ID of the current user, with promises
+   * Qminder.graphql.query("{ me { selectedLocation } }").then(function(response) {
+   *     console.log(response.me.selectedLocation);
+   * }, function(error) {
+   *     console.log(error);
+   * });
+   * ```
+   *
+   * @param query required: the query to send, for example `"{ me { selectedLocation } }"`
+   * @param variables optional: additional variables for the query, if variables were used
+   * @returns a promise that resolves to the query's results, or rejects if the query failed
+   * @throws when the 'query' argument is undefined or an empty string
+   */
+  query(
+    query: string,
+    variables?: { [key: string]: any },
+  ): Promise<GraphqlResponse> {
+    if (!query || query.length === 0) {
+      throw new Error(
+        'GraphQLService query expects a GraphQL query as its first argument',
+      );
     }
 
-    /**
-     * Query Qminder API with GraphQL.
-     *
-     * Send a GraphQL query to the Qminder API.
-     *
-     * When the query contains variables, make sure to fill them all in the second parameter.
-     *
-     * For example:
-     *
-     * ```javascript
-     * import * as Qminder from 'qminder-api';
-     * Qminder.setKey('API_KEY_HERE');
-     * // 1. Figure out the selected location ID of the current user, with async/await
-     * try {
-     *     const response = await Qminder.graphql.query(`{ me { selectedLocation } }`);
-     *     console.log(response.me.selectedLocation); // "12345"
-     * } catch (error) {
-     *     console.log(error);
-     * }
-     * // 2. Figure out the selected location ID of the current user, with promises
-     * Qminder.graphql.query("{ me { selectedLocation } }").then(function(response) {
-     *     console.log(response.me.selectedLocation);
-     * }, function(error) {
-     *     console.log(error);
-     * });
-     * ```
-     *
-     * @param query required: the query to send, for example `"{ me { selectedLocation } }"`
-     * @param variables optional: additional variables for the query, if variables were used
-     * @returns a promise that resolves to the query's results, or rejects if the query failed
-     * @throws when the 'query' argument is undefined or an empty string
-     */
-    query(query: string, variables?: { [key: string]: any }): Promise<GraphqlResponse> {
-        if (!query || query.length === 0) {
-            throw new Error('GraphQLService query expects a GraphQL query as its first argument');
+    const packedQuery = query.replace(/\s\s+/g, ' ').trim();
+    const graphqlQuery: GraphqlQuery = {
+      query: packedQuery,
+    };
+
+    if (variables) {
+      graphqlQuery.variables = variables;
+    }
+
+    return ApiBase.queryGraph(graphqlQuery);
+  }
+
+  /**
+   * Subscribe to Qminder Events API using GraphQL.
+   *
+   * For example
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * // 1. Be notified of any created tickets
+   * try {
+   *     const observable = Qminder.graphql.subscribe("createdTickets(locationId: 123) { id firstName }")
+   *
+   *     observable.subscribe(data => console.log(data));
+   *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
+   * } catch (error) {
+   *     console.error(error);
+   * }
+   * ```
+   *
+   * @param query required: the GraphQL query to send, for example `"createdTickets(locationId: 123) { id firstName }"`
+   * @returns an RxJS Observable that will push data as
+   * @throws when the 'query' argument is undefined or an empty string
+   */
+  subscribe(query: string): Observable<object> {
+    if (!query || query.length === 0) {
+      throw new Error(
+        'GraphQLService query expects a GraphQL query as its first argument',
+      );
+    }
+
+    return new Observable<object>((observer: Observer<object>) => {
+      const id = this.generateOperationId();
+      this.subscriptions.push(new Subscription(id, query));
+      this.sendMessage(id, MessageType.GQL_START, {
+        query: `subscription { ${query} }`,
+      });
+      this.subscriptionObserverMap[id] = observer;
+
+      return () => this.stopSubscription(id);
+    });
+  }
+
+  /**
+   * Initialize the EventsService by setting the API key.
+   * When the API key is set, the socket can be opened.
+   * This method is automatically called when doing Qminder.setKey().
+   * @hidden
+   */
+  setKey(apiKey: string) {
+    this.apiKey = apiKey;
+  }
+
+  /**
+   * Get subscription connection observable
+   * This returns an observable which fires with the connection status every time it changes.
+   * @returns an RxJS obserable that will fire with the connection status every time it changes
+   */
+  getSubscriptionConnectionObservable(): Observable<
+    'DISCONNECTED' | 'CONNECTING' | 'INITIALIZING' | 'CONNECTED'
+  > {
+    return this.connection$;
+  }
+
+  /**
+   * Set the WebSocket hostname the GraphQL service uses.
+   * @hidden
+   */
+  setServer(apiServer: string) {
+    this.apiServer = apiServer;
+  }
+
+  private stopSubscription(id: string) {
+    this.sendMessage(id, MessageType.GQL_STOP, null);
+
+    delete this.subscriptionObserverMap[id];
+    this.subscriptions = this.subscriptions.filter((sub) => {
+      return sub.id !== id;
+    });
+  }
+
+  private openSocket() {
+    if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
+      return;
+    }
+    this.setConnectionStatus(ConnectionStatus.CONNECTING);
+    const socket = new WebSocket(
+      `${this.apiServer}/graphql/subscription?rest-api-key=${this.apiKey}`,
+    );
+    this.socket = socket;
+
+    socket.onopen = () => {
+      console.log('[GraphQL subscription] Connection established!');
+      this.setConnectionStatus(ConnectionStatus.INITIALIZING);
+      this.connectionRetries = 0;
+      this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
+    };
+
+    socket.onclose = (event: { code: number }) => {
+      // NOTE: if the event code is 1006, it is any of the errors in the list here:
+      // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
+      console.log('[GraphQL subscription] Connection lost: ' + event.code);
+      this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+      this.socket = null;
+
+      // If it wasn't a client-side close socket, retry connecting.
+      if (event.code !== 1000) {
+        // Increase the retry timeout, the more times we retry
+        const timeoutMult = Math.floor(this.connectionRetries / 10);
+        const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
+
+        if (this.retryTimeout) {
+          clearTimeout(this.retryTimeout);
         }
 
-        const packedQuery = query.replace(/\s\s+/g, ' ').trim();
-        const graphqlQuery: GraphqlQuery = {
-            query: packedQuery
-        };
+        console.log(
+          '[GraphQL subscription] Reconnecting in ' +
+            newTimeout / 1000 +
+            ' seconds...',
+        );
+        this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
 
-        if (variables) {
-            graphqlQuery.variables = variables;
-        }
+        this.connectionRetries++;
+      }
+    };
 
-        return ApiBase.queryGraph(graphqlQuery);
-    }
+    socket.onerror = () => {
+      console.log(
+        '[GraphQL subscription] An error occurred, the websocket will disconnect.',
+      );
+    };
 
-    /**
-     * Subscribe to Qminder Events API using GraphQL.
-     *
-     * For example
-     *
-     * ```javascript
-     * import * as Qminder from 'qminder-api';
-     * // 1. Be notified of any created tickets
-     * try {
-     *     const observable = Qminder.graphql.subscribe("createdTickets(locationId: 123) { id firstName }")
-     *
-     *     observable.subscribe(data => console.log(data));
-     *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
-     * } catch (error) {
-     *     console.error(error);
-     * }
-     * ```
-     *
-     * @param query required: the GraphQL query to send, for example `"createdTickets(locationId: 123) { id firstName }"`
-     * @returns an RxJS Observable that will push data as
-     * @throws when the 'query' argument is undefined or an empty string
-     */
-    subscribe(query: string): Observable<object> {
-        if (!query || query.length === 0) {
-            throw new Error('GraphQLService query expects a GraphQL query as its first argument');
-        }
+    socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
+      if (typeof rawMessage.data === 'string') {
+        const message: OperationMessage = JSON.parse(rawMessage.data);
 
-        return new Observable<object>((observer: Observer<object>) => {
-            const id = this.generateOperationId();
-            this.subscriptions.push(new Subscription(id, query));
-            this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
-            this.subscriptionObserverMap[id] = observer;
+        switch (message.type) {
+          case MessageType.GQL_CONNECTION_KEEP_ALIVE:
+            break;
 
-            return () => this.stopSubscription(id);
-        });
-    }
+          case MessageType.GQL_CONNECTION_ACK:
+            this.setConnectionStatus(ConnectionStatus.CONNECTED);
+            this.subscriptions.forEach((subscription) => {
+              const payload = {
+                query: `subscription { ${subscription.query} }`,
+              };
+              const message = JSON.stringify({
+                id: subscription.id,
+                type: MessageType.GQL_START,
+                payload,
+              });
+              this.sendRawMessage(message);
+            });
+            break;
 
-    /**
-     * Initialize the EventsService by setting the API key.
-     * When the API key is set, the socket can be opened.
-     * This method is automatically called when doing Qminder.setKey().
-     * @hidden
-     */
-    setKey(apiKey: string) {
-        this.apiKey = apiKey;
-    }
+          case MessageType.GQL_DATA:
+            this.subscriptionObserverMap[message.id]?.next(
+              message.payload.data,
+            );
+            break;
 
-    /**
-     * Get subscription connection observable
-     * This returns an observable which fires with the connection status every time it changes.
-     * @returns an RxJS obserable that will fire with the connection status every time it changes
-     */
-    getSubscriptionConnectionObservable(): Observable<'DISCONNECTED' | 'CONNECTING' | 'INITIALIZING' | 'CONNECTED'> {
-        return this.connection$;
-    }
+          case MessageType.GQL_COMPLETE:
+            this.subscriptionObserverMap[message.id]?.complete();
+            break;
 
-    /**
-     * Set the WebSocket hostname the GraphQL service uses.
-     * @hidden
-     */
-    setServer(apiServer: string) {
-        this.apiServer = apiServer;
-    }
-
-    private stopSubscription(id: string) {
-        this.sendMessage(id, MessageType.GQL_STOP, null);
-
-        delete this.subscriptionObserverMap[id];
-        this.subscriptions = this.subscriptions.filter((sub) => {
-            return sub.id !== id;
-        });
-    }
-
-    private openSocket() {
-        if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
-            return;
-        }
-        this.setConnectionStatus(ConnectionStatus.CONNECTING);
-        const socket = new WebSocket(`${this.apiServer}/graphql/subscription?rest-api-key=${this.apiKey}`);
-        this.socket = socket;
-
-        socket.onopen = () => {
-            console.log('[GraphQL subscription] Connection established!');
-            this.setConnectionStatus(ConnectionStatus.INITIALIZING);
-            this.connectionRetries = 0;
-            this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
-        };
-
-        socket.onclose = (event: { code: number }) => {
-            // NOTE: if the event code is 1006, it is any of the errors in the list here:
-            // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
-            console.log('[GraphQL subscription] Connection lost: ' + event.code);
-            this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-            this.socket = null;
-
-            // If it wasn't a client-side close socket, retry connecting.
-            if (event.code !== 1000) {
-                // Increase the retry timeout, the more times we retry
-                const timeoutMult = Math.floor(this.connectionRetries / 10);
-                const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
-
-                if (this.retryTimeout) {
-                    clearTimeout(this.retryTimeout);
-                }
-
-                console.log('[GraphQL subscription] Reconnecting in ' + newTimeout / 1000 + ' seconds...');
-                this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
-
-                this.connectionRetries++;
+          default:
+            if (message.payload && message.payload.data) {
+              this.subscriptionObserverMap[message.id]?.error(
+                message.payload.data,
+              );
+            } else if (message.errors && message.errors.length > 0) {
+              this.subscriptionObserverMap[message.id]?.error(message.errors);
             }
-        };
-
-        socket.onerror = () => {
-            console.log('[GraphQL subscription] An error occurred, the websocket will disconnect.');
-        };
-
-        socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
-            if (typeof rawMessage.data === 'string') {
-                const message: OperationMessage = JSON.parse(rawMessage.data);
-
-                switch (message.type) {
-                    case MessageType.GQL_CONNECTION_KEEP_ALIVE:
-                        break;
-
-                    case MessageType.GQL_CONNECTION_ACK:
-                        this.setConnectionStatus(ConnectionStatus.CONNECTED);
-                        this.subscriptions.forEach((subscription) => {
-                            const payload = {query: `subscription { ${subscription.query} }`};
-                            const message = JSON.stringify({id: subscription.id, type: MessageType.GQL_START, payload});
-                            this.sendRawMessage(message);
-                        });
-                        break;
-
-                    case MessageType.GQL_DATA:
-                        this.subscriptionObserverMap[message.id]?.next(message.payload.data);
-                        break;
-
-                    case MessageType.GQL_COMPLETE:
-                        this.subscriptionObserverMap[message.id]?.complete();
-                        break;
-
-                    default:
-                        if(message.payload && message.payload.data) {
-                            this.subscriptionObserverMap[message.id]?.error(message.payload.data);
-                        } else if(message.errors && message.errors.length > 0) {
-                            this.subscriptionObserverMap[message.id]?.error(message.errors);
-                        }
-                }
-            }
-
-        };
-    }
-
-    private sendMessage(id: string, type: MessageType, payload: any) {
-        const message = JSON.stringify({id, type, payload});
-        if (this.connectionStatus === ConnectionStatus.CONNECTED || this.connectionStatus === ConnectionStatus.INITIALIZING) {
-            this.sendRawMessage(message);
-        } else {
-            this.openSocket();
         }
-    }
+      }
+    };
+  }
 
-    private sendRawMessage(message: any) {
-        this.socket.send(message);
+  private sendMessage(id: string, type: MessageType, payload: any) {
+    const message = JSON.stringify({ id, type, payload });
+    if (
+      this.connectionStatus === ConnectionStatus.CONNECTED ||
+      this.connectionStatus === ConnectionStatus.INITIALIZING
+    ) {
+      this.sendRawMessage(message);
+    } else {
+      this.openSocket();
     }
+  }
 
-    private generateOperationId(): string {
-        return String(this.nextSubscriptionId++);
-    }
+  private sendRawMessage(message: any) {
+    this.socket.send(message);
+  }
 
-    private setConnectionStatus(status: ConnectionStatus) {
-        this.connectionStatus = status;
-        this.connectionSubject.next(status);
-    }
+  private generateOperationId(): string {
+    return String(this.nextSubscriptionId++);
+  }
+
+  private setConnectionStatus(status: ConnectionStatus) {
+    this.connectionStatus = status;
+    this.connectionSubject.next(status);
+  }
 }
 
 export default new GraphQLService();

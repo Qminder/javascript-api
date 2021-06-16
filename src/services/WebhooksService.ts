@@ -42,8 +42,9 @@ class WebhooksService {
     if (!url || typeof url !== 'string') {
       throw new Error(ERROR_NO_URL);
     }
-    return ApiBase.request(`webhooks`, { url }, 'POST')
-                  .then((response: Webhook) => new Webhook(response));
+    return ApiBase.request(`webhooks`, { url }, 'POST').then(
+      (response: Webhook) => new Webhook(response),
+    );
   }
 
   /**

@@ -59,7 +59,10 @@ async function getLocations() {
      *   }
      * }
      */
-    console.log('Locations: ', result.data.locations.map(location => location.name));
+    console.log(
+      'Locations: ',
+      result.data.locations.map((location) => location.name),
+    );
   } catch (err) {
     console.error('Error: ', err);
   }

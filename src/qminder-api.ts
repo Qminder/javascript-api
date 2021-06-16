@@ -18,21 +18,10 @@ import WebhooksService from './services/WebhooksService';
 import GraphQLService, { ConnectionStatus } from './services/GraphQLService';
 
 // Export all data structures
-export {
-  ApiBase,
-  Desk,
-  Device,
-  Line,
-  Location,
-  Ticket,
-  User,
-  Webhook
-};
+export { ApiBase, Desk, Device, Line, Location, Ticket, User, Webhook };
 
 // Export misc structures
-export {
-  ConnectionStatus
-};
+export { ConnectionStatus };
 
 // Export all services
 export {
@@ -50,7 +39,7 @@ export {
   /** Create and remove webhooks. */
   WebhooksService as webhooks,
   /** GraphQL */
-  GraphQLService as graphql
+  GraphQLService as graphql,
 };
 
 /**
@@ -82,4 +71,3 @@ export const setServer = (server: string) => {
 declare var VERSION: string;
 /** @hidden */
 export const version = VERSION;
-

@@ -15,7 +15,7 @@ async function main() {
   // Example 3. HTTP API - search for tickets
   const tickets = await Qminder.tickets.search({
     location: locations[0].id,
-    status: 'NEW'
+    status: 'NEW',
   });
 }
 

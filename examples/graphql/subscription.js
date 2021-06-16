@@ -25,13 +25,12 @@ const Qminder = require('../../build-node/qminder-api');
 Qminder.setKey(process.env.API_KEY);
 
 async function getCreatedTickets() {
-    try {
-
-        /*
-         * This query subscribes to any ticket creation events in the
-         * location specified by `locationId`.
-         */
-        const query = `createdTickets(locationId: 673) {
+  try {
+    /*
+     * This query subscribes to any ticket creation events in the
+     * location specified by `locationId`.
+     */
+    const query = `createdTickets(locationId: 673) {
             id 
             firstName 
             lastName 
@@ -41,32 +40,32 @@ async function getCreatedTickets() {
             }
         }`;
 
-        /*
-         * Successfully subscribing returns an RxJS Observable.
-         * In the case of a badly constructed query or other errors
-         * the API will output an error message to the console.
-         */
-        const observable = Qminder.graphql.subscribe(query);
+    /*
+     * Successfully subscribing returns an RxJS Observable.
+     * In the case of a badly constructed query or other errors
+     * the API will output an error message to the console.
+     */
+    const observable = Qminder.graphql.subscribe(query);
 
-        /*
-         * With that RxJS Observable, all RxJS things can be done.
-         * Here is an example of a simple subscription to print
-         * the results into the console.
-         */
-        const subscription = observable.subscribe(
-            data => console.log('Data from stream:', data),
-            error => console.error('Error in stream:', error),
-            () => console.log('Stream completed')
-        );
+    /*
+     * With that RxJS Observable, all RxJS things can be done.
+     * Here is an example of a simple subscription to print
+     * the results into the console.
+     */
+    const subscription = observable.subscribe(
+      (data) => console.log('Data from stream:', data),
+      (error) => console.error('Error in stream:', error),
+      () => console.log('Stream completed'),
+    );
 
-        /*
-         * To unsubscribe from an observable,
-         * call the unsubscribe method
-         */
-        setTimeout(() => subscription.unsubscribe(), 180000)
-    } catch (err) {
-        console.error('Error: ', err);
-    }
+    /*
+     * To unsubscribe from an observable,
+     * call the unsubscribe method
+     */
+    setTimeout(() => subscription.unsubscribe(), 180000);
+  } catch (err) {
+    console.error('Error: ', err);
+  }
 }
 
 getCreatedTickets();

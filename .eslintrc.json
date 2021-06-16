@@ -2,19 +2,13 @@
   "env": {
     "browser": true
   },
-  "extends": [
-    "eslint:recommended",
-    "@qminder",
-    "prettier"
-  ],
+  "extends": ["eslint:recommended", "@qminder", "prettier"],
   "parserOptions": {
     "sourceType": "module"
   },
   "overrides": [
     {
-      "files": [
-        "*.test.ts"
-      ],
+      "files": ["*.test.ts"],
       "env": {
         "jest": true
       },
