@@ -1,7 +1,7 @@
 import * as WebSocket from 'isomorphic-ws';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
+import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 
 interface OperationMessage {
   id?: string;
@@ -229,7 +229,7 @@ export class GraphQLService {
     socket.onclose = (event: { code: number }) => {
       // NOTE: if the event code is 1006, it is any of the errors in the list here:
       // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
-      console.log('[GraphQL subscription] Connection lost: ' + event.code);
+      console.log(`[GraphQL subscription] Connection lost: ${  event.code}`);
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
 
@@ -244,9 +244,9 @@ export class GraphQLService {
         }
 
         console.log(
-          '[GraphQL subscription] Reconnecting in ' +
-            newTimeout / 1000 +
-            ' seconds...',
+          `[GraphQL subscription] Reconnecting in ${ 
+            newTimeout / 1000 
+            } seconds...`,
         );
         this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
 

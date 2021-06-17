@@ -1,5 +1,5 @@
-import * as Qminder from '../../src/qminder-api';
 import * as sinon from 'sinon';
+import * as Qminder from '../../src/qminder-api';
 
 describe('Qminder.locations', function () {
   const LOCATIONS = [

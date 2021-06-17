@@ -68,6 +68,6 @@ export const setServer = (server: string) => {
 };
 
 // VERSION is replaced with the version string from package.json during compile time
-declare var VERSION: string;
+declare let VERSION: string;
 /** @hidden */
 export const version = VERSION;

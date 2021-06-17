@@ -1,5 +1,5 @@
-import * as Qminder from '../../src/qminder-api';
 import * as sinon from 'sinon';
+import * as Qminder from '../../src/qminder-api';
 
 /**
  * A function that generates an object with the following keys:
@@ -119,7 +119,7 @@ describe('ApiBase', function () {
     });
     it('calls the Response.json() function to resolve the JSON', function (done) {
       Qminder.setKey(API_KEY);
-      let jsonSpy = sinon.stub(FAKE_RESPONSE, 'json');
+      const jsonSpy = sinon.stub(FAKE_RESPONSE, 'json');
       jsonSpy.onCall(0).resolves({ message: 'Worked' });
 
       Qminder.ApiBase.request('TEST').then((response) => {

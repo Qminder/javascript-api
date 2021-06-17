@@ -501,12 +501,12 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_LINE);
     }
 
-    const converted: any = Object.assign({}, ticket);
+    const converted: any = { ...ticket};
     if (converted.extra) {
       converted.extra = JSON.stringify(converted.extra);
     }
 
-    const requestParams: TicketCreationRequest = Object.assign({}, converted);
+    const requestParams: TicketCreationRequest = { ...converted};
 
     return ApiBase.request(
       `lines/${lineId}/ticket`,
@@ -613,7 +613,7 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_CHANGES);
     }
 
-    const intermediate: any = Object.assign({}, changes);
+    const intermediate: any = { ...changes};
 
     if (intermediate.extra) {
       intermediate.extra = JSON.stringify(intermediate.extra);
@@ -1436,7 +1436,7 @@ export default class TicketService {
       afterTicketId = afterTicket as string | number | null;
     }
 
-    let postData: { after: string | number | null } = undefined;
+    let postData: { after: string | number | null };
     if (afterTicketId) {
       postData = {
         after: afterTicketId,

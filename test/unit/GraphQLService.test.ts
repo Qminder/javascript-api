@@ -1,5 +1,5 @@
-import * as Qminder from '../../src/qminder-api';
 import * as sinon from 'sinon';
+import * as Qminder from '../../src/qminder-api';
 
 describe('GraphQLService', function () {
   const ME_ID_REQUEST = '{ me { id } }';
@@ -37,7 +37,7 @@ describe('GraphQLService', function () {
     it('calls ApiBase.queryGraph with both query & variables', async () => {
       const variables = { x: 5, y: 4 };
       await Qminder.graphql.query(ME_ID_REQUEST, variables);
-      const graphqlQuery = { query: ME_ID_REQUEST, variables: variables };
+      const graphqlQuery = { query: ME_ID_REQUEST, variables };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
     it('collapses whitespace and newlines', async () => {

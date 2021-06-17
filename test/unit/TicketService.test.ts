@@ -1,5 +1,5 @@
-import * as Qminder from '../../src/qminder-api';
 import * as sinon from 'sinon';
+import * as Qminder from '../../src/qminder-api';
 
 describe('TicketService', function () {
   const JON_SNOW = {
@@ -25,7 +25,7 @@ describe('TicketService', function () {
     };
     const ticketsWithMessages = {
       data: tickets.data.map((each) =>
-        Object.assign({}, each, { messages: [] }),
+        ({ ...each, messages: []}),
       ),
     };
     it('searches based on lines', function (done) {
@@ -404,7 +404,7 @@ describe('TicketService', function () {
     };
     const ticketsWithMessages = {
       data: tickets.data.map((each) =>
-        Object.assign({}, each, { messages: [] }),
+        ({ ...each, messages: []}),
       ),
     };
     it('searches based on lines', function (done) {
@@ -956,7 +956,7 @@ describe('TicketService', function () {
       ).toThrow();
     });
     it('does not set the email key when response does not include email', function () {
-      const responseBody = Object.assign({}, detailsResponseBody);
+      const responseBody = { ...detailsResponseBody};
       delete responseBody.email;
 
       requestStub.resetBehavior();

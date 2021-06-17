@@ -1,9 +1,9 @@
 import ApiBase from '../api-base';
-import User from '../model/User';
+import User, { UserRole } from '../model/User';
 import Desk from '../model/Desk';
 import Location from '../model/Location';
 import Line from '../model/Line';
-import { UserRole } from '../model/User';
+
 
 /**
  * User Service
@@ -29,7 +29,7 @@ export default class UserService {
    * rejects when something went wrong.
    */
   static list(location: Location | number): Promise<Array<User>> {
-    let locationId: any = location instanceof Location ? location.id : location;
+    const locationId: any = location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location was not valid.');
     }
@@ -153,7 +153,7 @@ export default class UserService {
     user: User | number,
     role: UserRole,
   ): Promise<{ success: true }> {
-    let userId: any = user instanceof User ? user.id : user;
+    const userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
@@ -181,12 +181,12 @@ export default class UserService {
    * if it failed.
    */
   static selectDesk(user: User | number, desk: Desk | number) {
-    let userId: any = user instanceof User ? user.id : user;
+    const userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
 
-    let deskId: any = desk instanceof Desk ? desk.id : desk;
+    const deskId: any = desk instanceof Desk ? desk.id : desk;
     if (!deskId || typeof deskId !== 'number') {
       throw new Error('Desk ID is invalid');
     }
@@ -203,7 +203,7 @@ export default class UserService {
    * @returns A promise that resolves when setting the desk works, and rejects if it failed.
    */
   static removeDesk(user: User | number): Promise<Object> {
-    let userId: any = user instanceof User ? user.id : user;
+    const userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }
@@ -230,7 +230,7 @@ export default class UserService {
    */
 
   static setLines(user: User | number, lines: (Line | number)[]) {
-    let userId: any = user instanceof User ? user.id : user;
+    const userId: any = user instanceof User ? user.id : user;
     if (!userId || typeof userId !== 'number') {
       throw new Error('User ID is invalid');
     }

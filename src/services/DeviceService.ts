@@ -25,7 +25,7 @@ export default class DeviceService {
    * @throws Error if the TV ID is not provided.
    */
   static details(tv: Device | number): Promise<Device> {
-    let tvId: any = tv instanceof Device ? tv.id : tv;
+    const tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
@@ -55,7 +55,7 @@ export default class DeviceService {
    * @throws Error if the TV ID and TV name are not provided.
    */
   static edit(tv: Device | number, newName: string): Promise<Device> {
-    let tvId: any = tv instanceof Device ? tv.id : tv;
+    const tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
@@ -90,7 +90,7 @@ export default class DeviceService {
    * @throws Error if the TV ID is not provided
    */
   static remove(tv: Device | number): Promise<{ statusCode: number }> {
-    let tvId: any = tv instanceof Device ? tv.id : tv;
+    const tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }

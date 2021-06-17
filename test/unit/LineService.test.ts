@@ -1,5 +1,5 @@
-import * as Qminder from '../../src/qminder-api';
 import * as sinon from 'sinon';
+import * as Qminder from '../../src/qminder-api';
 
 describe('LineService', function () {
   const LINES = [
@@ -84,7 +84,7 @@ describe('LineService', function () {
     });
 
     it('updates a line using Line object', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: 71490,
         name: 'Front Desk',
         color: '#39cccc',
@@ -94,7 +94,7 @@ describe('LineService', function () {
     });
 
     it('fails to update a line due to lacking ID', function () {
-      let line: any = {
+      const line: any = {
         id: null,
         name: 'Front Desk',
         color: '#39cccc',
@@ -104,7 +104,7 @@ describe('LineService', function () {
     });
 
     it('fails to update a line due to lacking name', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: 71490,
         name: null,
         color: '#39cccc',
@@ -114,7 +114,7 @@ describe('LineService', function () {
     });
 
     it('fails to update a line due to lacking color', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: 71490,
         name: 'Front Desk',
         color: null,
@@ -135,7 +135,7 @@ describe('LineService', function () {
     });
 
     it('enables a line using Line object', function () {
-      let line = {
+      const line = {
         id: 71490,
         name: 'Front Desk',
         color: '#39cccc',
@@ -149,7 +149,7 @@ describe('LineService', function () {
     });
 
     it('fails to enable a line due to line object lacking ID field', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
         color: '#39cccc',
@@ -170,7 +170,7 @@ describe('LineService', function () {
     });
 
     it('disables a line using Line object', function () {
-      let line = {
+      const line = {
         id: 71490,
         name: 'Front Desk',
         color: '#39cccc',
@@ -184,7 +184,7 @@ describe('LineService', function () {
     });
 
     it('fails to disable a line due to line object lacking ID field', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
         color: '#39cccc',
@@ -207,7 +207,7 @@ describe('LineService', function () {
     });
 
     it('archive a line using Line object', function () {
-      let line = {
+      const line = {
         id: 71490,
         name: 'Front Desk',
         color: '#39cccc',
@@ -221,7 +221,7 @@ describe('LineService', function () {
     });
 
     it('fails to archive a line due to line object lacking ID field', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
         color: '#39cccc',
@@ -244,7 +244,7 @@ describe('LineService', function () {
     });
 
     it('unarchive a line using Line object', function () {
-      let line = {
+      const line = {
         id: 71490,
         name: 'Front Desk',
         color: '#39cccc',
@@ -258,7 +258,7 @@ describe('LineService', function () {
     });
 
     it('fails to unarchive a line due to line object lacking ID field', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
         color: '#39cccc',
@@ -281,7 +281,7 @@ describe('LineService', function () {
     });
 
     it('delete a line using Line object', function () {
-      let line = {
+      const line = {
         id: 71490,
         name: 'Front Desk',
         color: '#39cccc',
@@ -295,7 +295,7 @@ describe('LineService', function () {
     });
 
     it('fails to delete a line due to line object lacking ID field', function () {
-      let line: Qminder.Line = {
+      const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
         color: '#39cccc',

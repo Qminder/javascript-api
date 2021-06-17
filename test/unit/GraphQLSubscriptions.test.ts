@@ -1,6 +1,6 @@
-import { GraphQLService } from '../../src/services/GraphQLService';
 import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
+import { GraphQLService } from '../../src/services/GraphQLService';
 
 jest.mock('isomorphic-ws');
 

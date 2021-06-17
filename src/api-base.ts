@@ -158,7 +158,7 @@ class ApiBase {
     }
 
     const init: CorrectRequestInit = {
-      method: method,
+      method,
       mode: 'cors',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,

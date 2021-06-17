@@ -1,5 +1,6 @@
 // This file is an example of Typescript Qminder API usage.
 import * as Qminder from '../src/qminder-api';
+
 Qminder.setKey(process.env.APIKEY);
 
 async function main() {

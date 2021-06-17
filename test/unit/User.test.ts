@@ -1,7 +1,7 @@
 import * as Qminder from '../../src/qminder-api';
 
 function getUserWithRoles(roles: any) {
-  let user = new Qminder.User(1);
+  const user = new Qminder.User(1);
   user.roles = roles;
   return user;
 }
