@@ -212,7 +212,7 @@ class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: RequestInit = {
+    const init: CorrectRequestInit = {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,

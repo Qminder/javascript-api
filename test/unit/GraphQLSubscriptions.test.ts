@@ -1,3 +1,5 @@
+/* eslint-disable no-empty-function */
+
 import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
 import { GraphQLService } from '../../src/services/GraphQLService';

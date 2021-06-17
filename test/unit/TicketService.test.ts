@@ -24,9 +24,7 @@ describe('TicketService', function () {
       ],
     };
     const ticketsWithMessages = {
-      data: tickets.data.map((each) =>
-        ({ ...each, messages: []}),
-      ),
+      data: tickets.data.map((each) => ({ ...each, messages: [] })),
     };
     it('searches based on lines', function (done) {
       const request = { line: [123, 124, 125] };
@@ -386,10 +384,10 @@ describe('TicketService', function () {
         ],
       };
       requestStub.onCall(0).resolves(response);
-      Qminder.tickets.search({ line: [1234] }).then((response) => {
-        expect(response instanceof Array).toBeTruthy();
-        expect(response.length).toBe(1);
-        expect(response[0] instanceof Qminder.Ticket).toBeTruthy();
+      Qminder.tickets.search({ line: [1234] }).then((res) => {
+        expect(res instanceof Array).toBeTruthy();
+        expect(res.length).toBe(1);
+        expect(res[0] instanceof Qminder.Ticket).toBeTruthy();
         done();
       });
     });
@@ -403,9 +401,7 @@ describe('TicketService', function () {
       ],
     };
     const ticketsWithMessages = {
-      data: tickets.data.map((each) =>
-        ({ ...each, messages: []}),
-      ),
+      data: tickets.data.map((each) => ({ ...each, messages: [] })),
     };
     it('searches based on lines', function (done) {
       const request = { line: [123, 124, 125] };
@@ -940,7 +936,7 @@ describe('TicketService', function () {
     it('resolves to a Ticket object', function (done) {
       Qminder.tickets.details(12345).then((response) => {
         expect(response instanceof Qminder.Ticket).toBeTruthy();
-        expect(response).toEqual(jasmine.objectContaining(detailsResponseBody));
+        expect(response).toEqual(expect.objectContaining(detailsResponseBody));
         done();
       });
     });
@@ -948,6 +944,7 @@ describe('TicketService', function () {
       expect(() => Qminder.tickets.details(undefined)).toThrow();
     });
     it('throws when ticket is invalid', function () {
+      // eslint-disable-next-line no-empty-function
       expect(() => (Qminder.tickets.details as any)(function () {})).toThrow();
     });
     it('throws when ticket is a Ticket object but id is undefined', function () {
@@ -956,14 +953,14 @@ describe('TicketService', function () {
       ).toThrow();
     });
     it('does not set the email key when response does not include email', function () {
-      const responseBody = { ...detailsResponseBody};
+      const responseBody = { ...detailsResponseBody };
       delete responseBody.email;
 
       requestStub.resetBehavior();
       requestStub.resolves(responseBody);
 
       Qminder.tickets.details(12345).then((response) => {
-        expect(response).toEqual(jasmine.objectContaining(responseBody));
+        expect(response).toEqual(expect.objectContaining(responseBody));
         expect(response.email).toBeUndefined();
       });
     });
@@ -1367,7 +1364,7 @@ describe('TicketService', function () {
     });
     it('Returns a ticket with all fields present', function (done) {
       Qminder.tickets.call(12345).then((ticket) => {
-        expect(ticket).toEqual(jasmine.objectContaining(JON_SNOW));
+        expect(ticket).toEqual(expect.objectContaining(JON_SNOW));
         done();
       });
     });

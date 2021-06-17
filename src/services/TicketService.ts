@@ -501,12 +501,12 @@ export default class TicketService {
       throw new Error(ERROR_INVALID_LINE);
     }
 
-    const converted: any = { ...ticket};
+    const converted: any = { ...ticket };
     if (converted.extra) {
       converted.extra = JSON.stringify(converted.extra);
     }
 
-    const requestParams: TicketCreationRequest = { ...converted};
+    const requestParams: TicketCreationRequest = { ...converted };
 
     return ApiBase.request(
       `lines/${lineId}/ticket`,
@@ -515,9 +515,9 @@ export default class TicketService {
       idempotencyKey,
     ).then((response: TicketCreationResponse) => {
       const ticketId = parseInt(`${response.id}`, 10);
-      const ticket = new Ticket(ticketId);
-      ticket.line = lineId;
-      return ticket;
+      const newTicket = new Ticket(ticketId);
+      newTicket.line = lineId;
+      return newTicket;
     });
   }
 
@@ -613,7 +613,7 @@ export default class TicketService {
       throw new Error(ERROR_NO_TICKET_CHANGES);
     }
 
-    const intermediate: any = { ...changes};
+    const intermediate: any = { ...changes };
 
     if (intermediate.extra) {
       intermediate.extra = JSON.stringify(intermediate.extra);
@@ -662,10 +662,10 @@ export default class TicketService {
     keepActiveTicketsOpen?: boolean,
   ): Promise<Ticket> {
     function linesIsArrayOfNumber(
-      lines: (Pick<Line, 'id'> | number)[],
-    ): lines is number[] {
-      for (let i = 0; i < lines.length; i++) {
-        if (typeof lines[i] !== 'number') {
+      inputLines: (Pick<Line, 'id'> | number)[],
+    ): inputLines is number[] {
+      for (let i = 0; i < inputLines.length; i++) {
+        if (typeof inputLines[i] !== 'number') {
           return false;
         }
       }
@@ -673,13 +673,13 @@ export default class TicketService {
     }
 
     function linesIsArrayOfLine(
-      lines: (Pick<Line, 'id'> | number)[],
-    ): lines is Pick<Line, 'id'>[] {
-      for (let i = 0; i < lines.length; i++) {
+      inputLines: (Pick<Line, 'id'> | number)[],
+    ): inputLines is Pick<Line, 'id'>[] {
+      for (let i = 0; i < inputLines.length; i++) {
         if (
           !(
-            typeof lines[i] === 'object' &&
-            typeof (lines[i] as Pick<Line, 'id'>).id === 'number'
+            typeof inputLines[i] === 'object' &&
+            typeof (inputLines[i] as Pick<Line, 'id'>).id === 'number'
           )
         ) {
           return false;
@@ -740,7 +740,9 @@ export default class TicketService {
 
     return ApiBase.request('tickets/call', request, 'POST').then(
       (response: Ticket) =>
-        response.hasOwnProperty('id') ? new Ticket(response) : null,
+        Object.prototype.hasOwnProperty.call(response, 'id')
+          ? new Ticket(response)
+          : null,
     );
   }
 
