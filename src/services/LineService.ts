@@ -33,7 +33,8 @@ export default class LineService {
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
   static list(location: Location | number): Promise<Array<Line>> {
-    const locationId: any = location instanceof Location ? location.id : location;
+    const locationId: any =
+      location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID invalid or missing.');
     }
@@ -83,7 +84,8 @@ export default class LineService {
    * to the parameters.
    */
   static create(location: Location | number, line: Line): Promise<Line> {
-    const locationId: any = location instanceof Location ? location.id : location;
+    const locationId: any =
+      location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID invalid or missing.');
     }

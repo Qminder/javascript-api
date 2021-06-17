@@ -20,7 +20,7 @@
  *     node location_list.js
  */
 
-const Qminder = require('../../build-node/qminder-api');
+const Qminder = require('../../build/qminder-api');
 
 Qminder.setKey(process.env.API_KEY);
 

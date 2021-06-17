@@ -4,7 +4,6 @@ import Desk from '../model/Desk';
 import Location from '../model/Location';
 import Line from '../model/Line';
 
-
 /**
  * User Service
  */
@@ -29,7 +28,8 @@ export default class UserService {
    * rejects when something went wrong.
    */
   static list(location: Location | number): Promise<Array<User>> {
-    const locationId: any = location instanceof Location ? location.id : location;
+    const locationId: any =
+      location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location was not valid.');
     }

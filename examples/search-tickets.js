@@ -21,9 +21,9 @@
  *    - node search-tickets.js
  */
 
-const Qminder = require('../build-node/qminder-api');
+const Qminder = require('../build/qminder-api');
 
-if (!process.env.hasOwnProperty('API_KEY')) {
+if (!process.env.API_KEY) {
   console.error(`Use this script by setting the Qminder API key like this:
   API_KEY=apikeygoeshere node search-tickets.js`);
 }
