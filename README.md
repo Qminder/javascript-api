@@ -1,4 +1,5 @@
 # Qminder Javascript API
+
 [![npm](https://img.shields.io/npm/v/qminder-api.svg)](https://www.npmjs.com/package/qminder-api)
 
 [Documentation][doc] | [API Reference][api] | [Support][support]

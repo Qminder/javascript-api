@@ -20,7 +20,7 @@
  *     node location_list.js
  */
 
-const Qminder = require('../../build-node/qminder-api');
+const Qminder = require('../../build/qminder-api');
 
 Qminder.setKey(process.env.API_KEY);
 
@@ -59,7 +59,10 @@ async function getLocations() {
      *   }
      * }
      */
-    console.log('Locations: ', result.data.locations.map(location => location.name));
+    console.log(
+      'Locations: ',
+      result.data.locations.map((location) => location.name),
+    );
   } catch (err) {
     console.error('Error: ', err);
   }

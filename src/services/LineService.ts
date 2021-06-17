@@ -33,12 +33,15 @@ export default class LineService {
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
   static list(location: Location | number): Promise<Array<Line>> {
-    let locationId: any = location instanceof Location ? location.id : location;
+    const locationId: any =
+      location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID invalid or missing.');
     }
-    return ApiBase.request(`locations/${locationId}/lines`)
-                  .then((response: { data: Line[] }) => response.data.map(line => new Line(line)));
+    return ApiBase.request(`locations/${locationId}/lines`).then(
+      (response: { data: Line[] }) =>
+        response.data.map((line) => new Line(line)),
+    );
   }
 
   /**
@@ -55,12 +58,13 @@ export default class LineService {
    * @returns a promise that resolves to the Line object, or rejects if something went wrong.
    */
   static details(line: Line | number): Promise<Line> {
-    let lineId: any = line instanceof Line ? line.id : line;
+    const lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return ApiBase.request(`lines/${lineId}/`)
-                  .then((response: Line) => new Line(response));
+    return ApiBase.request(`lines/${lineId}/`).then(
+      (response: Line) => new Line(response),
+    );
   }
 
   /**
@@ -80,7 +84,8 @@ export default class LineService {
    * to the parameters.
    */
   static create(location: Location | number, line: Line): Promise<Line> {
-    let locationId: any = location instanceof Location ? location.id : location;
+    const locationId: any =
+      location instanceof Location ? location.id : location;
     if (!locationId || typeof locationId !== 'number') {
       throw new Error('Location ID invalid or missing.');
     }
@@ -90,7 +95,11 @@ export default class LineService {
     if (!line.name || typeof line.name !== 'string') {
       throw new Error('Cannot create a line without a line name.');
     }
-    return (ApiBase.request(`locations/${locationId}/lines`, line, 'POST') as Promise<Line>);
+    return ApiBase.request(
+      `locations/${locationId}/lines`,
+      line,
+      'POST',
+    ) as Promise<Line>;
   }
 
   /**
@@ -113,23 +122,23 @@ export default class LineService {
       throw new Error('Line is invalid or missing.');
     }
 
-    let lineId = line.id;
+    const lineId = line.id;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID is invalid or missing.');
     }
 
-    let lineName = line.name;
+    const lineName = line.name;
     if (!lineName || typeof lineName !== 'string') {
       throw new Error('Cannot update a line without a name.');
     }
 
-    let lineColor = line.color;
+    const lineColor = line.color;
     if (!lineColor || typeof lineColor !== 'string') {
       throw new Error('Cannot update a line without a color.');
     }
 
-    let data = { name: lineName, color: lineColor };
-    return (ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>);
+    const data = { name: lineName, color: lineColor };
+    return ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>;
   }
 
   /**
@@ -146,12 +155,16 @@ export default class LineService {
    * @returns A Promise that resolves when the line was enabled, and rejects
    * when something went wrong.
    */
-  static enable(line: Line | number): Promise<any> {
-    let lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static enable(line: Line | number): Promise<any> {
+    const lineId: any = line instanceof Line ? line.id : line;
+    if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/enable`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/enable`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -168,12 +181,16 @@ export default class LineService {
    * @returns A Promise that resolves when the line was disabled, and rejects
    * when there active tickets in the line or something went wrong.
    */
-  static disable(line: Line | number): Promise<any> {
-    let lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static disable(line: Line | number): Promise<any> {
+    const lineId: any = line instanceof Line ? line.id : line;
+    if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/disable`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/disable`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -193,11 +210,15 @@ export default class LineService {
    * when something went wrong.
    */
   static archive(line: Line | number): Promise<any> {
-    let lineId: any = line instanceof Line ? line.id : line;
+    const lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/archive`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/archive`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -215,11 +236,15 @@ export default class LineService {
    * when something went wrong.
    */
   static unarchive(line: Line | number): Promise<any> {
-    let lineId: any = line instanceof Line ? line.id : line;
+    const lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/unarchive`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/unarchive`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -239,10 +264,14 @@ export default class LineService {
    * when something went wrong.
    */
   static delete(line: Line | number): Promise<any> {
-    let lineId: any = line instanceof Line ? line.id : line;
+    const lineId: any = line instanceof Line ? line.id : line;
     if (!lineId || typeof lineId !== 'number') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}`, undefined, 'DELETE') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}`,
+      undefined,
+      'DELETE',
+    ) as Promise<any>;
   }
-};
+}

@@ -21,15 +21,14 @@
  *    - node search-tickets.js
  */
 
-const Qminder = require('../build-node/qminder-api');
+const Qminder = require('../build/qminder-api');
 
-if (!process.env.hasOwnProperty('API_KEY')) {
+if (!process.env.API_KEY) {
   console.error(`Use this script by setting the Qminder API key like this:
   API_KEY=apikeygoeshere node search-tickets.js`);
 }
 
 Qminder.setKey(process.env.API_KEY);
-
 
 async function perform() {
   // 1. Look up all locations
@@ -44,12 +43,14 @@ async function perform() {
   // 2. Search for tickets with the given criteria:
   const tickets = await Qminder.tickets.search({
     location: locationId,
-    minCreated: "2017-10-19T12:40:00Z",
-    status: ['NEW']
+    minCreated: '2017-10-19T12:40:00Z',
+    status: ['NEW'],
   });
 
   // 3. Output the ticket results
-  console.log(`Searched for all new tickets since 2017-10-19T12:40:00Z in location ${locationId}`);
+  console.log(
+    `Searched for all new tickets since 2017-10-19T12:40:00Z in location ${locationId}`,
+  );
   console.log(tickets);
 }
 

@@ -49,7 +49,7 @@ class Desk {
       this.name = `${properties}`;
     } else {
       Object.assign(this, properties);
-      this.id = properties.id || parseInt(properties.name);
+      this.id = properties.id || parseInt(properties.name, 10);
     }
   }
 }

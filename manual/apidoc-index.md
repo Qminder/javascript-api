@@ -30,31 +30,31 @@ The API key can be found in [Qminder Dashboard](https://dashboard.qminder.com) u
 // This line of code needs to be before any other API calls, otherwise you get an error!
 Qminder.setKey('COPIED_API_KEY_GOES_HERE');
 ```
+
 ## Using the API
 
 The functionality of Qminder API is grouped under different Services. For example, to work with
 visitors in the Qminder queue, you should use `Qminder.tickets`.
 
-Qminder API services are built based on [Promises][promise]. This means that Qminder API can be 
+Qminder API services are built based on [Promises][promise]. This means that Qminder API can be
 used with `await` keywords in modern Javascript and `.then()` callbacks in ES5.
 
-Unless specifically mentioned otherwise, the API code examples are written using modern 
-Javascript (ES2015) standards. To write code according to modern JS standards, use latest 
+Unless specifically mentioned otherwise, the API code examples are written using modern
+Javascript (ES2015) standards. To write code according to modern JS standards, use latest
 versions of Node.js, or in the browser, compile to an older version of Javascript.
 
 Here's a list of things you can do with the Qminder API:
 
-- [`Qminder.devices`][ds]: List and manage Apple TVs attached to a location. 
+- [`Qminder.devices`][ds]: List and manage Apple TVs attached to a location.
 - [`Qminder.events`][es]: Listen to realtime events of your location and perform actions when they occur.
 - [`Qminder.lines`][lis]: List, create or remove lines in a location.
 - [`Qminder.locations`][los]: Get information about the current location.
-- [`Qminder.tickets`][ts]: Query visitor data, search for visitors, modify visitor properties, put 
+- [`Qminder.tickets`][ts]: Query visitor data, search for visitors, modify visitor properties, put
   them back in the queue, automatically label your visitors and more.
 - [`Qminder.users`][us]: Create and manage users, their permissions and user information.
 - [`Qminder.webhooks`][ws]: Create and remove webhooks.
 
 [promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
-
 [ds]: ./classes/_services_deviceservice_.deviceservice.html
 [es]: ./classes/_services_eventsservice_.eventsservice.html
 [lis]: ./classes/_services_lineservice_.lineservice.html

@@ -1,11 +1,12 @@
-import { GraphQLService } from '../../src/services/GraphQLService';
+/* eslint-disable no-empty-function */
+
 import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
+import { GraphQLService } from '../../src/services/GraphQLService';
 
 jest.mock('isomorphic-ws');
 
 describe('GraphQL subscriptions', () => {
-
   let graphqlService: GraphQLService;
   beforeEach(() => {
     graphqlService = new GraphQLService();
@@ -14,7 +15,6 @@ describe('GraphQL subscriptions', () => {
   afterEach(() => {
     (WebSocket as unknown as jest.Mock).mockReset();
   });
-
 
   describe('.generateOperationId', () => {
     it('returns an incrementing string', () => {
@@ -32,13 +32,20 @@ describe('GraphQL subscriptions', () => {
       graphqlService.subscribe('baba').subscribe(() => {});
       expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
-      expect(sendMessageSpy).toHaveBeenCalledWith(expect.anything(), 'start', expect.objectContaining({
-        query: 'subscription { baba }',
-      }));
+      expect(sendMessageSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        'start',
+        expect.objectContaining({
+          query: 'subscription { baba }',
+        }),
+      );
     });
 
     it('sends an un-subscribe message when the subscription is unsubscribe from', () => {
-      const stopSubscriptionSpy = jest.spyOn(graphqlService as any, 'stopSubscription');
+      const stopSubscriptionSpy = jest.spyOn(
+        graphqlService as any,
+        'stopSubscription',
+      );
       const subscription = graphqlService.subscribe('baba').subscribe(() => {});
       subscription.unsubscribe();
       expect(stopSubscriptionSpy).toHaveBeenCalledWith('1');
@@ -48,7 +55,9 @@ describe('GraphQL subscriptions', () => {
   describe('.stopSubscription', () => {
     it('deletes the subscription from the mapping of ID -> callbacks', () => {
       // start the test with an empty observer-map
-      expect(Object.keys( (graphqlService as any).subscriptionObserverMap ).length).toBe(0);
+      expect(
+        Object.keys((graphqlService as any).subscriptionObserverMap).length,
+      ).toBe(0);
       // subscribe once
       const spy = jest.fn();
       const subscription = graphqlService.subscribe('baba').subscribe(spy);
@@ -60,13 +69,17 @@ describe('GraphQL subscriptions', () => {
 
       // unsubscribing should clean up
       subscription.unsubscribe();
-      expect(Object.keys( (graphqlService as any).subscriptionObserverMap ).length).toBe(0);
+      expect(
+        Object.keys((graphqlService as any).subscriptionObserverMap).length,
+      ).toBe(0);
     });
   });
 
   describe('receiving messages', () => {
     it('when receiving a published message for a subscription that does not exist anymore, it does not throw', () => {
-      expect(Object.keys( (graphqlService as any).subscriptionObserverMap ).length).toBe(0);
+      expect(
+        Object.keys((graphqlService as any).subscriptionObserverMap).length,
+      ).toBe(0);
       const subscription = graphqlService.subscribe('baba').subscribe(() => {});
       subscription.unsubscribe();
       const internalSock = (graphqlService as any).socket;
@@ -78,7 +91,7 @@ describe('GraphQL subscriptions', () => {
             id: '1',
             payload: {
               data: {
-                baba: 12345
+                baba: 12345,
               },
             },
           }),

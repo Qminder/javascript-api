@@ -1,0 +1,20 @@
+{
+  "env": {
+    "browser": true
+  },
+  "extends": ["eslint:recommended", "@qminder", "prettier"],
+  "parserOptions": {
+    "sourceType": "module"
+  },
+  "overrides": [
+    {
+      "files": ["*.test.ts"],
+      "env": {
+        "jest": true
+      },
+      "rules": {
+        "func-names": "off"
+      }
+    }
+  ]
+}

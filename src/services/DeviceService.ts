@@ -25,12 +25,14 @@ export default class DeviceService {
    * @throws Error if the TV ID is not provided.
    */
   static details(tv: Device | number): Promise<Device> {
-    let tvId: any = tv instanceof Device ? tv.id : tv;
+    const tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
 
-    return ApiBase.request(`tv/${tvId}`).then((response: Device) => new Device(response));
+    return ApiBase.request(`tv/${tvId}`).then(
+      (response: Device) => new Device(response),
+    );
   }
 
   /**
@@ -53,14 +55,18 @@ export default class DeviceService {
    * @throws Error if the TV ID and TV name are not provided.
    */
   static edit(tv: Device | number, newName: string): Promise<Device> {
-    let tvId: any = tv instanceof Device ? tv.id : tv;
+    const tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
     if (!newName || typeof newName !== 'string') {
       throw new Error('TV name not provided');
     }
-    return (ApiBase.request(`tv/${tvId}`, { name: newName }, 'POST') as Promise<Device>);
+    return ApiBase.request(
+      `tv/${tvId}`,
+      { name: newName },
+      'POST',
+    ) as Promise<Device>;
   }
 
   /**
@@ -84,10 +90,12 @@ export default class DeviceService {
    * @throws Error if the TV ID is not provided
    */
   static remove(tv: Device | number): Promise<{ statusCode: number }> {
-    let tvId: any = tv instanceof Device ? tv.id : tv;
+    const tvId: any = tv instanceof Device ? tv.id : tv;
     if (!tvId || typeof tvId !== 'number') {
       throw new Error('TV ID not provided');
     }
-    return (ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{ statusCode: number }>);
+    return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{
+      statusCode: number;
+    }>;
   }
 }
