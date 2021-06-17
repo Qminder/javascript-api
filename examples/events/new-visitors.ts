@@ -1,10 +1,10 @@
 /**
  * Run this script with
- * npm run build-node
- * API_KEY=XXX npm run example-new-visitors
+ * yarn build
+ * API_KEY=XXX ts-node ./examples/events/example-new-visitors.ts
  */
 
-const Qminder = require('../../build-node/qminder-api');
+const Qminder = require('../../build/qminder-api');
 
 Qminder.setKey(process.env.API_KEY);
 
