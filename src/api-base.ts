@@ -49,11 +49,11 @@ interface ErrorResponse {
   developerMessage: string;
 }
 
-interface SuccessResponse {
+export interface SuccessResponse {
   statusCode: number;
 }
 
-type ApiResponse = ErrorResponse | SuccessResponse;
+type ApiResponse<T = {}> = ErrorResponse | (SuccessResponse & T);
 
 /**
  * Returns true if an ApiResponse is an Error response, usable as a type guard.
@@ -140,10 +140,10 @@ class ApiBase {
    * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
-  request(url: string,
+  request<T = {}>(url: string,
           data?: object | File | string,
           method: HTTPMethod = 'GET',
-          idempotencyKey?: string | number): Promise<object> {
+          idempotencyKey?: string | number): Promise<T> {
 
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');

@@ -2,16 +2,7 @@
  * A Webhook is a URL that Qminder sends automatic POST requests into, in order to notify
  * downstream listeners about various events such as ticket creation or location changes.
  */
-class Webhook {
+export default interface Webhook {
   id: number;
   secret: string;
-  constructor(properties: number | Webhook) {
-    if (typeof properties === 'number') {
-      this.id = properties;
-    } else {
-      Object.assign(this, properties);
-    }
-  }
 }
-
-export default Webhook;
