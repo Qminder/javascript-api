@@ -1,5 +1,6 @@
 import * as Qminder from '../../src/qminder-api';
 import * as sinon from 'sinon';
+import { gql } from 'graphql-tag';
 
 describe('GraphQLService', function() {
   const ME_ID_REQUEST = '{ me { id } }';
@@ -58,6 +59,24 @@ describe('GraphQLService', function() {
       expect(requestStub.callCount).toBe(0);
     });
 
+  });
+
+  describe('graphql tag support', () => {
+    beforeEach(function() {
+      requestStub.onFirstCall().resolves(ME_ID_SUCCESS_RESPONSE);
+    });
+    it('Qminder.graphql.query works correctly when passed a gql`` tagged query', () => {
+      expect(() => (Qminder.graphql.query(gql`{
+        me {
+          id
+        }
+      }`) as any)).not.toThrow();
+
+      expect(requestStub.callCount).toBe(1);
+      expect(requestStub.calledWith({
+        query: '{ me { id }\n}'
+      })).toBeTruthy();
+    });
   });
 
   afterEach(function() {

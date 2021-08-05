@@ -42,7 +42,9 @@
     "sinon": "^9.2.4",
     "ts-jest": "^26.5.1",
     "typedoc": "^0.11.1",
-    "typescript": "4.1.4"
+    "typescript": "4.1.4",
+    "graphql": ">= 15.5.1",
+    "graphql-tag": ">= 2.12.5"
   },
   "dependencies": {
     "@types/isomorphic-fetch": "^0.0.34",
