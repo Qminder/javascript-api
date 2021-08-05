@@ -77,7 +77,7 @@ describe('GraphQLService', function() {
         query: '{ me { id }\n}',
       });
     });
-    it('testing a longer query', () => {
+    it('Qminder.graphql.query works correctly when passed a long query with variables and fragments', () => {
       expect(() => (Qminder.graphql.query(gql`query MyIdQuery($id: ID!) {
         location(id: $id) {
           id
