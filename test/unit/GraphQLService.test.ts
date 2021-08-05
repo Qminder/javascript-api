@@ -73,9 +73,30 @@ describe('GraphQLService', function() {
       }`) as any)).not.toThrow();
 
       expect(requestStub.callCount).toBe(1);
-      expect(requestStub.calledWith({
-        query: '{ me { id }\n}'
-      })).toBeTruthy();
+      expect(requestStub.firstCall.args[0]).toEqual({
+        query: '{ me { id }\n}',
+      });
+    });
+    it('testing a longer query', () => {
+      expect(() => (Qminder.graphql.query(gql`query MyIdQuery($id: ID!) {
+        location(id: $id) {
+          id
+          name
+          timezone 
+          lines {
+            ...MyFrag
+          }
+        }
+      }
+      fragment MyFrag on Line {
+        id
+        name 
+      }`) as any)).not.toThrow();
+
+      expect(requestStub.callCount).toBe(1);
+      expect(requestStub.firstCall.args[0]).toEqual({
+        query: 'query MyIdQuery($id: ID!) { location(id: $id) { id name timezone lines { ...MyFrag } }\n} fragment MyFrag on Line { id name\n}',
+      });
     });
   });
 
