@@ -1,6 +1,7 @@
 import Location, { InputField } from '../model/Location';
 import ApiBase from '../api-base';
 import Desk from '../model/Desk';
+import { extractId, IdOrObject } from '../util/id-or-object';
 
 /** @hidden */
 const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
@@ -39,7 +40,7 @@ export default class LocationService {
    */
   static list(): Promise<Location[]> {
     return ApiBase.request('locations/').then((locations: { data: Location[] }) => {
-      return locations.data.map(each => new Location(each));
+      return locations.data;
     });
   }
 
@@ -61,8 +62,9 @@ export default class LocationService {
    * @param locationId the location's unique ID, for example 1234
    * @returns A promise that resolves to the location.
    */
-  static details(locationId: number): Promise<Location> {
-    return ApiBase.request(`locations/${locationId}/`).then((details: Location) => new Location(details));
+  static details(location: IdOrObject<Location>): Promise<Location> {
+    const locationId = extractId(location);
+    return ApiBase.request(`locations/${locationId}/`);
   }
 
   /**
@@ -84,12 +86,13 @@ export default class LocationService {
    *
    * @returns a Promise that resolves to the list of desks in this location
    */
-  static getDesks(location: Location) : Promise<Desk[]> {
-    return ApiBase.request(`locations/${location.id}/desks`).then((response: { desks: Desk[] }) => {
+  static getDesks(location: IdOrObject<Location>) : Promise<Desk[]> {
+    const locationId = extractId(location);
+    return ApiBase.request(`locations/${locationId}/desks`).then((response: { desks: Desk[] }) => {
       if (!response.desks) {
         throw new Error(`Desk list response was invalid - ${response}`);
       }
-      return response.desks.map(each => new Desk(each));
+      return response.desks;
     });
   }
 
@@ -112,15 +115,9 @@ export default class LocationService {
    * @returns a Promise that resolves to an array of input fields, or rejects if something went
    * wrong.
    */
-  static getInputFields(location: (Location | number)): Promise<InputField[]> {
-    let locationId: any = null;
-    // Get the location's ID
-    if (location instanceof Location) {
-      locationId = location.id;
-    } else {
-      locationId = location;
-    }
-    if (!locationId || typeof locationId !== 'number') {
+  static getInputFields(location: IdOrObject<Location>): Promise<InputField[]> {
+    const locationId = extractId(location);
+    if (!locationId) {
       throw new Error(ERROR_NO_LOCATION_ID);
     }
     return ApiBase.request(`locations/${locationId}/input-fields`)

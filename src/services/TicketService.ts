@@ -980,32 +980,22 @@ export default class TicketService {
    * queue.
    * @returns resolves to 'success' when it worked
    */
-  static reorder(ticket: (Pick<Ticket, 'id'> | number | string), afterTicket: (Pick<Ticket, 'id'> | number | string | null)): Promise<'success'> {
-    let ticketId: string | number = null;
-    // Get the ticket's ID
-    if (ticket && typeof ticket === 'object' && (typeof ticket.id === 'string' || typeof ticket.id === 'number')) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket as string | number;
+  static reorder(ticket: IdOrObject<Ticket>, afterTicket: IdOrObject<Ticket> | null): Promise<'success'> {
+    const ticketId = extractId(ticket);
+
+    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+      throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    let afterTicketId: string | number | null = null;
-    if (afterTicket && typeof afterTicket === 'object' && (typeof afterTicket.id === 'string' || typeof afterTicket.id === 'number')) {
-      afterTicketId = afterTicket.id;
-    } else {
-      afterTicketId = afterTicket as string | number | null;
-    }
+    const afterTicketId: string | null = afterTicket === null ? afterTicket as null : extractId(afterTicket);
 
-    let postData: { after: string | number | null } = undefined;
+    let postData: { after: string | null } | undefined = undefined;
     if (afterTicketId) {
       postData = {
         after: afterTicketId,
       };
     }
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
-      throw new Error(ERROR_NO_TICKET_ID);
-    }
     return ApiBase.request(`tickets/${ticketId}/reorder`, postData, 'POST')
       .then((response: { result: 'success' }) => response.result);
   }
@@ -1031,14 +1021,8 @@ export default class TicketService {
    * of the Ticket object.
    * @returns the estimated Unix time the visitor will be called, eg 1509460809
    */
-  static getEstimatedTimeOfService(ticket: (Pick<Ticket, 'id'> | number | string)): Promise<number> {
-    let ticketId: string | number = null;
-    // Get the ticket's ID
-    if (ticket && typeof ticket === 'object' && (typeof ticket.id === 'string' || typeof ticket.id === 'number')) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket as string | number;
-    }
+  static getEstimatedTimeOfService(ticket: IdOrObject<Ticket>): Promise<number> {
+    const ticketId = extractId(ticket);
 
     if (typeof ticketId !== 'number' && typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
@@ -1079,14 +1063,8 @@ export default class TicketService {
    * @returns  a Promise that resolves to a list of ticket messages
    * @throws ERROR_NO_TICKET_ID  if the ticket is missing from the arguments, or invalid.
    */
-  static getMessages(ticket: (Pick<Ticket, 'id'> | number | string)): Promise<Array<TicketMessage>> {
-    let ticketId: string | number = null;
-    // Get the ticket's ID
-    if (ticket && typeof ticket === 'object' && (typeof ticket.id === 'string' || typeof ticket.id === 'number')) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket as string | number;
-    }
+  static getMessages(ticket: IdOrObject<Ticket>): Promise<Array<TicketMessage>> {
+    const ticketId = extractId(ticket);
 
     if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
@@ -1128,17 +1106,11 @@ export default class TicketService {
    * @returns a promise that resolves to the string "success" if it works, and rejects when
    * something goes wrong.
    */
-  static sendMessage(ticket: (Pick<Ticket, 'id'> | number | string),
+  static sendMessage(ticket: IdOrObject<Ticket>,
                      message: string,
-                     user: (User|number)): Promise<'success'> {
-    let ticketId: string | number = null;
-    let userId: any = null;
-    // Get the ticket's ID
-    if (ticket && typeof ticket === 'object' && (typeof ticket.id === 'string' || typeof ticket.id === 'number')) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket as string | number;
-    }
+                     user: IdOrObject<User>): Promise<'success'> {
+    const ticketId = extractId(ticket);
+    const userId = extractId(user);
 
     if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
@@ -1146,12 +1118,6 @@ export default class TicketService {
 
     if (!message || typeof message !== 'string') {
       throw new Error('No message specified. The message has to be a string.');
-    }
-
-    if (user instanceof User) {
-      userId = user.id;
-    } else {
-      userId = user;
     }
 
     if (!userId || typeof userId !== 'number') {
@@ -1205,48 +1171,27 @@ export default class TicketService {
    * @returns  a Promise that resolves when forwarding works, and rejects when it fails.
    * @throws an Error when the ticket or line are missing or invalid.
    */
-  static forward(ticket: (Pick<Ticket, 'id'> | number | string),
-                 line: (Line|number),
-                 user?: (User|number)): Promise<object> {
-    let ticketId: string | number = null;
-    let lineId: any = null;
-    let userId: any = null;
+  static forward(ticket: IdOrObject<Ticket>,
+                 line: IdOrObject<Line>,
+                 user?: IdOrObject<User>): Promise<object> {
+    const ticketId = extractId(ticket);
+    const lineId = extractId(line);
+    const userId = extractId(user);
 
-    // Get the ticket's ID
-    if (ticket && typeof ticket === 'object' && (typeof ticket.id === 'string' || typeof ticket.id === 'number')) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket as string | number;
-    }
-
-    if (typeof ticketId !== 'number' && typeof ticketId !== 'string') {
+    if (typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    // Get the line ID
-    if (line instanceof Line) {
-      lineId = line.id;
-    } else {
-      lineId = line;
-    }
-
-    if (typeof lineId !== 'number') {
-      throw new Error('Line ID is not a number or is missing.');
-    }
-
-    // Get the user ID, if passed
-    if (user instanceof User) {
-      userId = user.id;
-    } else {
-      userId = user;
+    if (typeof lineId !== 'string') {
+      throw new Error('Line ID is missing.');
     }
 
     // If the user's ID was passed and it's invalid, throw an error
-    if (user !== undefined && typeof userId !== 'number') {
-      throw new Error('User ID is not a number.');
+    if (user !== undefined && typeof userId !== 'string') {
+      throw new Error('User ID is missing.');
     }
 
-    const body: { line: number, user?: number } = {
+    const body: { line: string, user?: string } = {
       line: lineId
     };
 
@@ -1266,15 +1211,8 @@ export default class TicketService {
    * @param data      The data to set
    * @returns promise that resolves to 'success' if all was OK and rejects if something else went wrong.
    */
-  static setExternalData(ticket: (Pick<Ticket, 'id'> | number | string), provider: string, title: string, data: any): Promise<'success'> {
-    let ticketId: string | number = null;
-
-    // Get the ticket's ID
-    if (ticket && typeof ticket === 'object' && (typeof ticket.id === 'string' || typeof ticket.id === 'number')) {
-      ticketId = ticket.id;
-    } else {
-      ticketId = ticket as string | number;
-    }
+  static setExternalData(ticket: IdOrObject<Ticket>, provider: string, title: string, data: any): Promise<'success'> {
+    const ticketId = extractId(ticket);
 
     if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);

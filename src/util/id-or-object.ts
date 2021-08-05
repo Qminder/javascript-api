@@ -2,7 +2,7 @@
 /**
  * Marks a parameter that accepts either the object's ID or the object itself.
  */
-export type IdOrObject<T extends { id: number | string }> = T | T["id"];
+export type IdOrObject<T extends { id: number | string }> = Pick<T, 'id'> | T["id"];
 
 /**
  * Converts an object to its ID, or if an ID was passed instead, returns that ID.
