@@ -42,13 +42,17 @@ describe('Qminder.webhooks', function() {
       requestStub.onFirstCall().resolves({ status: 'success' });
     });
     it('throws and does not send a HTTP request if the ID is not provided', function() {
-      expect( () => (Qminder.webhooks.remove as any)()).toThrow();
+      expect( () => Qminder.webhooks.remove(undefined as any)).toThrow();
       expect(requestStub.called).toBeFalsy();
     });
+    it('supports string IDs', () => {
+      expect( () => Qminder.webhooks.remove("fefefe" as any)).not.toThrow();
+    });
+    it('supports webhook objects', () => {
+      expect( () => Qminder.webhooks.remove({ id: 666 })).not.toThrow();
+    });
     it('throws and does not send a HTTP request if the ID is not a number', function() {
-      expect( () => (Qminder.webhooks.remove as any)("fefefe")).toThrow();
-      expect( () => (Qminder.webhooks.remove as any)({ x: 5 })).toThrow();
-      expect( () => (Qminder.webhooks.remove as any)({ id: 666 })).toThrow();
+      expect( () => Qminder.webhooks.remove({ x: 5 } as any)).toThrow();
       expect(requestStub.called).toBeFalsy();
     });
     it('creates a request with the correct URL', function(done) {

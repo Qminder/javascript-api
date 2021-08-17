@@ -66,7 +66,6 @@ describe("Qminder.locations", function() {
     it("resolves with an Array of Location objects", function(done) {
       Qminder.locations.list().then(locations => {
         expect(locations instanceof Array).toBeTruthy();
-        expect(locations.every((location) => (location instanceof Qminder.Location))).toBeTruthy();
         done();
       });
     });
@@ -111,10 +110,6 @@ describe("Qminder.locations", function() {
       });
     });
 
-    it("resolves with a Location instance", function() {
-      expect(locationDetailsReply instanceof Qminder.Location).toBeTruthy();
-    });
-
     it("resolves with correct ID", function() {
       expect(locationDetailsReply.id).toBe(673);
     });
@@ -133,14 +128,10 @@ describe("Qminder.locations", function() {
     beforeEach(function(done) {
       requestStub.withArgs(`locations/${LOCATION_ID}/desks`).resolves({ desks: DESKS });
 
-      Qminder.locations.getDesks(new Qminder.Location(LOCATION_ID)).then(desks => {
+      Qminder.locations.getDesks({ id: LOCATION_ID }).then(desks => {
         desksReply = desks;
         done();
       });
-    });
-    it("returns a list of Qminder.Desk objects", function() {
-      const allAreInstances = desksReply.every((desk: unknown) => (desk instanceof Qminder.Desk));
-      expect(allAreInstances).toBeTruthy();
     });
     it("returns the right desks", function() {
       const returned = desksReply.map((desk: Qminder.Desk) => desk.name);
@@ -149,46 +140,6 @@ describe("Qminder.locations", function() {
       for (let i = 0; i < groundTruth.length; i++) {
         expect(returned[i]).toBe(groundTruth[i]);
       }
-    });
-  });
-
-  describe("getInputFields()", function() {
-    const fields = [
-      { type: 'firstName' },
-      { type: 'lastName' },
-    ];
-    beforeEach(function() {
-      requestStub.withArgs(`locations/${LOCATION_ID}/input-fields`).resolves({ fields });
-    });
-    it('throws with undefined location ID', function() {
-      expect(() => (Qminder.locations.getInputFields as any)()).toThrow();
-    });
-    it('throws with an object that doesn\'t fit', function() {
-      expect(() => (Qminder.locations.getInputFields as any)({ statusCode: 200 })).toThrow();
-    });
-    it('does not throw with numeric location ID', function() {
-      expect(() => Qminder.locations.getInputFields(LOCATION_ID)).not.toThrow();
-    });
-    it('does not throw with Qminder.Location', function() {
-      expect(() => Qminder.locations.getInputFields(new Qminder.Location(LOCATION_ID))).not.toThrow();
-    });
-    it('calls the right URL with numeric location ID', function(done) {
-      Qminder.locations.getInputFields(LOCATION_ID).then(() => {
-        expect(requestStub.calledWith(`locations/${LOCATION_ID}/input-fields`)).toBeTruthy();
-        done();
-      }, (err) => {
-        expect(err).toBeUndefined();
-        done();
-      });
-    });
-    it('gets the input fields from the response object', function(done) {
-      Qminder.locations.getInputFields(LOCATION_ID).then((response) => {
-        expect(response).toEqual(fields);
-        done();
-      }, (err) => {
-        expect(err).toBeUndefined();
-        done();
-      });
     });
   });
 

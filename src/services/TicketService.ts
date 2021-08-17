@@ -42,7 +42,7 @@ interface TicketCountCriteria {
    *
    * For example, `caller: 13410`
    */
-  caller?: User | number;
+  caller?: IdOrObject<User>;
   /**
    * The minimum creation date of the ticket, using either a Unix timestamp or an ISO8601 date.
    * If minCreated is specified, search results will only include tickets created after minCreated.
@@ -353,7 +353,11 @@ export default class TicketService {
       newSearch.status = newSearch.status.join(',');
     }
 
-    newSearch.caller = extractIdToNumber(newSearch.caller);
+    if (newSearch.caller) {
+      newSearch.caller = extractIdToNumber(newSearch.caller);
+    } else {
+      delete newSearch.caller;
+    }
 
     if (newSearch.responseScope && newSearch.responseScope instanceof Array) {
       newSearch.responseScope = newSearch.responseScope.join(',');
@@ -395,7 +399,11 @@ export default class TicketService {
     if (newSearch.status && newSearch.status instanceof Array) {
       newSearch.status = newSearch.status.join(',');
     }
-    newSearch.caller = extractIdToNumber(newSearch.caller);
+    if (newSearch.caller) {
+      newSearch.caller = extractIdToNumber(newSearch.caller);
+    } else {
+      delete newSearch.caller;
+    }
     // Sanity checks if user passes TicketSearchCriteria
     if ((newSearch as TicketSearchCriteria).limit) {
       delete (newSearch as TicketSearchCriteria).limit;
@@ -539,9 +547,10 @@ export default class TicketService {
       intermediate.extra = JSON.stringify(intermediate.extra);
     }
 
-    if (intermediate.user && typeof intermediate.user === 'object' &&
-        typeof intermediate.user.id === 'number') {
-      intermediate.user = intermediate.user.id;
+    if (intermediate.user) {
+      intermediate.user = extractId(intermediate.user);
+    } else {
+      delete intermediate.user;
     }
 
     const request: TicketEditingRequest = intermediate;
@@ -618,7 +627,7 @@ export default class TicketService {
   static recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
     return ApiBase.request(`tickets/${ticketId}/recall`, undefined, 'POST')
@@ -639,7 +648,7 @@ export default class TicketService {
   static markServed(ticket: IdOrObject<Ticket>): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -662,7 +671,7 @@ export default class TicketService {
   static markNoShow(ticket: IdOrObject<Ticket>): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
     return ApiBase.request(`tickets/${ticketId}/marknoshow`, undefined, 'POST')
@@ -686,11 +695,11 @@ export default class TicketService {
   static cancel(ticket: IdOrObject<Ticket>, user: IdOrObject<User>): Promise<string> {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    if (!userId || typeof userId !== 'number') {
+    if (!userId || typeof userId !== 'string') {
       throw new Error(ERROR_NO_USER);
     }
 
@@ -724,11 +733,11 @@ export default class TicketService {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    if (!userId || typeof userId !== 'number') {
+    if (!userId || typeof userId !== 'string') {
       throw new Error('No user given');
     }
 
@@ -770,9 +779,9 @@ export default class TicketService {
    */
   static addLabel(ticket: IdOrObject<Ticket>, label: string, user?: IdOrObject<User>): Promise<'success' | 'no action'> {
     const ticketId = extractId(ticket);
-    const userId = extractId(user);
+    const userId = user ? extractId(user) : undefined;
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -821,7 +830,7 @@ export default class TicketService {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -829,7 +838,7 @@ export default class TicketService {
       throw new Error('No label given.');
     }
 
-    if (!userId || typeof userId !== 'number') {
+    if (!userId || typeof userId !== 'string') {
       throw new Error('No user given');
     }
 
@@ -878,15 +887,15 @@ export default class TicketService {
     const assignerId = extractId(assigner);
     const assigneeId = extractId(assignee);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    if (!assignerId || typeof assignerId !== 'number') {
+    if (!assignerId || typeof assignerId !== 'string') {
       throw new Error('No assigner given');
     }
 
-    if (!assigneeId || typeof assigneeId !== 'number') {
+    if (!assigneeId || typeof assigneeId !== 'string') {
       throw new Error('No assignee given');
     }
 
@@ -943,11 +952,11 @@ export default class TicketService {
     const ticketId = extractId(ticket);
     const unassignerId = extractId(unassigner);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    if (!unassignerId || typeof unassignerId !== 'number') {
+    if (!unassignerId || typeof unassignerId !== 'string') {
       throw new Error('Qminder.tickets.unassign was called without a valid unassigner user.');
     }
 
@@ -983,7 +992,7 @@ export default class TicketService {
   static reorder(ticket: IdOrObject<Ticket>, afterTicket: IdOrObject<Ticket> | null): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -1024,7 +1033,7 @@ export default class TicketService {
   static getEstimatedTimeOfService(ticket: IdOrObject<Ticket>): Promise<number> {
     const ticketId = extractId(ticket);
 
-    if (typeof ticketId !== 'number' && typeof ticketId !== 'string') {
+    if (typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -1066,7 +1075,7 @@ export default class TicketService {
   static getMessages(ticket: IdOrObject<Ticket>): Promise<Array<TicketMessage>> {
     const ticketId = extractId(ticket);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
     return ApiBase.request(`tickets/${ticketId}/messages`)
@@ -1112,7 +1121,7 @@ export default class TicketService {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -1120,7 +1129,7 @@ export default class TicketService {
       throw new Error('No message specified. The message has to be a string.');
     }
 
-    if (!userId || typeof userId !== 'number') {
+    if (!userId || typeof userId !== 'string') {
       throw new Error(ERROR_NO_USER);
     }
 
@@ -1214,7 +1223,7 @@ export default class TicketService {
   static setExternalData(ticket: IdOrObject<Ticket>, provider: string, title: string, data: any): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if (!ticketId || (typeof ticketId !== 'number' && typeof ticketId !== 'string')) {
+    if ((!ticketId || typeof ticketId !== 'string')) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 

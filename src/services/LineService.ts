@@ -38,7 +38,7 @@ export default class LineService {
    */
   static list(location: IdOrObject<Location>): Promise<Line[]> {
     const locationId = extractId(location);
-    if (!locationId || typeof locationId !== 'number') {
+    if (!locationId || typeof locationId !== 'string') {
       throw new Error('Location ID invalid or missing.');
     }
     return ApiBase.request(`locations/${locationId}/lines`)
@@ -84,7 +84,7 @@ export default class LineService {
    */
   static create(location: IdOrObject<Location>, line: LineCreateParameters): Promise<Line> {
     const locationId = extractId(location);
-    if (!locationId || typeof locationId !== 'number') {
+    if (!locationId || typeof locationId !== 'string') {
       throw new Error('Location ID invalid or missing.');
     }
     if (!line || typeof line !== 'object') {
@@ -116,8 +116,8 @@ export default class LineService {
       throw new Error('Line is invalid or missing.');
     }
 
-    let lineId = line.id;
-    if (!lineId || typeof lineId !== 'number') {
+    let lineId = extractId(line);
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID is invalid or missing.');
     }
 

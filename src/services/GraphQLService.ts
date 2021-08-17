@@ -2,6 +2,19 @@ import * as WebSocket from 'isomorphic-ws';
 import ApiBase, {GraphqlQuery, GraphqlResponse} from '../api-base';
 import {Observable, Observer, Subject} from 'rxjs';
 import { shareReplay } from "rxjs/operators";
+import { DocumentNode,  } from 'graphql';
+import { print } from 'graphql/language/printer';
+
+type QueryOrDocument = string | DocumentNode;
+
+function queryToString(query: QueryOrDocument): string {
+    if (typeof query === 'string') {
+        return query;
+    }
+    if (query.kind === 'Document') {
+        return print(query);
+    }
+}
 
 interface OperationMessage {
     id?: string;
@@ -109,7 +122,8 @@ export class GraphQLService {
      * @returns a promise that resolves to the query's results, or rejects if the query failed
      * @throws when the 'query' argument is undefined or an empty string
      */
-    query(query: string, variables?: { [key: string]: any }): Promise<GraphqlResponse> {
+    query(queryDocument: QueryOrDocument, variables?: { [key: string]: any }): Promise<GraphqlResponse> {
+        const query = queryToString(queryDocument);
         if (!query || query.length === 0) {
             throw new Error('GraphQLService query expects a GraphQL query as its first argument');
         }
@@ -135,7 +149,7 @@ export class GraphQLService {
      * import * as Qminder from 'qminder-api';
      * // 1. Be notified of any created tickets
      * try {
-     *     const observable = Qminder.graphql.subscribe("createdTickets(locationId: 123) { id firstName }")
+     *     const observable = Qminder.graphql.subscribe("subscription { createdTickets(locationId: 123) { id firstName } }")
      *
      *     observable.subscribe(data => console.log(data));
      *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
@@ -144,11 +158,13 @@ export class GraphQLService {
      * }
      * ```
      *
-     * @param query required: the GraphQL query to send, for example `"createdTickets(locationId: 123) { id firstName }"`
+     * @param query required: the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
      * @returns an RxJS Observable that will push data as
      * @throws when the 'query' argument is undefined or an empty string
      */
-    subscribe(query: string): Observable<object> {
+    subscribe(queryDocument: QueryOrDocument): Observable<object> {
+        const query = queryToString(queryDocument);
+
         if (!query || query.length === 0) {
             throw new Error('GraphQLService query expects a GraphQL query as its first argument');
         }
@@ -156,7 +172,7 @@ export class GraphQLService {
         return new Observable<object>((observer: Observer<object>) => {
             const id = this.generateOperationId();
             this.subscriptions.push(new Subscription(id, query));
-            this.sendMessage(id, MessageType.GQL_START, {query: `subscription { ${query} }`});
+            this.sendMessage(id, MessageType.GQL_START, { query });
             this.subscriptionObserverMap[id] = observer;
 
             return () => this.stopSubscription(id);
