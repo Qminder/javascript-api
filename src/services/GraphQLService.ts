@@ -1,9 +1,22 @@
 /* eslint-disable max-classes-per-file */
 
 import * as WebSocket from 'isomorphic-ws';
-import { Observable, Observer, Subject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
+import ApiBase, {GraphqlQuery, GraphqlResponse} from '../api-base';
+import {Observable, Observer, Subject} from 'rxjs';
+import { shareReplay } from "rxjs/operators";
+import { DocumentNode,  } from 'graphql';
+import { print } from 'graphql/language/printer';
+
+type QueryOrDocument = string | DocumentNode;
+
+function queryToString(query: QueryOrDocument): string {
+    if (typeof query === 'string') {
+        return query;
+    }
+    if (query.kind === 'Document') {
+        return print(query);
+    }
+}
 
 interface OperationMessage {
   id?: string;
@@ -50,80 +63,133 @@ export enum ConnectionStatus {
  * trying to import GraphQLService.
  */
 export class GraphQLService {
-  private apiKey: string;
 
-  private apiServer: string;
+    private apiKey: string;
 
-  private socket: WebSocket = null;
+    private apiServer: string;
 
-  private connectionStatus: ConnectionStatus;
-  private connectionSubject = new Subject<ConnectionStatus>();
-  private connection$ = this.connectionSubject.pipe(shareReplay(1));
+    private socket: WebSocket = null;
 
-  private nextSubscriptionId: number = 1;
+    private connectionStatus: ConnectionStatus;
+    private connectionSubject = new Subject<ConnectionStatus>();
+    private connection$ = this.connectionSubject.pipe(shareReplay(1));
 
-  private subscriptions: Subscription[] = [];
+    private nextSubscriptionId: number = 1;
 
-  private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
+    private subscriptions: Subscription[] = [];
 
-  /** A timeout object after which to retry connecting to Qminder API. */
-  private retryTimeout: any;
+    private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
 
-  /** Counts the amount of times the event emitter retried connecting. This is used for
-   *  exponential retry falloff. */
-  private connectionRetries = 0;
+    /** A timeout object after which to retry connecting to Qminder API. */
+    private retryTimeout: any;
 
-  constructor() {
-    this.setServer('wss://api.qminder.com:443');
-    this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-  }
+    /** Counts the amount of times the event emitter retried connecting. This is used for
+     *  exponential retry falloff. */
+    private connectionRetries = 0;
 
-  /**
-   * Query Qminder API with GraphQL.
-   *
-   * Send a GraphQL query to the Qminder API.
-   *
-   * When the query contains variables, make sure to fill them all in the second parameter.
-   *
-   * For example:
-   *
-   * ```javascript
-   * import * as Qminder from 'qminder-api';
-   * Qminder.setKey('API_KEY_HERE');
-   * // 1. Figure out the selected location ID of the current user, with async/await
-   * try {
-   *     const response = await Qminder.graphql.query(`{ me { selectedLocation } }`);
-   *     console.log(response.me.selectedLocation); // "12345"
-   * } catch (error) {
-   *     console.log(error);
-   * }
-   * // 2. Figure out the selected location ID of the current user, with promises
-   * Qminder.graphql.query("{ me { selectedLocation } }").then(function(response) {
-   *     console.log(response.me.selectedLocation);
-   * }, function(error) {
-   *     console.log(error);
-   * });
-   * ```
-   *
-   * @param query required: the query to send, for example `"{ me { selectedLocation } }"`
-   * @param variables optional: additional variables for the query, if variables were used
-   * @returns a promise that resolves to the query's results, or rejects if the query failed
-   * @throws when the 'query' argument is undefined or an empty string
-   */
-  query(
-    query: string,
-    variables?: { [key: string]: any },
-  ): Promise<GraphqlResponse> {
-    if (!query || query.length === 0) {
-      throw new Error(
-        'GraphQLService query expects a GraphQL query as its first argument',
-      );
+    constructor() {
+        this.setServer('wss://api.qminder.com:443');
+        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     }
 
-    const packedQuery = query.replace(/\s\s+/g, ' ').trim();
-    const graphqlQuery: GraphqlQuery = {
-      query: packedQuery,
-    };
+    /**
+     * Query Qminder API with GraphQL.
+     *
+     * Send a GraphQL query to the Qminder API.
+     *
+     * When the query contains variables, make sure to fill them all in the second parameter.
+     *
+     * For example:
+     *
+     * ```javascript
+     * import * as Qminder from 'qminder-api';
+     * Qminder.setKey('API_KEY_HERE');
+     * // 1. Figure out the selected location ID of the current user, with async/await
+     * try {
+     *     const response = await Qminder.graphql.query(`{ me { selectedLocation } }`);
+     *     console.log(response.me.selectedLocation); // "12345"
+     * } catch (error) {
+     *     console.log(error);
+     * }
+     * // 2. Figure out the selected location ID of the current user, with promises
+     * Qminder.graphql.query("{ me { selectedLocation } }").then(function(response) {
+     *     console.log(response.me.selectedLocation);
+     * }, function(error) {
+     *     console.log(error);
+     * });
+     * ```
+     *
+     * @param query required: the query to send, for example `"{ me { selectedLocation } }"`
+     * @param variables optional: additional variables for the query, if variables were used
+     * @returns a promise that resolves to the query's results, or rejects if the query failed
+     * @throws when the 'query' argument is undefined or an empty string
+     */
+    query(queryDocument: QueryOrDocument, variables?: { [key: string]: any }): Promise<GraphqlResponse> {
+        const query = queryToString(queryDocument);
+        if (!query || query.length === 0) {
+            throw new Error('GraphQLService query expects a GraphQL query as its first argument');
+        }
+
+        const packedQuery = query.replace(/\s\s+/g, ' ').trim();
+        const graphqlQuery: GraphqlQuery = {
+            query: packedQuery
+        };
+
+        if (variables) {
+            graphqlQuery.variables = variables;
+        }
+
+        return ApiBase.queryGraph(graphqlQuery);
+    }
+
+    /**
+     * Subscribe to Qminder Events API using GraphQL.
+     *
+     * For example
+     *
+     * ```javascript
+     * import * as Qminder from 'qminder-api';
+     * // 1. Be notified of any created tickets
+     * try {
+     *     const observable = Qminder.graphql.subscribe("subscription { createdTickets(locationId: 123) { id firstName } }")
+     *
+     *     observable.subscribe(data => console.log(data));
+     *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
+     * } catch (error) {
+     *     console.error(error);
+     * }
+     * ```
+     *
+     * @param query required: the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
+     * @returns an RxJS Observable that will push data as
+     * @throws when the 'query' argument is undefined or an empty string
+     */
+    subscribe(queryDocument: QueryOrDocument): Observable<object> {
+        const query = queryToString(queryDocument);
+
+        if (!query || query.length === 0) {
+            throw new Error('GraphQLService query expects a GraphQL query as its first argument');
+        }
+
+        return new Observable<object>((observer: Observer<object>) => {
+            const id = this.generateOperationId();
+            this.subscriptions.push(new Subscription(id, query));
+            this.sendMessage(id, MessageType.GQL_START, { query });
+            this.subscriptionObserverMap[id] = observer;
+
+            return () => this.stopSubscription(id);
+        });
+    }
+
+    /**
+     * Initialize the EventsService by setting the API key.
+     * When the API key is set, the socket can be opened.
+     * This method is automatically called when doing Qminder.setKey().
+     * @hidden
+     */
+    setKey(apiKey: string) {
+        this.apiKey = apiKey;
+    }
 
     if (variables) {
       graphqlQuery.variables = variables;

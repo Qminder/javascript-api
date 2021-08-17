@@ -2,6 +2,7 @@
 
 import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
+import { gql } from 'graphql-tag';
 import { GraphQLService } from '../../src/services/GraphQLService';
 
 jest.mock('isomorphic-ws');
@@ -29,7 +30,7 @@ describe('GraphQL subscriptions', () => {
   describe('.subscribe', () => {
     it('fires an Apollo compliant subscribe event, when a new subscriber comes in', () => {
       const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
-      graphqlService.subscribe('baba').subscribe(() => {});
+      graphqlService.subscribe('subscription { baba }').subscribe(() => {});
       expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
@@ -46,9 +47,55 @@ describe('GraphQL subscriptions', () => {
         graphqlService as any,
         'stopSubscription',
       );
-      const subscription = graphqlService.subscribe('baba').subscribe(() => {});
+      const subscription = graphqlService
+        .subscribe('subscription { baba }')
+        .subscribe(() => {});
       subscription.unsubscribe();
       expect(stopSubscriptionSpy).toHaveBeenCalledWith('1');
+    });
+
+    it('works with graphql-tag generated documents', () => {
+      const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
+      graphqlService
+        .subscribe(
+          gql`
+            subscription {
+              baba
+            }
+          `,
+        )
+        .subscribe(() => {});
+      expect(WebSocket).toHaveBeenCalled();
+      expect((graphqlService as any).subscriptions.length).toBe(1);
+      expect(sendMessageSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        'start',
+        expect.objectContaining({
+          query: 'subscription {\n  baba\n}\n',
+        }),
+      );
+    });
+
+    it('does not automatically add leading "subscription {" and trailing "}"', () => {
+      const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
+      graphqlService
+        .subscribe(
+          gql`
+            subscription {
+              baba
+            }
+          `,
+        )
+        .subscribe(() => {});
+      expect(WebSocket).toHaveBeenCalled();
+      expect((graphqlService as any).subscriptions.length).toBe(1);
+      expect(sendMessageSpy).toHaveBeenCalledWith(
+        expect.anything(),
+        'start',
+        expect.objectContaining({
+          query: 'subscription {\n  baba\n}\n',
+        }),
+      );
     });
   });
 
@@ -60,7 +107,9 @@ describe('GraphQL subscriptions', () => {
       ).toBe(0);
       // subscribe once
       const spy = jest.fn();
-      const subscription = graphqlService.subscribe('baba').subscribe(spy);
+      const subscription = graphqlService
+        .subscribe('subscription { baba }')
+        .subscribe(spy);
 
       // the observer map should equal { "1": Subscriber => spy }
       expect((graphqlService as any).subscriptionObserverMap).toEqual({
@@ -80,7 +129,9 @@ describe('GraphQL subscriptions', () => {
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,
       ).toBe(0);
-      const subscription = graphqlService.subscribe('baba').subscribe(() => {});
+      const subscription = graphqlService
+        .subscribe('subscription { baba }')
+        .subscribe(() => {});
       subscription.unsubscribe();
       const internalSock = (graphqlService as any).socket;
 

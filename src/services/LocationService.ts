@@ -98,39 +98,4 @@ export default class LocationService {
       },
     );
   }
-
-  /**
-   * Get the input fields in a particular location.
-   * This returns a list of the configured input fields that clerks can enter on the Qminder
-   * Dashboard Service View.
-   *
-   * Calls the following HTTP API: `GET /locations/<ID>/input-fields`
-   *
-   * For example:
-   *
-   * ```javascript
-   * // Get the input fields for a location that has only Line, First Name & Last Name enabled
-   * const inputFields = await Qminder.locations.getInputFields(1234);
-   * console.log(inputFields);
-   * // => [ { type: 'firstName' }, { type: 'lastName' }, { type: 'line' } ]
-   * ```
-   * @param location the location to query, either as an ID or a Qminder Location object
-   * @returns a Promise that resolves to an array of input fields, or rejects if something went
-   * wrong.
-   */
-  static getInputFields(location: Location | number): Promise<InputField[]> {
-    let locationId: any = null;
-    // Get the location's ID
-    if (location instanceof Location) {
-      locationId = location.id;
-    } else {
-      locationId = location;
-    }
-    if (!locationId || typeof locationId !== 'number') {
-      throw new Error(ERROR_NO_LOCATION_ID);
-    }
-    return ApiBase.request(`locations/${locationId}/input-fields`).then(
-      (response: { fields: InputField[] }) => response.fields,
-    );
-  }
-}
+};

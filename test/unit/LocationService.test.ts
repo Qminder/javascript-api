@@ -165,58 +165,7 @@ describe('Qminder.locations', function () {
     });
   });
 
-  describe('getInputFields()', function () {
-    const fields = [{ type: 'firstName' }, { type: 'lastName' }];
-    beforeEach(function () {
-      requestStub
-        .withArgs(`locations/${LOCATION_ID}/input-fields`)
-        .resolves({ fields });
-    });
-    it('throws with undefined location ID', function () {
-      expect(() => (Qminder.locations.getInputFields as any)()).toThrow();
-    });
-    it("throws with an object that doesn't fit", function () {
-      expect(() =>
-        (Qminder.locations.getInputFields as any)({ statusCode: 200 }),
-      ).toThrow();
-    });
-    it('does not throw with numeric location ID', function () {
-      expect(() => Qminder.locations.getInputFields(LOCATION_ID)).not.toThrow();
-    });
-    it('does not throw with Qminder.Location', function () {
-      expect(() =>
-        Qminder.locations.getInputFields(new Qminder.Location(LOCATION_ID)),
-      ).not.toThrow();
-    });
-    it('calls the right URL with numeric location ID', function (done) {
-      Qminder.locations.getInputFields(LOCATION_ID).then(
-        () => {
-          expect(
-            requestStub.calledWith(`locations/${LOCATION_ID}/input-fields`),
-          ).toBeTruthy();
-          done();
-        },
-        (err) => {
-          expect(err).toBeUndefined();
-          done();
-        },
-      );
-    });
-    it('gets the input fields from the response object', function (done) {
-      Qminder.locations.getInputFields(LOCATION_ID).then(
-        (response) => {
-          expect(response).toEqual(fields);
-          done();
-        },
-        (err) => {
-          expect(err).toBeUndefined();
-          done();
-        },
-      );
-    });
-  });
-
-  afterEach(function () {
+  afterEach(function() {
     requestStub.restore();
   });
 });
