@@ -1,9 +1,10 @@
+/* eslint-disable max-classes-per-file */
 import * as WebSocket from 'isomorphic-ws';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
+import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 
 type QueryOrDocument = string | DocumentNode;
 
@@ -14,6 +15,7 @@ function queryToString(query: QueryOrDocument): string {
   if (query.kind === 'Document') {
     return print(query);
   }
+  throw new Error('queryToString: query must be a string or a DocumentNode');
 }
 
 interface OperationMessage {
@@ -224,7 +226,7 @@ export class GraphQLService {
   }
 
   private openSocket() {
-    if (this.connectionStatus != ConnectionStatus.DISCONNECTED) {
+    if (this.connectionStatus !== ConnectionStatus.DISCONNECTED) {
       return;
     }
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
@@ -243,7 +245,7 @@ export class GraphQLService {
     socket.onclose = (event: { code: number }) => {
       // NOTE: if the event code is 1006, it is any of the errors in the list here:
       // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
-      console.log('[GraphQL subscription] Connection lost: ' + event.code);
+      console.log(`[GraphQL subscription] Connection lost: ${event.code}`);
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
 
@@ -258,13 +260,13 @@ export class GraphQLService {
         }
 
         console.log(
-          '[GraphQL subscription] Reconnecting in ' +
-            newTimeout / 1000 +
-            ' seconds...',
+          `[GraphQL subscription] Reconnecting in ${
+            newTimeout / 1000
+          } seconds...`,
         );
         this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
 
-        this.connectionRetries++;
+        this.connectionRetries += 1;
       }
     };
 
@@ -288,12 +290,12 @@ export class GraphQLService {
               const payload = {
                 query: `subscription { ${subscription.query} }`,
               };
-              const message = JSON.stringify({
+              const msg = JSON.stringify({
                 id: subscription.id,
                 type: MessageType.GQL_START,
                 payload,
               });
-              this.sendRawMessage(message);
+              this.sendRawMessage(msg);
             });
             break;
 
@@ -337,7 +339,9 @@ export class GraphQLService {
   }
 
   private generateOperationId(): string {
-    return String(this.nextSubscriptionId++);
+    const currentId = `${this.nextSubscriptionId}`;
+    this.nextSubscriptionId += 1;
+    return currentId;
   }
 
   private setConnectionStatus(status: ConnectionStatus) {
