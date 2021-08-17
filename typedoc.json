@@ -1,7 +1,5 @@
 {
-  "entryPoints": [
-    "./src/qminder-api.ts"
-  ],
+  "entryPoints": ["./src/qminder-api.ts"],
   "out": "docs",
   "excludePrivate": true,
   "readme": "manual/apidoc-index.md",

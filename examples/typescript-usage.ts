@@ -1,5 +1,6 @@
 // This file is an example of Typescript Qminder API usage.
 import * as Qminder from '../src/qminder-api';
+
 Qminder.setKey(process.env.APIKEY);
 
 async function main() {
@@ -15,7 +16,7 @@ async function main() {
   // Example 3. HTTP API - search for tickets
   const tickets = await Qminder.tickets.search({
     location: locations[0].id,
-    status: 'NEW'
+    status: 'NEW',
   });
 }
 
