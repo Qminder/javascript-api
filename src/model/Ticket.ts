@@ -51,7 +51,6 @@ export default interface Ticket {
   /** The e-mail address of the visitor. For example: "jsmith224@example.com" */
   email?: string;
 
-
   /**
    * If the ticket has been reordered, this will contain an ISO8601 timestamp with milliseconds that
    * should be preferred over the "created date" to sort tickets by.
@@ -86,9 +85,11 @@ export default interface Ticket {
    *
    * { "date": "2017-10-31T17:30:00.000Z" }
    */
-  called?: {
-    date: string;
-  } | undefined;
+  called?:
+    | {
+        date: string;
+      }
+    | undefined;
 
   /**
    * If the ticket has been marked served, then this object contains the time the ticket was
@@ -138,7 +139,6 @@ export default interface Ticket {
    * @see TicketLabel
    */
   labels?: TicketLabel[];
-
 
   /**
    * List of interactions of this ticket.
@@ -230,7 +230,7 @@ export interface TicketInteraction {
 export interface TicketLabel {
   value: string;
   color: string;
-};
+}
 
 /**
  * Represents an SMS message sent to or received from a visitor.
@@ -283,13 +283,12 @@ export interface TicketLabel {
 export interface TicketMessage {
   created: {
     date: string;
-  },
+  };
   body: string;
   type: 'INCOMING' | 'OUTGOING';
   status: 'NEW' | 'SENT' | 'DELIVERED' | 'INVALID_NUMBER';
   userId?: number;
-};
-
+}
 
 /**
  * Represents the current status of a ticket.
@@ -301,5 +300,10 @@ export interface TicketMessage {
  * CANCELLED - the ticket was cancelled by an API call. <br />
  * CANCELLED_BY_CLERK - the ticket was cancelled by a clerk. <br />
  */
-export type TicketStatus = 'NEW' | 'CALLED' | 'CANCELLED' | 'CANCELLED_BY_CLERK' | 'NOSHOW' | 'SERVED';
-
+export type TicketStatus =
+  | 'NEW'
+  | 'CALLED'
+  | 'CANCELLED'
+  | 'CANCELLED_BY_CLERK'
+  | 'NOSHOW'
+  | 'SERVED';

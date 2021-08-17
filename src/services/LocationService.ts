@@ -39,9 +39,11 @@ export default class LocationService {
    * @returns A promise that resolves to an array of locations.
    */
   static list(): Promise<Location[]> {
-    return ApiBase.request('locations/').then((locations: { data: Location[] }) => {
-      return locations.data;
-    });
+    return ApiBase.request('locations/').then(
+      (locations: { data: Location[] }) => {
+        return locations.data;
+      },
+    );
   }
 
   /**
@@ -86,13 +88,15 @@ export default class LocationService {
    *
    * @returns a Promise that resolves to the list of desks in this location
    */
-  static getDesks(location: IdOrObject<Location>) : Promise<Desk[]> {
+  static getDesks(location: IdOrObject<Location>): Promise<Desk[]> {
     const locationId = extractId(location);
-    return ApiBase.request(`locations/${locationId}/desks`).then((response: { desks: Desk[] }) => {
-      if (!response.desks) {
-        throw new Error(`Desk list response was invalid - ${response}`);
-      }
-      return response.desks;
-    });
+    return ApiBase.request(`locations/${locationId}/desks`).then(
+      (response: { desks: Desk[] }) => {
+        if (!response.desks) {
+          throw new Error(`Desk list response was invalid - ${response}`);
+        }
+        return response.desks;
+      },
+    );
   }
-};
+}

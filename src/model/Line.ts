@@ -31,4 +31,3 @@ export default interface Line {
    */
   disabled: boolean;
 }
-

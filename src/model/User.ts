@@ -6,7 +6,7 @@ import Location from './Location';
 interface Picture {
   size: 'small' | 'medium' | 'large';
   url: string;
-};
+}
 
 /**
  * An enum of all available role types.

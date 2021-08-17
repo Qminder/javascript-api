@@ -1,10 +1,13 @@
-import Ticket, { TicketStatus, TicketMessage, TicketExtra } from '../model/Ticket';
+import Ticket, {
+  TicketStatus,
+  TicketMessage,
+  TicketExtra,
+} from '../model/Ticket';
 import User from '../model/User';
 import Desk from '../model/Desk';
 import Line from '../model/Line';
 import ApiBase from '../api-base';
 import { extractId, extractIdToNumber, IdOrObject } from '../util/id-or-object';
-
 
 /**
  * Represents a collection of search criteria for TicketService.count().
@@ -179,9 +182,12 @@ interface TicketSearchCriteria {
    * responseScope: ['MESSAGES', 'INTERACTIONS']
    * responseScope: 'MESSAGES,INTERACTIONS'
    */
-  responseScope?: string | Array<'MESSAGES' | 'INTERACTIONS'> | 'MESSAGES' | 'INTERACTIONS';
+  responseScope?:
+    | string
+    | Array<'MESSAGES' | 'INTERACTIONS'>
+    | 'MESSAGES'
+    | 'INTERACTIONS';
 }
-
 
 /**
  * Represents a position in the queue where the ticket should go when returning it to the queue.
@@ -198,33 +204,44 @@ export const ERROR_NO_LINE_ID: string = 'Line ID missing from arguments.';
  * This error is thrown when the line is not a number (for the line ID) or a valid Line object.
  * @hidden
  */
-export const ERROR_INVALID_LINE: string = 'Line is not a number or Line object.';
+export const ERROR_INVALID_LINE: string =
+  'Line is not a number or Line object.';
 
 /** This error is thrown when the Ticket ID is not passed to the API method, or when its type is
  *  not a number.
  *  @hidden */
 export const ERROR_NO_TICKET_ID: string = 'Ticket ID missing from arguments.';
 /** @hidden */
-export const ERROR_INVALID_TICKET: string = 'Ticket is not a number or Ticket object.';
+export const ERROR_INVALID_TICKET: string =
+  'Ticket is not a number or Ticket object.';
 /** This error is thrown when the Ticket Changes object is not passed to TicketService.edit.
  * @hidden */
-export const ERROR_NO_TICKET_CHANGES: string = 'Ticket changes missing from arguments.';
+export const ERROR_NO_TICKET_CHANGES: string =
+  'Ticket changes missing from arguments.';
 
 /** This error is thrown when a user is not passed into API methods that take a user.
  * @hidden */
 export const ERROR_NO_USER: string = 'User missing from arguments.';
 /** @hidden */
-export const ERROR_INVALID_USER: string = 'User is not a number or User object.';
+export const ERROR_INVALID_USER: string =
+  'User is not a number or User object.';
 /** This error is thrown when the desired queue position is not passed into
  *  TicketService.returnToQueue.
  *  @hidden */
-export const ERROR_NO_QUEUE_POSITION: string = 'Queue position missing from arguments.';
+export const ERROR_NO_QUEUE_POSITION: string =
+  'Queue position missing from arguments.';
 /** @hidden */
-export const ERROR_INVALID_DESK: string = 'Desk is not a number or Desk object.';
+export const ERROR_INVALID_DESK: string =
+  'Desk is not a number or Desk object.';
 
-
-export type TicketCreationParameters = Pick<Ticket, 'source' | 'firstName' | 'lastName' | 'phoneNumber' | 'email' | 'extra'>;
-export type TicketEditingParameters = Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email' | 'extra'> & { user: User | number };
+export type TicketCreationParameters = Pick<
+  Ticket,
+  'source' | 'firstName' | 'lastName' | 'phoneNumber' | 'email' | 'extra'
+>;
+export type TicketEditingParameters = Pick<
+  Ticket,
+  'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email' | 'extra'
+> & { user: IdOrObject<User> };
 /**
  * The format of the HTTP request to send when creating a ticket.
  */
@@ -255,7 +272,7 @@ interface CallNextRequest extends TicketCallRequest {
   lines: string;
 }
 
-type TicketCreationResponse = Pick<Ticket, 'id'>; 
+type TicketCreationResponse = Pick<Ticket, 'id'>;
 
 /**
  * TicketService includes methods that work with tickets. Tickets represent a visitor that is
@@ -363,11 +380,13 @@ export default class TicketService {
       newSearch.responseScope = newSearch.responseScope.join(',');
     }
 
-    const queryStr = new URLSearchParams(newSearch as Record<string, string>).toString();
+    const queryStr = new URLSearchParams(
+      newSearch as Record<string, string>,
+    ).toString();
 
-    return ApiBase
-            .request(`tickets/search?${queryStr}`)
-            .then((response: { data: Ticket[] }) => response.data);
+    return ApiBase.request(`tickets/search?${queryStr}`).then(
+      (response: { data: Ticket[] }) => response.data,
+    );
   }
 
   /**
@@ -414,9 +433,12 @@ export default class TicketService {
     if ((newSearch as TicketSearchCriteria).responseScope) {
       delete (newSearch as TicketSearchCriteria).responseScope;
     }
-    const queryStr = new URLSearchParams(newSearch as Record<string, string>).toString();
-    return ApiBase.request(`tickets/count?${queryStr}`)
-                  .then((response: { count: number }) => response.count);
+    const queryStr = new URLSearchParams(
+      newSearch as Record<string, string>,
+    ).toString();
+    return ApiBase.request(`tickets/count?${queryStr}`).then(
+      (response: { count: number }) => response.count,
+    );
   }
 
   /**
@@ -466,25 +488,33 @@ export default class TicketService {
    * @returns a promise that resolves to the ID of the new ticket.
    * @throws ERROR_NO_LINE_ID when the lineId parameter is undefined or not a number.
    */
-  static create(line: IdOrObject<Line>, ticket: TicketCreationParameters, idempotencyKey?: string | number): Promise<TicketCreationResponse> {
+  static create(
+    line: IdOrObject<Line>,
+    ticket: TicketCreationParameters,
+    idempotencyKey?: string | number,
+  ): Promise<TicketCreationResponse> {
     if (line === undefined) {
       throw new Error(ERROR_NO_LINE_ID);
     }
-    
+
     const lineId = extractId(line);
-  
-    const converted: any = Object.assign({}, ticket);
+
+    const converted: any = { ...ticket };
     if (converted.extra) {
       converted.extra = JSON.stringify(converted.extra);
     }
 
-    const requestParams: TicketCreationRequest = Object.assign({}, converted);
+    const requestParams: TicketCreationRequest = { ...converted };
 
-    return ApiBase.request(`lines/${lineId}/ticket`, requestParams, 'POST', idempotencyKey)
-                  .then((response: TicketCreationResponse) => {
+    return ApiBase.request(
+      `lines/${lineId}/ticket`,
+      requestParams,
+      'POST',
+      idempotencyKey,
+    ).then((response: TicketCreationResponse) => {
       const ticketId = parseInt(`${response.id}`, 10);
-      const ticket: TicketCreationResponse = { id: ticketId };
-      return ticket;
+      const reply: TicketCreationResponse = { id: ticketId };
+      return reply;
     });
   }
 
@@ -534,14 +564,17 @@ export default class TicketService {
    * @throws ERROR_NO_TICKET_ID when the ticket ID was undefined or not a number
    * @throws ERROR_NO_TICKET_CHANGES when the ticket changes were undefined
    */
-  static edit(ticket: IdOrObject<Ticket>, changes: TicketEditingParameters): Promise<'success'> {
+  static edit(
+    ticket: IdOrObject<Ticket>,
+    changes: TicketEditingParameters,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
 
     if (!changes) {
       throw new Error(ERROR_NO_TICKET_CHANGES);
     }
 
-    const intermediate: any = Object.assign({}, changes);
+    const intermediate: any = { ...changes };
 
     if (intermediate.extra) {
       intermediate.extra = JSON.stringify(intermediate.extra);
@@ -555,8 +588,9 @@ export default class TicketService {
 
     const request: TicketEditingRequest = intermediate;
 
-    return ApiBase.request(`tickets/${ticketId}/edit`, request)
-                  .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(`tickets/${ticketId}/edit`, request).then(
+      (response: { result: 'success' }) => response.result,
+    );
   }
 
   /**
@@ -582,10 +616,12 @@ export default class TicketService {
    * when calling a new ticket. This allows calling multiple tickets at the same time.
    * @returns  the ticket that was just called
    */
-  static call(ticket: IdOrObject<Ticket>, 
-              user?: IdOrObject<Ticket>,
-              desk?: IdOrObject<Ticket>,
-              keepActiveTicketsOpen?: boolean): Promise<Ticket> {
+  static call(
+    ticket: IdOrObject<Ticket>,
+    user?: IdOrObject<Ticket>,
+    desk?: IdOrObject<Ticket>,
+    keepActiveTicketsOpen?: boolean,
+  ): Promise<Ticket> {
     if (!ticket) {
       throw new Error(ERROR_NO_TICKET_ID);
     }
@@ -627,11 +663,14 @@ export default class TicketService {
   static recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/recall`, undefined, 'POST')
-                  .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/recall`,
+      undefined,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -648,12 +687,15 @@ export default class TicketService {
   static markServed(ticket: IdOrObject<Ticket>): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/markserved`, undefined, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/markserved`,
+      undefined,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -671,11 +713,14 @@ export default class TicketService {
   static markNoShow(ticket: IdOrObject<Ticket>): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/marknoshow`, undefined, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/marknoshow`,
+      undefined,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -692,7 +737,10 @@ export default class TicketService {
    * @returns  a promise that resolves to "success" if removing works, and rejects if something
    * went wrong.
    */
-  static cancel(ticket: IdOrObject<Ticket>, user: IdOrObject<User>): Promise<string> {
+  static cancel(
+    ticket: IdOrObject<Ticket>,
+    user: IdOrObject<User>,
+  ): Promise<string> {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
     if (!ticketId || typeof ticketId !== 'string') {
@@ -703,9 +751,11 @@ export default class TicketService {
       throw new Error(ERROR_NO_USER);
     }
 
-
-    return ApiBase.request(`tickets/${ticketId}/cancel`, { user: userId }, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/cancel`,
+      { user: userId },
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -727,9 +777,11 @@ export default class TicketService {
    * @returns {Promise<string>} a promise that resolves to "success" if it worked, and rejects
    * if something went wrong.
    */
-  static returnToQueue(ticket: IdOrObject<Ticket>,
-                       user: IdOrObject<User>,
-                       position: DesiredQueuePosition): Promise<'success'> {
+  static returnToQueue(
+    ticket: IdOrObject<Ticket>,
+    user: IdOrObject<User>,
+    position: DesiredQueuePosition,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
 
@@ -749,8 +801,11 @@ export default class TicketService {
       position: `${position}`,
       user: userId,
     }).toString();
-    return ApiBase.request(`tickets/${ticketId}/returntoqueue?${query}`, undefined, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/returntoqueue?${query}`,
+      undefined,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -777,7 +832,11 @@ export default class TicketService {
    * @returns promise that resolves to 'success' if all was OK, and 'no
    * action' if the label was already there, and rejects if something else went wrong.
    */
-  static addLabel(ticket: IdOrObject<Ticket>, label: string, user?: IdOrObject<User>): Promise<'success' | 'no action'> {
+  static addLabel(
+    ticket: IdOrObject<Ticket>,
+    label: string,
+    user?: IdOrObject<User>,
+  ): Promise<'success' | 'no action'> {
     const ticketId = extractId(ticket);
     const userId = user ? extractId(user) : undefined;
 
@@ -789,7 +848,7 @@ export default class TicketService {
       throw new Error('No label given.');
     }
 
-    const body: { value: string, user?: string } = {
+    const body: { value: string; user?: string } = {
       value: label,
     };
 
@@ -797,8 +856,9 @@ export default class TicketService {
       body.user = userId;
     }
 
-    return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST')
-      .then((response: { result: 'success' | 'no action' }) => response.result);
+    return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST').then(
+      (response: { result: 'success' | 'no action' }) => response.result,
+    );
   }
 
   /**
@@ -826,7 +886,11 @@ export default class TicketService {
    * @returns {Promise<string>}  A promise that resolves to "success" when removing the label
    * worked, and rejects when something went wrong.
    */
-  static removeLabel(ticket: IdOrObject<Ticket>, label: string, user: IdOrObject<User>): Promise<'success'> {
+  static removeLabel(
+    ticket: IdOrObject<Ticket>,
+    label: string,
+    user: IdOrObject<User>,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
 
@@ -844,11 +908,14 @@ export default class TicketService {
 
     const body = {
       value: label,
-      user: userId
+      user: userId,
     };
 
-    return ApiBase.request(`tickets/${ticketId}/labels/remove`, body, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/labels/remove`,
+      body,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -880,9 +947,11 @@ export default class TicketService {
    * @param assignee The user who will take the ticket.
    * @returns {Promise.<string>} resolves to 'success' on success
    */
-  static assignToUser(ticket: IdOrObject<Ticket>,
-                      assigner: IdOrObject<User>,
-                      assignee: IdOrObject<User>): Promise<'success'> {
+  static assignToUser(
+    ticket: IdOrObject<Ticket>,
+    assigner: IdOrObject<User>,
+    assignee: IdOrObject<User>,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
     const assignerId = extractId(assigner);
     const assigneeId = extractId(assignee);
@@ -901,10 +970,11 @@ export default class TicketService {
 
     const body = {
       assigner: assignerId,
-      assignee: assigneeId
+      assignee: assigneeId,
     };
-    return ApiBase.request(`tickets/${ticketId}/assign`, body, 'POST')
-                  .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(`tickets/${ticketId}/assign`, body, 'POST').then(
+      (response: { result: 'success' }) => response.result,
+    );
   }
 
   /**
@@ -948,7 +1018,10 @@ export default class TicketService {
    * @returns a Promise that resolves when unassigning works and rejects when
    * unassigning fails
    */
-  static unassign(ticket: IdOrObject<Ticket>, unassigner: IdOrObject<User>): Promise<'success'> {
+  static unassign(
+    ticket: IdOrObject<Ticket>,
+    unassigner: IdOrObject<User>,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
     const unassignerId = extractId(unassigner);
 
@@ -957,11 +1030,16 @@ export default class TicketService {
     }
 
     if (!unassignerId || typeof unassignerId !== 'string') {
-      throw new Error('Qminder.tickets.unassign was called without a valid unassigner user.');
+      throw new Error(
+        'Qminder.tickets.unassign was called without a valid unassigner user.',
+      );
     }
 
-    return ApiBase.request(`tickets/${ticketId}/unassign`, { user: unassignerId }, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/unassign`,
+      { user: unassignerId },
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -989,24 +1067,31 @@ export default class TicketService {
    * queue.
    * @returns resolves to 'success' when it worked
    */
-  static reorder(ticket: IdOrObject<Ticket>, afterTicket: IdOrObject<Ticket> | null): Promise<'success'> {
+  static reorder(
+    ticket: IdOrObject<Ticket>,
+    afterTicket: IdOrObject<Ticket> | null,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    const afterTicketId: string | null = afterTicket === null ? afterTicket as null : extractId(afterTicket);
+    const afterTicketId: string | null =
+      afterTicket === null ? (afterTicket as null) : extractId(afterTicket);
 
-    let postData: { after: string | null } | undefined = undefined;
+    let postData: { after: string | null } | undefined;
     if (afterTicketId) {
       postData = {
         after: afterTicketId,
       };
     }
 
-    return ApiBase.request(`tickets/${ticketId}/reorder`, postData, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/reorder`,
+      postData,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
 
   /**
@@ -1030,15 +1115,19 @@ export default class TicketService {
    * of the Ticket object.
    * @returns the estimated Unix time the visitor will be called, eg 1509460809
    */
-  static getEstimatedTimeOfService(ticket: IdOrObject<Ticket>): Promise<number> {
+  static getEstimatedTimeOfService(
+    ticket: IdOrObject<Ticket>,
+  ): Promise<number> {
     const ticketId = extractId(ticket);
 
     if (typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
-    return ApiBase.request(`tickets/${ticketId}/estimated-time`)
-      .then((response: { estimatedTimeOfService: number }) => response.estimatedTimeOfService);
+    return ApiBase.request(`tickets/${ticketId}/estimated-time`).then(
+      (response: { estimatedTimeOfService: number }) =>
+        response.estimatedTimeOfService,
+    );
   }
 
   /**
@@ -1072,14 +1161,17 @@ export default class TicketService {
    * @returns  a Promise that resolves to a list of ticket messages
    * @throws ERROR_NO_TICKET_ID  if the ticket is missing from the arguments, or invalid.
    */
-  static getMessages(ticket: IdOrObject<Ticket>): Promise<Array<TicketMessage>> {
+  static getMessages(
+    ticket: IdOrObject<Ticket>,
+  ): Promise<Array<TicketMessage>> {
     const ticketId = extractId(ticket);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
-    return ApiBase.request(`tickets/${ticketId}/messages`)
-                  .then((response: { messages: TicketMessage[] }) => response.messages);
+    return ApiBase.request(`tickets/${ticketId}/messages`).then(
+      (response: { messages: TicketMessage[] }) => response.messages,
+    );
   }
 
   /**
@@ -1115,13 +1207,15 @@ export default class TicketService {
    * @returns a promise that resolves to the string "success" if it works, and rejects when
    * something goes wrong.
    */
-  static sendMessage(ticket: IdOrObject<Ticket>,
-                     message: string,
-                     user: IdOrObject<User>): Promise<'success'> {
+  static sendMessage(
+    ticket: IdOrObject<Ticket>,
+    message: string,
+    user: IdOrObject<User>,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
     const userId = extractId(user);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
@@ -1135,11 +1229,12 @@ export default class TicketService {
 
     const body = {
       message,
-      user: userId
+      user: userId,
     };
 
-    return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST')
-                  .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST').then(
+      (response: { result: 'success' }) => response.result,
+    );
   }
 
   /**
@@ -1180,9 +1275,11 @@ export default class TicketService {
    * @returns  a Promise that resolves when forwarding works, and rejects when it fails.
    * @throws an Error when the ticket or line are missing or invalid.
    */
-  static forward(ticket: IdOrObject<Ticket>,
-                 line: IdOrObject<Line>,
-                 user?: IdOrObject<User>): Promise<object> {
+  static forward(
+    ticket: IdOrObject<Ticket>,
+    line: IdOrObject<Line>,
+    user?: IdOrObject<User>,
+  ): Promise<object> {
     const ticketId = extractId(ticket);
     const lineId = extractId(line);
     const userId = extractId(user);
@@ -1200,8 +1297,8 @@ export default class TicketService {
       throw new Error('User ID is missing.');
     }
 
-    const body: { line: string, user?: string } = {
-      line: lineId
+    const body: { line: string; user?: string } = {
+      line: lineId,
     };
 
     if (userId !== undefined) {
@@ -1220,15 +1317,22 @@ export default class TicketService {
    * @param data      The data to set
    * @returns promise that resolves to 'success' if all was OK and rejects if something else went wrong.
    */
-  static setExternalData(ticket: IdOrObject<Ticket>, provider: string, title: string, data: any): Promise<'success'> {
+  static setExternalData(
+    ticket: IdOrObject<Ticket>,
+    provider: string,
+    title: string,
+    data: any,
+  ): Promise<'success'> {
     const ticketId = extractId(ticket);
 
-    if ((!ticketId || typeof ticketId !== 'string')) {
+    if (!ticketId || typeof ticketId !== 'string') {
       throw new Error(ERROR_NO_TICKET_ID);
     }
 
     if (!provider || typeof provider !== 'string') {
-      throw new Error('No provider specified. The provider has to be a string.');
+      throw new Error(
+        'No provider specified. The provider has to be a string.',
+      );
     }
 
     if (!title || typeof title !== 'string') {
@@ -1245,7 +1349,10 @@ export default class TicketService {
       data: JSON.stringify(data),
     };
 
-    return ApiBase.request(`tickets/${ticketId}/external`, payload, 'POST')
-      .then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(
+      `tickets/${ticketId}/external`,
+      payload,
+      'POST',
+    ).then((response: { result: 'success' }) => response.result);
   }
-};
+}

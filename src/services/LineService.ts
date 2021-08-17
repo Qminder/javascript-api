@@ -4,7 +4,8 @@ import ApiBase from '../api-base';
 import { extractId, IdOrObject } from '../util/id-or-object';
 
 type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
-type LineUpdateParameters = Pick<Line, 'id'> & Partial<Pick<Line, 'color' | 'name'>>;
+type LineUpdateParameters = Pick<Line, 'id'> &
+  Partial<Pick<Line, 'color' | 'name'>>;
 
 /**
  * The LineService allows you to access data about Lines in Qminder.
@@ -41,8 +42,9 @@ export default class LineService {
     if (!locationId || typeof locationId !== 'string') {
       throw new Error('Location ID invalid or missing.');
     }
-    return ApiBase.request(`locations/${locationId}/lines`)
-                  .then((response: { data: Line[] }) => response.data);
+    return ApiBase.request(`locations/${locationId}/lines`).then(
+      (response: { data: Line[] }) => response.data,
+    );
   }
 
   /**
@@ -82,7 +84,10 @@ export default class LineService {
    * @returns a Promise that resolves to a new Line object, created according
    * to the parameters.
    */
-  static create(location: IdOrObject<Location>, line: LineCreateParameters): Promise<Line> {
+  static create(
+    location: IdOrObject<Location>,
+    line: LineCreateParameters,
+  ): Promise<Line> {
     const locationId = extractId(location);
     if (!locationId || typeof locationId !== 'string') {
       throw new Error('Location ID invalid or missing.');
@@ -93,7 +98,11 @@ export default class LineService {
     if (!line.name || typeof line.name !== 'string') {
       throw new Error('Cannot create a line without a line name.');
     }
-    return (ApiBase.request(`locations/${locationId}/lines`, line, 'POST') as Promise<Line>);
+    return ApiBase.request(
+      `locations/${locationId}/lines`,
+      line,
+      'POST',
+    ) as Promise<Line>;
   }
 
   /**
@@ -116,23 +125,23 @@ export default class LineService {
       throw new Error('Line is invalid or missing.');
     }
 
-    let lineId = extractId(line);
+    const lineId = extractId(line);
     if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID is invalid or missing.');
     }
 
-    let lineName = line.name;
+    const lineName = line.name;
     if (!lineName || typeof lineName !== 'string') {
       throw new Error('Cannot update a line without a name.');
     }
 
-    let lineColor = line.color;
+    const lineColor = line.color;
     if (!lineColor || typeof lineColor !== 'string') {
       throw new Error('Cannot update a line without a color.');
     }
 
-    let data = { name: lineName, color: lineColor };
-    return (ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>);
+    const data = { name: lineName, color: lineColor };
+    return ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>;
   }
 
   /**
@@ -154,7 +163,11 @@ export default class LineService {
     if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/enable`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/enable`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -176,7 +189,11 @@ export default class LineService {
     if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/disable`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/disable`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -200,7 +217,11 @@ export default class LineService {
     if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/archive`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/archive`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -223,7 +244,11 @@ export default class LineService {
     if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}/unarchive`, undefined, 'POST') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}/unarchive`,
+      undefined,
+      'POST',
+    ) as Promise<any>;
   }
 
   /**
@@ -248,6 +273,10 @@ export default class LineService {
     if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
-    return (ApiBase.request(`lines/${lineId}`, undefined, 'DELETE') as Promise<any>);
+    return ApiBase.request(
+      `lines/${lineId}`,
+      undefined,
+      'DELETE',
+    ) as Promise<any>;
   }
-};
+}

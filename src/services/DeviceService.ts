@@ -55,13 +55,17 @@ export default class DeviceService {
    */
   static edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
     const tvId = extractId(tv);
-    if (!tvId || typeof tvId !== 'number') {
+    if (!tvId || typeof tvId !== 'string') {
       throw new Error('TV ID not provided');
     }
     if (!newName || typeof newName !== 'string') {
       throw new Error('TV name not provided');
     }
-    return (ApiBase.request(`tv/${tvId}`, { name: newName }, 'POST') as Promise<Device>);
+    return ApiBase.request(
+      `tv/${tvId}`,
+      { name: newName },
+      'POST',
+    ) as Promise<Device>;
   }
 
   /**
@@ -86,9 +90,11 @@ export default class DeviceService {
    */
   static remove(tv: IdOrObject<Device>): Promise<{ statusCode: number }> {
     const tvId = extractId(tv);
-    if (!tvId || typeof tvId !== 'number') {
+    if (!tvId || typeof tvId !== 'string') {
       throw new Error('TV ID not provided');
     }
-    return (ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{ statusCode: number }>);
+    return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{
+      statusCode: number;
+    }>;
   }
 }
