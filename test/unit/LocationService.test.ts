@@ -165,7 +165,7 @@ describe('Qminder.locations', function () {
     });
   });
 
-  afterEach(function() {
+  afterEach(function () {
     requestStub.restore();
   });
 });
