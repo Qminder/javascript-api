@@ -55,13 +55,13 @@ Here's a list of things you can do with the Qminder API:
 
 [promise]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
 
-[ds]: ./classes/_services_deviceservice_.deviceservice.html
-[es]: ./classes/_services_eventsservice_.eventsservice.html
-[lis]: ./classes/_services_lineservice_.lineservice.html
-[los]: ./classes/_services_locationservice_.locationservice.html
-[ts]: ./classes/_services_ticketservice_.ticketservice.html
-[us]: ./classes/_services_userservice_.userservice.html
-[ws]: ./classes/_services_webhooksservice_.webhooksservice.html
+[ds]: ./classes/devices.html
+[es]: ./classes/events.html
+[lis]: ./classes/lines.html
+[los]: ./classes/locations.html
+[ts]: ./classes/tickets.html
+[us]: ./classes/users.html
+[ws]: ./classes/webhooks.html
 
 ## Example
 

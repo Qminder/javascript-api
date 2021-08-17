@@ -1,0 +1,607 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>lines | Qminder</title>
+	<meta name="description" content="Documentation for Qminder">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+	<script async src="../assets/js/search.js" id="search-script"></script>
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.json" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">Qminder</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+							<input type="checkbox" id="tsd-filter-externals" checked />
+							<label class="tsd-widget" for="tsd-filter-externals">Externals</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../modules.html">Qminder</a>
+				</li>
+				<li>
+					<a href="lines.html">lines</a>
+				</li>
+			</ul>
+			<h1>Class lines</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>The LineService allows you to access data about Lines in Qminder.</p>
+					</div>
+					<p>For example, list all Lines of your Location:</p>
+					<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
+<span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_GOES_HERE&#039;</span><span style="color: #000000">);</span>
+
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">locationId</span><span style="color: #000000"> = </span><span style="color: #098658">12345</span><span style="color: #000000">;</span>
+<span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">lines</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">list</span><span style="color: #000000">(</span><span style="color: #001080">locationId</span><span style="color: #000000">);</span>
+
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">lines</span><span style="color: #000000">);</span>
+</code></pre>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">lines</span>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="lines.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#archive" class="tsd-kind-icon">archive</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#create" class="tsd-kind-icon">create</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#delete" class="tsd-kind-icon">delete</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#details" class="tsd-kind-icon">details</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#disable" class="tsd-kind-icon">disable</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#enable" class="tsd-kind-icon">enable</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#list" class="tsd-kind-icon">list</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#unarchive" class="tsd-kind-icon">unarchive</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="lines.html#update" class="tsd-kind-icon">update</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">new lines<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="lines.html" class="tsd-signature-type" data-tsd-kind="Class">lines</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+							</aside>
+							<h4 class="tsd-returns-title">Returns <a href="lines.html" class="tsd-signature-type" data-tsd-kind="Class">lines</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="archive" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> archive</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">archive<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L195">services/LineService.ts:195</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Archive a Line.
+										This archives the line and removes it from the line list, from iPads and TVs, from the service screen and from
+									statistics. The line can be unarchived.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/archive</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">archive</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Line or the line&#39;s ID to archive</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A Promise that resolves when the line was archived, and rejects
+							when something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="create" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> create</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>location<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Location.html" class="tsd-signature-type" data-tsd-kind="Class">Location</a>, line<span class="tsd-signature-symbol">: </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L82">services/LineService.ts:82</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Create a new Line and return its details.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>POST /locations/&lt;ID&gt;/lines</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000">: </span><span style="color: #267F99">Line</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #098658">950</span><span style="color: #000000">, { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Priority Service&#039;</span><span style="color: #000000"> });</span>
+<span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">line</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">); </span><span style="color: #008000">// 1425</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>location: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Location.html" class="tsd-signature-type" data-tsd-kind="Class">Location</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the location to add the line under</p>
+									</div>
+								</li>
+								<li>
+									<h5>line: <a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the parameters of the new line - must include the line name</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a Promise that resolves to a new Line object, created according
+							to the parameters.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="delete" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> delete</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L241">services/LineService.ts:241</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Delete a Line.
+										This deletes the line and removes it from the line list, from iPads and TVs, from the service screen and from
+									statistics. This action cannot be undone.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>DELETE /lines/&lt;ID&gt;</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">delete</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Line or the line&#39;s ID to delete</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A Promise that resolves when the line was deleted, and rejects
+							when something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="details" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> details</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L57">services/LineService.ts:57</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fetch detailed information about one line.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>GET /lines/&lt;ID&gt;</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000">: </span><span style="color: #267F99">Line</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">details</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The line to get detailed info about, or the line&#39;s ID.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a promise that resolves to the Line object, or rejects if something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="disable" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> disable</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">disable<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L171">services/LineService.ts:171</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Disable a Line.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/disable</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">disable</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Line or the ID of the line to be disabled.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A Promise that resolves when the line was disabled, and rejects
+							when there active tickets in the line or something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="enable" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> enable</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">enable<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L149">services/LineService.ts:149</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Enable a disabled Line.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/enable</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">enable</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Line or the ID of the line to be enabled.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A Promise that resolves when the line was enabled, and rejects
+							when something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="list" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> list</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">list<span class="tsd-signature-symbol">(</span>location<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Location.html" class="tsd-signature-type" data-tsd-kind="Class">Location</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L35">services/LineService.ts:35</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Fetch the location&#39;s line list.
+									The lines will have the line ID, name, and color filled in.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>GET /locations/&lt;ID&gt;/lines</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">lines</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">list</span><span style="color: #000000">(</span><span style="color: #098658">159</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>location: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Location.html" class="tsd-signature-type" data-tsd-kind="Class">Location</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Location or its ID</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>a promise that resolves to a list of lines, or rejects if something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="unarchive" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> unarchive</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">unarchive<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L217">services/LineService.ts:217</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Unarchive a Line.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/unarchive</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">unarchive</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Line or the line&#39;s ID to unarchive</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A Promise that resolves when the line was unarchived, and rejects
+							when something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="update" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> update</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">update<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/LineService.ts#L111">services/LineService.ts:111</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Update an existing Line name and color.</p>
+								</div>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;</code></p>
+								<p>For example:</p>
+								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000"> = { </span><span style="color: #A31515">&quot;id&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">950</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;name&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Front Desk&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;color&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;#ffffff&quot;</span><span style="color: #000000"> };</span>
+<span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">update</span><span style="color: #000000">(</span><span style="color: #001080">line</span><span style="color: #000000">);</span>
+</code></pre>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>line: <a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Line to be updated - must include the line id, the desired new name and color.</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>A Promise that resolves when the line was updated, and rejects
+							when something went wrong.</p>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class=" ">
+						<a href="../modules.html">Exports</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-enum">
+						<a href="../enums/ConnectionStatus.html" class="tsd-kind-icon">Connection<wbr>Status</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="Desk.html" class="tsd-kind-icon">Desk</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="Device.html" class="tsd-kind-icon">Device</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="Line.html" class="tsd-kind-icon">Line</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="Location.html" class="tsd-kind-icon">Location</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="Ticket.html" class="tsd-kind-icon">Ticket</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="User.html" class="tsd-kind-icon">User</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="Webhook.html" class="tsd-kind-icon">Webhook</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="devices.html" class="tsd-kind-icon">devices</a>
+					</li>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class">
+						<a href="lines.html" class="tsd-kind-icon">lines</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class">
+								<a href="lines.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#archive" class="tsd-kind-icon">archive</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#create" class="tsd-kind-icon">create</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#delete" class="tsd-kind-icon">delete</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#details" class="tsd-kind-icon">details</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#disable" class="tsd-kind-icon">disable</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#enable" class="tsd-kind-icon">enable</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#list" class="tsd-kind-icon">list</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#unarchive" class="tsd-kind-icon">unarchive</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="lines.html#update" class="tsd-kind-icon">update</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+					<li class=" tsd-kind-class">
+						<a href="locations.html" class="tsd-kind-icon">locations</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="tickets.html" class="tsd-kind-icon">tickets</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="users.html" class="tsd-kind-icon">users</a>
+					</li>
+					<li class=" tsd-kind-class">
+						<a href="webhooks.html" class="tsd-kind-icon">webhooks</a>
+					</li>
+					<li class=" tsd-kind-property">
+						<a href="../modules.html#ApiBase" class="tsd-kind-icon">Api<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-property">
+						<a href="../modules.html#graphql" class="tsd-kind-icon">graphql</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="../modules.html#setKey" class="tsd-kind-icon">set<wbr>Key</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+</body>
+</html>
