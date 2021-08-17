@@ -4,8 +4,8 @@ import Location from './Location';
  * The 'medium' sized user picture is available if the user has an image.
  */
 type Picture = {
-  size: 'small' | 'medium' | 'large',
-  url: string,
+  size: 'small' | 'medium' | 'large';
+  url: string;
 };
 
 /**
@@ -106,9 +106,11 @@ class User {
    */
   isAdmin(): boolean {
     if (!this.roles) {
-      throw new Error('User roles are not available. Please load the User via Qminder.users.details');
+      throw new Error(
+        'User roles are not available. Please load the User via Qminder.users.details',
+      );
     }
-    const adminRole = this.roles.find(role => role && role.type === 'ADMIN');
+    const adminRole = this.roles.find((role) => role && role.type === 'ADMIN');
     return adminRole !== undefined;
   }
 
@@ -134,9 +136,11 @@ class User {
    */
   isOwner(): boolean {
     if (!this.roles) {
-      throw new Error('User roles are not available. Please load the User via Qminder.users.details');
+      throw new Error(
+        'User roles are not available. Please load the User via Qminder.users.details',
+      );
     }
-    const ownerRole = this.roles.find(role => role && role.type === 'OWNER');
+    const ownerRole = this.roles.find((role) => role && role.type === 'OWNER');
     return ownerRole !== undefined;
   }
 
@@ -152,9 +156,11 @@ class User {
    * @returns {boolean} true if the user is the manager of the location given
    * @throws
    */
-  isManager(location: (Location|number)) {
+  isManager(location: Location | number) {
     if (!this.roles) {
-      throw new Error('User roles are not available. Please load the User via Qminder.users.details');
+      throw new Error(
+        'User roles are not available. Please load the User via Qminder.users.details',
+      );
     }
 
     let locationId;
@@ -166,10 +172,14 @@ class User {
     }
 
     if (typeof locationId !== 'number') {
-      throw new Error('Invalid first argument. Please pass a number or a Qminder Location object.');
+      throw new Error(
+        'Invalid first argument. Please pass a number or a Qminder Location object.',
+      );
     }
 
-    const managerRole = this.roles.find(role => role && role.type === 'MANAGER' && role.location === location);
+    const managerRole = this.roles.find(
+      (role) => role && role.type === 'MANAGER' && role.location === location,
+    );
     return managerRole !== undefined;
   }
 }

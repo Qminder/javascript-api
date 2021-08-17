@@ -1,6 +1,14 @@
 import * as fetch from 'isomorphic-fetch';
 
-type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'OPTIONS' | 'HEAD' | 'DELETE' | 'CONNECT';
+type HTTPMethod =
+  | 'GET'
+  | 'POST'
+  | 'PUT'
+  | 'PATCH'
+  | 'OPTIONS'
+  | 'HEAD'
+  | 'DELETE'
+  | 'CONNECT';
 
 interface GraphqlQueryVariables {
   [key: string]: any;
@@ -11,7 +19,6 @@ export interface GraphqlQuery {
   variables?: GraphqlQueryVariables;
 }
 
-
 interface GraphqlError {
   message: string;
   errorType: string;
@@ -19,7 +26,7 @@ interface GraphqlError {
   queryPath: string[];
   path?: any;
   extensions?: any;
-  locations: {line: number, column: number, sourceName: string}[];
+  locations: { line: number; column: number; sourceName: string }[];
 }
 
 /**
@@ -110,7 +117,7 @@ class ApiBase {
   constructor() {
     this.fetch = fetch;
     if (typeof (fetch as any).default === 'function') {
-      this.fetch = ((fetch as any).default as Function);
+      this.fetch = (fetch as any).default as Function;
     }
     this.setServer('api.qminder.com');
   }
@@ -140,20 +147,21 @@ class ApiBase {
    * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
-  request(url: string,
-          data?: object | File | string,
-          method: HTTPMethod = 'GET',
-          idempotencyKey?: string | number): Promise<object> {
-
+  request(
+    url: string,
+    data?: object | File | string,
+    method: HTTPMethod = 'GET',
+    idempotencyKey?: string | number,
+  ): Promise<object> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
 
     const init: CorrectRequestInit = {
-      method: method,
+      method,
       mode: 'cors',
       headers: {
-        'X-Qminder-REST-API-Key': this.apiKey
+        'X-Qminder-REST-API-Key': this.apiKey,
       },
     };
 
@@ -178,13 +186,15 @@ class ApiBase {
     }
 
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
-           .then((response: Response) => response.json())
-           .then((responseJson: ApiResponse) => {
-             if (responseIsError(responseJson)) {
-               throw new Error(responseJson.developerMessage || responseJson.message);
-             }
-             return responseJson;
-           });
+      .then((response: Response) => response.json())
+      .then((responseJson: ApiResponse) => {
+        if (responseIsError(responseJson)) {
+          throw new Error(
+            responseJson.developerMessage || responseJson.message,
+          );
+        }
+        return responseJson;
+      });
   }
 
   /**
@@ -202,23 +212,23 @@ class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: RequestInit = {
+    const init: CorrectRequestInit = {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
       },
       mode: 'cors',
-      body: JSON.stringify(query)
+      body: JSON.stringify(query),
     };
 
-    return (this.fetch(`https://${this.apiServer}/graphql`, init)
-        .then((response: Response) => response.json())
-        .then((responseJson: any) => {
-          if (responseJson.errorMessage) {
-            throw new Error(responseJson.errorMessage);
-          }
-          return responseJson as Promise<GraphqlResponse>;
-        }));
+    return this.fetch(`https://${this.apiServer}/graphql`, init)
+      .then((response: Response) => response.json())
+      .then((responseJson: any) => {
+        if (responseJson.errorMessage) {
+          throw new Error(responseJson.errorMessage);
+        }
+        return responseJson as Promise<GraphqlResponse>;
+      });
   }
 }
 
