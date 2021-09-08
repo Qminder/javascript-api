@@ -57,64 +57,112 @@
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
-			<div class="tsd-panel tsd-typography">
-				<a href="#qminder-api" id="qminder-api" style="color: inherit; text-decoration: none;">
-					<h1>Qminder API</h1>
-				</a>
-				<p>The Qminder Javascript API library, supporting both Node.js (from 5.12.0) and browsers.</p>
-				<p>The API is written in Typescript and provides Typescript declaration files alongside the Javascript
-				code.</p>
-				<a href="#including-in-your-project" id="including-in-your-project" style="color: inherit; text-decoration: none;">
-					<h2>Including in your project</h2>
-				</a>
-				<p>This package is set up in a way that you should be able to simply use the following code to include
-				Qminder API in your project:</p>
-				<pre><code><span style="color: #0000FF">var</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> = </span><span style="color: #795E26">require</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">);</span>
-</code></pre>
-				<p>Alternatively, using ES6 <code>import</code> syntax:</p>
-				<pre><code><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
-</code></pre>
-				<a href="#setting-up" id="setting-up" style="color: inherit; text-decoration: none;">
-					<h2>Setting up</h2>
-				</a>
-				<p>Before starting to use API methods, it&#39;s necessary to provide your API key to the Qminder API.</p>
-				<p>The API key can be found in <a href="https://dashboard.qminder.com">Qminder Dashboard</a> under Account Setup.</p>
-				<pre><code><span style="color: #008000">// This line of code needs to be before any other API calls, otherwise you get an error!</span>
-<span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;COPIED_API_KEY_GOES_HERE&#039;</span><span style="color: #000000">);</span>
-</code></pre>
-				<a href="#using-the-api" id="using-the-api" style="color: inherit; text-decoration: none;">
-					<h2>Using the API</h2>
-				</a>
-				<p>The functionality of Qminder API is grouped under different Services. For example, to work with
-				visitors in the Qminder queue, you should use <code>Qminder.tickets</code>.</p>
-				<p>Qminder API services are built based on <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises">Promises</a>. This means that Qminder API can be
-				used with <code>await</code> keywords in modern Javascript and <code>.then()</code> callbacks in ES5.</p>
-				<p>Unless specifically mentioned otherwise, the API code examples are written using modern
-					Javascript (ES2015) standards. To write code according to modern JS standards, use latest
-				versions of Node.js, or in the browser, compile to an older version of Javascript.</p>
-				<p>Here&#39;s a list of things you can do with the Qminder API:</p>
-				<ul>
-					<li><a href="./classes/devices.html"><code>Qminder.devices</code></a>: List and manage Apple TVs attached to a location.</li>
-					<li><a href="./classes/events.html"><code>Qminder.events</code></a>: Listen to realtime events of your location and perform actions when they occur.</li>
-					<li><a href="./classes/lines.html"><code>Qminder.lines</code></a>: List, create or remove lines in a location.</li>
-					<li><a href="./classes/locations.html"><code>Qminder.locations</code></a>: Get information about the current location.</li>
-					<li><a href="./classes/tickets.html"><code>Qminder.tickets</code></a>: Query visitor data, search for visitors, modify visitor properties, put
-					them back in the queue, automatically label your visitors and more.</li>
-					<li><a href="./classes/users.html"><code>Qminder.users</code></a>: Create and manage users, their permissions and user information.</li>
-					<li><a href="./classes/webhooks.html"><code>Qminder.webhooks</code></a>: Create and remove webhooks.</li>
-				</ul>
-				<a href="#example" id="example" style="color: inherit; text-decoration: none;">
-					<h2>Example</h2>
-				</a>
-				<p>An example Web project has been included under <a href="https://github.com/Qminder/javascript-api/tree/master/examples/list_of_locations"><code>examples/list_of_locations</code></a>.</p>
-				<p>Another example for Node.js has been included in <a href="https://github.com/Qminder/javascript-api/blob/master/examples/search-tickets.js"><code>examples/search-tickets.js</code></a>.</p>
-				<p>Some example GraphQL queries have been included in <a href="https://github.com/Qminder/javascript-api/tree/master/examples/graphql/"><code>examples/graphql</code></a>.</p>
-			</div>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Enumerations</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum"><a href="enums/ConnectionStatus.html" class="tsd-kind-icon">Connection<wbr>Status</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Classes</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-class"><a href="classes/devices.html" class="tsd-kind-icon">devices</a></li>
+								<li class="tsd-kind-class"><a href="classes/lines.html" class="tsd-kind-icon">lines</a></li>
+								<li class="tsd-kind-class"><a href="classes/locations.html" class="tsd-kind-icon">locations</a></li>
+								<li class="tsd-kind-class"><a href="classes/tickets.html" class="tsd-kind-icon">tickets</a></li>
+								<li class="tsd-kind-class"><a href="classes/users.html" class="tsd-kind-icon">users</a></li>
+								<li class="tsd-kind-class"><a href="classes/webhooks.html" class="tsd-kind-icon">webhooks</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface"><a href="interfaces/Desk.html" class="tsd-kind-icon">Desk</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/Device.html" class="tsd-kind-icon">Device</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/Line.html" class="tsd-kind-icon">Line</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/Location.html" class="tsd-kind-icon">Location</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/Ticket.html" class="tsd-kind-icon">Ticket</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/User.html" class="tsd-kind-icon">User</a></li>
+								<li class="tsd-kind-interface"><a href="interfaces/Webhook.html" class="tsd-kind-icon">Webhook</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property"><a href="modules.html#ApiBase" class="tsd-kind-icon">Api<wbr>Base</a></li>
+								<li class="tsd-kind-property"><a href="modules.html#graphql" class="tsd-kind-icon">graphql</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function"><a href="modules.html#setKey" class="tsd-kind-icon">set<wbr>Key</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property">
+					<a name="ApiBase" class="tsd-anchor"></a>
+					<h3>Api<wbr>Base</h3>
+					<div class="tsd-signature tsd-kind-icon">Api<wbr>Base<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">ApiBase</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property">
+					<a name="graphql" class="tsd-anchor"></a>
+					<h3>graphql</h3>
+					<div class="tsd-signature tsd-kind-icon">graphql<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">GraphQLService</span></div>
+					<aside class="tsd-sources">
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function">
+					<a name="setKey" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> set<wbr>Key</h3>
+					<ul class="tsd-signatures tsd-kind-function">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Key<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/qminder-api.ts#L52">qminder-api.ts:52</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Set the Qminder API key.</p>
+								</div>
+								<p>This function sets the API key and enables you to use the API methods.</p>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>the Qminder API key</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 			<nav class="tsd-navigation primary">
 				<ul>
-					<li class=" ">
+					<li class="current ">
 						<a href="modules.html">Exports</a>
 					</li>
 				</ul>
