@@ -60,12 +60,6 @@ describe('UserService', function () {
       });
     });
 
-    it('returns a list of Qminder.User objects', function () {
-      const allAreInstances = usersReply.every(
-        (user: unknown) => user instanceof Qminder.User,
-      );
-      expect(allAreInstances).toBeTruthy();
-    });
     it('returns the right user IDs', function () {
       const returnedIds = usersReply.map((user: Qminder.User) => user.id);
       const groundTruth = USERS.map((user) => user.id);
@@ -115,7 +109,10 @@ describe('UserService', function () {
     // Qminder.users.create(userdata)
 
     it('Sends the user roles as a JSON array', function () {
-      const user = new Qminder.User({
+      const user: Omit<
+        Qminder.User,
+        'id' | 'desk' | 'selectedLocation' | 'picture'
+      > = {
         email: 'test@qminder.com',
         firstName: 'Jon',
         lastName: 'Snow',
@@ -131,7 +128,7 @@ describe('UserService', function () {
             location: 1235,
           },
         ],
-      } as any);
+      };
 
       Qminder.users.create(user);
       expect(
@@ -163,24 +160,9 @@ describe('UserService', function () {
 
     it('Works with a list of Lines', function () {
       const lines = [
-        new Qminder.Line({
-          id: 1,
-          name: 'Test',
-          color: '#fff',
-          disabled: false,
-        }),
-        new Qminder.Line({
-          id: 2,
-          name: 'Test',
-          color: '#fff',
-          disabled: false,
-        }),
-        new Qminder.Line({
-          id: 3,
-          name: 'Test',
-          color: '#f00',
-          disabled: false,
-        }),
+        { id: 1, name: 'Test', color: '#fff', disabled: false },
+        { id: 2, name: 'Test', color: '#fff', disabled: false },
+        { id: 3, name: 'Test', color: '#f00', disabled: false },
       ];
 
       Qminder.users.setLines(123, lines);
@@ -192,23 +174,13 @@ describe('UserService', function () {
       ).toBeTruthy();
     });
 
-    it('Breaks when trying to use inconsistent types', function () {
+    it('Does not break when mixing IDs and objects', function () {
       const lines = [
         1,
-        new Qminder.Line({
-          id: 2,
-          name: 'Test',
-          color: '#fff',
-          disabled: false,
-        }),
-        new Qminder.Line({
-          id: 3,
-          name: 'Test',
-          color: '#f00',
-          disabled: false,
-        }),
+        { id: 2, name: 'Test', color: '#fff', disabled: false },
+        { id: 3, name: 'Test', color: '#f00', disabled: false },
       ];
-      expect(() => Qminder.users.setLines(123, lines)).toThrow();
+      expect(() => Qminder.users.setLines(123, lines)).not.toThrow();
     });
   });
 });

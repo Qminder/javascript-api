@@ -1,5 +1,6 @@
 import ApiBase from '../api-base';
 import Device from '../model/Device';
+import { extractId, IdOrObject } from '../util/id-or-object';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder
@@ -24,15 +25,13 @@ export default class DeviceService {
    * something went wrong.
    * @throws Error if the TV ID is not provided.
    */
-  static details(tv: Device | number): Promise<Device> {
-    const tvId: any = tv instanceof Device ? tv.id : tv;
-    if (!tvId || typeof tvId !== 'number') {
+  static details(tv: IdOrObject<Device>): Promise<Device> {
+    const tvId = extractId(tv);
+    if (!tvId || typeof tvId !== 'string') {
       throw new Error('TV ID not provided');
     }
 
-    return ApiBase.request(`tv/${tvId}`).then(
-      (response: Device) => new Device(response),
-    );
+    return ApiBase.request(`tv/${tvId}`) as Promise<Device>;
   }
 
   /**
@@ -54,9 +53,9 @@ export default class DeviceService {
    * @returns a Promise that resolves to the new TV details, or rejects if something went wrong.
    * @throws Error if the TV ID and TV name are not provided.
    */
-  static edit(tv: Device | number, newName: string): Promise<Device> {
-    const tvId: any = tv instanceof Device ? tv.id : tv;
-    if (!tvId || typeof tvId !== 'number') {
+  static edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
+    const tvId = extractId(tv);
+    if (!tvId || typeof tvId !== 'string') {
       throw new Error('TV ID not provided');
     }
     if (!newName || typeof newName !== 'string') {
@@ -89,9 +88,9 @@ export default class DeviceService {
    * @returns A promise that resolves when successful and rejects when something went wrong.
    * @throws Error if the TV ID is not provided
    */
-  static remove(tv: Device | number): Promise<{ statusCode: number }> {
-    const tvId: any = tv instanceof Device ? tv.id : tv;
-    if (!tvId || typeof tvId !== 'number') {
+  static remove(tv: IdOrObject<Device>): Promise<{ statusCode: number }> {
+    const tvId = extractId(tv);
+    if (!tvId || typeof tvId !== 'string') {
       throw new Error('TV ID not provided');
     }
     return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{

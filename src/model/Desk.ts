@@ -10,7 +10,7 @@
  *
  * Desks need to be enabled in a Location to be able to use them.
  */
-class Desk {
+export default interface Desk {
   /**
    * The desk's ID.
    *
@@ -24,34 +24,4 @@ class Desk {
    * For numbered desks, this desk is a string containing the number, for example "4".
    */
   name: string;
-
-  /**
-   * Construct a new Desk object.
-   * This can be done by passing the constructor an object with the keys { id, name }, or by
-   * passing just the desk's number.
-   *
-   * For example:
-   *
-   *     const desk = new Desk({ id: 5, name: "Service" });
-   *     console.log(desk.id);   // 5
-   *     console.log(desk.name); // "Service"
-   *
-   *     const desk = new Desk(5);
-   *     console.log(desk.id); // 5
-   *     console.log(desk.name); // "5"
-   *
-   * @param properties either the desk number, or the desk's properties in one object. Even another
-   * Desk works as a properties object.
-   */
-  constructor(properties: number | Desk) {
-    if (typeof properties === 'number') {
-      this.id = properties;
-      this.name = `${properties}`;
-    } else {
-      Object.assign(this, properties);
-      this.id = properties.id || parseInt(properties.name, 10);
-    }
-  }
 }
-
-export default Desk;

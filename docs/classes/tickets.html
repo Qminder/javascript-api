@@ -91,7 +91,7 @@
 </code></pre>
 					<p>This service additionally includes methods to work with visitors, such as call them to
 					service, add custom business-specific labels or mark them as served.</p>
-					<p>For example, to call the next visitor in the lines 12345, 12346 and 12347, use <a href="tickets.html#callNext">callNext</a>.</p>
+					<p>For example, to call the next visitor in the lines 12345, 12346 and 12347, use {@link callNext}.</p>
 					<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
 
@@ -126,7 +126,6 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#addLabel" class="tsd-kind-icon">add<wbr>Label</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#assignToUser" class="tsd-kind-icon">assign<wbr>ToUser</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#call" class="tsd-kind-icon">call</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#callNext" class="tsd-kind-icon">call<wbr>Next</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#cancel" class="tsd-kind-icon">cancel</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#count" class="tsd-kind-icon">count</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="tickets.html#create" class="tsd-kind-icon">create</a></li>
@@ -173,13 +172,13 @@
 					<a name="addLabel" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> add<wbr>Label</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">add<wbr>Label<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;no action&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Label<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;no action&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L961">services/TicketService.ts:961</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L835">services/TicketService.ts:835</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -202,7 +201,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to label. The ticket ID can be used instead of the Ticket object.</p>
 									</div>
@@ -214,7 +213,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The user that is adding the label.</p>
 									</div>
@@ -230,13 +229,13 @@
 					<a name="assignToUser" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> assign<wbr>ToUser</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">assign<wbr>ToUser<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, assigner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a>, assignee<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">assign<wbr>ToUser<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, assigner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span>, assignee<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1089">services/TicketService.ts:1089</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L950">services/TicketService.ts:950</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -264,20 +263,20 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to assign to an user. The ticket ID can be used instead of the
 										Ticket object.</p>
 									</div>
 								</li>
 								<li>
-									<h5>assigner: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>assigner: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The user who is assigning.</p>
 									</div>
 								</li>
 								<li>
-									<h5>assignee: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>assignee: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The user who will take the ticket.</p>
 									</div>
@@ -292,13 +291,13 @@
 					<a name="call" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> call</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">call<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a>, desk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Desk.html" class="tsd-signature-type" data-tsd-kind="Class">Desk</a>, keepActiveTicketsOpen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">call<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, desk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, keepActiveTicketsOpen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L705">services/TicketService.ts:705</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L619">services/TicketService.ts:619</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,13 +314,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to call. The ticket ID can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the user that is calling the ticket. This parameter is not needed if
 											Qminder.setKey was called with an API key belonging to a specific User. The user ID can be
@@ -329,7 +328,7 @@
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> desk: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Desk.html" class="tsd-signature-type" data-tsd-kind="Class">Desk</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> desk: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the desk to call the ticket into. The desk ID can be used instead of the Desk
 										object.</p>
@@ -343,67 +342,8 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>the ticket that was just called</p>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
-					<a name="callNext" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagStatic">Static</span> call<wbr>Next</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">call<wbr>Next<span class="tsd-signature-symbol">(</span>lines<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a>, desk<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Desk.html" class="tsd-signature-type" data-tsd-kind="Class">Desk</a>, keepActiveTicketsOpen<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">&gt;</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L607">services/TicketService.ts:607</a></li>
-								</ul>
-							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Call the next ticket to service, from a set of lines.</p>
-								</div>
-								<p>To decide which ticket is next in line to be served, all waiting tickets from the selected
-									lines are put in chronological order, making sure to keep &quot;orderAfter&quot; in mind, and the first
-								ticket is called.</p>
-								<p>By default, allows only one ticket to be in the &#39;CALLED&#39; state, and marks other &#39;CALLED&#39;
-								tickets as served.</p>
-								<p>Multiple tickets can be called by setting <code>keepActiveTicketsOpen</code> to true.</p>
-							</div>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>lines: <span class="tsd-signature-symbol">(</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">[]</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>the list of lines to search for tickets</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>the user that is calling the ticket. This is needed when the API is used with
-										the account API key, instead of a user-specific API key.</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> desk: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Desk.html" class="tsd-signature-type" data-tsd-kind="Class">Desk</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>the desk to call the user to.</p>
-									</div>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> keepActiveTicketsOpen: <span class="tsd-signature-type">boolean</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>if tickets are currently being served, do not mark them served
-										when calling a new ticket. This allows calling multiple tickets at the same time.</p>
-									</div>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>a Promise that resolves to the ticket that was called, resolves to null if there
-							was no ticket to call, and rejects if something went wrong.</p>
 						</li>
 					</ul>
 				</section>
@@ -411,13 +351,13 @@
 					<a name="cancel" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> cancel</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">cancel<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">cancel<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L852">services/TicketService.ts:852</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L740">services/TicketService.ts:740</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -431,13 +371,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to cancel. The ticket ID can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
-									<h5>user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The user who canceled the ticket. This is a mandatory argument.</p>
 									</div>
@@ -459,7 +399,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L390">services/TicketService.ts:390</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L413">services/TicketService.ts:413</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -496,13 +436,13 @@
 					<a name="create" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> create</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;source&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;firstName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;lastName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;phoneNumber&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;email&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;extra&quot;</span><span class="tsd-signature-symbol">&gt;</span>, idempotencyKey<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">create<span class="tsd-signature-symbol">(</span>line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span>, ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;source&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;firstName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;lastName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;phoneNumber&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;email&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;extra&quot;</span><span class="tsd-signature-symbol">&gt;</span>, idempotencyKey<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L462">services/TicketService.ts:462</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L491">services/TicketService.ts:491</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -553,13 +493,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket&#39;s desired line</p>
 									</div>
 								</li>
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;source&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;firstName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;lastName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;phoneNumber&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;email&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;extra&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;source&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;firstName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;lastName&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;phoneNumber&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;email&quot;</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">&quot;extra&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket data</p>
 									</div>
@@ -571,7 +511,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>a promise that resolves to the ID of the new ticket.</p>
 						</li>
 					</ul>
@@ -580,13 +520,13 @@
 					<a name="details" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> details</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">details<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L512">services/TicketService.ts:512</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L541">services/TicketService.ts:541</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -612,13 +552,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the Ticket to query, by ticket ID or Ticket object</p>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>the ticket&#39;s details as a Ticket object</p>
 						</li>
 					</ul>
@@ -627,13 +567,13 @@
 					<a name="edit" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> edit</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">edit<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, changes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TicketEditingParameters</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">edit<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, changes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TicketEditingParameters</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L550">services/TicketService.ts:550</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L567">services/TicketService.ts:567</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -662,7 +602,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket to edit, either the Ticket object or the ticket&#39;s ID</p>
 									</div>
@@ -683,13 +623,13 @@
 					<a name="forward" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> forward</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">forward<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">forward<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, line<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1454">services/TicketService.ts:1454</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1278">services/TicketService.ts:1278</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -730,19 +670,19 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket to forward, as ticket ID or ticket object</p>
 									</div>
 								</li>
 								<li>
-									<h5>line: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="Line.html" class="tsd-signature-type" data-tsd-kind="Class">Line</a></h5>
+									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the visitor&#39;s next line, as line ID or line object.</p>
 									</div>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the user who forwarded the ticket, as user ID or user object. Only necessary
 										if forwarding on behalf of a User.</p>
@@ -758,13 +698,13 @@
 					<a name="getEstimatedTimeOfService" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Estimated<wbr>Time<wbr>OfService</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Estimated<wbr>Time<wbr>OfService<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Estimated<wbr>Time<wbr>OfService<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1280">services/TicketService.ts:1280</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1118">services/TicketService.ts:1118</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -786,7 +726,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket to get the estimated time for. The ticket ID can be used instead
 										of the Ticket object.</p>
@@ -802,13 +742,13 @@
 					<a name="getMessages" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> get<wbr>Messages</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Messages<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TicketMessage</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Messages<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TicketMessage</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1328">services/TicketService.ts:1328</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1164">services/TicketService.ts:1164</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -845,7 +785,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to get the message list for. The ticket ID can be used instead
 										of the Ticket object.</p>
@@ -861,13 +801,13 @@
 					<a name="markNoShow" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> mark<wbr>NoShow</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">mark<wbr>NoShow<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">mark<wbr>NoShow<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L823">services/TicketService.ts:823</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L713">services/TicketService.ts:713</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -880,7 +820,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to mark no-show. The ticket ID can be used instead of the Ticket
 										object.</p>
@@ -897,13 +837,13 @@
 					<a name="markServed" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> mark<wbr>Served</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">mark<wbr>Served<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">mark<wbr>Served<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L794">services/TicketService.ts:794</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L687">services/TicketService.ts:687</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -916,7 +856,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to mark served. The ticket ID can be used instead of the Ticket
 										object.</p>
@@ -932,13 +872,13 @@
 					<a name="recall" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> recall</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">recall<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">recall<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L767">services/TicketService.ts:767</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L663">services/TicketService.ts:663</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -951,7 +891,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to recall. The ticket ID can be used instead of the Ticket object.</p>
 									</div>
@@ -966,13 +906,13 @@
 					<a name="removeLabel" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> remove<wbr>Label</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">remove<wbr>Label<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">remove<wbr>Label<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, label<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1023">services/TicketService.ts:1023</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L889">services/TicketService.ts:889</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -994,7 +934,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to remove a label from. The ticket ID can be used instead of the
 										Ticket object.</p>
@@ -1007,7 +947,7 @@
 									</div>
 								</li>
 								<li>
-									<h5>user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The user who is removing the label, for example 9500</p>
 									</div>
@@ -1023,13 +963,13 @@
 					<a name="reorder" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> reorder</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">reorder<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, afterTicket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">reorder<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, afterTicket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1229">services/TicketService.ts:1229</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1070">services/TicketService.ts:1070</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1053,14 +993,14 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to reorder. The ticket ID can be used instead
 										of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
-									<h5>afterTicket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>afterTicket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket to reorder after, or null if reordering to be first in the
 										queue.</p>
@@ -1076,13 +1016,13 @@
 					<a name="returnToQueue" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> return<wbr>ToQueue</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">return<wbr>ToQueue<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DesiredQueuePosition</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">return<wbr>ToQueue<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span>, position<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">DesiredQueuePosition</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L900">services/TicketService.ts:900</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L780">services/TicketService.ts:780</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1098,14 +1038,14 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to return to queue. The ticket ID can be used instead of the
 										Ticket object.</p>
 									</div>
 								</li>
 								<li>
-									<h5>user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The user that returned the ticket to the queue. The user ID can be used instead
 										of the User object.</p>
@@ -1129,13 +1069,13 @@
 					<a name="search" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> search</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">search<span class="tsd-signature-symbol">(</span>search<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TicketSearchCriteria</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">search<span class="tsd-signature-symbol">(</span>search<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TicketSearchCriteria</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L346">services/TicketService.ts:346</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L364">services/TicketService.ts:364</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1184,7 +1124,7 @@
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>A promise that resolves to matching tickets.</p>
 						</li>
 					</ul>
@@ -1193,13 +1133,13 @@
 					<a name="sendMessage" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> send<wbr>Message</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">send<wbr>Message<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">send<wbr>Message<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, user<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1377">services/TicketService.ts:1377</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1210">services/TicketService.ts:1210</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1232,7 +1172,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to send a message to. The user ID may also be used.</p>
 									</div>
@@ -1244,7 +1184,7 @@
 									</div>
 								</li>
 								<li>
-									<h5>user: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the user who is sending the message. The user ID may also be used.</p>
 									</div>
@@ -1260,13 +1200,13 @@
 					<a name="setExternalData" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> set<wbr>External<wbr>Data</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>External<wbr>Data<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">set<wbr>External<wbr>Data<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, title<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1515">services/TicketService.ts:1515</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1320">services/TicketService.ts:1320</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1277,7 +1217,7 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>The ticket to add external data to. The ticket ID can be used instead of the Ticket object.</p>
 									</div>
@@ -1310,13 +1250,13 @@
 					<a name="unassign" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagStatic">Static</span> unassign</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
-						<li class="tsd-signature tsd-kind-icon">unassign<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span>, unassigner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">unassign<span class="tsd-signature-symbol">(</span>ticket<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span>, unassigner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">&quot;success&quot;</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/3d48218/src/services/TicketService.ts#L1176">services/TicketService.ts:1176</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1021">services/TicketService.ts:1021</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1358,13 +1298,13 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>ticket: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="Ticket.html" class="tsd-signature-type" data-tsd-kind="Class">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the ticket object or the ticket&#39;s ID that needs un-assignment</p>
 									</div>
 								</li>
 								<li>
-									<h5>unassigner: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><a href="User.html" class="tsd-signature-type" data-tsd-kind="Class">User</a></h5>
+									<h5>unassigner: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the User who un-assigned the ticket, for example current user&#39;s ID</p>
 									</div>
@@ -1392,27 +1332,6 @@
 						<a href="../enums/ConnectionStatus.html" class="tsd-kind-icon">Connection<wbr>Status</a>
 					</li>
 					<li class=" tsd-kind-class">
-						<a href="Desk.html" class="tsd-kind-icon">Desk</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="Device.html" class="tsd-kind-icon">Device</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="Line.html" class="tsd-kind-icon">Line</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="Location.html" class="tsd-kind-icon">Location</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="Ticket.html" class="tsd-kind-icon">Ticket</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="User.html" class="tsd-kind-icon">User</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="Webhook.html" class="tsd-kind-icon">Webhook</a>
-					</li>
-					<li class=" tsd-kind-class">
 						<a href="devices.html" class="tsd-kind-icon">devices</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -1437,9 +1356,6 @@
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="tickets.html#call" class="tsd-kind-icon">call</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
-								<a href="tickets.html#callNext" class="tsd-kind-icon">call<wbr>Next</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
 								<a href="tickets.html#cancel" class="tsd-kind-icon">cancel</a>
@@ -1505,6 +1421,27 @@
 					<li class=" tsd-kind-class">
 						<a href="webhooks.html" class="tsd-kind-icon">webhooks</a>
 					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/Desk.html" class="tsd-kind-icon">Desk</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/Device.html" class="tsd-kind-icon">Device</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/Line.html" class="tsd-kind-icon">Line</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/Location.html" class="tsd-kind-icon">Location</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/Ticket.html" class="tsd-kind-icon">Ticket</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/User.html" class="tsd-kind-icon">User</a>
+					</li>
+					<li class=" tsd-kind-interface">
+						<a href="../interfaces/Webhook.html" class="tsd-kind-icon">Webhook</a>
+					</li>
 					<li class=" tsd-kind-property">
 						<a href="../modules.html#ApiBase" class="tsd-kind-icon">Api<wbr>Base</a>
 					</li>
@@ -1524,9 +1461,10 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+			</ul>
+			<ul class="tsd-legend">
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>

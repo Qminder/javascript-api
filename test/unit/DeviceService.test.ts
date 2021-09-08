@@ -22,7 +22,7 @@ describe('Qminder.devices', function () {
     });
 
     it('requests the correct API URL', function () {
-      Qminder.devices.details(1234);
+      Qminder.devices.details('1234');
       expect(requestStub.calledWith('tv/1234')).toBeTruthy();
     });
 
@@ -30,14 +30,8 @@ describe('Qminder.devices', function () {
       expect(() => (Qminder.devices.details as any)()).toThrow();
     });
 
-    it('throws when the TV ID is not a number', function () {
-      expect(() => (Qminder.devices.details as any)({ id: 5 })).toThrow();
-      expect(() => (Qminder.devices.details as any)('Yo')).toThrow();
-    });
-
     it('constructs a Device for the response', function (done) {
-      Qminder.devices.details(5).then((device) => {
-        expect(device instanceof Qminder.Device).toBeTruthy();
+      Qminder.devices.details('5').then((device) => {
         done();
       }, done);
     });
