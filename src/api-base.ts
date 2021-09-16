@@ -1,4 +1,5 @@
 import * as fetch from 'isomorphic-fetch';
+import { GraphQLApiError } from './util/errors';
 
 type HTTPMethod =
   | 'GET'
@@ -205,7 +206,8 @@ class ApiBase {
    * @param query required: GraphQL query, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
-   * @throws when the API key is missing or invalid
+   * @throws when the API key is missing or invalid, or when errors in the
+   * response are found
    */
   queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
     if (!this.apiKey) {
@@ -226,6 +228,9 @@ class ApiBase {
       .then((responseJson: any) => {
         if (responseJson.errorMessage) {
           throw new Error(responseJson.errorMessage);
+        }
+        if (responseJson.errors && responseJson.errors.length > 0) {
+          throw new GraphQLApiError(responseJson.errors);
         }
         return responseJson as Promise<GraphqlResponse>;
       });
