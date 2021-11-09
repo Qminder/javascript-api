@@ -3,6 +3,6 @@
  * downstream listeners about various events such as ticket creation or location changes.
  */
 export default interface Webhook {
-  id: number;
+  id: string;
   secret: string;
 }

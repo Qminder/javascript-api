@@ -66,8 +66,8 @@ class WebhooksService {
    * ```javascript
    * import * as Qminder from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
-   * // Example 1. Remove the webhook with ID 123
-   * await Qminder.webhooks.remove(123);
+   * // Example 1. Remove the webhook with ID '5924b157-313b-4829-bcb4-ced968347f0c'
+   * await Qminder.webhooks.remove('5924b157-313b-4829-bcb4-ced968347f0c');
    * // Example 2. Create and remove a webhook
    * const url = 'https://example.com/webhooks/qminder';
    * const webhook = await Qminder.webhooks.create(url);
