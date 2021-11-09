@@ -288,7 +288,7 @@ export class GraphQLService {
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             this.subscriptions.forEach((subscription) => {
               const payload = {
-                query: `subscription { ${subscription.query} }`,
+                query: subscription.query,
               };
               const msg = JSON.stringify({
                 id: subscription.id,
