@@ -56,9 +56,11 @@ describe('Qminder.webhooks', function () {
       expect(() => Qminder.webhooks.remove('fefefe' as any)).not.toThrow();
     });
     it('supports webhook objects', () => {
-      expect(() => Qminder.webhooks.remove({ id: 666 })).not.toThrow();
+      expect(() =>
+        Qminder.webhooks.remove({ id: '4c6c94e3-9f26-4b76-8440-d2bc0ebf537c' }),
+      ).not.toThrow();
     });
-    it('throws and does not send a HTTP request if the ID is not a number', function () {
+    it('throws and does not send a HTTP request if the ID is not provided in the object', function () {
       expect(() => Qminder.webhooks.remove({ x: 5 } as any)).toThrow();
       expect(requestStub.called).toBeFalsy();
     });
