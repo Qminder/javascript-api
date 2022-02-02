@@ -6,6 +6,7 @@ import Location from './model/Location';
 import Ticket from './model/Ticket';
 import User from './model/User';
 import Webhook from './model/Webhook';
+import { ClientError } from './model/ClientError';
 
 // Import services
 import ApiBase from './api-base';
@@ -18,7 +19,17 @@ import WebhooksService from './services/WebhooksService';
 import GraphQLService, { ConnectionStatus } from './services/GraphQLService';
 
 // Export all data structures
-export { ApiBase, Desk, Device, Line, Location, Ticket, User, Webhook };
+export {
+  ApiBase,
+  Desk,
+  Device,
+  Line,
+  Location,
+  Ticket,
+  User,
+  Webhook,
+  ClientError,
+};
 
 // Export misc structures
 export { ConnectionStatus };

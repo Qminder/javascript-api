@@ -1,5 +1,6 @@
 import * as fetch from 'isomorphic-fetch';
 import { GraphQLApiError } from './util/errors';
+import { ClientError } from './model/ClientError';
 
 type HTTPMethod =
   | 'GET'
@@ -42,35 +43,47 @@ export interface GraphqlResponse {
   data?: object;
 }
 
-export interface GraphqlBatchResponse {
-  statusCode: number;
-  errors: GraphqlError[];
-  data: {
-    errors: GraphqlError[];
-    data?: object;
-  }[];
-}
-
-interface ErrorResponse {
+interface LegacyErrorResponse {
   statusCode: number;
   message: string;
   developerMessage: string;
+}
+
+interface ClientErrorResponse {
+  statusCode: number;
+  error: {
+    [key: string]: string;
+  };
 }
 
 export interface SuccessResponse {
   statusCode: number;
 }
 
-type ApiResponse<T = {}> = ErrorResponse | (SuccessResponse & T);
+type ApiResponse<T = {}> = LegacyErrorResponse | ClientErrorResponse | (SuccessResponse & T);
 
 /**
  * Returns true if an ApiResponse is an Error response, usable as a type guard.
  * @param response an ApiResponse to narrow down
- * @returns true if the ApiResponse is an ErrorResponse, false if it is a SuccessResponse
+ * @returns true if the ApiResponse is an LegacyErrorResponse, false if it is a SuccessResponse
  * @hidden
  */
-function responseIsError(response: ApiResponse): response is ErrorResponse {
-  return response.statusCode && Math.floor(response.statusCode / 100) !== 2;
+function responseIsLegacyError(response: ApiResponse): response is LegacyErrorResponse {
+  return response.statusCode
+      && Math.floor(response.statusCode / 100) !== 2
+      && !Object.prototype.hasOwnProperty.call(response, 'error');
+}
+
+/**
+ * Returns true if an ApiResponse is an ClientErrorResponse response, usable as a type guard.
+ * @param response an ApiResponse to narrow down
+ * @returns true if the ApiResponse is an ClientErrorResponse, false if it is a SuccessResponse
+ * @hidden
+ */
+function responseIsClientError(response: ApiResponse): response is ClientErrorResponse {
+  return response.statusCode
+      && Math.floor(response.statusCode / 100) == 4
+      && Object.prototype.hasOwnProperty.call(response, 'error');
 }
 
 // NOTE: this is defined because the RequestInit type has issues
@@ -187,15 +200,20 @@ class ApiBase {
     }
 
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
-      .then((response: Response) => response.json())
-      .then((responseJson: ApiResponse) => {
-        if (responseIsError(responseJson)) {
-          throw new Error(
-            responseJson.developerMessage || responseJson.message,
-          );
-        }
-        return responseJson;
-      });
+        .then((response: Response) => response.json())
+        .then((responseJson: ApiResponse) => {
+          if (responseIsLegacyError(responseJson)) {
+            throw new Error(
+                responseJson.developerMessage || responseJson.message,
+            );
+          }
+          if (responseIsClientError(responseJson)) {
+            const key = Object.keys(responseJson.error)[0];
+            const message = Object.values(responseJson.error)[0];
+            throw new ClientError(key, message);
+          }
+          return responseJson;
+        });
   }
 
   /**
