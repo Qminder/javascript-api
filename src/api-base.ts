@@ -92,7 +92,7 @@ function responseIsClientError(
 ): response is ClientErrorResponse {
   return (
     response.statusCode &&
-    Math.floor(response.statusCode / 100) == 4 &&
+    Math.floor(response.statusCode / 100) === 4 &&
     Object.prototype.hasOwnProperty.call(response, 'error')
   );
 }
