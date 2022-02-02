@@ -306,16 +306,13 @@ describe('ApiBase', function () {
 
       fetchSpy.onCall(0).resolves(new MockResponse(response));
 
-      Qminder.ApiBase.request('TEST')
-          .then(
-              () => done(new Error('Should have errored')),
-              (error: GraphQLApiError) => {
-                expect(error).toEqual(
-                    new Error('Oh, snap!'),
-                );
-                done();
-              },
-          );
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
+      );
     });
 
     it('handles legacy error response (developerMessage)', (done) => {
@@ -328,16 +325,13 @@ describe('ApiBase', function () {
 
       fetchSpy.onCall(0).resolves(new MockResponse(response));
 
-      Qminder.ApiBase.request('TEST')
-          .then(
-              () => done(new Error('Should have errored')),
-              (error: GraphQLApiError) => {
-                expect(error).toEqual(
-                    new Error('Oh, snap!'),
-                );
-                done();
-              },
-          );
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
+      );
     });
 
     it('handles client error', (done) => {
@@ -345,21 +339,20 @@ describe('ApiBase', function () {
 
       const response: any = {
         statusCode: 409,
-        error: {'email': 'Email already in use'},
+        error: { email: 'Email already in use' },
       };
 
       fetchSpy.onCall(0).resolves(new MockResponse(response));
 
-      Qminder.ApiBase.request('TEST')
-          .then(
-              () => done(new Error('Should have errored')),
-              (error: GraphQLApiError) => {
-                expect(error).toEqual(
-                    new ClientError('email', 'Email already in use'),
-                );
-                done();
-              },
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(
+            new ClientError('email', 'Email already in use'),
           );
+          done();
+        },
+      );
     });
   });
 

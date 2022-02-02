@@ -60,7 +60,10 @@ export interface SuccessResponse {
   statusCode: number;
 }
 
-type ApiResponse<T = {}> = LegacyErrorResponse | ClientErrorResponse | (SuccessResponse & T);
+type ApiResponse<T = {}> =
+  | LegacyErrorResponse
+  | ClientErrorResponse
+  | (SuccessResponse & T);
 
 /**
  * Returns true if an ApiResponse is an Error response, usable as a type guard.
@@ -68,10 +71,14 @@ type ApiResponse<T = {}> = LegacyErrorResponse | ClientErrorResponse | (SuccessR
  * @returns true if the ApiResponse is an LegacyErrorResponse, false if it is a SuccessResponse
  * @hidden
  */
-function responseIsLegacyError(response: ApiResponse): response is LegacyErrorResponse {
-  return response.statusCode
-      && Math.floor(response.statusCode / 100) !== 2
-      && !Object.prototype.hasOwnProperty.call(response, 'error');
+function responseIsLegacyError(
+  response: ApiResponse,
+): response is LegacyErrorResponse {
+  return (
+    response.statusCode &&
+    Math.floor(response.statusCode / 100) !== 2 &&
+    !Object.prototype.hasOwnProperty.call(response, 'error')
+  );
 }
 
 /**
@@ -80,10 +87,14 @@ function responseIsLegacyError(response: ApiResponse): response is LegacyErrorRe
  * @returns true if the ApiResponse is an ClientErrorResponse, false if it is a SuccessResponse
  * @hidden
  */
-function responseIsClientError(response: ApiResponse): response is ClientErrorResponse {
-  return response.statusCode
-      && Math.floor(response.statusCode / 100) == 4
-      && Object.prototype.hasOwnProperty.call(response, 'error');
+function responseIsClientError(
+  response: ApiResponse,
+): response is ClientErrorResponse {
+  return (
+    response.statusCode &&
+    Math.floor(response.statusCode / 100) == 4 &&
+    Object.prototype.hasOwnProperty.call(response, 'error')
+  );
 }
 
 // NOTE: this is defined because the RequestInit type has issues
@@ -200,20 +211,20 @@ class ApiBase {
     }
 
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
-        .then((response: Response) => response.json())
-        .then((responseJson: ApiResponse) => {
-          if (responseIsLegacyError(responseJson)) {
-            throw new Error(
-                responseJson.developerMessage || responseJson.message,
-            );
-          }
-          if (responseIsClientError(responseJson)) {
-            const key = Object.keys(responseJson.error)[0];
-            const message = Object.values(responseJson.error)[0];
-            throw new ClientError(key, message);
-          }
-          return responseJson;
-        });
+      .then((response: Response) => response.json())
+      .then((responseJson: ApiResponse) => {
+        if (responseIsLegacyError(responseJson)) {
+          throw new Error(
+            responseJson.developerMessage || responseJson.message,
+          );
+        }
+        if (responseIsClientError(responseJson)) {
+          const key = Object.keys(responseJson.error)[0];
+          const message = Object.values(responseJson.error)[0];
+          throw new ClientError(key, message);
+        }
+        return responseJson;
+      });
   }
 
   /**
