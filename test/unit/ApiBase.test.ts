@@ -1,6 +1,7 @@
 import * as sinon from 'sinon';
 import * as Qminder from '../../src/qminder-api';
 import { GraphQLApiError } from '../../src/util/errors';
+import { ClientError } from '../../src/model/ClientError';
 
 /**
  * A function that generates an object with the following keys:
@@ -293,6 +294,65 @@ describe('ApiBase', function () {
       const url = 'https://api.qminder.com/v1/TEST';
 
       expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
+    });
+
+    it('handles legacy error response (message)', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        statusCode: 409,
+        message: 'Oh, snap!',
+      };
+
+      fetchSpy.onCall(0).resolves(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
+      );
+    });
+
+    it('handles legacy error response (developerMessage)', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        statusCode: 409,
+        developerMessage: 'Oh, snap!',
+      };
+
+      fetchSpy.onCall(0).resolves(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
+      );
+    });
+
+    it('handles client error', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        statusCode: 409,
+        error: { email: 'Email already in use' },
+      };
+
+      fetchSpy.onCall(0).resolves(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(
+            new ClientError('email', 'Email already in use'),
+          );
+          done();
+        },
+      );
     });
   });
 
