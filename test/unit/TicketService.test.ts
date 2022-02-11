@@ -795,6 +795,29 @@ describe('TicketService', function () {
         requestStub.calledWith('lines/1/ticket', sinon.match({})),
       ).toBeTruthy();
     });
+    it('sends last name if it is not null', function () {
+      const ticket: any = {
+        firstName: 'Jane',
+        lastName: 'Smith',
+      };
+      Qminder.tickets.create(1, ticket);
+      Qminder.tickets.create(1, ticket);
+      expect(
+          requestStub.calledWith('lines/1/ticket', sinon.match.has('lastName', 'Smith')),
+      ).toBeTruthy();
+    });
+    it('does not send last name if it is null', function () {
+      const ticket: any = {
+        firstName: 'Jane',
+        lastName: null,
+      };
+      Qminder.tickets.create(1, ticket);
+      expect(
+          requestStub.calledWith('lines/1/ticket', sinon.match((value) => {
+            return value.lastName === undefined;
+          })),
+      ).toBeTruthy();
+    });
     it('sends email address if it is defined', function () {
       const ticketWithEmail: any = {
         firstName: 'Jane',
