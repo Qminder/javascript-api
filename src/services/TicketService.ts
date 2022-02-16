@@ -500,6 +500,9 @@ export default class TicketService {
     const lineId = extractId(line);
 
     const converted: any = { ...ticket };
+    if (converted.lastName === null) {
+      delete converted.lastName;
+    }
     if (converted.extra) {
       converted.extra = JSON.stringify(converted.extra);
     }
