@@ -887,8 +887,8 @@ export default class TicketService {
    * if something else went wrong.
    */
   static setLabels(
-      ticket: IdOrObject<Ticket>,
-      labels: Array<string>,
+    ticket: IdOrObject<Ticket>,
+    labels: Array<string>,
   ): Promise<'success'> {
     const ticketId = extractId(ticket);
 
@@ -900,12 +900,12 @@ export default class TicketService {
       throw new Error('No labels given.');
     }
 
-    const body: { labels: Array<string>; } = { labels };
+    const body: { labels: Array<string> } = { labels };
 
     return ApiBase.request(
-        `tickets/${ticketId}/labels`,
-        JSON.stringify(body),
-        'PUT',
+      `tickets/${ticketId}/labels`,
+      JSON.stringify(body),
+      'PUT',
     ).then((response: { result: 'success' }) => response.result);
   }
 

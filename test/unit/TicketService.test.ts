@@ -1474,11 +1474,11 @@ describe('TicketService', function () {
     it('calls the right URL with PUT and parameters', function (done) {
       Qminder.tickets.setLabels(12345, ['Label 1', 'Label 2']).then(() => {
         expect(
-            requestStub.calledWith(
-                'tickets/12345/labels',
-                JSON.stringify({ labels: ['Label 1', 'Label 2'] }),
-                'PUT',
-            ),
+          requestStub.calledWith(
+            'tickets/12345/labels',
+            JSON.stringify({ labels: ['Label 1', 'Label 2'] }),
+            'PUT',
+          ),
         ).toBeTruthy();
         done();
       });
