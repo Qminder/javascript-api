@@ -865,6 +865,53 @@ export default class TicketService {
   }
 
   /**
+   * Set ticket labels.
+   *
+   * It sets ticket's labels list. Clerks can see the labels in the Service View,
+   * and can save additional details about the visitor into the label list. Labels are
+   * automatically colored.
+   *
+   * For example:
+   *
+   * ```javascript
+   * import * as Qminder from 'qminder-api';
+   * Qminder.setKey('API_KEY_HERE');
+   *
+   * const ticket = 591050;
+   * const labels = ["Has documents", "Has invitation"];
+   * await Qminder.tickets.setLabels(ticket, labels, myUserId);
+   * ```
+   * @param ticket  The ticket. The ticket ID can be used instead of the Ticket object.
+   * @param labels  The labels to set, eg. ["Has documents", "Has invitation"]
+   * @returns promise that resolves to 'success' if all was OK, and rejects
+   * if something else went wrong.
+   */
+  static setLabels(
+      ticket: IdOrObject<Ticket>,
+      labels: Array<string>,
+  ): Promise<'success'> {
+    const ticketId = extractId(ticket);
+
+    if (!ticketId || typeof ticketId !== 'string') {
+      throw new Error(ERROR_NO_TICKET_ID);
+    }
+
+    if (!labels) {
+      throw new Error('No labels given.');
+    }
+
+    const body: { labels: Array<string>; } = {
+      labels: labels
+    };
+
+    return ApiBase.request(
+        `tickets/${ticketId}/labels`,
+        JSON.stringify(body),
+        'PUT',
+    ).then((response: { result: 'success' }) => response.result);
+  }
+
+  /**
    * Remove a label from the ticket.
    *
    * This API call removes the label from a ticket's label list, by the label's text.

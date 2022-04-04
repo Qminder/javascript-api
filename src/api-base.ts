@@ -191,7 +191,9 @@ class ApiBase {
     };
 
     if (data) {
-      init.method = 'POST';
+      if (method !== 'PUT') {
+        init.method = 'POST';
+      }
       if (typeof File !== 'undefined' && data instanceof File) {
         init.body = data;
         init.headers['Content-Type'] = data.type;
