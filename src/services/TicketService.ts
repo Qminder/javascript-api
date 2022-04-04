@@ -900,9 +900,7 @@ export default class TicketService {
       throw new Error('No labels given.');
     }
 
-    const body: { labels: Array<string>; } = {
-      labels: labels
-    };
+    const body: { labels: Array<string>; } = { labels };
 
     return ApiBase.request(
         `tickets/${ticketId}/labels`,
