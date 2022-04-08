@@ -1465,6 +1465,31 @@ describe('TicketService', function () {
       ).not.toThrow();
     });
   });
+  describe('setLabels()', function () {
+    beforeEach(function () {
+      requestStub.onCall(0).resolves({
+        result: 'success',
+      });
+    });
+    it('calls the right URL with PUT and parameters', function (done) {
+      Qminder.tickets.setLabels(12345, ['Label 1', 'Label 2']).then(() => {
+        expect(
+          requestStub.calledWith(
+            'tickets/12345/labels',
+            JSON.stringify({ labels: ['Label 1', 'Label 2'] }),
+            'PUT',
+          ),
+        ).toBeTruthy();
+        done();
+      });
+    });
+    it('throws an error when the ticket ID is missing', function () {
+      expect(() => (Qminder.tickets.setLabels as any)()).toThrow();
+    });
+    it('throws an error when the labels are missing', function () {
+      expect(() => (Qminder.tickets.setLabels as any)(12345)).toThrow();
+    });
+  });
   describe('removeLabel()', function () {
     beforeEach(function () {
       requestStub.onCall(0).resolves({
