@@ -238,7 +238,7 @@ export class GraphQLService {
     }
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
     this.fetchTemporaryApiKey().then((tempApiKey: string) => {
-      this.createSocketConnection(tempApiKey)
+      this.createSocketConnection(tempApiKey);
     });
   }
 
@@ -253,8 +253,8 @@ export class GraphQLService {
     };
 
     return this.fetch(`https://${this.apiServer}/${url}`, body)
-        .then((response: Response) => response.json())
-        .then((responseJson: { key: string }) => responseJson.key);
+      .then((response: Response) => response.json())
+      .then((responseJson: { key: string }) => responseJson.key);
   }
 
   private createSocketConnection(tempApiKey: string) {

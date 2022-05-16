@@ -3,15 +3,15 @@
 import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
 import { gql } from 'graphql-tag';
+import * as sinon from 'sinon';
 import { GraphQLService } from '../../src/services/GraphQLService';
-import * as sinon from "sinon";
 
 jest.mock('isomorphic-ws');
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphQLService;
   let fetchSpy: sinon.SinonStub;
-  const keyValue = "temporary_api_key";
+  const keyValue = 'temporary_api_key';
   const FAKE_RESPONSE = {
     json() {
       return { key: keyValue };
@@ -43,8 +43,12 @@ describe('GraphQL subscriptions', () => {
       graphqlService.subscribe('subscription { baba }').subscribe(() => {});
       // wait until the web socket connection was opened
       await new Promise(process.nextTick);
-      expect(fetchSpy.args[0][0]).toBe("https://api.qminder.com/graphql/connection-key")
-      expect(WebSocket).toBeCalledWith(`wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`)
+      expect(fetchSpy.args[0][0]).toBe(
+        'https://api.qminder.com/graphql/connection-key',
+      );
+      expect(WebSocket).toBeCalledWith(
+        `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
+      );
     });
 
     it('fires an Apollo compliant subscribe event, when a new subscriber comes in', async () => {
