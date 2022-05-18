@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import * as WebSocket from 'isomorphic-ws';
+import * as fetch from 'isomorphic-fetch';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
@@ -67,6 +68,8 @@ export class GraphQLService {
 
   private apiServer: string;
 
+  fetch: Function;
+
   private socket: WebSocket = null;
 
   private connectionStatus: ConnectionStatus;
@@ -87,8 +90,12 @@ export class GraphQLService {
   private connectionRetries = 0;
 
   constructor() {
-    this.setServer('wss://api.qminder.com:443');
+    this.setServer('api.qminder.com');
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+    this.fetch = fetch;
+    if (typeof (fetch as any).default === 'function') {
+      this.fetch = (fetch as any).default as Function;
+    }
   }
 
   /**
@@ -230,8 +237,29 @@ export class GraphQLService {
       return;
     }
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
+    this.fetchTemporaryApiKey().then((tempApiKey: string) => {
+      this.createSocketConnection(tempApiKey);
+    });
+  }
+
+  private fetchTemporaryApiKey(): Promise<string> {
+    const url = 'graphql/connection-key';
+    const body = {
+      method: 'POST',
+      mode: 'cors',
+      headers: {
+        'X-Qminder-REST-API-Key': this.apiKey,
+      },
+    };
+
+    return this.fetch(`https://${this.apiServer}/${url}`, body)
+      .then((response: Response) => response.json())
+      .then((responseJson: { key: string }) => responseJson.key);
+  }
+
+  private createSocketConnection(tempApiKey: string) {
     const socket = new WebSocket(
-      `${this.apiServer}/graphql/subscription?rest-api-key=${this.apiKey}`,
+      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${tempApiKey}`,
     );
     this.socket = socket;
 
