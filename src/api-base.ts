@@ -35,10 +35,8 @@ interface GraphqlError {
  * The shape of the JSON response from the GraphQL API.
  */
 export interface GraphqlResponse {
-  /** If all went well, 200. The response may still have errors. */
-  statusCode: number;
   /** An array that contains any GraphQL errors. */
-  errors: GraphqlError[];
+  errors?: GraphqlError[];
   /** If the data was loaded without any errors, contains the requested object. */
   data?: object;
 }
