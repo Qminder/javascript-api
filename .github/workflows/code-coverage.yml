@@ -13,7 +13,7 @@ jobs:
           node-version: 14.x
       - run: yarn install --frozen-lockfile
       - run: yarn jest --coverage
-      - uses: codecov/codecov-action@v1
+      - uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           fail_ci_if_error: true
