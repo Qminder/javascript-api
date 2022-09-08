@@ -194,7 +194,7 @@ interface TicketSearchCriteria {
  * They should either be the first in line, somewhere in the center (when they will be back
  * soon), or the last in line.
  */
-type DesiredQueuePosition = 'FIRST' | 'MIDDLE' | 'LAST';
+type DesiredQueuePosition = 'FIRST' | 'LAST';
 
 /** This error is thrown when a Line ID is not passed to the API method, or when its type is not
  *  a number.
@@ -766,7 +766,7 @@ export default class TicketService {
    *
    * Returning a ticket to the queue makes the ticket's status go back to 'NEW', a Ticket
    * Created event will fire, and the ticket will appear back in the queue. The ticket can be
-   * ordered to be first in queue, somewhere in the middle, or the last in queue, depending on
+   * ordered to be first in queue or the last in queue, depending on
    * the reason the visitor needs to go back to the queue and when they will be back for service.
    *
    * Only called tickets (with the status 'CALLED') can be returned to the queue.
@@ -775,8 +775,7 @@ export default class TicketService {
    * Ticket object.
    * @param user  The user that returned the ticket to the queue. The user ID can be used instead
    * of the User object.
-   * @param position  The position where to place the returned ticket. Either 'FIRST', 'MIDDLE'
-   * or 'LAST'.
+   * @param position  The position where to place the returned ticket. Either 'FIRST' or 'LAST'.
    * @returns {Promise<string>} a promise that resolves to "success" if it worked, and rejects
    * if something went wrong.
    */
