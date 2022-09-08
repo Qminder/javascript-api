@@ -39,7 +39,7 @@
     "@babel/preset-env": "7.19.0",
     "@qminder/eslint-config": "0.0.3",
     "@types/jest": "26.0.24",
-    "@types/node": "16.11.52",
+    "@types/node": "16.11.58",
     "@types/sinon": "10.0.13",
     "@typescript-eslint/eslint-plugin": "4.33.0",
     "@typescript-eslint/parser": "4.33.0",
