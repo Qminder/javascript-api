@@ -191,8 +191,7 @@ interface TicketSearchCriteria {
 
 /**
  * Represents a position in the queue where the ticket should go when returning it to the queue.
- * They should either be the first in line, somewhere in the center (when they will be back
- * soon), or the last in line.
+ * They should either be the first in line or the last in line.
  */
 type DesiredQueuePosition = 'FIRST' | 'LAST';
 
