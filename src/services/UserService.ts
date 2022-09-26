@@ -128,31 +128,6 @@ export default class UserService {
   }
 
   /**
-   * Adds a new role to the user.
-   * Roles are the method by which Qminder controls who can access which location, at what
-   * access level.
-   * For example, a User who has administrator privileges can access and modify all location
-   * settings, for all locations.
-   * However, a User who has clerk privileges can log in and serve visitors, but not modify any
-   * location settings nor see service statistics.
-   *
-   * @param user the User that you want to add roles to
-   * @param role the UserRole you want to add for the user.
-   * @return a Promise that resolves when the role adding succeeded, and
-   * rejects when something went wrong.
-   */
-  static addRole(
-    user: IdOrObject<User>,
-    role: UserRole,
-  ): Promise<{ success: true }> {
-    const userId = extractId(user);
-
-    return ApiBase.request(`users/${userId}/roles`, role, 'POST') as Promise<{
-      success: true;
-    }>;
-  }
-
-  /**
    * Set the user's currently selected Desk.
    *
    * Calls the HTTP API `POST /v1/users/<ID>/desk`
