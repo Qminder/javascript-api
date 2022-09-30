@@ -247,6 +247,7 @@ class ApiBase {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
+        'Content-Type': 'application/json',
       },
       mode: 'cors',
       body: JSON.stringify(query),
