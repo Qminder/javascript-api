@@ -35,7 +35,7 @@
   "types": "build/qminder-api.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
-    "@babel/core": "7.19.3",
+    "@babel/core": "7.19.6",
     "@babel/preset-env": "7.19.4",
     "@qminder/eslint-config": "0.0.3",
     "@types/jest": "26.0.24",
