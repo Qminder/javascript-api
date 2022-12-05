@@ -1060,7 +1060,7 @@ export default class TicketService {
     const request = {
       position: `${position}`,
       user: `${userId}`,
-    }
+    };
 
     return ApiBase.request(
       `tickets/${ticketId}/returntoqueue`,
