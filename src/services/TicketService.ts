@@ -1057,16 +1057,13 @@ export default class TicketService {
       throw new Error(ERROR_NO_QUEUE_POSITION);
     }
 
-    const request = {
+    const body = {
       position: `${position}`,
-      user: `${userId}`,
+      user: userId,
     };
-
-    return ApiBase.request(
-      `tickets/${ticketId}/returntoqueue`,
-      request,
-      'POST',
-    ).then((response: { result: 'success' }) => response.result);
+    return ApiBase.request(`tickets/${ticketId}/returntoqueue`, body, 'POST').then(
+          (response: { result: 'success' }) => response.result,
+    );
   }
 
   /**

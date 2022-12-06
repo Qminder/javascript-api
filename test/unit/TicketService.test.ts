@@ -1606,12 +1606,12 @@ describe('TicketService', function () {
         result: 'success',
       });
     });
-    it('calls the right URL with GET', function (done) {
+    it('calls the right URL with POST and parameters', function (done) {
       Qminder.tickets.returnToQueue(12345, 111, 'FIRST').then(() => {
         expect(
           requestStub.calledWith(
             'tickets/12345/returntoqueue',
-              { user: 111, position: 'FIRST' },
+              { position: 'FIRST', user: 111 },
             'POST',
           ),
         ).toBeTruthy();
