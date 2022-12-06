@@ -1,5 +1,7 @@
 import * as sinon from 'sinon';
 import * as Qminder from '../../src/qminder-api';
+import { GraphQLApiError } from '../../src/util/errors';
+import { ClientError } from '../../src/model/ClientError';
 
 /**
  * A function that generates an object with the following keys:
@@ -293,6 +295,65 @@ describe('ApiBase', function () {
 
       expect(fetchSpy.calledWithExactly(url, requestMatcher)).toBe(true);
     });
+
+    it('handles legacy error response (message)', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        statusCode: 409,
+        message: 'Oh, snap!',
+      };
+
+      fetchSpy.onCall(0).resolves(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
+      );
+    });
+
+    it('handles legacy error response (developerMessage)', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        statusCode: 409,
+        developerMessage: 'Oh, snap!',
+      };
+
+      fetchSpy.onCall(0).resolves(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
+      );
+    });
+
+    it('handles client error', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        statusCode: 409,
+        error: { email: 'Email already in use' },
+      };
+
+      fetchSpy.onCall(0).resolves(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(
+            new ClientError('email', 'Email already in use'),
+          );
+          done();
+        },
+      );
+    });
   });
 
   describe('queryGraph()', function () {
@@ -365,23 +426,26 @@ describe('ApiBase', function () {
         done();
       });
     });
-    it('does not throw an error when getting errors as response', function (done) {
+    it('throws an error when getting errors as response', function (done) {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
-      expect(() =>
-        Qminder.ApiBase.queryGraph(ME_ID.request).then(
-          () => done(),
-          () => done(new Error('QueryGraph should not have thrown')),
-        ),
-      ).not.toThrow();
+      Qminder.ApiBase.queryGraph(ME_ID.request).then(
+        () => done(new Error('QueryGraph should have thrown an error')),
+        () => done(),
+      );
     });
     it('resolves with response, even if response has errors', function (done) {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.onCall(0).resolves(new MockResponse(ERROR_UNDEFINED_FIELD));
-      Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
-        expect(response).toEqual(ERROR_UNDEFINED_FIELD);
-        done();
-      });
+      Qminder.ApiBase.queryGraph(ME_ID.request).then(
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(
+            new GraphQLApiError(ERROR_UNDEFINED_FIELD.errors),
+          );
+          done();
+        },
+      );
     });
   });
 });

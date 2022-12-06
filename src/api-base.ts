@@ -1,4 +1,6 @@
 import * as fetch from 'isomorphic-fetch';
+import { GraphQLApiError } from './util/errors';
+import { ClientError } from './model/ClientError';
 
 type HTTPMethod =
   | 'GET'
@@ -33,43 +35,64 @@ interface GraphqlError {
  * The shape of the JSON response from the GraphQL API.
  */
 export interface GraphqlResponse {
-  /** If all went well, 200. The response may still have errors. */
-  statusCode: number;
   /** An array that contains any GraphQL errors. */
-  errors: GraphqlError[];
+  errors?: GraphqlError[];
   /** If the data was loaded without any errors, contains the requested object. */
   data?: object;
 }
 
-export interface GraphqlBatchResponse {
-  statusCode: number;
-  errors: GraphqlError[];
-  data: {
-    errors: GraphqlError[];
-    data?: object;
-  }[];
-}
-
-interface ErrorResponse {
+interface LegacyErrorResponse {
   statusCode: number;
   message: string;
   developerMessage: string;
 }
 
-interface SuccessResponse {
+interface ClientErrorResponse {
+  statusCode: number;
+  error: {
+    [key: string]: string;
+  };
+}
+
+export interface SuccessResponse {
   statusCode: number;
 }
 
-type ApiResponse = ErrorResponse | SuccessResponse;
+type ApiResponse<T = {}> =
+  | LegacyErrorResponse
+  | ClientErrorResponse
+  | (SuccessResponse & T);
 
 /**
  * Returns true if an ApiResponse is an Error response, usable as a type guard.
  * @param response an ApiResponse to narrow down
- * @returns true if the ApiResponse is an ErrorResponse, false if it is a SuccessResponse
+ * @returns true if the ApiResponse is an LegacyErrorResponse, false if it is a SuccessResponse
  * @hidden
  */
-function responseIsError(response: ApiResponse): response is ErrorResponse {
-  return response.statusCode && Math.floor(response.statusCode / 100) !== 2;
+function responseIsLegacyError(
+  response: ApiResponse,
+): response is LegacyErrorResponse {
+  return (
+    response.statusCode &&
+    Math.floor(response.statusCode / 100) !== 2 &&
+    !Object.prototype.hasOwnProperty.call(response, 'error')
+  );
+}
+
+/**
+ * Returns true if an ApiResponse is an ClientErrorResponse response, usable as a type guard.
+ * @param response an ApiResponse to narrow down
+ * @returns true if the ApiResponse is an ClientErrorResponse, false if it is a SuccessResponse
+ * @hidden
+ */
+function responseIsClientError(
+  response: ApiResponse,
+): response is ClientErrorResponse {
+  return (
+    response.statusCode &&
+    Math.floor(response.statusCode / 100) === 4 &&
+    Object.prototype.hasOwnProperty.call(response, 'error')
+  );
 }
 
 // NOTE: this is defined because the RequestInit type has issues
@@ -147,12 +170,12 @@ class ApiBase {
    * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
-  request(
+  request<T = {}>(
     url: string,
     data?: object | File | string,
     method: HTTPMethod = 'GET',
     idempotencyKey?: string | number,
-  ): Promise<object> {
+  ): Promise<T> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -166,7 +189,9 @@ class ApiBase {
     };
 
     if (data) {
-      init.method = 'POST';
+      if (method !== 'PUT') {
+        init.method = 'POST';
+      }
       if (typeof File !== 'undefined' && data instanceof File) {
         init.body = data;
         init.headers['Content-Type'] = data.type;
@@ -188,10 +213,15 @@ class ApiBase {
     return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
       .then((response: Response) => response.json())
       .then((responseJson: ApiResponse) => {
-        if (responseIsError(responseJson)) {
+        if (responseIsLegacyError(responseJson)) {
           throw new Error(
             responseJson.developerMessage || responseJson.message,
           );
+        }
+        if (responseIsClientError(responseJson)) {
+          const key = Object.keys(responseJson.error)[0];
+          const message = Object.values(responseJson.error)[0];
+          throw new ClientError(key, message);
         }
         return responseJson;
       });
@@ -205,7 +235,8 @@ class ApiBase {
    * @param query required: GraphQL query, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
    * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
-   * @throws when the API key is missing or invalid
+   * @throws when the API key is missing or invalid, or when errors in the
+   * response are found
    */
   queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
     if (!this.apiKey) {
@@ -216,6 +247,7 @@ class ApiBase {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
+        'Content-Type': 'application/json',
       },
       mode: 'cors',
       body: JSON.stringify(query),
@@ -226,6 +258,9 @@ class ApiBase {
       .then((responseJson: any) => {
         if (responseJson.errorMessage) {
           throw new Error(responseJson.errorMessage);
+        }
+        if (responseJson.errors && responseJson.errors.length > 0) {
+          throw new GraphQLApiError(responseJson.errors);
         }
         return responseJson as Promise<GraphqlResponse>;
       });

@@ -15,7 +15,7 @@
  * To create a Ticket, call {@link TicketService.create}.
  * To search for tickets, call {@link TicketService.search}.
  */
-class Ticket {
+export default interface Ticket {
   /**
    * This ticket's unique ID. For example, 14995020
    */
@@ -151,14 +151,6 @@ class Ticket {
    * @see TicketMessage
    */
   messages?: TicketMessage[];
-
-  constructor(properties: number | string | Ticket) {
-    if (typeof properties !== 'object') {
-      this.id = properties;
-    } else {
-      Object.assign(this, properties);
-    }
-  }
 }
 
 /**
@@ -201,11 +193,11 @@ class Ticket {
  * { "title": "Twitter Page", "value": "Open", "url": "https://www.twitter.com/" }
  * ```
  */
-export type TicketExtra = {
+export interface TicketExtra {
   title: string;
   value: string;
   url?: string;
-};
+}
 
 /**
  * Represents an Interaction attached to a ticket.
@@ -219,11 +211,11 @@ export type TicketExtra = {
  * The interaction contains the start time and end time of the interaction as an ISO8601 string,
  * and the Line ID that the Ticket was in, during the specified time.
  */
-export type TicketInteraction = {
+export interface TicketInteraction {
   start: string;
   end: string;
   line: number;
-};
+}
 
 /**
  * Represents a ticket label.
@@ -235,10 +227,10 @@ export type TicketInteraction = {
  *
  * For example: { "value": "Has documents", "color": "00FF00" }
  */
-export type TicketLabel = {
+export interface TicketLabel {
   value: string;
   color: string;
-};
+}
 
 /**
  * Represents an SMS message sent to or received from a visitor.
@@ -288,7 +280,7 @@ export type TicketLabel = {
  * }
  * ```
  */
-export type TicketMessage = {
+export interface TicketMessage {
   created: {
     date: string;
   };
@@ -296,7 +288,7 @@ export type TicketMessage = {
   type: 'INCOMING' | 'OUTGOING';
   status: 'NEW' | 'SENT' | 'DELIVERED' | 'INVALID_NUMBER';
   userId?: number;
-};
+}
 
 /**
  * Represents the current status of a ticket.
@@ -315,5 +307,3 @@ export type TicketStatus =
   | 'CANCELLED_BY_CLERK'
   | 'NOSHOW'
   | 'SERVED';
-
-export default Ticket;

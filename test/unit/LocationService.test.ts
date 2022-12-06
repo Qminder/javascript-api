@@ -65,9 +65,6 @@ describe('Qminder.locations', function () {
     it('resolves with an Array of Location objects', function (done) {
       Qminder.locations.list().then((locations) => {
         expect(locations instanceof Array).toBeTruthy();
-        expect(
-          locations.every((location) => location instanceof Qminder.Location),
-        ).toBeTruthy();
         done();
       });
     });
@@ -118,10 +115,6 @@ describe('Qminder.locations', function () {
       });
     });
 
-    it('resolves with a Location instance', function () {
-      expect(locationDetailsReply instanceof Qminder.Location).toBeTruthy();
-    });
-
     it('resolves with correct ID', function () {
       expect(locationDetailsReply.id).toBe(673);
     });
@@ -142,18 +135,10 @@ describe('Qminder.locations', function () {
         .withArgs(`locations/${LOCATION_ID}/desks`)
         .resolves({ desks: DESKS });
 
-      Qminder.locations
-        .getDesks(new Qminder.Location(LOCATION_ID))
-        .then((desks) => {
-          desksReply = desks;
-          done();
-        });
-    });
-    it('returns a list of Qminder.Desk objects', function () {
-      const allAreInstances = desksReply.every(
-        (desk: unknown) => desk instanceof Qminder.Desk,
-      );
-      expect(allAreInstances).toBeTruthy();
+      Qminder.locations.getDesks({ id: LOCATION_ID }).then((desks) => {
+        desksReply = desks;
+        done();
+      });
     });
     it('returns the right desks', function () {
       const returned = desksReply.map((desk: Qminder.Desk) => desk.name);

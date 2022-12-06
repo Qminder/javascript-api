@@ -2,7 +2,7 @@
  * The Device object represents a physical device that is paired to Qminder, such as an iPad or
  * Apple TV or custom TV screen.
  */
-export default class Device {
+export default interface Device {
   /** The unique identifier for this device, for example 1342 */
   id: string;
   /**
@@ -50,15 +50,4 @@ export default class Device {
     level: number;
     charging: boolean;
   };
-
-  /**
-   * Construct a new Device object based on a properties object.
-   * @example
-   * const device = new Device({ id: 5, name: 'My iPad', type: 'NAME_DEVICE' });
-   * @param properties an object with the Device's properties.
-   * @constructor
-   */
-  constructor(properties: Device) {
-    Object.assign(this, properties);
-  }
 }

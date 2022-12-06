@@ -42,13 +42,6 @@ describe('LineService', function () {
       });
     });
 
-    it('returns a list of Qminder.Line objects', function () {
-      const allAreInstances = reply.every(
-        (line: unknown) => line instanceof Qminder.Line,
-      );
-      expect(allAreInstances).toBeTruthy();
-    });
-
     it('returns the right line IDs', function () {
       const lines = reply.map((x: Qminder.Line) => x.id);
       const correctLines = LINES.map((x) => x.id);
@@ -90,7 +83,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      Qminder.lines.update(new Qminder.Line(line));
+      Qminder.lines.update(line);
     });
 
     it('fails to update a line due to lacking ID', function () {
@@ -100,7 +93,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      expect(() => Qminder.lines.update(new Qminder.Line(line))).toThrowError();
+      expect(() => Qminder.lines.update(line)).toThrowError();
     });
 
     it('fails to update a line due to lacking name', function () {
@@ -141,7 +134,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      Qminder.lines.enable(new Qminder.Line(line));
+      Qminder.lines.enable(line);
     });
 
     it('fails to enable a line due to no ID', function () {
@@ -155,7 +148,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      expect(() => Qminder.lines.enable(new Qminder.Line(line))).toThrowError();
+      expect(() => Qminder.lines.enable(line)).toThrowError();
     });
   });
 
@@ -176,7 +169,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      Qminder.lines.disable(new Qminder.Line(line));
+      Qminder.lines.disable(line);
     });
 
     it('fails to disable a line due to no ID', function () {
@@ -190,9 +183,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      expect(() =>
-        Qminder.lines.disable(new Qminder.Line(line)),
-      ).toThrowError();
+      expect(() => Qminder.lines.disable(line)).toThrowError();
     });
   });
 
@@ -213,7 +204,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      Qminder.lines.archive(new Qminder.Line(line));
+      Qminder.lines.archive(line);
     });
 
     it('fails to archive a line due to no ID', function () {
@@ -227,9 +218,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      expect(() =>
-        Qminder.lines.archive(new Qminder.Line(line)),
-      ).toThrowError();
+      expect(() => Qminder.lines.archive(line)).toThrowError();
     });
   });
 
@@ -250,7 +239,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      Qminder.lines.unarchive(new Qminder.Line(line));
+      Qminder.lines.unarchive(line);
     });
 
     it('fails to unarchive a line due to no ID', function () {
@@ -264,9 +253,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      expect(() =>
-        Qminder.lines.unarchive(new Qminder.Line(line)),
-      ).toThrowError();
+      expect(() => Qminder.lines.unarchive(line)).toThrowError();
     });
   });
 
@@ -287,7 +274,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      Qminder.lines.delete(new Qminder.Line(line));
+      Qminder.lines.delete(line);
     });
 
     it('fails to delete a line due to no ID', function () {
@@ -301,7 +288,7 @@ describe('LineService', function () {
         color: '#39cccc',
         disabled: false,
       };
-      expect(() => Qminder.lines.delete(new Qminder.Line(line))).toThrowError();
+      expect(() => Qminder.lines.delete(line)).toThrowError();
     });
   });
 });

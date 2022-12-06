@@ -8,7 +8,7 @@
  * Lines additionally have a color, which is used in statistics views to show a common color for
  * one line.
  */
-class Line {
+export default interface Line {
   /**
    * The line's ID.
    * This is the unique identifier for a given Line.
@@ -30,43 +30,4 @@ class Line {
    * Sign-In App and on the Service View.
    */
   disabled: boolean;
-
-  /**
-   * Creates a new Line object.
-   *
-   * For example:
-   *
-   *    const line = new Line(5);
-   *    console.log(line.id);       // 5
-   *    console.log(line.name);     // undefined
-   *
-   * @param {number} properties the line's ID. Doesn't fill the other properties automatically.
-   */
-  /**
-   * Creates a new Line object, filling in all of the provided fields. You can also copy another
-   * Line by passing it to the constructor.
-   *
-   * For example:
-   *
-   *    const line = new Line({ id: 12345, name: 'Service', disabled: false });
-   *    console.log(line.id);       // 12345
-   *    console.log(line.name);     // 'Service'
-   *    console.log(line.disabled); // false
-   *
-   * @param {Line} properties the line, or a plain object describing a line.
-   * @param {number} properties.id the Line ID
-   * @param {string} properties.name the line's name
-   * @param {string} properties.color the line's color as a hexadecimal RGB color, ie "#00ff00"
-   * @param {boolean} properties.disabled true if the line is currently disabled (unusable, but not
-   * deleted)
-   */
-  constructor(properties: number | Line) {
-    if (typeof properties === 'number') {
-      this.id = properties;
-    } else {
-      Object.assign(this, properties);
-    }
-  }
 }
-
-export default Line;

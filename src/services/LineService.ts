@@ -1,6 +1,11 @@
 import Line from '../model/Line';
 import Location from '../model/Location';
 import ApiBase from '../api-base';
+import { extractId, IdOrObject } from '../util/id-or-object';
+
+type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
+type LineUpdateParameters = Pick<Line, 'id'> &
+  Partial<Pick<Line, 'color' | 'name'>>;
 
 /**
  * The LineService allows you to access data about Lines in Qminder.
@@ -32,15 +37,13 @@ export default class LineService {
    * @param location the Location or its ID
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
-  static list(location: Location | number): Promise<Array<Line>> {
-    const locationId: any =
-      location instanceof Location ? location.id : location;
-    if (!locationId || typeof locationId !== 'number') {
+  static list(location: IdOrObject<Location>): Promise<Line[]> {
+    const locationId = extractId(location);
+    if (!locationId || typeof locationId !== 'string') {
       throw new Error('Location ID invalid or missing.');
     }
     return ApiBase.request(`locations/${locationId}/lines`).then(
-      (response: { data: Line[] }) =>
-        response.data.map((line) => new Line(line)),
+      (response: { data: Line[] }) => response.data,
     );
   }
 
@@ -57,14 +60,12 @@ export default class LineService {
    * @param line The line to get detailed info about, or the line's ID.
    * @returns a promise that resolves to the Line object, or rejects if something went wrong.
    */
-  static details(line: Line | number): Promise<Line> {
-    const lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static details(line: IdOrObject<Line>): Promise<Line> {
+    const lineId = extractId(line);
+    if (!lineId) {
       throw new Error('Line ID invalid or missing.');
     }
-    return ApiBase.request(`lines/${lineId}/`).then(
-      (response: Line) => new Line(response),
-    );
+    return ApiBase.request(`lines/${lineId}/`);
   }
 
   /**
@@ -83,10 +84,12 @@ export default class LineService {
    * @returns a Promise that resolves to a new Line object, created according
    * to the parameters.
    */
-  static create(location: Location | number, line: Line): Promise<Line> {
-    const locationId: any =
-      location instanceof Location ? location.id : location;
-    if (!locationId || typeof locationId !== 'number') {
+  static create(
+    location: IdOrObject<Location>,
+    line: LineCreateParameters,
+  ): Promise<Line> {
+    const locationId = extractId(location);
+    if (!locationId || typeof locationId !== 'string') {
       throw new Error('Location ID invalid or missing.');
     }
     if (!line || typeof line !== 'object') {
@@ -117,13 +120,13 @@ export default class LineService {
    * @returns A Promise that resolves when the line was updated, and rejects
    * when something went wrong.
    */
-  static update(line: Line): Promise<any> {
+  static update(line: LineUpdateParameters): Promise<any> {
     if (!line || typeof line !== 'object') {
       throw new Error('Line is invalid or missing.');
     }
 
-    const lineId = line.id;
-    if (!lineId || typeof lineId !== 'number') {
+    const lineId = extractId(line);
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID is invalid or missing.');
     }
 
@@ -155,9 +158,9 @@ export default class LineService {
    * @returns A Promise that resolves when the line was enabled, and rejects
    * when something went wrong.
    */
-  static enable(line: Line | number): Promise<any> {
-    const lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static enable(line: IdOrObject<Line>): Promise<any> {
+    const lineId = extractId(line);
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
     return ApiBase.request(
@@ -181,9 +184,9 @@ export default class LineService {
    * @returns A Promise that resolves when the line was disabled, and rejects
    * when there active tickets in the line or something went wrong.
    */
-  static disable(line: Line | number): Promise<any> {
-    const lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static disable(line: IdOrObject<Line>): Promise<any> {
+    const lineId = extractId(line);
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
     return ApiBase.request(
@@ -209,9 +212,9 @@ export default class LineService {
    * @returns A Promise that resolves when the line was archived, and rejects
    * when something went wrong.
    */
-  static archive(line: Line | number): Promise<any> {
-    const lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static archive(line: IdOrObject<Line>): Promise<any> {
+    const lineId = extractId(line);
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
     return ApiBase.request(
@@ -235,9 +238,10 @@ export default class LineService {
    * @returns A Promise that resolves when the line was unarchived, and rejects
    * when something went wrong.
    */
-  static unarchive(line: Line | number): Promise<any> {
-    const lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static unarchive(line: IdOrObject<Line>): Promise<any> {
+    const lineId = extractId(line);
+
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
     return ApiBase.request(
@@ -263,9 +267,10 @@ export default class LineService {
    * @returns A Promise that resolves when the line was deleted, and rejects
    * when something went wrong.
    */
-  static delete(line: Line | number): Promise<any> {
-    const lineId: any = line instanceof Line ? line.id : line;
-    if (!lineId || typeof lineId !== 'number') {
+  static delete(line: IdOrObject<Line>): Promise<any> {
+    const lineId = extractId(line);
+
+    if (!lineId || typeof lineId !== 'string') {
       throw new Error('Line ID invalid or missing.');
     }
     return ApiBase.request(

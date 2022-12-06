@@ -3,14 +3,25 @@
 import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
 import { gql } from 'graphql-tag';
+import * as sinon from 'sinon';
 import { GraphQLService } from '../../src/services/GraphQLService';
 
 jest.mock('isomorphic-ws');
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphQLService;
+  let fetchSpy: sinon.SinonStub;
+  const keyValue = 'temporary_api_key';
+  const FAKE_RESPONSE = {
+    json() {
+      return { key: keyValue };
+    },
+  };
+
   beforeEach(() => {
     graphqlService = new GraphQLService();
+    fetchSpy = sinon.stub(graphqlService, 'fetch');
+    fetchSpy.onCall(0).resolves(FAKE_RESPONSE);
   });
 
   afterEach(() => {
@@ -28,9 +39,23 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('.subscribe', () => {
-    it('fires an Apollo compliant subscribe event, when a new subscriber comes in', () => {
+    it('fetches temporary api key when a new connection is opened', async () => {
+      graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
+      expect(fetchSpy.args[0][0]).toBe(
+        'https://api.qminder.com/graphql/connection-key',
+      );
+      expect(WebSocket).toBeCalledWith(
+        `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
+      );
+    });
+
+    it('fires an Apollo compliant subscribe event, when a new subscriber comes in', async () => {
       const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
       graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
       expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
@@ -54,7 +79,7 @@ describe('GraphQL subscriptions', () => {
       expect(stopSubscriptionSpy).toHaveBeenCalledWith('1');
     });
 
-    it('works with graphql-tag generated documents', () => {
+    it('works with graphql-tag generated documents', async () => {
       const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
       graphqlService
         .subscribe(
@@ -65,6 +90,8 @@ describe('GraphQL subscriptions', () => {
           `,
         )
         .subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
       expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
@@ -76,7 +103,7 @@ describe('GraphQL subscriptions', () => {
       );
     });
 
-    it('does not automatically add leading "subscription {" and trailing "}"', () => {
+    it('does not automatically add leading "subscription {" and trailing "}"', async () => {
       const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
       graphqlService
         .subscribe(
@@ -87,6 +114,8 @@ describe('GraphQL subscriptions', () => {
           `,
         )
         .subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
       expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
@@ -125,13 +154,15 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('receiving messages', () => {
-    it('when receiving a published message for a subscription that does not exist anymore, it does not throw', () => {
+    it('when receiving a published message for a subscription that does not exist anymore, it does not throw', async () => {
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,
       ).toBe(0);
       const subscription = graphqlService
         .subscribe('subscription { baba }')
         .subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
       subscription.unsubscribe();
       const internalSock = (graphqlService as any).socket;
 
