@@ -1610,8 +1610,8 @@ describe('TicketService', function () {
       Qminder.tickets.returnToQueue(12345, 111, 'FIRST').then(() => {
         expect(
           requestStub.calledWith(
-            'tickets/12345/returntoqueue?position=FIRST&user=111',
-            undefined,
+            'tickets/12345/returntoqueue',
+              { user: 111, position: 'FIRST' },
             'POST',
           ),
         ).toBeTruthy();
