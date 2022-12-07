@@ -1,4 +1,4 @@
-import * as fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 import { GraphQLApiError } from './util/errors';
 import { ClientError } from './model/ClientError';
 
