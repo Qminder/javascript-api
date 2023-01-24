@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
-          node-version: 12.x
+          node-version: 16.x
           always-auth: true
           registry-url: https://registry.npmjs.org
       - name: Install Deps
