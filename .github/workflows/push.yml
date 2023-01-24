@@ -4,7 +4,7 @@ jobs:
   test:
     strategy:
       matrix:
-        node-version: [12.x, 14.x, 15.x, 16.x]
+        node-version: [14.x, 16.x, 18.x]
     name: Test on NodeJS ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     steps:
@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
+          cache: 'yarn'
       - name: Install Deps
         run: yarn install --frozen-lockfile
       - name: Run tests (browser)
@@ -22,9 +23,13 @@ jobs:
         run: yarn pack
   prettier:
     name: Check prettier
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
       - name: Install Deps
         run: |
           yarn install --frozen-lockfile
@@ -36,6 +41,10 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
       - name: Install Deps
         run: |
           yarn install --frozen-lockfile
