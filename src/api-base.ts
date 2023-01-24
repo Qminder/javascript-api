@@ -1,4 +1,4 @@
-import * as fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 import { GraphQLApiError } from './util/errors';
 import { ClientError } from './model/ClientError';
 
@@ -139,9 +139,6 @@ class ApiBase {
    */
   constructor() {
     this.fetch = fetch;
-    if (typeof (fetch as any).default === 'function') {
-      this.fetch = (fetch as any).default as Function;
-    }
     this.setServer('api.qminder.com');
   }
 

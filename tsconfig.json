@@ -1,11 +1,17 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "es2020",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
     "moduleResolution": "node",
-    "target": "es6"
-  }
+    "target": "es2020",
+    "declaration": true,
+    "outDir": "./build/",
+    "allowSyntheticDefaultImports": true
+  },
+  "files": [
+    "./src/qminder-api.ts"
+  ]
 }
