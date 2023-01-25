@@ -5,7 +5,7 @@ import { print } from 'graphql/language/printer';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
+import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
 
 type QueryOrDocument = string | DocumentNode;
 

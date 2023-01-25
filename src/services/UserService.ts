@@ -1,9 +1,13 @@
-import ApiBase, { SuccessResponse } from '../api-base';
-import User, { UserRole } from '../model/User';
-import Desk from '../model/Desk';
-import Location from '../model/Location';
-import Line from '../model/Line';
-import { extractId, extractIdToNumber, IdOrObject } from '../util/id-or-object';
+import ApiBase, { SuccessResponse } from '../api-base.js';
+import User, { UserRole } from '../model/User.js';
+import Desk from '../model/Desk.js';
+import Location from '../model/Location.js';
+import Line from '../model/Line.js';
+import {
+  extractId,
+  extractIdToNumber,
+  IdOrObject,
+} from '../util/id-or-object.js';
 
 /**
  * User Service

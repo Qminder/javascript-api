@@ -1,7 +1,7 @@
-import Location, { InputField } from '../model/Location';
-import ApiBase from '../api-base';
-import Desk from '../model/Desk';
-import { extractId, IdOrObject } from '../util/id-or-object';
+import Location, { InputField } from '../model/Location.js';
+import ApiBase from '../api-base.js';
+import Desk from '../model/Desk.js';
+import { extractId, IdOrObject } from '../util/id-or-object.js';
 
 /** @hidden */
 const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
