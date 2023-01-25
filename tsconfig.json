@@ -7,6 +7,12 @@
     "sourceMap": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "target": "es6"
-  }
+    "target": "es6",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "declaration": true
+  },
+  "include": ["src/**/*"]
 }
