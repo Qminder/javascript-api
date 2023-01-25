@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import WebSocket from 'isomorphic-ws';
-import fetch from 'isomorphic-fetch';
+import fetch from 'cross-fetch';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
