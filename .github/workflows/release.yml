@@ -16,7 +16,7 @@ jobs:
           always-auth: true
           registry-url: https://registry.npmjs.org
       - name: Install Deps
-        run: yarn install --frozen-lockfile --ignore-scripts
+        run: yarn install --immutable --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Library
