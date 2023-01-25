@@ -69,20 +69,18 @@ describe('Qminder.locations', function () {
       });
     });
 
-    it('resolves with correct location data', function (done) {
+    it('resolves with correct location data', async () => {
       const groundTruth = LOCATIONS;
-      Qminder.locations.list().then((locations) => {
-        for (let i = 0; i < locations.length; i++) {
-          expect(locations[i].id).toBe(groundTruth[i].id);
-          expect(locations[i].name).toBe(groundTruth[i].name);
-          expect(locations[i].latitude).toBeCloseTo(groundTruth[i].latitude, 5);
-          expect(locations[i].longitude).toBeCloseTo(
-            groundTruth[i].longitude,
-            5,
-          );
-          done();
-        }
-      });
+      const locations = await Qminder.locations.list();
+      for (let i = 0; i < locations.length; i++) {
+        expect(locations[i].id).toBe(groundTruth[i].id);
+        expect(locations[i].name).toBe(groundTruth[i].name);
+        expect(locations[i].latitude).toBeCloseTo(groundTruth[i].latitude, 5);
+        expect(locations[i].longitude).toBeCloseTo(
+          groundTruth[i].longitude,
+          5,
+        );
+      }
     });
   });
 
