@@ -6,6 +6,7 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "target": "es6"
   }
 }
