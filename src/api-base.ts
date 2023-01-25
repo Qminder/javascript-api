@@ -1,4 +1,4 @@
-import * as fetch from 'isomorphic-fetch';
+import fetch from 'isomorphic-fetch';
 import { GraphQLApiError } from './util/errors';
 import { ClientError } from './model/ClientError';
 
@@ -247,6 +247,7 @@ class ApiBase {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
+        'Content-Type': 'application/json',
       },
       mode: 'cors',
       body: JSON.stringify(query),
