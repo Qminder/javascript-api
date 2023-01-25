@@ -1,12 +1,15 @@
 /* eslint-disable no-empty-function */
 
-import * as WebSocket from 'isomorphic-ws';
-import { Subscriber } from 'rxjs';
 import { gql } from 'graphql-tag';
+import { Subscriber } from 'rxjs';
 import * as sinon from 'sinon';
 import { GraphQLService } from '../../src/services/GraphQLService';
 
-jest.mock('isomorphic-ws');
+jest.mock('isomorphic-ws', () => {
+  return {
+    default: WebSocket,
+  }
+});
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphQLService;
@@ -24,10 +27,6 @@ describe('GraphQL subscriptions', () => {
     fetchSpy.onCall(0).resolves(FAKE_RESPONSE);
   });
 
-  afterEach(() => {
-    (WebSocket as unknown as jest.Mock).mockReset();
-  });
-
   describe('.generateOperationId', () => {
     it('returns an incrementing string', () => {
       expect((graphqlService as any).generateOperationId()).toBe('1');
@@ -41,12 +40,14 @@ describe('GraphQL subscriptions', () => {
   describe('.subscribe', () => {
     it('fetches temporary api key when a new connection is opened', async () => {
       graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+      const spy = jest.fn();
+      graphqlService.WebSocket = spy as any;
       // wait until the web socket connection was opened
       await new Promise(process.nextTick);
       expect(fetchSpy.args[0][0]).toBe(
         'https://api.qminder.com/graphql/connection-key',
       );
-      expect(WebSocket).toBeCalledWith(
+      expect(spy).toBeCalledWith(
         `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
       );
     });
@@ -56,7 +57,6 @@ describe('GraphQL subscriptions', () => {
       graphqlService.subscribe('subscription { baba }').subscribe(() => {});
       // wait until the web socket connection was opened
       await new Promise(process.nextTick);
-      expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
         expect.anything(),
@@ -92,7 +92,6 @@ describe('GraphQL subscriptions', () => {
         .subscribe(() => {});
       // wait until the web socket connection was opened
       await new Promise(process.nextTick);
-      expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
         expect.anything(),
@@ -116,7 +115,6 @@ describe('GraphQL subscriptions', () => {
         .subscribe(() => {});
       // wait until the web socket connection was opened
       await new Promise(process.nextTick);
-      expect(WebSocket).toHaveBeenCalled();
       expect((graphqlService as any).subscriptions.length).toBe(1);
       expect(sendMessageSpy).toHaveBeenCalledWith(
         expect.anything(),

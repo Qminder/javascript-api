@@ -1,10 +1,10 @@
 /* eslint-disable max-classes-per-file */
-import WebSocket from 'isomorphic-ws';
 import fetch from 'cross-fetch';
-import { Observable, Observer, Subject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
+import WebSocket from 'isomorphic-ws';
+import { Observable, Observer, Subject } from 'rxjs';
+import { shareReplay } from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 
 type QueryOrDocument = string | DocumentNode;
@@ -68,6 +68,8 @@ export class GraphQLService {
 
   private apiServer: string;
 
+  WebSocket: typeof WebSocket;
+
   fetch: Function;
 
   private socket: WebSocket = null;
@@ -93,6 +95,7 @@ export class GraphQLService {
     this.setServer('api.qminder.com');
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.fetch = fetch;
+    this.WebSocket = WebSocket;
   }
 
   /**
@@ -255,7 +258,7 @@ export class GraphQLService {
   }
 
   private createSocketConnection(tempApiKey: string) {
-    const socket = new WebSocket(
+    const socket = new this.WebSocket(
       `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${tempApiKey}`,
     );
     this.socket = socket;
