@@ -1,7 +1,7 @@
 /* eslint-disable max-classes-per-file */
 import fetch from 'cross-fetch';
 import { DocumentNode } from 'graphql';
-import { print } from 'graphql/language/printer';
+import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';

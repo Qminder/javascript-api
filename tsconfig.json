@@ -11,7 +11,5 @@
     "outDir": "./build/",
     "allowSyntheticDefaultImports": true
   },
-  "files": [
-    "./src/qminder-api.ts"
-  ]
+  "files": ["./src/qminder-api.ts"]
 }

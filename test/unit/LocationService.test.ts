@@ -76,10 +76,7 @@ describe('Qminder.locations', function () {
         expect(locations[i].id).toBe(groundTruth[i].id);
         expect(locations[i].name).toBe(groundTruth[i].name);
         expect(locations[i].latitude).toBeCloseTo(groundTruth[i].latitude, 5);
-        expect(locations[i].longitude).toBeCloseTo(
-          groundTruth[i].longitude,
-          5,
-        );
+        expect(locations[i].longitude).toBeCloseTo(groundTruth[i].longitude, 5);
       }
     });
   });

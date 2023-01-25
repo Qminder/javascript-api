@@ -8,7 +8,7 @@ import { GraphQLService } from '../../src/services/GraphQLService';
 jest.mock('isomorphic-ws', () => {
   return {
     default: WebSocket,
-  }
+  };
 });
 
 describe('GraphQL subscriptions', () => {
