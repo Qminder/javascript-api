@@ -6,10 +6,17 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "moduleResolution": "node",
-    "target": "es2020",
-    "declaration": true,
-    "outDir": "./build/",
-    "allowSyntheticDefaultImports": true
+    "esModuleInterop": true,
+    "target": "es6",
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "outDir": "build",
+    "rootDir": "src",
+    "declaration": true
   },
-  "files": ["./src/qminder-api.ts"]
+  "include": ["src/**/*"],
+  "files": [
+    "src/qminder-api.ts"
+  ]
 }

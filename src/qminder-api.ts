@@ -77,8 +77,3 @@ export const setServer = (server: string) => {
   ApiBase.setServer(server);
   GraphQLService.setServer(server);
 };
-
-// VERSION is replaced with the version string from package.json during compile time
-declare let VERSION: string;
-/** @hidden */
-export const version = VERSION;
