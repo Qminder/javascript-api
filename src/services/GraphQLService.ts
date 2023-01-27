@@ -271,7 +271,7 @@ export class GraphQLService {
       this.setConnectionStatus(ConnectionStatus.INITIALIZING);
       this.connectionRetries = 0;
       this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
-      
+
       this.startTrackingConnectionInterruptions();
     };
 
@@ -386,28 +386,34 @@ export class GraphQLService {
     this.startTrackingWithNativeEvent();
     this.startTrackingWithKeepAlive();
   }
-  
+
   private startTrackingWithNativeEvent(): void {
     addEventListener('offline', () => {
       this.notifyOfConnectionDrop('native');
     });
   }
-  
+
   private startTrackingWithKeepAlive(): void {
     let timeOut: any;
 
     this.socket.addEventListener('message', (event) => {
       if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
         clearTimeout(timeOut);
-        timeOut = setTimeout(() => this.notifyOfConnectionDrop('keep-alive'), WEBSOCKET_TIMEOUT_IN_MS);
+        timeOut = setTimeout(
+          () => this.notifyOfConnectionDrop('keep-alive'),
+          WEBSOCKET_TIMEOUT_IN_MS,
+        );
       }
     });
 
-    timeOut = setTimeout(() => this.notifyOfConnectionDrop('keep-alive'), WEBSOCKET_TIMEOUT_IN_MS);
+    timeOut = setTimeout(
+      () => this.notifyOfConnectionDrop('keep-alive'),
+      WEBSOCKET_TIMEOUT_IN_MS,
+    );
   }
-  
+
   private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
-    console.warn(`Websocket connection dropped: Picked up by ${ source } event`);
+    console.warn(`Websocket connection dropped: Picked up by ${source} event`);
   }
 }
 
