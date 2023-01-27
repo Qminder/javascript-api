@@ -265,7 +265,7 @@ export class GraphQLService {
       `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${tempApiKey}`,
     );
     this.socket = socket;
-    
+
     socket.onopen = () => {
       console.log('[GraphQL subscription] Connection established!');
       this.setConnectionStatus(ConnectionStatus.INITIALIZING);
