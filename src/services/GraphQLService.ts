@@ -4,8 +4,6 @@ import fetch from 'isomorphic-fetch';
 import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
-import { v4 as uuidv4 } from 'uuid';
-import moment from 'moment';
 import { print } from 'graphql/language/printer';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 
@@ -60,7 +58,6 @@ export enum ConnectionStatus {
 
 const KEEP_ALIVE_MESSAGE = 'ka';
 const WEBSOCKET_TIMEOUT_IN_MS = 30000;
-const A_ = 5000;
 
 /**
  * A service that lets the user query Qminder API via GraphQL statements.
@@ -94,8 +91,6 @@ export class GraphQLService {
   /** Counts the amount of times the event emitter retried connecting. This is used for
    *  exponential retry falloff. */
   private connectionRetries = 0;
-  
-  private sessionId = uuidv4();
 
   constructor() {
     this.setServer('api.qminder.com');

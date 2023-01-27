@@ -65,8 +65,6 @@
     "es6-promise": "^4.1.1",
     "isomorphic-fetch": "^3.0.0",
     "isomorphic-ws": "^5.0.0",
-    "uuid": "8.3.2",
-    "moment": "2.29.4",
     "ws": "^8.0.0"
   },
   "peerDependencies": {
