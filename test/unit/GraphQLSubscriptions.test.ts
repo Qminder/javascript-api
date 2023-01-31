@@ -1,4 +1,7 @@
 /* eslint-disable no-empty-function */
+/**
+ * @jest-environment node
+ */
 
 import { gql } from 'graphql-tag';
 import { filter, firstValueFrom, Subscriber } from 'rxjs';
