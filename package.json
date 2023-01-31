@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "9.0.0",
+  "version": "9.0.1",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
   "scripts": {
     "test": "jest",
