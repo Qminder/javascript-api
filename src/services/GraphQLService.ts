@@ -3,8 +3,8 @@ import fetch from 'cross-fetch';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
-import { Observable, Observer, Subject } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { firstValueFrom, Observable, Observer, Subject } from 'rxjs';
+import { filter, map, shareReplay } from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
 
 type QueryOrDocument = string | DocumentNode;
@@ -67,7 +67,7 @@ export class GraphQLService {
   private apiKey: string;
 
   private apiServer: string;
-
+  private enableAutomaticReconnect = true;
   WebSocket: typeof WebSocket;
 
   fetch: Function;
@@ -278,7 +278,7 @@ export class GraphQLService {
       this.socket = null;
 
       // If it wasn't a client-side close socket, retry connecting.
-      if (event.code !== 1000) {
+      if (this.enableAutomaticReconnect && event.code !== 1000) {
         // Increase the retry timeout, the more times we retry
         const timeoutMult = Math.floor(this.connectionRetries / 10);
         const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
