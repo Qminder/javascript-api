@@ -1,1 +1,1 @@
-export type Id = string;
+export type ID = string;
