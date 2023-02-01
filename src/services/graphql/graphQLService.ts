@@ -64,7 +64,7 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  * Queries and subscriptions are supported. There is no support for mutations.
  *
  * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
- * trying to import GraphqlService.
+ * trying to import GraphQLService.
  */
 export class GraphQLService {
   private apiKey: string;
