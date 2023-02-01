@@ -36,7 +36,7 @@ Qminder account. You can get the access token from your account's
 Check out the Qminder API reference for various API methods. The services (TicketService,
 UserService, LineService, LocationService) will be of interest.
 
-For starters, you can find all tickets in a line with Id 12345:
+For starters, you can find all tickets in a line with ID 12345:
 
     const tickets = await Qminder.tickets.search({ status: ['NEW'], line: 12345 });
 
