@@ -13,7 +13,8 @@
         "jest": true
       },
       "rules": {
-        "func-names": "off"
+        "func-names": "off",
+        "import/no-extraneous-dependencies": "off"
       }
     }
   ]
