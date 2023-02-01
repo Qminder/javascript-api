@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import { gql } from 'graphql-tag';
 
-import * as Qminder from '../../src/qminder-api';
+import * as Qminder from '../../qminder-api';
 
 describe('GraphQLService', function () {
   const ME_ID_REQUEST = '{ me { id } }';

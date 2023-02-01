@@ -9,14 +9,14 @@ import Webhook from './model/webhook';
 import { ClientError } from './model/client-error';
 
 // Import services
-import ApiBase from './api-base';
-import DeviceService from './services/device.service';
-import LineService from './services/line.service';
-import LocationService from './services/location.service';
-import TicketService from './services/ticket.service';
-import UserService from './services/user.service';
-import WebhooksService from './services/webhooks.service';
-import GraphQLService, { ConnectionStatus } from './services/graphql.service';
+import ApiBase from './services/api-base/api-base';
+import DeviceService from './services/device/device.service';
+import LineService from './services/line/line.service';
+import LocationService from './services/location/location.service';
+import TicketService from './services/ticket/ticket.service';
+import UserService from './services/user/user.service';
+import WebhooksService from './services/webhooks/webhooks.service';
+import GraphQLService, { ConnectionStatus } from './services/graphql/graphql.service';
 
 // Export all data structures
 export {

@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
-import * as Qminder from '../../src/qminder-api';
+import * as Qminder from './qminder-api';
 
-describe('Configuration', function () {
+describe('Qminder API', function () {
   describe('Qminder.setKey', function () {
     let requestStub: sinon.SinonStub;
     beforeEach(function () {

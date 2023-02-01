@@ -1,6 +1,6 @@
 import fetch from 'isomorphic-fetch';
-import { GraphQLApiError } from './util/errors';
-import { ClientError } from './model/client-error';
+import { GraphQLApiError } from '../../util/errors';
+import { ClientError } from '../../model/client-error';
 
 type HTTPMethod =
   | 'GET'

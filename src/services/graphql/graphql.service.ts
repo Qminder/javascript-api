@@ -5,7 +5,7 @@ import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
+import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base/api-base';
 
 type QueryOrDocument = string | DocumentNode;
 
