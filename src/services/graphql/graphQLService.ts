@@ -140,7 +140,7 @@ export class GraphQLService {
     const query = queryToString(queryDocument);
     if (!query || query.length === 0) {
       throw new Error(
-        'GraphqlService query expects a GraphQL query as its first argument',
+        'GraphQLService query expects a GraphQL query as its first argument',
       );
     }
 
@@ -183,7 +183,7 @@ export class GraphQLService {
 
     if (!query || query.length === 0) {
       throw new Error(
-        'GraphqlService query expects a GraphQL query as its first argument',
+        'GraphQLService query expects a GraphQL query as its first argument',
       );
     }
 
