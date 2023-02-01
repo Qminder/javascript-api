@@ -144,9 +144,6 @@ describe('UserService', function () {
   describe('details()', function () {
     // Qminder.users.details(userId|userEmail)
   });
-  describe('addRole()', function () {
-    // Qminder.users.addRole(user, role)
-  });
   describe('setLines()', function () {
     it('Works with a list of Line IDs', function () {
       Qminder.users.setLines(123, [1, 2, 3, 4]);
