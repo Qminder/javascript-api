@@ -6,7 +6,10 @@
 import { gql } from 'graphql-tag';
 import { filter, firstValueFrom, Subscriber } from 'rxjs';
 import * as sinon from 'sinon';
-import { ConnectionStatus, GraphQLService } from '../../src/services/GraphQLService';
+import {
+  ConnectionStatus,
+  GraphQLService,
+} from '../../src/services/GraphQLService';
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphQLService;
@@ -60,12 +63,13 @@ describe('GraphQL subscriptions', () => {
     });
 
     beforeEach(() => {
-      jest.spyOn(graphqlService as any, 'fetchTemporaryApiKey').mockResolvedValue(keyValue);
+      jest
+        .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
+        .mockResolvedValue(keyValue);
       (graphqlService as any).enableAutomaticReconnect = false;
     });
 
     describe('.subscribe', () => {
-
       it('fires an Apollo compliant subscribe event, when a new subscriber comes in', async () => {
         const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
         graphqlService.subscribe('subscription { baba }').subscribe(() => {});
