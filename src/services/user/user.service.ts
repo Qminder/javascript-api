@@ -3,7 +3,11 @@ import User, { UserRole } from '../../model/user';
 import Desk from '../../model/desk';
 import Location from '../../model/location';
 import Line from '../../model/line';
-import { extractId, extractIdToNumber, IdOrObject } from '../../util/id-or-object';
+import {
+  extractId,
+  extractIdToNumber,
+  IdOrObject,
+} from '../../util/id-or-object';
 
 /**
  * User Service

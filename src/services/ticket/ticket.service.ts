@@ -7,7 +7,11 @@ import User from '../../model/user';
 import Desk from '../../model/desk';
 import Line from '../../model/line';
 import ApiBase from '../api-base/api-base';
-import { extractId, extractIdToNumber, IdOrObject } from '../../util/id-or-object';
+import {
+  extractId,
+  extractIdToNumber,
+  IdOrObject,
+} from '../../util/id-or-object';
 
 /**
  * Represents a collection of search criteria for TicketService.count().
