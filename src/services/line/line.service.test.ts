@@ -86,7 +86,7 @@ describe('LineService', function () {
       Qminder.lines.update(line);
     });
 
-    it('fails to update a line due to lacking Id', function () {
+    it('fails to update a line due to lacking ID', function () {
       const line: any = {
         id: null,
         name: 'Front Desk',
@@ -123,7 +123,7 @@ describe('LineService', function () {
       done();
     });
 
-    it('enables a line using Id', function () {
+    it('enables a line using ID', function () {
       Qminder.lines.enable(71490);
     });
 
@@ -137,11 +137,11 @@ describe('LineService', function () {
       Qminder.lines.enable(line);
     });
 
-    it('fails to enable a line due to no Id', function () {
+    it('fails to enable a line due to no ID', function () {
       expect(() => Qminder.lines.enable(null)).toThrowError();
     });
 
-    it('fails to enable a line due to line object lacking Id field', function () {
+    it('fails to enable a line due to line object lacking ID field', function () {
       const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
@@ -158,7 +158,7 @@ describe('LineService', function () {
       done();
     });
 
-    it('disables a line using Id', function () {
+    it('disables a line using ID', function () {
       Qminder.lines.disable(71490);
     });
 
@@ -172,11 +172,11 @@ describe('LineService', function () {
       Qminder.lines.disable(line);
     });
 
-    it('fails to disable a line due to no Id', function () {
+    it('fails to disable a line due to no ID', function () {
       expect(() => Qminder.lines.disable(null)).toThrowError();
     });
 
-    it('fails to disable a line due to line object lacking Id field', function () {
+    it('fails to disable a line due to line object lacking ID field', function () {
       const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
@@ -193,7 +193,7 @@ describe('LineService', function () {
       done();
     });
 
-    it('archive a line using Id', function () {
+    it('archive a line using ID', function () {
       Qminder.lines.archive(71490);
     });
 
@@ -207,11 +207,11 @@ describe('LineService', function () {
       Qminder.lines.archive(line);
     });
 
-    it('fails to archive a line due to no Id', function () {
+    it('fails to archive a line due to no ID', function () {
       expect(() => Qminder.lines.archive(null)).toThrowError();
     });
 
-    it('fails to archive a line due to line object lacking Id field', function () {
+    it('fails to archive a line due to line object lacking ID field', function () {
       const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
@@ -228,7 +228,7 @@ describe('LineService', function () {
       done();
     });
 
-    it('unarchive a line using Id', function () {
+    it('unarchive a line using ID', function () {
       Qminder.lines.unarchive(71490);
     });
 
@@ -242,11 +242,11 @@ describe('LineService', function () {
       Qminder.lines.unarchive(line);
     });
 
-    it('fails to unarchive a line due to no Id', function () {
+    it('fails to unarchive a line due to no ID', function () {
       expect(() => Qminder.lines.unarchive(null)).toThrowError();
     });
 
-    it('fails to unarchive a line due to line object lacking Id field', function () {
+    it('fails to unarchive a line due to line object lacking ID field', function () {
       const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',
@@ -263,7 +263,7 @@ describe('LineService', function () {
       done();
     });
 
-    it('delete a line using Id', function () {
+    it('delete a line using ID', function () {
       Qminder.lines.delete(71490);
     });
 
@@ -277,11 +277,11 @@ describe('LineService', function () {
       Qminder.lines.delete(line);
     });
 
-    it('fails to delete a line due to no Id', function () {
+    it('fails to delete a line due to no ID', function () {
       expect(() => Qminder.lines.delete(null)).toThrowError();
     });
 
-    it('fails to delete a line due to line object lacking Id field', function () {
+    it('fails to delete a line due to line object lacking ID field', function () {
       const line: Qminder.Line = {
         id: null,
         name: 'Front Desk',

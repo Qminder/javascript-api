@@ -113,14 +113,14 @@ export class GraphqlService {
    * ```javascript
    * import * as Qminder from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
-   * // 1. Figure out the selected location Id of the current user, with async/await
+   * // 1. Figure out the selected location ID of the current user, with async/await
    * try {
    *     const response = await Qminder.graphql.query(`{ me { selectedLocation } }`);
    *     console.log(response.me.selectedLocation); // "12345"
    * } catch (error) {
    *     console.log(error);
    * }
-   * // 2. Figure out the selected location Id of the current user, with promises
+   * // 2. Figure out the selected location ID of the current user, with promises
    * Qminder.graphql.query("{ me { selectedLocation } }").then(function(response) {
    *     console.log(response.me.selectedLocation);
    * }, function(error) {

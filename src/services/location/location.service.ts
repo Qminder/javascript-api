@@ -4,7 +4,7 @@ import Desk from '../../model/desk';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /** @hidden */
-const ERROR_NO_LOCATION_ID = 'No Location Id specified.';
+const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
 
 /**
  * The LocationService allows you to get data about Locations.
@@ -49,7 +49,7 @@ export default class LocationService {
   /**
    * Get details about a location.
    *
-   * Calls the following HTTP API: `GET /locations/<Id>`
+   * Calls the following HTTP API: `GET /locations/<ID>`
    *
    * For example:
    *
@@ -61,7 +61,7 @@ export default class LocationService {
    * // locationDetails.id = 1234
    * // locationDetails.name = 'Example Location'
    * ```
-   * @param locationId the location's unique Id, for example 1234
+   * @param locationId the location's unique ID, for example 1234
    * @returns A promise that resolves to the location.
    */
   static details(location: IdOrObject<Location>): Promise<Location> {
@@ -73,7 +73,7 @@ export default class LocationService {
    * Fetch all desks of the location.
    * Desks may have numbered names or customized names.
    *
-   * Calls the following HTTP API: `GET /v1/locations/<Id>/desks`
+   * Calls the following HTTP API: `GET /v1/locations/<ID>/desks`
    *
    * For example:
    *

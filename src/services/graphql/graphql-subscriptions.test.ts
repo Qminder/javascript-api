@@ -129,7 +129,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('.stopSubscription', () => {
-    it('deletes the subscription from the mapping of Id -> callbacks', () => {
+    it('deletes the subscription from the mapping of ID -> callbacks', () => {
       // start the test with an empty observer-map
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,

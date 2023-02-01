@@ -17,7 +17,7 @@
  */
 export default interface Ticket {
   /**
-   * This ticket's unique Id. For example, 14995020
+   * This ticket's unique ID. For example, 14995020
    */
   id: number | string;
 
@@ -37,7 +37,7 @@ export default interface Ticket {
   source?: 'PHONE' | 'MANUAL' | 'NAME' | 'PRINTER';
 
   /**
-   * The Id of the line that this ticket belongs to. All tickets belong to a line.
+   * The ID of the line that this ticket belongs to. All tickets belong to a line.
    * For example, 14142.
    */
   line: number;
@@ -119,7 +119,7 @@ export default interface Ticket {
 
   /**
    * If the ticket has been cancelled, this contains the time the ticket was cancelled, in
-   * ISO8601 format, and the Id of the User who cancelled the ticket.
+   * ISO8601 format, and the ID of the User who cancelled the ticket.
    *
    * { "date": "2017-10-31T17:30:00.000Z", "canceller": 1445 }
    */
@@ -163,11 +163,11 @@ export default interface Ticket {
  * selected in the dropdown. For multiselect fields, multiple TicketExtras are generated, one
  * for each value.
  *
- * For example, if the Location has an input field "Order Id" with the Text type, the
+ * For example, if the Location has an input field "Order ID" with the Text type, the
  * TicketExtra would look like this:
  *
  * ```
- * { "title": "Order Id", "value": "AB1234CDEF" }
+ * { "title": "Order ID", "value": "AB1234CDEF" }
  * ```
  *
  * If the Location has a Select input field named "Favorite Greek Letter" that has two options,
@@ -209,7 +209,7 @@ export interface TicketExtra {
  * The Interaction logs the start and end times and line IDs of the steps a customer passed.
  *
  * The interaction contains the start time and end time of the interaction as an ISO8601 string,
- * and the Line Id that the Ticket was in, during the specified time.
+ * and the Line ID that the Ticket was in, during the specified time.
  */
 export interface TicketInteraction {
   start: string;
@@ -249,11 +249,11 @@ export interface TicketLabel {
  * passed on to the SMS service, `DELIVERED` when the SMS service received the message. The status
  * is `INVALID_NUMBER` if the visitor's phone number is not correct, and the SMS was not sent.
  *
- * The message's User Id is only filled in when it's an outgoing message, and it contains the Id of
+ * The message's User ID is only filled in when it's an outgoing message, and it contains the ID of
  * the clerk that sent the outgoing message.
  *
  * For example, a message like the following represents an **outgoing** message sent by an employee,
- * with the User Id `15000`.
+ * with the User ID `15000`.
  *
  * ```
  * {

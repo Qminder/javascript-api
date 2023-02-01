@@ -12,7 +12,7 @@
  */
 export default interface Desk {
   /**
-   * The desk's Id.
+   * The desk's ID.
    *
    * This is used to select the desk, and call tickets to a specific desk.
    */

@@ -19,12 +19,12 @@ export default class UserService {
    * Returns an Array of all users that have access to a Location. (Owner, Administrators,
    * Location Managers, and Clerks)
    *
-   * Calls this HTTP API: `GET /v1/locations/<Id>/users`
+   * Calls this HTTP API: `GET /v1/locations/<ID>/users`
    *
    * For example:
    *
    * ```javascript
-   * // Fetch the user list for location Id 1234
+   * // Fetch the user list for location ID 1234
    * const locationId = 1234;
    * const users = await Qminder.users.list(locationId);
    * ```
@@ -92,7 +92,7 @@ export default class UserService {
   /**
    * Fetch the user's details.
    *
-   * This method allows searching by both user Id and exact email address. When searching by email
+   * This method allows searching by both user ID and exact email address. When searching by email
    * address, only exact matches are considered.
    *
    * Calls the HTTP API `GET /v1/users/<user>`
@@ -106,7 +106,7 @@ export default class UserService {
    * // Example 1. Get user details by their email address
    * const user = await Qminder.users.details("john@example.com");
    *
-   * // Example 2. Get user details by user Id
+   * // Example 2. Get user details by user ID
    * const user = await Qminder.users.details(14152);
    *
    * // Example 3. Get user details by User object
@@ -114,7 +114,7 @@ export default class UserService {
    * let firstUser = usersList[0];
    * firstUser = await Qminder.users.details(firstUser);
    * ```
-   * @param user The user, the user's Id, or the user's email address.
+   * @param user The user, the user's ID, or the user's email address.
    * @returns a Promise that resolves to the user's details, and rejects when
    * something goes wrong.
    * @throws Error when the user argument was invalid (not a string, not a number, or not a User)
@@ -124,7 +124,7 @@ export default class UserService {
 
     if (!search) {
       throw new Error(
-        'User to search by was invalid. Searching only works by email or user Id or User object.',
+        'User to search by was invalid. Searching only works by email or user ID or User object.',
       );
     }
 
@@ -134,7 +134,7 @@ export default class UserService {
   /**
    * Set the user's currently selected Desk.
    *
-   * Calls the HTTP API `POST /v1/users/<Id>/desk`
+   * Calls the HTTP API `POST /v1/users/<ID>/desk`
    *
    * For example:
    *
@@ -160,7 +160,7 @@ export default class UserService {
    *
    * After this API call, the user will have no desk selected.
    *
-   * Calls the HTTP API `DELETE /v1/users/<Id>/desk`.
+   * Calls the HTTP API `DELETE /v1/users/<ID>/desk`.
    * @param user The user to modify
    * @returns A promise that resolves when setting the desk works, and rejects if it failed.
    */
@@ -172,7 +172,7 @@ export default class UserService {
   /**
    * Set the lines selected by current user. All other lines that aren't specified are set to unselected.
    *
-   * Calls the HTTP API `POST /v1/users/<Id>/lines`
+   * Calls the HTTP API `POST /v1/users/<ID>/lines`
    *
    * For example:
    *

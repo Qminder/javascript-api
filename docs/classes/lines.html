@@ -154,7 +154,7 @@
 										This archives the line and removes it from the line list, from iPads and TVs, from the service screen and from
 									statistics. The line can be unarchived.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>POST /lines/&lt;Id&gt;/archive</code></p>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/archive</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">archive</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
 </code></pre>
@@ -164,7 +164,7 @@
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Line or the line&#39;s Id to archive</p>
+										<p>the Line or the line&#39;s ID to archive</p>
 									</div>
 								</li>
 							</ul>
@@ -191,7 +191,7 @@
 								<div class="lead">
 									<p>Create a new Line and return its details.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>POST /locations/&lt;Id&gt;/lines</code></p>
+								<p>Calls the following HTTP API: <code>POST /locations/&lt;ID&gt;/lines</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000">: </span><span style="color: #267F99">Line</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #098658">950</span><span style="color: #000000">, { </span><span style="color: #001080">name:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Priority Service&#039;</span><span style="color: #000000"> });</span>
 <span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">line</span><span style="color: #000000">.</span><span style="color: #001080">id</span><span style="color: #000000">); </span><span style="color: #008000">// 1425</span>
@@ -237,7 +237,7 @@
 										This deletes the line and removes it from the line list, from iPads and TVs, from the service screen and from
 									statistics. This action cannot be undone.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>DELETE /lines/&lt;Id&gt;</code></p>
+								<p>Calls the following HTTP API: <code>DELETE /lines/&lt;ID&gt;</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">delete</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
 </code></pre>
@@ -247,7 +247,7 @@
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Line or the line&#39;s Id to delete</p>
+										<p>the Line or the line&#39;s ID to delete</p>
 									</div>
 								</li>
 							</ul>
@@ -274,7 +274,7 @@
 								<div class="lead">
 									<p>Fetch detailed information about one line.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>GET /lines/&lt;Id&gt;</code></p>
+								<p>Calls the following HTTP API: <code>GET /lines/&lt;ID&gt;</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000">: </span><span style="color: #267F99">Line</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">details</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
 </code></pre>
@@ -284,7 +284,7 @@
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The line to get detailed info about, or the line&#39;s Id.</p>
+										<p>The line to get detailed info about, or the line&#39;s ID.</p>
 									</div>
 								</li>
 							</ul>
@@ -310,7 +310,7 @@
 								<div class="lead">
 									<p>Disable a Line.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>POST /lines/&lt;Id&gt;/disable</code></p>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/disable</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">disable</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
 </code></pre>
@@ -320,7 +320,7 @@
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Line or the Id of the line to be disabled.</p>
+										<p>the Line or the ID of the line to be disabled.</p>
 									</div>
 								</li>
 							</ul>
@@ -347,7 +347,7 @@
 								<div class="lead">
 									<p>Enable a disabled Line.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>POST /lines/&lt;Id&gt;/enable</code></p>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/enable</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">enable</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
 </code></pre>
@@ -357,7 +357,7 @@
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Line or the Id of the line to be enabled.</p>
+										<p>the Line or the ID of the line to be enabled.</p>
 									</div>
 								</li>
 							</ul>
@@ -383,9 +383,9 @@
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Fetch the location&#39;s line list.
-									The lines will have the line Id, name, and color filled in.</p>
+									The lines will have the line ID, name, and color filled in.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>GET /locations/&lt;Id&gt;/lines</code></p>
+								<p>Calls the following HTTP API: <code>GET /locations/&lt;ID&gt;/lines</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">lines</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">list</span><span style="color: #000000">(</span><span style="color: #098658">159</span><span style="color: #000000">);</span>
 </code></pre>
@@ -395,7 +395,7 @@
 								<li>
 									<h5>location: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Location.html" class="tsd-signature-type" data-tsd-kind="Interface">Location</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Location or its Id</p>
+										<p>the Location or its ID</p>
 									</div>
 								</li>
 							</ul>
@@ -421,7 +421,7 @@
 								<div class="lead">
 									<p>Unarchive a Line.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>POST /lines/&lt;Id&gt;/unarchive</code></p>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;/unarchive</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">unarchive</span><span style="color: #000000">(</span><span style="color: #098658">1425</span><span style="color: #000000">);</span>
 </code></pre>
@@ -431,7 +431,7 @@
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Line or the line&#39;s Id to unarchive</p>
+										<p>the Line or the line&#39;s ID to unarchive</p>
 									</div>
 								</li>
 							</ul>
@@ -458,7 +458,7 @@
 								<div class="lead">
 									<p>Update an existing Line name and color.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>POST /lines/&lt;Id&gt;</code></p>
+								<p>Calls the following HTTP API: <code>POST /lines/&lt;ID&gt;</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000"> = { </span><span style="color: #A31515">&quot;id&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #098658">950</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;name&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Front Desk&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;color&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;#ffffff&quot;</span><span style="color: #000000"> };</span>
 <span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">update</span><span style="color: #000000">(</span><span style="color: #001080">line</span><span style="color: #000000">);</span>

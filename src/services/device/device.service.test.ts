@@ -26,7 +26,7 @@ describe('Qminder.devices', function () {
       expect(requestStub.calledWith('tv/1234')).toBeTruthy();
     });
 
-    it('throws when the TV Id is not passed in', function () {
+    it('throws when the TV ID is not passed in', function () {
       expect(() => (Qminder.devices.details as any)()).toThrow();
     });
 

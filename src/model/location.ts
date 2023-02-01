@@ -5,7 +5,7 @@
  */
 export default interface Location {
   /**
-   * The location's unique Id.
+   * The location's unique ID.
    */
   id: number;
   /**

@@ -37,7 +37,7 @@ export interface UserRole {
  */
 export default interface User {
   /**
-   * This user's unique Id.
+   * This user's unique ID.
    * For example, 12345
    */
   id: number;

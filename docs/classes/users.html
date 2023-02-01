@@ -233,7 +233,7 @@
 								<div class="lead">
 									<p>Fetch the user&#39;s details.</p>
 								</div>
-								<p>This method allows searching by both user Id and exact email address. When searching by email
+								<p>This method allows searching by both user ID and exact email address. When searching by email
 								address, only exact matches are considered.</p>
 								<p>Calls the HTTP API <code>GET /v1/users/&lt;user&gt;</code></p>
 								<p>For example:</p>
@@ -243,7 +243,7 @@
 <span style="color: #008000">// Example 1. Get user details by their email address</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">user</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">details</span><span style="color: #000000">(</span><span style="color: #A31515">&quot;john@example.com&quot;</span><span style="color: #000000">);</span>
 
-<span style="color: #008000">// Example 2. Get user details by user Id</span>
+<span style="color: #008000">// Example 2. Get user details by user ID</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">user</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">details</span><span style="color: #000000">(</span><span style="color: #098658">14152</span><span style="color: #000000">);</span>
 
 <span style="color: #008000">// Example 3. Get user details by User object</span>
@@ -288,9 +288,9 @@
 								</div>
 								<p>Returns an Array of all users that have access to a Location. (Owner, Administrators,
 								Location Managers, and Clerks)</p>
-								<p>Calls this HTTP API: <code>GET /v1/locations/&lt;Id&gt;/users</code></p>
+								<p>Calls this HTTP API: <code>GET /v1/locations/&lt;ID&gt;/users</code></p>
 								<p>For example:</p>
-								<pre><code class="language-javascript"><span style="color: #008000">// Fetch the user list for location Id 1234</span>
+								<pre><code class="language-javascript"><span style="color: #008000">// Fetch the user list for location ID 1234</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">locationId</span><span style="color: #000000"> = </span><span style="color: #098658">1234</span><span style="color: #000000">;</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">users</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">users</span><span style="color: #000000">.</span><span style="color: #795E26">list</span><span style="color: #000000">(</span><span style="color: #001080">locationId</span><span style="color: #000000">);</span>
 </code></pre>
@@ -328,7 +328,7 @@
 									<p>Unset the user&#39;s currently selected Desk.</p>
 								</div>
 								<p>After this API call, the user will have no desk selected.</p>
-								<p>Calls the HTTP API <code>DELETE /v1/users/&lt;Id&gt;/desk</code>.</p>
+								<p>Calls the HTTP API <code>DELETE /v1/users/&lt;ID&gt;/desk</code>.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
@@ -361,7 +361,7 @@
 								<div class="lead">
 									<p>Set the user&#39;s currently selected Desk.</p>
 								</div>
-								<p>Calls the HTTP API <code>POST /v1/users/&lt;Id&gt;/desk</code></p>
+								<p>Calls the HTTP API <code>POST /v1/users/&lt;ID&gt;/desk</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
@@ -407,7 +407,7 @@
 								<div class="lead">
 									<p>Set the lines selected by current user. All other lines that aren&#39;t specified are set to unselected.</p>
 								</div>
-								<p>Calls the HTTP API <code>POST /v1/users/&lt;Id&gt;/lines</code></p>
+								<p>Calls the HTTP API <code>POST /v1/users/&lt;ID&gt;/lines</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>

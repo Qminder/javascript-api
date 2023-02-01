@@ -115,7 +115,7 @@ describe('Qminder.locations', function () {
       });
     });
 
-    it('resolves with correct Id', function () {
+    it('resolves with correct ID', function () {
       expect(locationDetailsReply.id).toBe(673);
     });
 

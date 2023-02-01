@@ -31,7 +31,7 @@ interface TicketCountCriteria {
    */
   line?: string | Array<number> | number;
   /**
-   * The location Id to search tickets from.
+   * The location ID to search tickets from.
    *
    * For example: `location: 4`
    */
@@ -98,7 +98,7 @@ interface TicketSearchCriteria {
    */
   line?: string | Array<number> | number;
   /**
-   * The location Id to search tickets from.
+   * The location ID to search tickets from.
    *
    * For example: `location: 4`
    */
@@ -199,21 +199,21 @@ interface TicketSearchCriteria {
  */
 type DesiredQueuePosition = 'FIRST' | 'LAST';
 
-/** This error is thrown when a Line Id is not passed to the API method, or when its type is not
+/** This error is thrown when a Line ID is not passed to the API method, or when its type is not
  *  a number.
  *  @hidden */
-export const ERROR_NO_LINE_ID: string = 'Line Id missing from arguments.';
+export const ERROR_NO_LINE_ID: string = 'Line ID missing from arguments.';
 /**
- * This error is thrown when the line is not a number (for the line Id) or a valid Line object.
+ * This error is thrown when the line is not a number (for the line ID) or a valid Line object.
  * @hidden
  */
 export const ERROR_INVALID_LINE: string =
   'Line is not a number or Line object.';
 
-/** This error is thrown when the Ticket Id is not passed to the API method, or when its type is
+/** This error is thrown when the Ticket ID is not passed to the API method, or when its type is
  *  not a number.
  *  @hidden */
-export const ERROR_NO_TICKET_ID: string = 'Ticket Id missing from arguments.';
+export const ERROR_NO_TICKET_ID: string = 'Ticket ID missing from arguments.';
 /** @hidden */
 export const ERROR_INVALID_TICKET: string =
   'Ticket is not a number or Ticket object.';
@@ -287,7 +287,7 @@ type TicketCreationResponse = Pick<Ticket, 'id'>;
  * import * as Qminder from 'qminder-api';
  * Qminder.setKey('API_KEY_HERE');
  *
- * // Example 1. Create a new ticket in Line Id 12346
+ * // Example 1. Create a new ticket in Line ID 12346
  * const ticket = await Qminder.tickets.create(12346, {
  *    firstName: 'Jane',
  *    lastName: 'Eyre',
@@ -447,7 +447,7 @@ export default class TicketService {
   /**
    * Creates a new ticket and puts it into the queue as the last in the given line.
    *
-   * Calls this HTTP API: `POST /v1/lines/<Id>/ticket`
+   * Calls this HTTP API: `POST /v1/lines/<ID>/ticket`
    *
    * For example:
    *
@@ -470,7 +470,7 @@ export default class TicketService {
    * const ticket: Ticket = new Qminder.Ticket({
    *    firstName: "Sarah Jane",
    *    lastName: "Smith",
-   *    extra: [ { "title": "Order Id", "value": "1234567890" } ]
+   *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
    * });
    * const ticketId = await Qminder.tickets.create(lineId, ticket);
    * console.log(ticketId); // 12345681
@@ -479,7 +479,7 @@ export default class TicketService {
    * const ticket: Ticket = new Qminder.Ticket({
    *    firstName: "Sarah Jane",
    *    lastName: "Smith",
-   *    extra: [ { "title": "Order Id", "value": "1234567890" } ]
+   *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
    * });
    * const line: Line = await Qminder.lines.details(12345);
    * const ticketId = await Qminder.tickets.create(line, ticket);
@@ -488,7 +488,7 @@ export default class TicketService {
    * @param line  the ticket's desired line
    * @param ticket  the ticket data
    * @param idempotencyKey  optional: a unique identifier that lets you safely retry creating the same ticket twice
-   * @returns a promise that resolves to the Id of the new ticket.
+   * @returns a promise that resolves to the ID of the new ticket.
    * @throws ERROR_NO_LINE_ID when the lineId parameter is undefined or not a number.
    */
   static create(
@@ -525,9 +525,9 @@ export default class TicketService {
   }
 
   /**
-   * Fetches the details of a given ticket Id and returns a Ticket object filled with data.
+   * Fetches the details of a given ticket ID and returns a Ticket object filled with data.
    *
-   * Calls the following HTTP API: `GET /v1/tickets/<Id>`
+   * Calls the following HTTP API: `GET /v1/tickets/<ID>`
    *
    * For example:
    *
@@ -540,9 +540,9 @@ export default class TicketService {
    * console.log(ticket.firstName); // Jane
    * console.log(ticket.lastName); // Eyre
    * ```
-   * @param ticket  the Ticket to query, by ticket Id or Ticket object
+   * @param ticket  the Ticket to query, by ticket ID or Ticket object
    * @returns the ticket's details as a Ticket object
-   * @throws ERROR_NO_TICKET_ID when the ticket Id is undefined or not a number.
+   * @throws ERROR_NO_TICKET_ID when the ticket ID is undefined or not a number.
    */
   static details(ticket: IdOrObject<Ticket>): Promise<Ticket> {
     const ticketId = extractId(ticket);
@@ -552,7 +552,7 @@ export default class TicketService {
   /**
    * Edits the ticket.
    *
-   * To edit a ticket, pass the ticket Id to edit, and an object that only includes the keys
+   * To edit a ticket, pass the ticket ID to edit, and an object that only includes the keys
    * that need to be changed.
    *
    * ```javascript
@@ -564,10 +564,10 @@ export default class TicketService {
    * const successMessage = await Qminder.tickets.edit(ticket, changes);
    * console.log(successMessage === "success"); // true if it worked
    * ```
-   * @param ticket  the ticket to edit, either the Ticket object or the ticket's Id
+   * @param ticket  the ticket to edit, either the Ticket object or the ticket's ID
    * @param changes  an object only including changed properties of the ticket
    * @returns a Promise that resolves to "success" when editing the ticket worked
-   * @throws ERROR_NO_TICKET_ID when the ticket Id was undefined or not a number
+   * @throws ERROR_NO_TICKET_ID when the ticket ID was undefined or not a number
    * @throws ERROR_NO_TICKET_CHANGES when the ticket changes were undefined
    */
   static edit(
@@ -612,11 +612,11 @@ export default class TicketService {
    *
    * Multiple tickets can be called by setting `keepActiveTicketsOpen` to true.
    *
-   * @param ticket  The ticket to call. The ticket Id can be used instead of the Ticket object.
+   * @param ticket  The ticket to call. The ticket ID can be used instead of the Ticket object.
    * @param user  the user that is calling the ticket. This parameter is not needed if
-   * Qminder.setKey was called with an API key belonging to a specific User. The user Id can be
+   * Qminder.setKey was called with an API key belonging to a specific User. The user ID can be
    * used instead of the User object.
-   * @param desk  the desk to call the ticket into. The desk Id can be used instead of the Desk
+   * @param desk  the desk to call the ticket into. The desk ID can be used instead of the Desk
    * object.
    * @param keepActiveTicketsOpen if tickets are currently being served, do not mark them served
    * when calling a new ticket. This allows calling multiple tickets at the same time.
@@ -663,7 +663,7 @@ export default class TicketService {
    *
    * Only called tickets (with the status 'CALLED') can be recalled.
    *
-   * @param ticket  The ticket to recall. The ticket Id can be used instead of the Ticket object.
+   * @param ticket  The ticket to recall. The ticket ID can be used instead of the Ticket object.
    * @returns  a promise that resolves to 'success' if all went well.
    */
   static recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
@@ -686,7 +686,7 @@ export default class TicketService {
    *
    * Only called tickets (with the status 'CALLED') can be marked served.
    *
-   * @param ticket  The ticket to mark served. The ticket Id can be used instead of the Ticket
+   * @param ticket  The ticket to mark served. The ticket ID can be used instead of the Ticket
    * object.
    * @returns  a promise that resolves to 'success' if all went well.
    */
@@ -711,7 +711,7 @@ export default class TicketService {
    *
    * Only called tickets (with the status 'CALLED') can be marked as "no-show".
    *
-   * @param ticket  The ticket to mark no-show. The ticket Id can be used instead of the Ticket
+   * @param ticket  The ticket to mark no-show. The ticket ID can be used instead of the Ticket
    * object.
    * @returns A promise that resolves to "success" when marking no-show works, and rejects when
    * something went wrong.
@@ -736,9 +736,9 @@ export default class TicketService {
    *
    * Only new tickets (with the status 'NEW') can be cancelled.
    *
-   * The user Id is mandatory.
+   * The user ID is mandatory.
    *
-   * @param ticket  The ticket to cancel. The ticket Id can be used instead of the Ticket object.
+   * @param ticket  The ticket to cancel. The ticket ID can be used instead of the Ticket object.
    * @param user  The user who canceled the ticket. This is a mandatory argument.
    * @returns  a promise that resolves to "success" if removing works, and rejects if something
    * went wrong.
@@ -774,9 +774,9 @@ export default class TicketService {
    *
    * Only called tickets (with the status 'CALLED') can be returned to the queue.
    *
-   * @param ticket  The ticket to return to queue. The ticket Id can be used instead of the
+   * @param ticket  The ticket to return to queue. The ticket ID can be used instead of the
    * Ticket object.
-   * @param user  The user that returned the ticket to the queue. The user Id can be used instead
+   * @param user  The user that returned the ticket to the queue. The user ID can be used instead
    * of the User object.
    * @param position  The position where to place the returned ticket. Either 'FIRST' or 'LAST'.
    * @returns {Promise<string>} a promise that resolves to "success" if it worked, and rejects
@@ -831,7 +831,7 @@ export default class TicketService {
    * const labelText = "Has documents";
    * await Qminder.tickets.addLabel(ticket, labelText, myUserId);
    * ```
-   * @param ticket  The ticket to label. The ticket Id can be used instead of the Ticket object.
+   * @param ticket  The ticket to label. The ticket ID can be used instead of the Ticket object.
    * @param label  The label to add, eg. "Has documents"
    * @param user  The user that is adding the label.
    * @returns promise that resolves to 'success' if all was OK, and 'no
@@ -883,7 +883,7 @@ export default class TicketService {
    * const labels = ["Has documents", "Has invitation"];
    * await Qminder.tickets.setLabels(ticket, labels, myUserId);
    * ```
-   * @param ticket  The ticket. The ticket Id can be used instead of the Ticket object.
+   * @param ticket  The ticket. The ticket ID can be used instead of the Ticket object.
    * @param labels  The labels to set, eg. ["Has documents", "Has invitation"]
    * @returns promise that resolves to 'success' if all was OK, and rejects
    * if something else went wrong.
@@ -929,7 +929,7 @@ export default class TicketService {
    * console.log('It worked!');
    * ```
    *
-   * @param ticket  The ticket to remove a label from. The ticket Id can be used instead of the
+   * @param ticket  The ticket to remove a label from. The ticket ID can be used instead of the
    * Ticket object.
    * @param label  The label to remove, for example, "Has Cool Hair"
    * @param user  The user who is removing the label, for example 9500
@@ -991,7 +991,7 @@ export default class TicketService {
    * const tickets: Array<Ticket> = await Qminder.tickets.search({ line: 111, status: ['NEW'] });
    * tickets.map((ticket: Ticket) => Qminder.tickets.assign(ticket, 15152));
    * ```
-   * @param ticket The ticket to assign to an user. The ticket Id can be used instead of the
+   * @param ticket The ticket to assign to an user. The ticket ID can be used instead of the
    * Ticket object.
    * @param assigner The user who is assigning.
    * @param assignee The user who will take the ticket.
@@ -1063,8 +1063,8 @@ export default class TicketService {
    * const ticket = tickets[0];
    * await Qminder.tickets.unassign(ticket, myUserID);
    * ```
-   * @param ticket the ticket object or the ticket's Id that needs un-assignment
-   * @param unassigner the User who un-assigned the ticket, for example current user's Id
+   * @param ticket the ticket object or the ticket's ID that needs un-assignment
+   * @param unassigner the User who un-assigned the ticket, for example current user's ID
    * @returns a Promise that resolves when unassigning works and rejects when
    * unassigning fails
    */
@@ -1095,7 +1095,7 @@ export default class TicketService {
   /**
    * Reorder a ticket after another ticket.
    *
-   * Calls this HTTP API: `POST /v1/tickets/<Id>/reorder`
+   * Calls this HTTP API: `POST /v1/tickets/<ID>/reorder`
    *
    * For example:
    *
@@ -1111,7 +1111,7 @@ export default class TicketService {
    * Qminder.tickets.reorder(ticket3, ticket1);
    * // Queue: ticket1, ticket3, ticket2
    * ```
-   * @param ticket The ticket to reorder. The ticket Id can be used instead
+   * @param ticket The ticket to reorder. The ticket ID can be used instead
    * of the Ticket object.
    * @param afterTicket the ticket to reorder after, or null if reordering to be first in the
    * queue.
@@ -1149,7 +1149,7 @@ export default class TicketService {
    *
    * The time will be returned as a Unix timestamp (in seconds).
    *
-   * Calls the HTTP API: `GET /v1/tickets/<Id>/estimated-time`
+   * Calls the HTTP API: `GET /v1/tickets/<ID>/estimated-time`
    *
    * ```javascript
    * import * as Qminder from 'qminder-api';
@@ -1161,7 +1161,7 @@ export default class TicketService {
    * const eta = await Qminder.tickets.getEstimatedTimeOfService(ticket);
    * console.log(eta); // 1509460809, for example.
    * ```
-   * @param ticket  the ticket to get the estimated time for. The ticket Id can be used instead
+   * @param ticket  the ticket to get the estimated time for. The ticket ID can be used instead
    * of the Ticket object.
    * @returns the estimated Unix time the visitor will be called, eg 1509460809
    */
@@ -1206,7 +1206,7 @@ export default class TicketService {
    *     }
    * });
    * ```
-   * @param ticket   The ticket to get the message list for. The ticket Id can be used instead
+   * @param ticket   The ticket to get the message list for. The ticket ID can be used instead
    * of the Ticket object.
    * @returns  a Promise that resolves to a list of ticket messages
    * @throws ERROR_NO_TICKET_ID  if the ticket is missing from the arguments, or invalid.
@@ -1251,9 +1251,9 @@ export default class TicketService {
    *     console.log("Something went wrong while sending the message.");
    * });
    * ```
-   * @param ticket  The ticket to send a message to. The user Id may also be used.
+   * @param ticket  The ticket to send a message to. The user ID may also be used.
    * @param message  the message to send, as a text string, for example "Welcome to our location!"
-   * @param user  the user who is sending the message. The user Id may also be used.
+   * @param user  the user who is sending the message. The user ID may also be used.
    * @returns a promise that resolves to the string "success" if it works, and rejects when
    * something goes wrong.
    */
@@ -1318,9 +1318,9 @@ export default class TicketService {
    *   }
    * });
    * ```
-   * @param ticket  the ticket to forward, as ticket Id or ticket object
-   * @param line  the visitor's next line, as line Id or line object.
-   * @param user  the user who forwarded the ticket, as user Id or user object. Only necessary
+   * @param ticket  the ticket to forward, as ticket ID or ticket object
+   * @param line  the visitor's next line, as line ID or line object.
+   * @param user  the user who forwarded the ticket, as user ID or user object. Only necessary
    * if forwarding on behalf of a User.
    * @returns  a Promise that resolves when forwarding works, and rejects when it fails.
    * @throws an Error when the ticket or line are missing or invalid.
@@ -1339,12 +1339,12 @@ export default class TicketService {
     }
 
     if (typeof lineId !== 'string') {
-      throw new Error('Line Id is missing.');
+      throw new Error('Line ID is missing.');
     }
 
-    // If the user's Id was passed and it's invalid, throw an error
+    // If the user's ID was passed and it's invalid, throw an error
     if (user !== undefined && typeof userId !== 'string') {
-      throw new Error('User Id is missing.');
+      throw new Error('User ID is missing.');
     }
 
     const body: { line: string; user?: string } = {
@@ -1361,7 +1361,7 @@ export default class TicketService {
   /**
    * Add external data to a ticket.
    *
-   * @param ticket  The ticket to add external data to. The ticket Id can be used instead of the Ticket object.
+   * @param ticket  The ticket to add external data to. The ticket ID can be used instead of the Ticket object.
    * @param provider  Provider of the data. One record per provider is allowed.
    * @param title     Title for the data
    * @param data      The data to set
