@@ -6,4 +6,4 @@ set -e
 #
 
 rm -rf build
-yarn run tsc --declaration --outDir build --module commonjs --target es2017 --moduleResolution node --esModuleInterop true ./src/qminder-api.ts
+yarn run tsc -p .
