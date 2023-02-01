@@ -6,6 +6,9 @@
   "parserOptions": {
     "sourceType": "module"
   },
+  "rules": {
+    "import/no-extraneous-dependencies": ["error", {"devDependencies": ["**/*.test.js"]}]
+  },
   "overrides": [
     {
       "files": ["*.test.ts"],
