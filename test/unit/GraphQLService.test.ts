@@ -106,7 +106,7 @@ describe('GraphQLService', function () {
       expect(requestStub.callCount).toBe(1);
       expect(requestStub.firstCall.args[0]).toEqual({
         query:
-          'query MyIdQuery($id: ID!) { location(id: $id) { id name timezone lines { ...MyFrag } }\n} fragment MyFrag on Line { id name\n}',
+          'query MyIdQuery($id: Id!) { location(id: $id) { id name timezone lines { ...MyFrag } }\n} fragment MyFrag on Line { id name\n}',
       });
     });
   });

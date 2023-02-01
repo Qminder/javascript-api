@@ -1,5 +1,5 @@
-import Line from '../model/Line';
-import Location from '../model/Location';
+import Line from '../model/line';
+import Location from '../model/location';
 import ApiBase from '../api-base';
 import { extractId, IdOrObject } from '../util/id-or-object';
 
@@ -25,22 +25,22 @@ type LineUpdateParameters = Pick<Line, 'id'> &
 export default class LineService {
   /**
    * Fetch the location's line list.
-   * The lines will have the line ID, name, and color filled in.
+   * The lines will have the line Id, name, and color filled in.
    *
-   * Calls the following HTTP API: `GET /locations/<ID>/lines`
+   * Calls the following HTTP API: `GET /locations/<Id>/lines`
    *
    * For example:
    *
    * ```javascript
    * const lines = await Qminder.lines.list(159);
    * ```
-   * @param location the Location or its ID
+   * @param location the Location or its Id
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
   static list(location: IdOrObject<Location>): Promise<Line[]> {
     const locationId = extractId(location);
     if (!locationId || typeof locationId !== 'string') {
-      throw new Error('Location ID invalid or missing.');
+      throw new Error('Location Id invalid or missing.');
     }
     return ApiBase.request(`locations/${locationId}/lines`).then(
       (response: { data: Line[] }) => response.data,
@@ -50,20 +50,20 @@ export default class LineService {
   /**
    * Fetch detailed information about one line.
    *
-   * Calls the following HTTP API: `GET /lines/<ID>`
+   * Calls the following HTTP API: `GET /lines/<Id>`
    *
    * For example:
    *
    * ```javascript
    * const line: Line = await Qminder.lines.details(1425);
    * ```
-   * @param line The line to get detailed info about, or the line's ID.
+   * @param line The line to get detailed info about, or the line's Id.
    * @returns a promise that resolves to the Line object, or rejects if something went wrong.
    */
   static details(line: IdOrObject<Line>): Promise<Line> {
     const lineId = extractId(line);
     if (!lineId) {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line Id invalid or missing.');
     }
     return ApiBase.request(`lines/${lineId}/`);
   }
@@ -71,7 +71,7 @@ export default class LineService {
   /**
    * Create a new Line and return its details.
    *
-   * Calls the following HTTP API: `POST /locations/<ID>/lines`
+   * Calls the following HTTP API: `POST /locations/<Id>/lines`
    *
    * For example:
    *
@@ -90,7 +90,7 @@ export default class LineService {
   ): Promise<Line> {
     const locationId = extractId(location);
     if (!locationId || typeof locationId !== 'string') {
-      throw new Error('Location ID invalid or missing.');
+      throw new Error('Location Id invalid or missing.');
     }
     if (!line || typeof line !== 'object') {
       throw new Error('Line invalid or missing.');
@@ -108,7 +108,7 @@ export default class LineService {
   /**
    * Update an existing Line name and color.
    *
-   * Calls the following HTTP API: `POST /lines/<ID>`
+   * Calls the following HTTP API: `POST /lines/<Id>`
    *
    * For example:
    *
@@ -127,7 +127,7 @@ export default class LineService {
 
     const lineId = extractId(line);
     if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID is invalid or missing.');
+      throw new Error('Line Id is invalid or missing.');
     }
 
     const lineName = line.name;
@@ -147,21 +147,21 @@ export default class LineService {
   /**
    * Enable a disabled Line.
    *
-   * Calls the following HTTP API: `POST /lines/<ID>/enable`
+   * Calls the following HTTP API: `POST /lines/<Id>/enable`
    *
    * For example:
    *
    * ```javascript
    * await Qminder.lines.enable(1425);
    * ```
-   * @param line the Line or the ID of the line to be enabled.
+   * @param line the Line or the Id of the line to be enabled.
    * @returns A Promise that resolves when the line was enabled, and rejects
    * when something went wrong.
    */
   static enable(line: IdOrObject<Line>): Promise<any> {
     const lineId = extractId(line);
     if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line Id invalid or missing.');
     }
     return ApiBase.request(
       `lines/${lineId}/enable`,
@@ -173,21 +173,21 @@ export default class LineService {
   /**
    * Disable a Line.
    *
-   * Calls the following HTTP API: `POST /lines/<ID>/disable`
+   * Calls the following HTTP API: `POST /lines/<Id>/disable`
    *
    * For example:
    *
    * ```javascript
    * await Qminder.lines.disable(1425);
    * ```
-   * @param line the Line or the ID of the line to be disabled.
+   * @param line the Line or the Id of the line to be disabled.
    * @returns A Promise that resolves when the line was disabled, and rejects
    * when there active tickets in the line or something went wrong.
    */
   static disable(line: IdOrObject<Line>): Promise<any> {
     const lineId = extractId(line);
     if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line Id invalid or missing.');
     }
     return ApiBase.request(
       `lines/${lineId}/disable`,
@@ -201,21 +201,21 @@ export default class LineService {
    * This archives the line and removes it from the line list, from iPads and TVs, from the service screen and from
    * statistics. The line can be unarchived.
    *
-   * Calls the following HTTP API: `POST /lines/<ID>/archive`
+   * Calls the following HTTP API: `POST /lines/<Id>/archive`
    *
    * For example:
    *
    * ```javascript
    * await Qminder.lines.archive(1425);
    * ```
-   * @param line the Line or the line's ID to archive
+   * @param line the Line or the line's Id to archive
    * @returns A Promise that resolves when the line was archived, and rejects
    * when something went wrong.
    */
   static archive(line: IdOrObject<Line>): Promise<any> {
     const lineId = extractId(line);
     if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line Id invalid or missing.');
     }
     return ApiBase.request(
       `lines/${lineId}/archive`,
@@ -227,14 +227,14 @@ export default class LineService {
   /**
    * Unarchive a Line.
    *
-   * Calls the following HTTP API: `POST /lines/<ID>/unarchive`
+   * Calls the following HTTP API: `POST /lines/<Id>/unarchive`
    *
    * For example:
    *
    * ```javascript
    * await Qminder.lines.unarchive(1425);
    * ```
-   * @param line the Line or the line's ID to unarchive
+   * @param line the Line or the line's Id to unarchive
    * @returns A Promise that resolves when the line was unarchived, and rejects
    * when something went wrong.
    */
@@ -242,7 +242,7 @@ export default class LineService {
     const lineId = extractId(line);
 
     if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line Id invalid or missing.');
     }
     return ApiBase.request(
       `lines/${lineId}/unarchive`,
@@ -256,14 +256,14 @@ export default class LineService {
    * This deletes the line and removes it from the line list, from iPads and TVs, from the service screen and from
    * statistics. This action cannot be undone.
    *
-   * Calls the following HTTP API: `DELETE /lines/<ID>`
+   * Calls the following HTTP API: `DELETE /lines/<Id>`
    *
    * For example:
    *
    * ```javascript
    * await Qminder.lines.delete(1425);
    * ```
-   * @param line the Line or the line's ID to delete
+   * @param line the Line or the line's Id to delete
    * @returns A Promise that resolves when the line was deleted, and rejects
    * when something went wrong.
    */
@@ -271,7 +271,7 @@ export default class LineService {
     const lineId = extractId(line);
 
     if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
+      throw new Error('Line Id invalid or missing.');
     }
     return ApiBase.request(
       `lines/${lineId}`,

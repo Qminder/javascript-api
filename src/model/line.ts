@@ -10,7 +10,7 @@
  */
 export default interface Line {
   /**
-   * The line's ID.
+   * The line's Id.
    * This is the unique identifier for a given Line.
    */
   id: number;

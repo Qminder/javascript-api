@@ -48,7 +48,7 @@ describe('Qminder.webhooks', function () {
     beforeEach(function () {
       requestStub.onFirstCall().resolves({ status: 'success' });
     });
-    it('throws and does not send a HTTP request if the ID is not provided', function () {
+    it('throws and does not send a HTTP request if the Id is not provided', function () {
       expect(() => Qminder.webhooks.remove(undefined as any)).toThrow();
       expect(requestStub.called).toBeFalsy();
     });
@@ -60,7 +60,7 @@ describe('Qminder.webhooks', function () {
         Qminder.webhooks.remove({ id: '4c6c94e3-9f26-4b76-8440-d2bc0ebf537c' }),
       ).not.toThrow();
     });
-    it('throws and does not send a HTTP request if the ID is not provided in the object', function () {
+    it('throws and does not send a HTTP request if the Id is not provided in the object', function () {
       expect(() => Qminder.webhooks.remove({ x: 5 } as any)).toThrow();
       expect(requestStub.called).toBeFalsy();
     });

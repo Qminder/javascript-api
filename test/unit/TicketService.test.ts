@@ -748,10 +748,10 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when line ID is missing', function () {
+    it('throws when line Id is missing', function () {
       expect(() => (Qminder.tickets.create as any)(undefined, {})).toThrow();
     });
-    it('throws when line is a Qminder.Line with undefined ID', function () {
+    it('throws when line is a Qminder.Line with undefined Id', function () {
       expect(() => (Qminder.tickets.create as any)({} as any)).toThrow();
     });
     it('Sends the extras as a JSON array', function () {
@@ -924,7 +924,7 @@ describe('TicketService', function () {
     beforeEach(function () {
       requestStub.resolves(detailsResponseBody);
     });
-    it('calls the right URL when ticket ID is passed in as number', function (done) {
+    it('calls the right URL when ticket Id is passed in as number', function (done) {
       Qminder.tickets.details(12345).then(() => {
         expect(requestStub.calledWith('tickets/12345')).toBeTruthy();
         done();
@@ -978,7 +978,7 @@ describe('TicketService', function () {
         result: 'success',
       });
     });
-    it('calls the right URL when ticket is passed as ID', function (done) {
+    it('calls the right URL when ticket is passed as Id', function (done) {
       Qminder.tickets.edit(12345, editedFields).then((response) => {
         console.log(requestStub.firstCall.args);
         expect(
@@ -1089,7 +1089,7 @@ describe('TicketService', function () {
       ).toBeTruthy();
     });
 
-    it('sends the User ID if provided', function () {
+    it('sends the User Id if provided', function () {
       Qminder.tickets.edit(12345, { user: 14141, email: null } as any);
 
       expect(
@@ -1128,7 +1128,7 @@ describe('TicketService', function () {
     beforeEach(function () {
       requestStub.resolves(JON_SNOW);
     });
-    it('calls the right URL with ticket ID as number', function (done) {
+    it('calls the right URL with ticket Id as number', function (done) {
       Qminder.tickets.call(12345).then(() => {
         expect(
           requestStub.calledWith('tickets/12345/call', undefined, 'POST'),
@@ -1150,14 +1150,14 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when the ticket ID is missing', function () {
+    it('throws when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.call as any)()).toThrow();
     });
-    it('throws when the Ticket has no ID', function () {
+    it('throws when the Ticket has no Id', function () {
       expect(() => Qminder.tickets.call({} as any)).toThrow();
     });
 
-    it('calls the right URL with ticket and user ID as string', function (done) {
+    it('calls the right URL with ticket and user Id as string', function (done) {
       const request = sinon.match({ user: '686' });
       Qminder.tickets.call(12345, 686).then(() => {
         expect(
@@ -1175,11 +1175,11 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when the User has no ID', function () {
+    it('throws when the User has no Id', function () {
       expect(() => Qminder.tickets.call(12345, {} as any)).toThrow();
     });
 
-    it('calls the right URL with ticket, user and desk ID as number', function (done) {
+    it('calls the right URL with ticket, user and desk Id as number', function (done) {
       const request = sinon.match({ user: '686' });
       Qminder.tickets.call(12345, 686).then(() => {
         expect(
@@ -1198,7 +1198,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when the Desk has no ID', function () {
+    it('throws when the Desk has no Id', function () {
       expect(() => Qminder.tickets.call(12345, 1234, {} as any)).toThrow();
     });
 
@@ -1285,7 +1285,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.recall as any)()).toThrow();
     });
   });
@@ -1303,7 +1303,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.markServed as any)()).toThrow();
     });
   });
@@ -1321,7 +1321,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.markNoShow as any)()).toThrow();
     });
   });
@@ -1340,7 +1340,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.cancel as any)()).toThrow();
     });
     it('throws an error when the ticket parameter is passed a random object', function () {
@@ -1389,7 +1389,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.returnToQueue as any)()).toThrow();
     });
     it('throws an error when the user is missing', function () {
@@ -1424,7 +1424,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.addLabel as any)()).toThrow();
     });
     it('throws an error when the label text is missing', function () {
@@ -1442,7 +1442,7 @@ describe('TicketService', function () {
     });
 
     // Regression tests for #147
-    it('calls the right URL with POST and parameters, without user ID (#147)', function (done) {
+    it('calls the right URL with POST and parameters, without user Id (#147)', function (done) {
       Qminder.tickets.addLabel(12345, 'LABEL').then(() => {
         expect(
           requestStub.calledWith(
@@ -1483,7 +1483,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.setLabels as any)()).toThrow();
     });
     it('throws an error when the labels are missing', function () {
@@ -1508,7 +1508,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.removeLabel as any)()).toThrow();
     });
     it('throws an error when the label text is missing', function () {
@@ -1543,7 +1543,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.unassign as any)()).toThrow();
     });
     it('throws an error when the assigner is missing', function () {
@@ -1626,7 +1626,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws an error when the ticket ID is missing', function () {
+    it('throws an error when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.assignToUser as any)()).toThrow();
     });
     it('throws an error when the assigner is missing', function () {
@@ -1705,7 +1705,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when the ticket ID is missing', function () {
+    it('throws when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.reorder as any)()).toThrow();
     });
   });
@@ -1723,7 +1723,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when the ticket ID is missing', function () {
+    it('throws when the ticket Id is missing', function () {
       expect(() =>
         (Qminder.tickets.getEstimatedTimeOfService as any)(),
       ).toThrow();
@@ -1783,7 +1783,7 @@ describe('TicketService', function () {
         done();
       });
     });
-    it('throws when the ticket ID is missing', function () {
+    it('throws when the ticket Id is missing', function () {
       expect(() => (Qminder.tickets.getMessages as any)()).toThrow();
     });
   });
@@ -1807,7 +1807,7 @@ describe('TicketService', function () {
       });
     });
 
-    it('calls the right URL for sending a message with user ID', function (done) {
+    it('calls the right URL for sending a message with user Id', function (done) {
       Qminder.tickets.sendMessage(12345, 'Hello!', 41414).then(() => {
         expect(
           requestStub.calledWith(
@@ -1820,7 +1820,7 @@ describe('TicketService', function () {
       });
     });
 
-    it('throws when the ticket ID is not specified', function () {
+    it('throws when the ticket Id is not specified', function () {
       expect(() => (Qminder.tickets.sendMessage as any)()).toThrow();
     });
 
@@ -1834,7 +1834,7 @@ describe('TicketService', function () {
       ).toThrow();
     });
 
-    it('does not throw when the sending user is specified as ID', function () {
+    it('does not throw when the sending user is specified as Id', function () {
       expect(() =>
         Qminder.tickets.sendMessage(12345, 'Hello', 41414),
       ).not.toThrow();

@@ -1,12 +1,12 @@
 /**
  * Find all waiting tickets since a preset date, in the first location of your account.
  *
- * This script does not assume any information, so with some extra knowledge (the location ID,
+ * This script does not assume any information, so with some extra knowledge (the location Id,
  * for example), you can make this even shorter.
  *
  * 1. It looks up all the locations in your current account
- * 2. It takes the first location's ID, and searches for tickets with the following criteria:
- *      - Location ID: the first location's ID from the lookup performed in (1)
+ * 2. It takes the first location's Id, and searches for tickets with the following criteria:
+ *      - Location Id: the first location's Id from the lookup performed in (1)
  *      - Minimum created date/time: 19 Oct 2017, 12:40 UTC
  *      - Status: NEW (tickets that are waiting)
  * 3. Once the query finishes, it outputs all of the received tickets.

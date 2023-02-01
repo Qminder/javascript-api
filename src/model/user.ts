@@ -1,4 +1,4 @@
-import Location from './Location';
+import Location from './location';
 /**
  * Represents a single user picture.
  * The 'medium' sized user picture is available if the user has an image.
@@ -37,7 +37,7 @@ export interface UserRole {
  */
 export default interface User {
   /**
-   * This user's unique ID.
+   * This user's unique Id.
    * For example, 12345
    */
   id: number;

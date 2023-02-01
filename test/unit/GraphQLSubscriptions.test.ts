@@ -4,12 +4,12 @@ import * as WebSocket from 'isomorphic-ws';
 import { Subscriber } from 'rxjs';
 import { gql } from 'graphql-tag';
 import * as sinon from 'sinon';
-import { GraphQLService } from '../../src/services/GraphQLService';
+import { GraphqlService } from '../../src/services/graphql.service';
 
 jest.mock('isomorphic-ws');
 
 describe('GraphQL subscriptions', () => {
-  let graphqlService: GraphQLService;
+  let graphqlService: GraphqlService;
   let fetchSpy: sinon.SinonStub;
   const keyValue = 'temporary_api_key';
   const FAKE_RESPONSE = {
@@ -19,7 +19,7 @@ describe('GraphQL subscriptions', () => {
   };
 
   beforeEach(() => {
-    graphqlService = new GraphQLService();
+    graphqlService = new GraphqlService();
     fetchSpy = sinon.stub(graphqlService, 'fetch');
     fetchSpy.onCall(0).resolves(FAKE_RESPONSE);
   });
@@ -129,7 +129,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('.stopSubscription', () => {
-    it('deletes the subscription from the mapping of ID -> callbacks', () => {
+    it('deletes the subscription from the mapping of Id -> callbacks', () => {
       // start the test with an empty observer-map
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,

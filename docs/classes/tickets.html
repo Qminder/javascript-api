@@ -75,7 +75,7 @@
 					<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
 
-<span style="color: #008000">// Example 1. Create a new ticket in Line ID 12346</span>
+<span style="color: #008000">// Example 1. Create a new ticket in Line Id 12346</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ticket</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">tickets</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #098658">12346</span><span style="color: #000000">, {</span>
 <span style="color: #000000">   </span><span style="color: #001080">firstName:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Jane&#039;</span><span style="color: #000000">,</span>
 <span style="color: #000000">   </span><span style="color: #001080">lastName:</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;Eyre&#039;</span><span style="color: #000000">,</span>
@@ -178,7 +178,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L835">services/TicketService.ts:835</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L835">services/ticket.service.ts:835</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -203,7 +203,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to label. The ticket ID can be used instead of the Ticket object.</p>
+										<p>The ticket to label. The ticket Id can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
@@ -235,7 +235,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L950">services/TicketService.ts:950</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L950">services/ticket.service.ts:950</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -265,7 +265,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to assign to an user. The ticket ID can be used instead of the
+										<p>The ticket to assign to an user. The ticket Id can be used instead of the
 										Ticket object.</p>
 									</div>
 								</li>
@@ -297,7 +297,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L619">services/TicketService.ts:619</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L619">services/ticket.service.ts:619</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -316,21 +316,21 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to call. The ticket ID can be used instead of the Ticket object.</p>
+										<p>The ticket to call. The ticket Id can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<p>the user that is calling the ticket. This parameter is not needed if
-											Qminder.setKey was called with an API key belonging to a specific User. The user ID can be
+											Qminder.setKey was called with an API key belonging to a specific User. The user Id can be
 										used instead of the User object.</p>
 									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> desk: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the desk to call the ticket into. The desk ID can be used instead of the Desk
+										<p>the desk to call the ticket into. The desk Id can be used instead of the Desk
 										object.</p>
 									</div>
 								</li>
@@ -357,7 +357,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L740">services/TicketService.ts:740</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L740">services/ticket.service.ts:740</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -366,14 +366,14 @@
 								</div>
 								<p>Cancelling a ticket removes them from the queue, and from statistics.</p>
 								<p>Only new tickets (with the status &#39;NEW&#39;) can be cancelled.</p>
-								<p>The user ID is mandatory.</p>
+								<p>The user Id is mandatory.</p>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to cancel. The ticket ID can be used instead of the Ticket object.</p>
+										<p>The ticket to cancel. The ticket Id can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
@@ -399,7 +399,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L413">services/TicketService.ts:413</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L413">services/ticket.service.ts:413</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -442,14 +442,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L491">services/TicketService.ts:491</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L491">services/ticket.service.ts:491</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Creates a new ticket and puts it into the queue as the last in the given line.</p>
 								</div>
-								<p>Calls this HTTP API: <code>POST /v1/lines/&lt;ID&gt;/ticket</code></p>
+								<p>Calls this HTTP API: <code>POST /v1/lines/&lt;Id&gt;/ticket</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
@@ -469,7 +469,7 @@
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ticket</span><span style="color: #000000">: </span><span style="color: #267F99">Ticket</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">Ticket</span><span style="color: #000000">({</span>
 <span style="color: #000000">   </span><span style="color: #001080">firstName:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Sarah Jane&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">   </span><span style="color: #001080">lastName:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Smith&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">   </span><span style="color: #001080">extra:</span><span style="color: #000000"> [ { </span><span style="color: #A31515">&quot;title&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Order ID&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;value&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;1234567890&quot;</span><span style="color: #000000"> } ]</span>
+<span style="color: #000000">   </span><span style="color: #001080">extra:</span><span style="color: #000000"> [ { </span><span style="color: #A31515">&quot;title&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Order Id&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;value&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;1234567890&quot;</span><span style="color: #000000"> } ]</span>
 <span style="color: #000000">});</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ticketId</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">tickets</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #001080">lineId</span><span style="color: #000000">, </span><span style="color: #001080">ticket</span><span style="color: #000000">);</span>
 <span style="color: #001080">console</span><span style="color: #000000">.</span><span style="color: #795E26">log</span><span style="color: #000000">(</span><span style="color: #001080">ticketId</span><span style="color: #000000">); </span><span style="color: #008000">// 12345681</span>
@@ -478,7 +478,7 @@
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ticket</span><span style="color: #000000">: </span><span style="color: #267F99">Ticket</span><span style="color: #000000"> = </span><span style="color: #0000FF">new</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">Ticket</span><span style="color: #000000">({</span>
 <span style="color: #000000">   </span><span style="color: #001080">firstName:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Sarah Jane&quot;</span><span style="color: #000000">,</span>
 <span style="color: #000000">   </span><span style="color: #001080">lastName:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Smith&quot;</span><span style="color: #000000">,</span>
-<span style="color: #000000">   </span><span style="color: #001080">extra:</span><span style="color: #000000"> [ { </span><span style="color: #A31515">&quot;title&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Order ID&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;value&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;1234567890&quot;</span><span style="color: #000000"> } ]</span>
+<span style="color: #000000">   </span><span style="color: #001080">extra:</span><span style="color: #000000"> [ { </span><span style="color: #A31515">&quot;title&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;Order Id&quot;</span><span style="color: #000000">, </span><span style="color: #A31515">&quot;value&quot;</span><span style="color: #001080">:</span><span style="color: #000000"> </span><span style="color: #A31515">&quot;1234567890&quot;</span><span style="color: #000000"> } ]</span>
 <span style="color: #000000">});</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">line</span><span style="color: #000000">: </span><span style="color: #267F99">Line</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">lines</span><span style="color: #000000">.</span><span style="color: #795E26">details</span><span style="color: #000000">(</span><span style="color: #098658">12345</span><span style="color: #000000">);</span>
 <span style="color: #0000FF">const</span><span style="color: #000000"> </span><span style="color: #0070C1">ticketId</span><span style="color: #000000"> = </span><span style="color: #AF00DB">await</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #001080">tickets</span><span style="color: #000000">.</span><span style="color: #795E26">create</span><span style="color: #000000">(</span><span style="color: #001080">line</span><span style="color: #000000">, </span><span style="color: #001080">ticket</span><span style="color: #000000">);</span>
@@ -512,7 +512,7 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Pick</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">&quot;id&quot;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>a promise that resolves to the ID of the new ticket.</p>
+							<p>a promise that resolves to the Id of the new ticket.</p>
 						</li>
 					</ul>
 				</section>
@@ -526,14 +526,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L541">services/TicketService.ts:541</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L541">services/ticket.service.ts:541</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Fetches the details of a given ticket ID and returns a Ticket object filled with data.</p>
+									<p>Fetches the details of a given ticket Id and returns a Ticket object filled with data.</p>
 								</div>
-								<p>Calls the following HTTP API: <code>GET /v1/tickets/&lt;ID&gt;</code></p>
+								<p>Calls the following HTTP API: <code>GET /v1/tickets/&lt;Id&gt;</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
@@ -545,7 +545,7 @@
 </code></pre>
 								<dl class="tsd-comment-tags">
 									<dt>throws</dt>
-									<dd><p>ERROR_NO_TICKET_ID when the ticket ID is undefined or not a number.</p>
+									<dd><p>ERROR_NO_TICKET_ID when the ticket Id is undefined or not a number.</p>
 									</dd>
 								</dl>
 							</div>
@@ -554,7 +554,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the Ticket to query, by ticket ID or Ticket object</p>
+										<p>the Ticket to query, by ticket Id or Ticket object</p>
 									</div>
 								</li>
 							</ul>
@@ -573,14 +573,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L567">services/TicketService.ts:567</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L567">services/ticket.service.ts:567</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Edits the ticket.</p>
 								</div>
-								<p>To edit a ticket, pass the ticket ID to edit, and an object that only includes the keys
+								<p>To edit a ticket, pass the ticket Id to edit, and an object that only includes the keys
 								that need to be changed.</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
@@ -592,7 +592,7 @@
 </code></pre>
 								<dl class="tsd-comment-tags">
 									<dt>throws</dt>
-									<dd><p>ERROR_NO_TICKET_ID when the ticket ID was undefined or not a number</p>
+									<dd><p>ERROR_NO_TICKET_ID when the ticket Id was undefined or not a number</p>
 									</dd>
 									<dt>throws</dt>
 									<dd><p>ERROR_NO_TICKET_CHANGES when the ticket changes were undefined</p>
@@ -604,7 +604,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the ticket to edit, either the Ticket object or the ticket&#39;s ID</p>
+										<p>the ticket to edit, either the Ticket object or the ticket&#39;s Id</p>
 									</div>
 								</li>
 								<li>
@@ -629,7 +629,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1278">services/TicketService.ts:1278</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1278">services/ticket.service.ts:1278</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -672,19 +672,19 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the ticket to forward, as ticket ID or ticket object</p>
+										<p>the ticket to forward, as ticket Id or ticket object</p>
 									</div>
 								</li>
 								<li>
 									<h5>line: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Line.html" class="tsd-signature-type" data-tsd-kind="Interface">Line</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the visitor&#39;s next line, as line ID or line object.</p>
+										<p>the visitor&#39;s next line, as line Id or line object.</p>
 									</div>
 								</li>
 								<li>
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the user who forwarded the ticket, as user ID or user object. Only necessary
+										<p>the user who forwarded the ticket, as user Id or user object. Only necessary
 										if forwarding on behalf of a User.</p>
 									</div>
 								</li>
@@ -704,7 +704,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1118">services/TicketService.ts:1118</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1118">services/ticket.service.ts:1118</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -712,7 +712,7 @@
 									<p>Get the estimated time that this visitor will be called for service.</p>
 								</div>
 								<p>The time will be returned as a Unix timestamp (in seconds).</p>
-								<p>Calls the HTTP API: <code>GET /v1/tickets/&lt;ID&gt;/estimated-time</code></p>
+								<p>Calls the HTTP API: <code>GET /v1/tickets/&lt;Id&gt;/estimated-time</code></p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
 <span style="color: #008000">// Get the ticket&#039;s estimated time of service</span>
@@ -728,7 +728,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the ticket to get the estimated time for. The ticket ID can be used instead
+										<p>the ticket to get the estimated time for. The ticket Id can be used instead
 										of the Ticket object.</p>
 									</div>
 								</li>
@@ -748,7 +748,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1164">services/TicketService.ts:1164</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1164">services/ticket.service.ts:1164</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -787,7 +787,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to get the message list for. The ticket ID can be used instead
+										<p>The ticket to get the message list for. The ticket Id can be used instead
 										of the Ticket object.</p>
 									</div>
 								</li>
@@ -807,7 +807,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L713">services/TicketService.ts:713</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L713">services/ticket.service.ts:713</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -822,7 +822,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to mark no-show. The ticket ID can be used instead of the Ticket
+										<p>The ticket to mark no-show. The ticket Id can be used instead of the Ticket
 										object.</p>
 									</div>
 								</li>
@@ -843,7 +843,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L687">services/TicketService.ts:687</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L687">services/ticket.service.ts:687</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -858,7 +858,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to mark served. The ticket ID can be used instead of the Ticket
+										<p>The ticket to mark served. The ticket Id can be used instead of the Ticket
 										object.</p>
 									</div>
 								</li>
@@ -878,7 +878,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L663">services/TicketService.ts:663</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L663">services/ticket.service.ts:663</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -893,7 +893,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to recall. The ticket ID can be used instead of the Ticket object.</p>
+										<p>The ticket to recall. The ticket Id can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 							</ul>
@@ -912,7 +912,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L889">services/TicketService.ts:889</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L889">services/ticket.service.ts:889</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -936,7 +936,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to remove a label from. The ticket ID can be used instead of the
+										<p>The ticket to remove a label from. The ticket Id can be used instead of the
 										Ticket object.</p>
 									</div>
 								</li>
@@ -969,14 +969,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1070">services/TicketService.ts:1070</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1070">services/ticket.service.ts:1070</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Reorder a ticket after another ticket.</p>
 								</div>
-								<p>Calls this HTTP API: <code>POST /v1/tickets/&lt;ID&gt;/reorder</code></p>
+								<p>Calls this HTTP API: <code>POST /v1/tickets/&lt;Id&gt;/reorder</code></p>
 								<p>For example:</p>
 								<pre><code class="language-javascript"><span style="color: #AF00DB">import</span><span style="color: #000000"> </span><span style="color: #0000FF">*</span><span style="color: #000000"> </span><span style="color: #AF00DB">as</span><span style="color: #000000"> </span><span style="color: #001080">Qminder</span><span style="color: #000000"> </span><span style="color: #AF00DB">from</span><span style="color: #000000"> </span><span style="color: #A31515">&#039;qminder-api&#039;</span><span style="color: #000000">;</span>
 <span style="color: #001080">Qminder</span><span style="color: #000000">.</span><span style="color: #795E26">setKey</span><span style="color: #000000">(</span><span style="color: #A31515">&#039;API_KEY_HERE&#039;</span><span style="color: #000000">);</span>
@@ -995,7 +995,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to reorder. The ticket ID can be used instead
+										<p>The ticket to reorder. The ticket Id can be used instead
 										of the Ticket object.</p>
 									</div>
 								</li>
@@ -1022,7 +1022,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L780">services/TicketService.ts:780</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L780">services/ticket.service.ts:780</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1040,14 +1040,14 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to return to queue. The ticket ID can be used instead of the
+										<p>The ticket to return to queue. The ticket Id can be used instead of the
 										Ticket object.</p>
 									</div>
 								</li>
 								<li>
 									<h5>user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The user that returned the ticket to the queue. The user ID can be used instead
+										<p>The user that returned the ticket to the queue. The user Id can be used instead
 										of the User object.</p>
 									</div>
 								</li>
@@ -1074,7 +1074,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L364">services/TicketService.ts:364</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L364">services/ticket.service.ts:364</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1138,7 +1138,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1210">services/TicketService.ts:1210</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1210">services/ticket.service.ts:1210</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1173,7 +1173,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to send a message to. The user ID may also be used.</p>
+										<p>The ticket to send a message to. The user Id may also be used.</p>
 									</div>
 								</li>
 								<li>
@@ -1185,7 +1185,7 @@
 								<li>
 									<h5>user: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the user who is sending the message. The user ID may also be used.</p>
+										<p>the user who is sending the message. The user Id may also be used.</p>
 									</div>
 								</li>
 							</ul>
@@ -1205,7 +1205,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1320">services/TicketService.ts:1320</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1320">services/ticket.service.ts:1320</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1218,7 +1218,7 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>The ticket to add external data to. The ticket ID can be used instead of the Ticket object.</p>
+										<p>The ticket to add external data to. The ticket Id can be used instead of the Ticket object.</p>
 									</div>
 								</li>
 								<li>
@@ -1255,7 +1255,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1021">services/TicketService.ts:1021</a></li>
+									<li>Defined in <a href="https://github.com/Qminder/javascript-api/blob/5cc8a56/src/services/TicketService.ts#L1021">services/ticket.service.ts:1021</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1299,13 +1299,13 @@
 								<li>
 									<h5>ticket: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/Ticket.html" class="tsd-signature-type" data-tsd-kind="Interface">Ticket</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the ticket object or the ticket&#39;s ID that needs un-assignment</p>
+										<p>the ticket object or the ticket&#39;s Id that needs un-assignment</p>
 									</div>
 								</li>
 								<li>
 									<h5>unassigner: <span class="tsd-signature-type">IdOrObject</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/User.html" class="tsd-signature-type" data-tsd-kind="Interface">User</a><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
-										<p>the User who un-assigned the ticket, for example current user&#39;s ID</p>
+										<p>the User who un-assigned the ticket, for example current user&#39;s Id</p>
 									</div>
 								</li>
 							</ul>
