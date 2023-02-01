@@ -66,7 +66,7 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
  * trying to import GraphqlService.
  */
-export class GraphqlService {
+export class GraphQLService {
   private apiKey: string;
 
   private apiServer: string;
@@ -417,4 +417,4 @@ export class GraphqlService {
   }
 }
 
-export default new GraphqlService();
+export default new GraphQLService();
