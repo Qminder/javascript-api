@@ -5,6 +5,7 @@ import { Observable, Observer, Subject } from 'rxjs';
 import { shareReplay } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
+import { ConnectionStatus } from '../model/connection-status';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base';
 
 type QueryOrDocument = string | DocumentNode;
@@ -49,13 +50,6 @@ enum MessageType {
   GQL_COMPLETE = 'complete',
 }
 
-export enum ConnectionStatus {
-  DISCONNECTED = 'DISCONNECTED',
-  CONNECTING = 'CONNECTING',
-  INITIALIZING = 'INITIALIZING',
-  CONNECTED = 'CONNECTED',
-}
-
 const KEEP_ALIVE_MESSAGE = 'ka';
 const WEBSOCKET_TIMEOUT_IN_MS = 30000;
 
@@ -76,8 +70,7 @@ export class GraphQLService {
   private socket: WebSocket = null;
 
   private connectionStatus: ConnectionStatus;
-  private connectionSubject = new Subject<ConnectionStatus>();
-  private connection$ = this.connectionSubject.pipe(shareReplay(1));
+  private connectionStatus$ = new Subject<ConnectionStatus>();
 
   private nextSubscriptionId: number = 1;
 
@@ -208,14 +201,13 @@ export class GraphQLService {
   }
 
   /**
-   * Get subscription connection observable
-   * This returns an observable which fires with the connection status every time it changes.
-   * @returns an RxJS obserable that will fire with the connection status every time it changes
+   * Get active connection status
+   * @returns Observable that fires on each connection status change
    */
-  getSubscriptionConnectionObservable(): Observable<
-    'DISCONNECTED' | 'CONNECTING' | 'INITIALIZING' | 'CONNECTED'
-  > {
-    return this.connection$;
+  getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
+    return this.connectionStatus$.pipe(
+        shareReplay(1),
+    );
   }
 
   /**
@@ -379,7 +371,7 @@ export class GraphQLService {
 
   private setConnectionStatus(status: ConnectionStatus) {
     this.connectionStatus = status;
-    this.connectionSubject.next(status);
+    this.connectionStatus$.next(status);
   }
 
   private startTrackingConnectionInterruptions(): void {
@@ -398,6 +390,8 @@ export class GraphQLService {
 
     this.socket.addEventListener('message', (event) => {
       if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
+        this.connectionStatus$.next(ConnectionStatus.CONNECTED);
+
         clearTimeout(timeOut);
         timeOut = setTimeout(
           () => this.notifyOfConnectionDrop('keep-alive'),
@@ -414,6 +408,7 @@ export class GraphQLService {
 
   private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
     console.warn(`Websocket connection dropped: Picked up by ${source} event`);
+    this.connectionStatus$.next(ConnectionStatus.RECONNECTING);
   }
 }
 
