@@ -205,9 +205,7 @@ export class GraphQLService {
    * @returns Observable that fires on each connection status change
    */
   getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
-    return this.connectionStatus$.pipe(
-        shareReplay(1),
-    );
+    return this.connectionStatus$.pipe(shareReplay(1));
   }
 
   /**
