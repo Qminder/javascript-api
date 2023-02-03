@@ -2268,13 +2268,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/jest@npm:26.0.24":
-  version: 26.0.24
-  resolution: "@types/jest@npm:26.0.24"
+"@types/jest@npm:29.4.0":
+  version: 29.4.0
+  resolution: "@types/jest@npm:29.4.0"
   dependencies:
-    jest-diff: ^26.0.0
-    pretty-format: ^26.0.0
-  checksum: ae39675412f08d884926254e9b12bfd2b5a4e4d204c94d3148cb942174a474930d0c60540133c968f22241d4712b7940c96cbc883096eb326a4d5b206fb78bd0
+    expect: ^29.0.0
+    pretty-format: ^29.0.0
+  checksum: 23760282362a252e6690314584d83a47512d4cd61663e957ed3398ecf98195fe931c45606ee2f9def12f8ed7d8aa102d492ec42d26facdaf8b78094a31e6568e
   languageName: node
   linkType: hard
 
@@ -4242,7 +4242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expect@npm:^29.4.1":
+"expect@npm:^29.0.0, expect@npm:^29.4.1":
   version: 29.4.1
   resolution: "expect@npm:29.4.1"
   dependencies:
@@ -5446,7 +5446,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-diff@npm:^26.0.0, jest-diff@npm:^26.6.2":
+"jest-diff@npm:^26.6.2":
   version: 26.6.2
   resolution: "jest-diff@npm:26.6.2"
   dependencies:
@@ -6969,7 +6969,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^26.0.0, pretty-format@npm:^26.6.2":
+"pretty-format@npm:^26.6.2":
   version: 26.6.2
   resolution: "pretty-format@npm:26.6.2"
   dependencies:
@@ -6992,7 +6992,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pretty-format@npm:^29.4.1":
+"pretty-format@npm:^29.0.0, pretty-format@npm:^29.4.1":
   version: 29.4.1
   resolution: "pretty-format@npm:29.4.1"
   dependencies:
@@ -7050,7 +7050,7 @@ __metadata:
   dependencies:
     "@babel/core": 7.20.12
     "@babel/preset-env": 7.20.2
-    "@types/jest": 26.0.24
+    "@types/jest": 29.4.0
     "@types/node": 18.11.18
     "@types/sinon": 10.0.13
     "@types/ws": ^8.0.0
