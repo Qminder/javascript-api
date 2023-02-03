@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 import WebSocket from 'isomorphic-ws';
 import fetch from 'isomorphic-fetch';
-import { map, Observable, Observer, pairwise, Subject, tap } from 'rxjs';
-import { shareReplay } from 'rxjs/operators';
+import { Observable, Observer, Subject } from 'rxjs';
+import { shareReplay, pairwise, tap, map } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
 import { ConnectionStatus } from '../model/connection-status';
@@ -223,7 +223,7 @@ export class GraphQLService {
    */
   getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
     return this.connectionStatus$.pipe(
-        this.logWebsocketReconnectionPipe,
+        this.logWebsocketReconnection,
         shareReplay(1)
     );
   }
@@ -408,7 +408,7 @@ export class GraphQLService {
 
     this.socket.addEventListener('message', (event) => {
       if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
-        this.connectionStatus$.next(ConnectionStatus.CONNECTED);
+        this.setConnectionStatus(ConnectionStatus.CONNECTED);
 
         clearTimeout(timeOut);
         timeOut = setTimeout(
@@ -426,10 +426,10 @@ export class GraphQLService {
 
   private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
     console.warn(`Websocket connection dropped: Picked up by ${source} event`);
-    this.connectionStatus$.next(ConnectionStatus.RECONNECTING);
+    this.setConnectionStatus(ConnectionStatus.RECONNECTING);
   }
 
-  private logWebsocketReconnectionPipe<T>(source$: Observable<T>): Observable<T> {
+  private logWebsocketReconnection(source$: Observable<ConnectionStatus>): Observable<ConnectionStatus> {
     return source$.pipe(
         pairwise(),
         tap(([oldValue, newValue]) => {
