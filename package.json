@@ -32,8 +32,8 @@
   "browserslist": [
     "last 2 major versions"
   ],
-  "main": "build/qminder-api.js",
-  "types": "build/qminder-api.d.ts",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
     "@babel/core": "7.20.12",
