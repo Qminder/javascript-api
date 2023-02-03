@@ -191,6 +191,19 @@ export class GraphQLService {
   }
 
   /**
+   * Initialize websocket connection.
+   * Can be used to create a link between the server that can be monitored via getSubscriptionConnectionObservable.
+   * 
+   * There is no need to call this method in order for data transfer to work. The `subscribe()` method also initializes
+   * a websocket connection before proceeding.
+   */
+  openPendingWebSocket(): void {
+    if (![ConnectionStatus.INITIALIZING, ConnectionStatus.CONNECTED].includes(this.connectionStatus)) {
+      this.openSocket();
+    }
+  }
+  
+  /**
    * Initialize the EventsService by setting the API key.
    * When the API key is set, the socket can be opened.
    * This method is automatically called when doing Qminder.setKey().
