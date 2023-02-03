@@ -8,24 +8,23 @@ import { Line } from './services/line/line.interface';
 import { Device } from './services/device/device.interface';
 
 export class Qminder {
+  public static ApiBase = ApiBase;
+  public static GraphQL = new GraphQLService();
 
-	public static ApiBase = ApiBase;
-	public static GraphQL = new GraphQLService();
+  public static Device = Device;
+  public static Line = Line;
+  public static Ticket = Ticket;
+  public static Webhooks = Webhooks;
+  public static User = User;
+  public static Location = Location;
 
-	public static Device = Device;
-	public static Line = Line;
-	public static Ticket = Ticket;
-	public static Webhooks = Webhooks;
-	public static User = User;
-	public static Location = Location;
-	
-	public static setKey(key: string): void {
-		ApiBase.setKey(key);
-		this.GraphQL.setKey(key);
-	};
+  public static setKey(key: string): void {
+    ApiBase.setKey(key);
+    this.GraphQL.setKey(key);
+  }
 
-	public static setServer(server: string): void {
-		ApiBase.setServer(server);
-		this.GraphQL.setServer(server);
-	};
+  public static setServer(server: string): void {
+    ApiBase.setServer(server);
+    this.GraphQL.setServer(server);
+  }
 }

@@ -112,7 +112,10 @@ export class ApiBase {
 
   /** The fetch() function to use for API calls.
    * @private */
-  static fetch = typeof (fetch as any).default === 'function' ? (fetch as any).default as Function : fetch;
+  static fetch =
+    typeof (fetch as any).default === 'function'
+      ? ((fetch as any).default as Function)
+      : fetch;
 
   /**
    * Set the Qminder API key used for all requests.

@@ -11,15 +11,15 @@ import { Qminder } from '../lib/qminder';
 
 const ApiBase = Qminder.ApiBase;
 export {
-	ApiBase,
-	Desk,
-	Device,
-	Line,
-	Location,
-	Ticket,
-	User,
-	Webhook,
-	ClientError,
+  ApiBase,
+  Desk,
+  Device,
+  Line,
+  Location,
+  Ticket,
+  User,
+  Webhook,
+  ClientError,
 };
 
 export { ConnectionStatus };
@@ -31,15 +31,7 @@ const tickets = Qminder.Ticket;
 const users = Qminder.User;
 const webhooks = Qminder.Webhooks;
 const graphql = Qminder.GraphQL;
-export {
-	devices,
-	lines,
-	locations,
-	tickets,
-	users,
-	webhooks,
-	graphql,
-};
+export { devices, lines, locations, tickets, users, webhooks, graphql };
 
 /**
  * Set the Qminder API key.
@@ -49,7 +41,7 @@ export {
  * @param key  the Qminder API key
  */
 export const setKey = (key: string) => {
-	Qminder.setKey(key);
+  Qminder.setKey(key);
 };
 
 /**
@@ -61,5 +53,5 @@ export const setKey = (key: string) => {
  * @hidden
  */
 export const setServer = (server: string) => {
-	Qminder.setServer(server);
+  Qminder.setServer(server);
 };

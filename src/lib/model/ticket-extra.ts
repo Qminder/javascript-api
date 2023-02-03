@@ -39,7 +39,7 @@
  * ```
  */
 export interface TicketExtra {
-	title: string;
-	value: string;
-	url?: string;
+  title: string;
+  value: string;
+  url?: string;
 }

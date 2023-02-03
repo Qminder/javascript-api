@@ -1,8 +1,4 @@
-import {
-  details,
-  edit,
-  remove,
-} from './device';
+import { details, edit, remove } from './device';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder
@@ -69,4 +65,4 @@ export const Device = {
    * @throws Error if the TV ID is not provided
    */
   remove,
-}
+};

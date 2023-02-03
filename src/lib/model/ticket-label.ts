@@ -9,6 +9,6 @@
  * For example: { "value": "Has documents", "color": "00FF00" }
  */
 export interface TicketLabel {
-	value: string;
-	color: string;
+  value: string;
+  color: string;
 }
