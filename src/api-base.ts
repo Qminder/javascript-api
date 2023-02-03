@@ -1,6 +1,6 @@
-import fetch from 'isomorphic-fetch';
-import { GraphQLApiError } from './util/errors';
-import { ClientError } from './model/ClientError';
+import fetch from 'cross-fetch';
+import { GraphQLApiError } from './util/errors.js';
+import { ClientError } from './model/ClientError.js';
 
 type HTTPMethod =
   | 'GET'
@@ -139,9 +139,6 @@ class ApiBase {
    */
   constructor() {
     this.fetch = fetch;
-    if (typeof (fetch as any).default === 'function') {
-      this.fetch = (fetch as any).default as Function;
-    }
     this.setServer('api.qminder.com');
   }
 

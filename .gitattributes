@@ -1,0 +1,2 @@
+.yarn/releases/*.cjs binary
+.yarn/plugins/@yarnpkg/*.cjs binary
