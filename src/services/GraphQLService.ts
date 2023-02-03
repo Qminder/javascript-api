@@ -2,7 +2,7 @@
 import WebSocket from 'isomorphic-ws';
 import fetch from 'isomorphic-fetch';
 import { Observable, Observer, Subject } from 'rxjs';
-import { shareReplay, pairwise, tap, map } from 'rxjs/operators';
+import { shareReplay, pairwise, tap, map, distinctUntilChanged } from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
 import { ConnectionStatus } from '../model/connection-status';
@@ -223,6 +223,7 @@ export class GraphQLService {
    */
   getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
     return this.connectionStatus$.pipe(
+      distinctUntilChanged(),
       this.logWebsocketReconnection,
       shareReplay(1),
     );
