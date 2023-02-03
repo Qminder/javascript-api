@@ -2,7 +2,13 @@
 import WebSocket from 'isomorphic-ws';
 import fetch from 'isomorphic-fetch';
 import { Observable, Observer, Subject } from 'rxjs';
-import { shareReplay, pairwise, tap, map, distinctUntilChanged } from 'rxjs/operators';
+import {
+  shareReplay,
+  pairwise,
+  tap,
+  map,
+  distinctUntilChanged,
+} from 'rxjs/operators';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer';
 import { ConnectionStatus } from '../model/connection-status';
