@@ -223,8 +223,8 @@ export class GraphQLService {
    */
   getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
     return this.connectionStatus$.pipe(
-        this.logWebsocketReconnection,
-        shareReplay(1)
+      this.logWebsocketReconnection,
+      shareReplay(1),
     );
   }
 
@@ -429,15 +429,20 @@ export class GraphQLService {
     this.setConnectionStatus(ConnectionStatus.RECONNECTING);
   }
 
-  private logWebsocketReconnection(source$: Observable<ConnectionStatus>): Observable<ConnectionStatus> {
+  private logWebsocketReconnection(
+    source$: Observable<ConnectionStatus>,
+  ): Observable<ConnectionStatus> {
     return source$.pipe(
-        pairwise(),
-        tap(([oldValue, newValue]) => {
-          if (oldValue === ConnectionStatus.RECONNECTING && newValue === ConnectionStatus.CONNECTED) {
-            console.log('Websocket connection reestablished')
-          }
-        }),
-        map(([_, newValue]) => newValue),
+      pairwise(),
+      tap(([oldValue, newValue]) => {
+        if (
+          oldValue === ConnectionStatus.RECONNECTING &&
+          newValue === ConnectionStatus.CONNECTED
+        ) {
+          console.log('Websocket connection reestablished');
+        }
+      }),
+      map(([_, newValue]) => newValue),
     );
   }
 }
