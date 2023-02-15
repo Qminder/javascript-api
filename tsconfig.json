@@ -1,18 +1,20 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "es2020",
     "noImplicitAny": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "sourceMap": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
-    "target": "es6",
+    "target": "es2020",
     "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "outDir": "build",
     "rootDir": "src",
     "declaration": true
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "files": ["src/index.ts"]
 }

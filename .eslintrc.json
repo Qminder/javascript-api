@@ -2,15 +2,34 @@
   "env": {
     "browser": true
   },
-  "extends": ["eslint:recommended", "@qminder", "prettier"],
+  "plugins": ["import", "@typescript-eslint"],
+  "extends": [
+    "eslint:recommended",
+    "prettier",
+    "plugin:import/recommended",
+    "plugin:import/typescript"
+  ],
+  "parser": "@typescript-eslint/parser",
   "parserOptions": {
+    "ecmaVersion": 2020,
     "sourceType": "module"
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
+    }
+  },
+  "rules": {
+    "import/namespace": "off",
+    "no-unused-vars": "off",
+    "import/no-named-as-default": "off"
   },
   "overrides": [
     {
-      "files": ["**/*.test.ts"],
+      "files": ["*.test.ts", "test/unit/jestSetupFile.ts"],
       "env": {
-        "jest": true
+        "jest": true,
+        "node": true
       },
       "rules": {
         "func-names": "off",

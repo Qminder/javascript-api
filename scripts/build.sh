@@ -6,4 +6,4 @@ set -e
 #
 
 rm -rf build
-tsc --declaration --outDir build --module commonjs --target es2017 --moduleResolution node --esModuleInterop true ./src/index.ts
+yarn run tsc -p .
