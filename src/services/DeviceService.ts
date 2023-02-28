@@ -1,6 +1,6 @@
-import ApiBase from '../api-base';
-import Device from '../model/Device';
-import { extractId, IdOrObject } from '../util/id-or-object';
+import ApiBase from '../api-base.js';
+import Device from '../model/Device.js';
+import { extractId, IdOrObject } from '../util/id-or-object.js';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder

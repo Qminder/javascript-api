@@ -10,8 +10,9 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
-          node-version: 14.x
-      - run: yarn install --frozen-lockfile
+          node-version: 16.x
+          cache: 'yarn'
+      - run: yarn install --immutable
       - run: yarn jest --coverage
       - uses: codecov/codecov-action@v3
         with:

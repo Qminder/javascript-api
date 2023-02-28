@@ -2,43 +2,71 @@ on: push
 name: Test on push
 jobs:
   test:
-    strategy:
-      matrix:
-        node-version: [12.x, 14.x, 15.x, 16.x]
-    name: Test on NodeJS ${{ matrix.node-version }}
+    name: Test (JSDOM)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 16.x
+          cache: 'yarn'
       - name: Install Deps
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
       - name: Run tests (browser)
         run: yarn test
+  test_node:
+    name: Test (Node.js)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
+      - name: Install Deps
+        run: yarn install --immutable
       - name: Run tests (node)
         run: yarn test-node
+  test_pack:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
+      - name: Install Deps
+        run: yarn install --immutable
       - name: Build the package
         run: yarn pack
   prettier:
     name: Check prettier
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
       - name: Install Deps
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
       - name: Prettier check
         run: |
           yarn run lint-prettier
   eslint:
     name: Check eslint
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: 'yarn'
       - name: Install Deps
         run: |
-          yarn install --frozen-lockfile
+          yarn install --immutable
       - name: Eslint check
         run: |
           yarn run lint-eslint

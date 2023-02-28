@@ -1,23 +1,23 @@
 // Import data structures
-import Desk from './model/Desk';
-import Device from './model/Device';
-import Line from './model/Line';
-import Location from './model/Location';
-import Ticket from './model/Ticket';
-import User from './model/User';
-import Webhook from './model/Webhook';
-import { ClientError } from './model/ClientError';
+import Desk from './model/Desk.js';
+import Device from './model/Device.js';
+import Line from './model/Line.js';
+import Location from './model/Location.js';
+import Ticket from './model/Ticket.js';
+import User from './model/User.js';
+import Webhook from './model/Webhook.js';
+import { ClientError } from './model/ClientError.js';
 
 // Import services
-import ApiBase from './api-base';
-import DeviceService from './services/DeviceService';
-import LineService from './services/LineService';
-import LocationService from './services/LocationService';
-import TicketService from './services/TicketService';
-import UserService from './services/UserService';
-import WebhooksService from './services/WebhooksService';
-import GraphQLService from './services/GraphQLService';
-import { ConnectionStatus } from './model/connection-status';
+import ApiBase from './api-base.js';
+import DeviceService from './services/DeviceService.js';
+import LineService from './services/LineService.js';
+import LocationService from './services/LocationService.js';
+import TicketService from './services/TicketService.js';
+import UserService from './services/UserService.js';
+import WebhooksService from './services/WebhooksService.js';
+import GraphQLService  from './services/GraphQLService.js';
+import { ConnectionStatus } from './model/connection-status.js';
 
 // Export all data structures
 export {

@@ -12,11 +12,12 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@v3
         with:
-          node-version: 12.x
+          node-version: 16.x
+          cache: 'yarn'
           always-auth: true
           registry-url: https://registry.npmjs.org
       - name: Install Deps
-        run: yarn install --frozen-lockfile --ignore-scripts
+        run: yarn install --immutable --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Library
