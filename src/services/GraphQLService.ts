@@ -3,9 +3,16 @@ import fetch from 'cross-fetch';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
-import { firstValueFrom, Observable, Observer, Subject } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { Observable, Observer, Subject } from 'rxjs';
+import { 
+  distinctUntilChanged,
+  pairwise,
+  tap,
+  map,
+  shareReplay
+} from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
+import { ConnectionStatus } from '../model/connection-status.js';
 
 type QueryOrDocument = string | DocumentNode;
 
