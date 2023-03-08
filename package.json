@@ -35,11 +35,13 @@
   ],
   "exports": {
     ".": {
+      "types": "./build/qminder-api.d.ts",
       "import": "./build/qminder-api.js",
-      "types": "./build/qminder-api.d.ts"
+      "default": "./build/qminder-api.js"
     }
   },
-  "main": "build/qminder-api.js",
+  "main": "./build/qminder-api.js",
+  "types": "./build/qminder-api.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
     "@babel/core": "7.21.0",
