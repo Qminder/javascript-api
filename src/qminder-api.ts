@@ -16,7 +16,7 @@ import LocationService from './services/LocationService.js';
 import TicketService from './services/TicketService.js';
 import UserService from './services/UserService.js';
 import WebhooksService from './services/WebhooksService.js';
-import GraphQLService  from './services/GraphQLService.js';
+import GraphQLService from './services/GraphQLService.js';
 import { ConnectionStatus } from './model/connection-status.js';
 
 // Export all data structures

@@ -4,12 +4,12 @@ import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, Subject } from 'rxjs';
-import { 
+import {
   distinctUntilChanged,
   pairwise,
   tap,
   map,
-  shareReplay
+  shareReplay,
 } from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
 import { ConnectionStatus } from '../model/connection-status.js';
