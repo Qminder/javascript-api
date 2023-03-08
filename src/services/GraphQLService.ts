@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
-import { Observable, Observer, Subject } from 'rxjs';
+import { Observable, Observer, startWith, Subject } from 'rxjs';
 import {
   distinctUntilChanged,
   pairwise,
@@ -92,12 +92,21 @@ export class GraphQLService {
   /** Counts the amount of times the event emitter retried connecting. This is used for
    *  exponential retry falloff. */
   private connectionRetries = 0;
+  
+  private subscriptionConnection$: Observable<ConnectionStatus>;
 
   constructor() {
     this.setServer('api.qminder.com');
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.fetch = fetch;
     this.WebSocket = WebSocket;
+
+    this.subscriptionConnection$ = this.connectionStatus$.pipe(
+        startWith(ConnectionStatus.INITIALIZING),
+        distinctUntilChanged(),
+        this.logWebsocketReconnection,
+        shareReplay(1),
+    );
   }
 
   /**
@@ -228,11 +237,7 @@ export class GraphQLService {
    * @returns Observable that fires on each connection status change
    */
   getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
-    return this.connectionStatus$.pipe(
-      distinctUntilChanged(),
-      this.logWebsocketReconnection,
-      shareReplay(1),
-    );
+    return this.subscriptionConnection$;
   }
 
   /**
@@ -442,6 +447,8 @@ export class GraphQLService {
     return source$.pipe(
       pairwise(),
       tap(([oldValue, newValue]) => {
+        console.log('Old value ', oldValue)
+        console.log('New value ', newValue)
         if (
           oldValue === ConnectionStatus.RECONNECTING &&
           newValue === ConnectionStatus.CONNECTED
