@@ -92,7 +92,7 @@ export class GraphQLService {
   /** Counts the amount of times the event emitter retried connecting. This is used for
    *  exponential retry falloff. */
   private connectionRetries = 0;
-  
+
   private subscriptionConnection$: Observable<ConnectionStatus>;
 
   constructor() {
@@ -102,10 +102,10 @@ export class GraphQLService {
     this.WebSocket = WebSocket;
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
-        startWith(ConnectionStatus.INITIALIZING),
-        distinctUntilChanged(),
-        this.logWebsocketReconnection,
-        shareReplay(1),
+      startWith(ConnectionStatus.INITIALIZING),
+      distinctUntilChanged(),
+      this.logWebsocketReconnection,
+      shareReplay(1),
     );
   }
 
@@ -447,8 +447,8 @@ export class GraphQLService {
     return source$.pipe(
       pairwise(),
       tap(([oldValue, newValue]) => {
-        console.log('Old value ', oldValue)
-        console.log('New value ', newValue)
+        console.log('Old value ', oldValue);
+        console.log('New value ', newValue);
         if (
           oldValue === ConnectionStatus.RECONNECTING &&
           newValue === ConnectionStatus.CONNECTED
