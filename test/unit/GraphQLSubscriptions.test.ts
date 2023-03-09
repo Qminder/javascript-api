@@ -6,10 +6,8 @@
 import { gql } from 'graphql-tag';
 import { filter, firstValueFrom, Subscriber } from 'rxjs';
 import * as sinon from 'sinon';
-import {
-  ConnectionStatus,
-  GraphQLService,
-} from '../../src/services/GraphQLService';
+import { GraphQLService } from '../../src/services/GraphQLService';
+import { ConnectionStatus } from '../../src/model/connection-status.js';
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphQLService;
