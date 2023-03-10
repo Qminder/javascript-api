@@ -50,13 +50,6 @@ enum MessageType {
   GQL_COMPLETE = 'complete',
 }
 
-export enum ConnectionStatus {
-  DISCONNECTED = 'DISCONNECTED',
-  CONNECTING = 'CONNECTING',
-  INITIALIZING = 'INITIALIZING',
-  CONNECTED = 'CONNECTED',
-}
-
 const KEEP_ALIVE_MESSAGE = 'ka';
 const WEBSOCKET_TIMEOUT_IN_MS = 30000;
 
@@ -77,8 +70,7 @@ export class GraphQLService {
   private socket: WebSocket = null;
 
   private connectionStatus: ConnectionStatus;
-  private connectionSubject = new Subject<ConnectionStatus>();
-  private connection$ = this.connectionSubject.pipe(shareReplay(1));
+  private connectionStatus$ = new Subject<ConnectionStatus>();
 
   private nextSubscriptionId: number = 1;
 
@@ -93,13 +85,19 @@ export class GraphQLService {
    *  exponential retry falloff. */
   private connectionRetries = 0;
 
+  private subscriptionConnection$: Observable<ConnectionStatus>;
+
   constructor() {
     this.setServer('api.qminder.com');
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.fetch = fetch;
-    if (typeof (fetch as any).default === 'function') {
-      this.fetch = (fetch as any).default as Function;
-    }
+
+    this.subscriptionConnection$ = this.connectionStatus$.pipe(
+      startWith(ConnectionStatus.INITIALIZING),
+      distinctUntilChanged(),
+      this.logWebsocketReconnection,
+      shareReplay(1),
+    );
   }
 
   /**
@@ -199,6 +197,23 @@ export class GraphQLService {
   }
 
   /**
+   * Initialize websocket connection.
+   * Can be used to create a link between the server that can be monitored via getSubscriptionConnectionObservable.
+   *
+   * There is no need to call this method in order for data transfer to work. The `subscribe()` method also initializes
+   * a websocket connection before proceeding.
+   */
+  openPendingWebSocket(): void {
+    if (
+      ![ConnectionStatus.INITIALIZING, ConnectionStatus.CONNECTED].includes(
+        this.connectionStatus,
+      )
+    ) {
+      this.openSocket();
+    }
+  }
+
+  /**
    * Initialize the EventsService by setting the API key.
    * When the API key is set, the socket can be opened.
    * This method is automatically called when doing Qminder.setKey().
@@ -209,14 +224,11 @@ export class GraphQLService {
   }
 
   /**
-   * Get subscription connection observable
-   * This returns an observable which fires with the connection status every time it changes.
-   * @returns an RxJS obserable that will fire with the connection status every time it changes
+   * Get active connection status
+   * @returns Observable that fires on each connection status change
    */
-  getSubscriptionConnectionObservable(): Observable<
-    'DISCONNECTED' | 'CONNECTING' | 'INITIALIZING' | 'CONNECTED'
-  > {
-    return this.connection$;
+  getSubscriptionConnectionObservable(): Observable<ConnectionStatus> {
+    return this.subscriptionConnection$;
   }
 
   /**
@@ -284,7 +296,7 @@ export class GraphQLService {
       this.socket = null;
 
       // If it wasn't a client-side close socket, retry connecting.
-      if (event.code !== 1000) {
+      if (this.enableAutomaticReconnect && event.code !== 1000) {
         // Increase the retry timeout, the more times we retry
         const timeoutMult = Math.floor(this.connectionRetries / 10);
         const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
@@ -380,7 +392,7 @@ export class GraphQLService {
 
   private setConnectionStatus(status: ConnectionStatus) {
     this.connectionStatus = status;
-    this.connectionSubject.next(status);
+    this.connectionStatus$.next(status);
   }
 
   private startTrackingConnectionInterruptions(): void {
@@ -399,6 +411,8 @@ export class GraphQLService {
 
     this.socket.addEventListener('message', (event) => {
       if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
+        this.setConnectionStatus(ConnectionStatus.CONNECTED);
+
         clearTimeout(timeOut);
         timeOut = setTimeout(
           () => this.notifyOfConnectionDrop('keep-alive'),
@@ -415,5 +429,25 @@ export class GraphQLService {
 
   private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
     console.warn(`Websocket connection dropped: Picked up by ${source} event`);
+    this.setConnectionStatus(ConnectionStatus.RECONNECTING);
+  }
+
+  private logWebsocketReconnection(
+    source$: Observable<ConnectionStatus>,
+  ): Observable<ConnectionStatus> {
+    return source$.pipe(
+      pairwise(),
+      tap(([oldValue, newValue]) => {
+        console.log('Old value ', oldValue);
+        console.log('New value ', newValue);
+        if (
+          oldValue === ConnectionStatus.RECONNECTING &&
+          newValue === ConnectionStatus.CONNECTED
+        ) {
+          console.log('Websocket connection reestablished');
+        }
+      }),
+      map(([_, newValue]) => newValue),
+    );
   }
 }
