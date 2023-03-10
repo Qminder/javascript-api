@@ -1,5 +1,5 @@
-import Location from '../../model/location';
-import Desk from '../../model/desk';
+import { Location } from '../../model/location';
+import { Desk } from '../../model/desk';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 import { ApiBase } from '../api-base/api-base';
 

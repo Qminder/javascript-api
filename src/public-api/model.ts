@@ -1,4 +1,14 @@
 export { TicketCreationParameters } from '../lib/services/ticket/model/ticket-creation-parameters';
 export { GraphqlResponse } from '../lib/services/graphql/model/graphql-response';
+export { ClientError } from '../lib/model/client-error';
+export { ConnectionStatus } from '../lib/model/connection-status';
+export { Desk } from '../lib/model/desk';
+export { Device } from '../lib/model/device';
+export { Id } from '../lib/model/id';
+export { Line } from '../lib/model/line';
+export { Location } from '../lib/model/location';
 export { TicketExtra } from '../lib/model/ticket-extra';
 export { TicketLabel } from '../lib/model/ticket-label';
+export { Ticket } from '../lib/model/ticket';
+export { User } from '../lib/model/user';
+export { Webhook } from '../lib/model/webhook';

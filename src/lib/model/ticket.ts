@@ -18,7 +18,7 @@
 import { TicketExtra } from './ticket-extra';
 import { TicketLabel } from './ticket-label';
 
-export default interface Ticket {
+export interface Ticket {
   /**
    * This ticket's unique ID. For example, 14995020
    */

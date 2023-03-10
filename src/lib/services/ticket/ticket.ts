@@ -1,6 +1,6 @@
-import Ticket, { TicketStatus, TicketMessage } from '../../model/ticket';
-import User from '../../model/user';
-import Line from '../../model/line';
+import { Ticket, TicketStatus, TicketMessage } from '../../model/ticket';
+import { User } from '../../model/user';
+import { Line } from '../../model/line';
 import {
   extractId,
   extractIdToNumber,

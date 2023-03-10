@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
-import User from '../../model/user';
+import { User } from '../../model/user';
 import { User as UserService } from './user.interface';
 
 describe('User', function () {

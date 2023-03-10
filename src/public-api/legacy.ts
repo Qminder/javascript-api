@@ -1,12 +1,12 @@
-import Desk from '../lib/model/desk';
-import Device from '../lib/model/device';
-import Line from '../lib/model/line';
-import Location from '../lib/model/location';
-import Ticket from '../lib/model/ticket';
-import User from '../lib/model/user';
-import Webhook from '../lib/model/webhook';
+import { Desk } from '../lib/model/desk';
+import { Device } from '../lib/model/device';
+import { Line } from '../lib/model/line';
+import { Location } from '../lib/model/location';
+import { Ticket } from '../lib/model/ticket';
+import { User } from '../lib/model/user';
+import { Webhook } from '../lib/model/webhook';
 import { ClientError } from '../lib/model/client-error';
-import { ConnectionStatus } from '../lib/services/graphql/graphql.service';
+import { ConnectionStatus } from '../lib/model/connection-status';
 import { Qminder } from '../lib/qminder';
 
 const ApiBase = Qminder.ApiBase;

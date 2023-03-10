@@ -1,4 +1,4 @@
-import Ticket from '../../../model/ticket';
+import { Ticket } from '../../../model/ticket';
 
 export type TicketCreationParameters = Pick<
   Ticket,

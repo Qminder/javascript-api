@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
 import { Location as LocationService } from './location.interface';
-import Desk from '../../model/desk';
+import { Desk } from '../../model/desk';
 
 describe('Location', function () {
   const LOCATIONS = [

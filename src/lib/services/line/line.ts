@@ -1,5 +1,5 @@
-import Line from '../../model/line';
-import Location from '../../model/location';
+import { Line } from '../../model/line';
+import { Location } from '../../model/location';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 import { ApiBase } from '../api-base/api-base';
 

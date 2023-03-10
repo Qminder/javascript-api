@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
 import { Line as LineService } from './line.interface';
-import Line from '../../model/line';
+import { Line } from '../../model/line';
 
 describe('LineService', function () {
   const LINES = [

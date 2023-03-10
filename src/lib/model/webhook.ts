@@ -1,10 +1,10 @@
-import { ID } from './id';
+import { Id } from './id';
 /**
  * A Webhook is a URL that Qminder sends automatic POST requests into, in order to notify
  * downstream listeners about various events such as ticket creation or location changes.
  */
 
-export default interface Webhook {
-  id: ID;
+export interface Webhook {
+  id: Id;
   secret: string;
 }

@@ -1,8 +1,8 @@
 import { ApiBase, SuccessResponse } from '../api-base/api-base';
-import User from '../../model/user';
-import Desk from '../../model/desk';
-import Location from '../../model/location';
-import Line from '../../model/line';
+import { User } from '../../model/user';
+import { Desk } from '../../model/desk';
+import { Location } from '../../model/location';
+import { Line } from '../../model/line';
 import {
   extractId,
   extractIdToNumber,

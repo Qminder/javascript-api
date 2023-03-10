@@ -110,10 +110,6 @@ export class ApiBase {
    */
   private static apiServer = 'api.qminder.com';
 
-  /** The fetch() function to use for API calls.
-   * @private */
-  static fetch = fetch
-
   /**
    * Set the Qminder API key used for all requests.
    * After setting the API key, you can use the library to make API calls.
@@ -149,7 +145,7 @@ export class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: CorrectRequestInit = {
+    const init: RequestInit = {
       method,
       mode: 'cors',
       headers: {
@@ -179,7 +175,7 @@ export class ApiBase {
       init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
 
-    return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
+    return fetch(`https://${this.apiServer}/v1/${url}`, init)
       .then((response: Response) => response.json())
       .then((responseJson: ApiResponse) => {
         if (responseIsLegacyError(responseJson)) {
@@ -192,7 +188,7 @@ export class ApiBase {
           const message = Object.values(responseJson.error)[0];
           throw new ClientError(key, message);
         }
-        return responseJson;
+        return responseJson as Promise<T>;
       });
   }
 
@@ -212,7 +208,7 @@ export class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: CorrectRequestInit = {
+    const init: RequestInit = {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,
@@ -222,7 +218,7 @@ export class ApiBase {
       body: JSON.stringify(query),
     };
 
-    return this.fetch(`https://${this.apiServer}/graphql`, init)
+    return fetch(`https://${this.apiServer}/graphql`, init)
       .then((response: Response) => response.json())
       .then((responseJson: any) => {
         if (responseJson.errorMessage) {

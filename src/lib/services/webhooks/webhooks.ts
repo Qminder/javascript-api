@@ -1,5 +1,5 @@
 import { ApiBase, SuccessResponse } from '../api-base/api-base';
-import Webhook from '../../model/webhook';
+import { Webhook } from '../../model/webhook';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 export const ERROR_NO_URL = 'No URL provided';
