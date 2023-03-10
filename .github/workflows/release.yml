@@ -18,13 +18,9 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: Install Deps
         run: yarn install --immutable
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Build Library
         run: yarn build
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Publish package to NPM
         run: yarn npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          YARN_NPM_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
