@@ -84,10 +84,25 @@ interface CorrectRequestInit {
   };
   mode?: 'cors' | 'same-origin' | 'navigate' | 'no-cors';
   credentials?: 'omit' | 'same-origin' | 'include';
-  cache?: "default" | "force-cache" | "no-cache" | "no-store" | "only-if-cached" | "reload";
+  cache?:
+    | 'default'
+    | 'force-cache'
+    | 'no-cache'
+    | 'no-store'
+    | 'only-if-cached'
+    | 'reload';
   body?: string | Blob;
   referrer?: string;
-  referrerPolicy?: "" | "no-referrer" | "no-referrer-when-downgrade" | "origin" | "origin-when-cross-origin" | "same-origin" | "strict-origin" | "strict-origin-when-cross-origin" | "unsafe-url";
+  referrerPolicy?:
+    | ''
+    | 'no-referrer'
+    | 'no-referrer-when-downgrade'
+    | 'origin'
+    | 'origin-when-cross-origin'
+    | 'same-origin'
+    | 'strict-origin'
+    | 'strict-origin-when-cross-origin'
+    | 'unsafe-url';
 }
 
 /**
@@ -174,7 +189,7 @@ export class ApiBase {
     if (idempotencyKey) {
       init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
-    
+
     try {
       const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
       const responseJson = await response.json();
@@ -182,7 +197,7 @@ export class ApiBase {
       return responseJson;
     } catch (e: any) {
       if (e instanceof Error) {
-        throw new Error(`Error in api base: ${e.message}`);
+        throw new Error(e.message);
       }
     }
   }
@@ -191,7 +206,7 @@ export class ApiBase {
     if (responseIsLegacyError(responseJson)) {
       throw new Error(responseJson.developerMessage || responseJson.message);
     }
-    
+
     if (responseIsClientError(responseJson)) {
       const key = Object.keys(responseJson.error)[0];
       const message = Object.values(responseJson.error)[0];
