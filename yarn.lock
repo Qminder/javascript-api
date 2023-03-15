@@ -4053,9 +4053,9 @@ __metadata:
   linkType: hard
 
 "es6-promise@npm:^4.1.1":
-  version: 4.2.5
-  resolution: "es6-promise@npm:4.2.5"
-  checksum: 1d0bdd4a1a51264edb353c6c9416327386118a67094a6e4ad0696fe4f5758e15a41a7e9f0111c6c8652989915e6c78f18656fb56e33a394145540d577fb69662
+  version: 4.2.8
+  resolution: "es6-promise@npm:4.2.8"
+  checksum: 95614a88873611cb9165a85d36afa7268af5c03a378b35ca7bda9508e1d4f1f6f19a788d4bc755b3fd37c8ebba40782018e02034564ff24c9d6fa37e959ad57d
   languageName: node
   linkType: hard
 
