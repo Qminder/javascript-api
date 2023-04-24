@@ -4,13 +4,7 @@ import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
-import {
-  distinctUntilChanged,
-  pairwise,
-  tap,
-  map,
-  shareReplay,
-} from 'rxjs/operators';
+import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
 import { ConnectionStatus } from '../model/connection-status.js';
 
@@ -59,6 +53,9 @@ enum MessageType {
 const KEEP_ALIVE_MESSAGE = 'ka';
 const WEBSOCKET_TIMEOUT_IN_MS = 30000;
 
+// https://www.w3.org/TR/websockets/#concept-websocket-close-fail
+const CLIENT_SIDE_CLOSE_EVENT = 1000;
+
 /**
  * A service that lets the user query Qminder API via GraphQL statements.
  * Queries and subscriptions are supported. There is no support for mutations.
@@ -67,11 +64,9 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  * trying to import GraphQLService.
  */
 export class GraphQLService {
-  private apiKey: string;
 
+  private apiKey: string;
   private apiServer: string;
-  private enableAutomaticReconnect = true;
-  WebSocket: typeof WebSocket;
 
   fetch: Function;
 
@@ -99,12 +94,10 @@ export class GraphQLService {
     this.setServer('api.qminder.com');
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.fetch = fetch;
-    this.WebSocket = WebSocket;
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
-      startWith(ConnectionStatus.INITIALIZING),
+      startWith(ConnectionStatus.CONNECTING),
       distinctUntilChanged(),
-      this.logWebsocketReconnection,
       shareReplay(1),
     );
   }
@@ -213,11 +206,7 @@ export class GraphQLService {
    * a websocket connection before proceeding.
    */
   openPendingWebSocket(): void {
-    if (
-      ![ConnectionStatus.INITIALIZING, ConnectionStatus.CONNECTED].includes(
-        this.connectionStatus,
-      )
-    ) {
+    if (![ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(this.connectionStatus)) {
       this.openSocket();
     }
   }
@@ -257,17 +246,17 @@ export class GraphQLService {
     });
   }
 
-  private openSocket() {
-    if (this.connectionStatus !== ConnectionStatus.DISCONNECTED) {
+  private async openSocket() {
+    if ([ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(this.connectionStatus)) {
       return;
     }
+    const temporaryApiKey = await this.fetchTemporaryApiKey();
+
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
-    this.fetchTemporaryApiKey().then((tempApiKey: string) => {
-      this.createSocketConnection(tempApiKey);
-    });
+    this.createSocketConnection(temporaryApiKey);
   }
 
-  private fetchTemporaryApiKey(): Promise<string> {
+  private async fetchTemporaryApiKey(): Promise<string> {
     const url = 'graphql/connection-key';
     const body = {
       method: 'POST',
@@ -277,58 +266,35 @@ export class GraphQLService {
       },
     };
 
-    return this.fetch(`https://${this.apiServer}/${url}`, body)
-      .then((response: Response) => response.json())
-      .then((responseJson: { key: string }) => responseJson.key);
+    try {
+      const response = await this.fetch(`https://${this.apiServer}/${url}`, body);
+      const responseJson = await response.json(); 
+      return responseJson.key;
+    } catch (e) {
+      console.warn('Failed fetching temporary API key! Retrying in 5 seconds!');
+      return new Promise(resolve => setTimeout(() => resolve(this.fetchTemporaryApiKey()), 5000));
+    }
   }
 
-  private createSocketConnection(tempApiKey: string) {
-    const socket = new this.WebSocket(
-      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${tempApiKey}`,
-    );
-    this.socket = socket;
+  private createSocketConnection(temporaryApiKey: string) {
+    this.socket = new WebSocket(`wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`);
 
+    const socket = this.socket;
     socket.onopen = () => {
-      console.log('[GraphQL subscription] Connection established!');
-      this.setConnectionStatus(ConnectionStatus.INITIALIZING);
-      this.connectionRetries = 0;
-      this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
-
-      this.startTrackingConnectionInterruptions();
+      this.sendRawMessage(
+          JSON.stringify({ id: undefined, type: MessageType.GQL_CONNECTION_INIT, payload: null })
+      );
     };
 
     socket.onclose = (event: { code: number }) => {
-      // NOTE: if the event code is 1006, it is any of the errors in the list here:
-      // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
-      console.log(`[GraphQL subscription] Connection lost: ${event.code}`);
-      this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-      this.socket = null;
-
-      // If it wasn't a client-side close socket, retry connecting.
-      if (this.enableAutomaticReconnect && event.code !== 1000) {
-        // Increase the retry timeout, the more times we retry
-        const timeoutMult = Math.floor(this.connectionRetries / 10);
-        const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
-
-        if (this.retryTimeout) {
-          clearTimeout(this.retryTimeout);
-        }
-
-        console.log(
-          `[GraphQL subscription] Reconnecting in ${
-            newTimeout / 1000
-          } seconds...`,
-        );
-        this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
-
-        this.connectionRetries += 1;
+      if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
+        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+        this.socket = null;
       }
     };
 
     socket.onerror = () => {
-      console.log(
-        '[GraphQL subscription] An error occurred, the websocket will disconnect.',
-      );
+      console.error('[GraphQL subscription] An error occurred!');
     };
 
     socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
@@ -341,10 +307,9 @@ export class GraphQLService {
 
           case MessageType.GQL_CONNECTION_ACK:
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
+            this.startTrackingWithKeepAlive();
             this.subscriptions.forEach((subscription) => {
-              const payload = {
-                query: subscription.query,
-              };
+              const payload = { query: subscription.query };
               const msg = JSON.stringify({
                 id: subscription.id,
                 type: MessageType.GQL_START,
@@ -355,9 +320,7 @@ export class GraphQLService {
             break;
 
           case MessageType.GQL_DATA:
-            this.subscriptionObserverMap[message.id]?.next(
-              message.payload.data,
-            );
+            this.subscriptionObserverMap[message.id]?.next(message.payload.data);
             break;
 
           case MessageType.GQL_COMPLETE:
@@ -366,9 +329,7 @@ export class GraphQLService {
 
           default:
             if (message.payload && message.payload.data) {
-              this.subscriptionObserverMap[message.id]?.error(
-                message.payload.data,
-              );
+              this.subscriptionObserverMap[message.id]?.error(message.payload.data);
             } else if (message.errors && message.errors.length > 0) {
               this.subscriptionObserverMap[message.id]?.error(message.errors);
             }
@@ -378,12 +339,8 @@ export class GraphQLService {
   }
 
   private sendMessage(id: string, type: MessageType, payload: any) {
-    const message = JSON.stringify({ id, type, payload });
-    if (
-      this.connectionStatus === ConnectionStatus.CONNECTED ||
-      this.connectionStatus === ConnectionStatus.INITIALIZING
-    ) {
-      this.sendRawMessage(message);
+    if (this.connectionStatus === ConnectionStatus.CONNECTED) {
+      this.sendRawMessage(JSON.stringify({ id, type, payload }));
     } else {
       this.openSocket();
     }
@@ -402,17 +359,6 @@ export class GraphQLService {
   private setConnectionStatus(status: ConnectionStatus) {
     this.connectionStatus = status;
     this.connectionStatus$.next(status);
-  }
-
-  private startTrackingConnectionInterruptions(): void {
-    this.startTrackingWithNativeEvent();
-    this.startTrackingWithKeepAlive();
-  }
-
-  private startTrackingWithNativeEvent(): void {
-    addEventListener('offline', () => {
-      this.notifyOfConnectionDrop('native');
-    });
   }
 
   private startTrackingWithKeepAlive(): void {
@@ -438,24 +384,22 @@ export class GraphQLService {
 
   private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
     console.warn(`Websocket connection dropped: Picked up by ${source} event`);
-    this.setConnectionStatus(ConnectionStatus.RECONNECTING);
+    this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+    this.openSocket();
   }
 
-  private logWebsocketReconnection(
-    source$: Observable<ConnectionStatus>,
-  ): Observable<ConnectionStatus> {
-    return source$.pipe(
-      pairwise(),
-      tap(([oldValue, newValue]) => {
-        if (
-          oldValue === ConnectionStatus.RECONNECTING &&
-          newValue === ConnectionStatus.CONNECTED
-        ) {
-          console.log('Websocket connection reestablished');
-        }
-      }),
-      map(([_, newValue]) => newValue),
-    );
+  
+  private temp() {
+      const timeoutMult = Math.floor(this.connectionRetries / 10);
+      const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
+      if (this.retryTimeout) {
+        clearTimeout(this.retryTimeout);
+      }
+
+      console.log(`[GraphQL subscription] Reconnecting in ${ newTimeout / 1000 } seconds...`);
+      this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
+
+      this.connectionRetries += 1;
   }
 }
 
