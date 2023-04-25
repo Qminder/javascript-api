@@ -244,6 +244,7 @@ export class GraphQLService {
       return;
     }
 
+    console.info('[Qminder API]: Trying to connect to websocket!');
     this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
       this.createSocketConnection(temporaryApiKey);  
     });
@@ -265,7 +266,7 @@ export class GraphQLService {
       return responseJson.key;
     } catch (e) {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-      console.warn('Failed fetching temporary API key! Retrying in ' + timeOut / 1000 + ' seconds!');
+      console.warn(`[Qminder API]: Failed fetching temporary API key! Retrying in ${ timeOut / 1000 } seconds!`);
       return new Promise(resolve => setTimeout(() => 
           resolve(this.fetchTemporaryApiKey(retryCount + 1)), 
           timeOut
@@ -290,7 +291,7 @@ export class GraphQLService {
     };
 
     socket.onerror = () => {
-      console.error('[GraphQL subscription] An error occurred!');
+      console.error('[Qminder API]: An error occurred!');
     };
 
     socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
@@ -353,6 +354,7 @@ export class GraphQLService {
   }
 
   private setConnectionStatus(status: ConnectionStatus) {
+    console.info(`[Qminder API]: Connection status changed to ${ status }!`);
     this.connectionStatus = status;
     this.connectionStatus$.next(status);
   }
@@ -366,20 +368,19 @@ export class GraphQLService {
 
         clearTimeout(timeOut);
         timeOut = setTimeout(
-          () => this.notifyOfConnectionDrop('keep-alive'),
+          () => this.handleConnectionDrop(),
           WEBSOCKET_TIMEOUT_IN_MS,
         );
       }
     });
 
     timeOut = setTimeout(
-      () => this.notifyOfConnectionDrop('keep-alive'),
+      () => this.handleConnectionDrop(),
       WEBSOCKET_TIMEOUT_IN_MS,
     );
   }
 
-  private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
-    console.warn(`Websocket connection dropped: Picked up by ${source} event`);
+  private handleConnectionDrop(): void {
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.openSocket();
   }
