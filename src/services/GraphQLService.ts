@@ -264,7 +264,7 @@ export class GraphQLService {
       const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
-      const timeOut = Math.min(60000, Math.max(5000, (2 ^ retryCount) * 1000));
+      const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
       console.warn('Failed fetching temporary API key! Retrying in ' + timeOut / 1000 + ' seconds!');
       return new Promise(resolve => setTimeout(() => 
           resolve(this.fetchTemporaryApiKey(retryCount + 1)), 
