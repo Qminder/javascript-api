@@ -28,7 +28,7 @@ interface OperationMessage {
 }
 
 class Subscription {
-  public id: string;
+  id: string;
   query: string;
 
   constructor(id: string, query: string) {
