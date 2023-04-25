@@ -354,7 +354,6 @@ export class GraphQLService {
   }
 
   private setConnectionStatus(status: ConnectionStatus) {
-    console.info(`[Qminder API]: Connection status changed to ${ status }!`);
     this.connectionStatus = status;
     this.connectionStatus$.next(status);
   }
@@ -381,6 +380,7 @@ export class GraphQLService {
   }
 
   private handleConnectionDrop(): void {
+    console.warn(`[Qminder API]: Websocket connection dropped!`);
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.openSocket();
   }
