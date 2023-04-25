@@ -3,7 +3,7 @@ import fetch from 'cross-fetch';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
-import { Observable, Observer, startWith, Subject } from 'rxjs';
+import { Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
 import { ConnectionStatus } from '../model/connection-status.js';
@@ -246,14 +246,14 @@ export class GraphQLService {
     });
   }
 
-  private async openSocket() {
+  private openSocket() {
     if ([ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(this.connectionStatus)) {
       return;
     }
-    const temporaryApiKey = await this.fetchTemporaryApiKey();
 
-    this.setConnectionStatus(ConnectionStatus.CONNECTING);
-    this.createSocketConnection(temporaryApiKey);
+    this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
+      this.createSocketConnection(temporaryApiKey);  
+    });
   }
 
   private async fetchTemporaryApiKey(): Promise<string> {
@@ -266,24 +266,29 @@ export class GraphQLService {
       },
     };
 
+    let fetchTries = 0;
+    
     try {
       const response = await this.fetch(`https://${this.apiServer}/${url}`, body);
-      const responseJson = await response.json(); 
+      const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
       console.warn('Failed fetching temporary API key! Retrying in 5 seconds!');
-      return new Promise(resolve => setTimeout(() => resolve(this.fetchTemporaryApiKey()), 5000));
+      fetchTries = fetchTries + 1;
+      return new Promise(resolve => setTimeout(() => resolve(
+          this.fetchTemporaryApiKey()),
+          Math.max(60000, Math.min(5000, 2 ^ fetchTries * 1000)),
+      ));
     }
   }
 
   private createSocketConnection(temporaryApiKey: string) {
+    this.setConnectionStatus(ConnectionStatus.CONNECTING);
     this.socket = new WebSocket(`wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`);
 
     const socket = this.socket;
     socket.onopen = () => {
-      this.sendRawMessage(
-          JSON.stringify({ id: undefined, type: MessageType.GQL_CONNECTION_INIT, payload: null })
-      );
+      this.sendRawMessage(JSON.stringify({ id: undefined, type: MessageType.GQL_CONNECTION_INIT, payload: null }));
     };
 
     socket.onclose = (event: { code: number }) => {
@@ -386,20 +391,6 @@ export class GraphQLService {
     console.warn(`Websocket connection dropped: Picked up by ${source} event`);
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.openSocket();
-  }
-
-  
-  private temp() {
-      const timeoutMult = Math.floor(this.connectionRetries / 10);
-      const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
-      if (this.retryTimeout) {
-        clearTimeout(this.retryTimeout);
-      }
-
-      console.log(`[GraphQL subscription] Reconnecting in ${ newTimeout / 1000 } seconds...`);
-      this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
-
-      this.connectionRetries += 1;
   }
 }
 
