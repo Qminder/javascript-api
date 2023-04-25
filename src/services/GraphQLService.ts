@@ -81,13 +81,6 @@ export class GraphQLService {
 
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
 
-  /** A timeout object after which to retry connecting to Qminder API. */
-  private retryTimeout: any;
-
-  /** Counts the amount of times the event emitter retried connecting. This is used for
-   *  exponential retry falloff. */
-  private connectionRetries = 0;
-
   private subscriptionConnection$: Observable<ConnectionStatus>;
 
   constructor() {
@@ -256,7 +249,7 @@ export class GraphQLService {
     });
   }
 
-  private async fetchTemporaryApiKey(): Promise<string> {
+  private async fetchTemporaryApiKey(retryCount = 0): Promise<string> {
     const url = 'graphql/connection-key';
     const body = {
       method: 'POST',
@@ -266,18 +259,16 @@ export class GraphQLService {
       },
     };
 
-    let fetchTries = 0;
-    
     try {
       const response = await this.fetch(`https://${this.apiServer}/${url}`, body);
       const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
-      console.warn('Failed fetching temporary API key! Retrying in 5 seconds!');
-      fetchTries = fetchTries + 1;
-      return new Promise(resolve => setTimeout(() => resolve(
-          this.fetchTemporaryApiKey()),
-          Math.max(60000, Math.min(5000, 2 ^ fetchTries * 1000)),
+      const timeOut = Math.min(60000, Math.max(5000, (2 ^ retryCount) * 1000));
+      console.warn('Failed fetching temporary API key! Retrying in ' + timeOut / 1000 + ' seconds!');
+      return new Promise(resolve => setTimeout(() => 
+          resolve(this.fetchTemporaryApiKey(retryCount + 1)), 
+          timeOut
       ));
     }
   }
