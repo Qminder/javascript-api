@@ -286,6 +286,7 @@ export class GraphQLService {
     socket.onclose = (event: { code: number }) => {
       if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
         this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+        this.clearMonitoring();
         this.socket = null;
       }
     };
@@ -398,11 +399,14 @@ export class GraphQLService {
     console.warn(`[Qminder API]: Websocket connection dropped!`);
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-
-    clearTimeout(this.keepAliveMonitor);
-    removeEventListener('offline', () => this.verifyConnection());
+    this.clearMonitoring();
 
     this.openSocket();
+  }
+  
+  private clearMonitoring(): void {
+    clearTimeout(this.keepAliveMonitor);
+    removeEventListener('offline', () => this.verifyConnection());
   }
 }
 
