@@ -82,8 +82,7 @@ export class GraphQLService {
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
 
   private subscriptionConnection$: Observable<ConnectionStatus>;
-  private offlineListener: any;
-
+  private keepAliveMonitor: any;
   constructor() {
     this.setServer('api.qminder.com');
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
@@ -365,21 +364,19 @@ export class GraphQLService {
   }
   
   private monitorWithKeepAlive() {
-    let timeOut: any;
-
     this.socket.addEventListener('message', (event) => {
       if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
         this.setConnectionStatus(ConnectionStatus.CONNECTED);
 
-        clearTimeout(timeOut);
-        timeOut = setTimeout(
+        clearTimeout(this.keepAliveMonitor);
+        this.keepAliveMonitor = setTimeout(
           () => this.handleConnectionDrop(),
           WEBSOCKET_TIMEOUT_IN_MS,
         );
       }
     });
 
-    timeOut = setTimeout(
+    this.keepAliveMonitor = setTimeout(
         () => this.handleConnectionDrop(),
         WEBSOCKET_TIMEOUT_IN_MS,
     );
@@ -391,7 +388,7 @@ export class GraphQLService {
 
   private async verifyConnection(): Promise<void> {
     try {
-      Promise.resolve();
+      throw new Error('Connection lost!');
     } catch (e) {
       this.handleConnectionDrop();
     }
@@ -401,6 +398,8 @@ export class GraphQLService {
     console.warn(`[Qminder API]: Websocket connection dropped!`);
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+
+    clearTimeout(this.keepAliveMonitor);
     removeEventListener('offline', () => this.verifyConnection());
 
     this.openSocket();
