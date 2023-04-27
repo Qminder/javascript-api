@@ -305,6 +305,7 @@ export class GraphQLService {
 
           case MessageType.GQL_CONNECTION_ACK:
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
+            console.info('[Qminder API - 27.04.]: Connected to websocket!');
             this.monitorConnectionHealth();
             this.subscriptions.forEach((subscription) => {
               const payload = { query: subscription.query };
