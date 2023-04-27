@@ -78,14 +78,14 @@ export class GraphQLService {
   private nextSubscriptionId: number = 1;
 
   private subscriptions: Subscription[] = [];
-
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
-
   private subscriptionConnection$: Observable<ConnectionStatus>;
+
   private keepAliveMonitor: any;
+  private browserConnectionLossHandler = this.verifyConnection.bind(this);
+
   constructor() {
     this.setServer('api.qminder.com');
-    this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.fetch = fetch;
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
@@ -244,7 +244,7 @@ export class GraphQLService {
       return;
     }
 
-    console.info('[Qminder API]: Trying to connect to websocket!');
+    console.info('[Qminder API - 27.04.]: Trying to connect to websocket!');
     this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
       this.createSocketConnection(temporaryApiKey);  
     });
@@ -266,7 +266,7 @@ export class GraphQLService {
       return responseJson.key;
     } catch (e) {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-      console.warn(`[Qminder API]: Failed fetching temporary API key! Retrying in ${ timeOut / 1000 } seconds!`);
+      console.warn(`[Qminder API - 27.04.]: Failed fetching temporary API key! Retrying in ${ timeOut / 1000 } seconds!`);
       return new Promise(resolve => setTimeout(() => 
           resolve(this.fetchTemporaryApiKey(retryCount + 1)), 
           timeOut
@@ -292,7 +292,7 @@ export class GraphQLService {
     };
 
     socket.onerror = () => {
-      console.error('[Qminder API]: An error occurred!');
+      console.error('[Qminder API - 27.04.]: An error occurred!');
     };
 
     socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
@@ -384,7 +384,7 @@ export class GraphQLService {
   }
 
   private monitorWithNativeEvent() {
-    addEventListener('offline', () => this.verifyConnection());
+    addEventListener('offline', this.browserConnectionLossHandler);
   }
 
   private async verifyConnection(): Promise<void> {
@@ -396,7 +396,7 @@ export class GraphQLService {
   }
 
   private handleConnectionDrop(): void {
-    console.warn(`[Qminder API]: Websocket connection dropped!`);
+    console.warn(`[Qminder API - 27.04.]: Websocket connection dropped!`);
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearMonitoring();
@@ -406,7 +406,7 @@ export class GraphQLService {
   
   private clearMonitoring(): void {
     clearTimeout(this.keepAliveMonitor);
-    removeEventListener('offline', () => this.verifyConnection());
+    removeEventListener('offline', this.browserConnectionLossHandler);
   }
 }
 
