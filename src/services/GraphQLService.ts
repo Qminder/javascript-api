@@ -42,16 +42,18 @@ enum MessageType {
   GQL_CONNECTION_INIT = 'connection_init',
   GQL_START = 'start',
   GQL_STOP = 'stop',
+  GQL_PING = 'ping',
 
   // From Server
   GQL_CONNECTION_ACK = 'connection_ack',
   GQL_DATA = 'data',
   GQL_CONNECTION_KEEP_ALIVE = 'ka',
   GQL_COMPLETE = 'complete',
+  GQL_PONG = 'pong',
 }
 
-const KEEP_ALIVE_MESSAGE = 'ka';
 const WEBSOCKET_TIMEOUT_IN_MS = 30000;
+const PING_PONG_TIMEOUT_IN_MS = 1000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -81,8 +83,9 @@ export class GraphQLService {
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
   private subscriptionConnection$: Observable<ConnectionStatus>;
 
-  private keepAliveMonitor: any;
-  private browserConnectionLossHandler = this.verifyConnection.bind(this);
+  private keepAliveTimeout: any;
+  private pongTimeout: any;
+  private verifyConnectionWithCurrentContext = this.verifyConnection.bind(this);
 
   constructor() {
     this.setServer('api.qminder.com');
@@ -300,13 +303,10 @@ export class GraphQLService {
         const message: OperationMessage = JSON.parse(rawMessage.data);
 
         switch (message.type) {
-          case MessageType.GQL_CONNECTION_KEEP_ALIVE:
-            break;
-
           case MessageType.GQL_CONNECTION_ACK:
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             console.info('[Qminder API - 27.04.]: Connected to websocket!');
-            this.monitorConnectionHealth();
+            this.monitorBrowserConnection();
             this.subscriptions.forEach((subscription) => {
               const payload = { query: subscription.query };
               const msg = JSON.stringify({
@@ -324,6 +324,15 @@ export class GraphQLService {
 
           case MessageType.GQL_COMPLETE:
             this.subscriptionObserverMap[message.id]?.complete();
+            break;
+            
+          case MessageType.GQL_CONNECTION_KEEP_ALIVE:
+            clearTimeout(this.keepAliveTimeout);
+            this.keepAliveTimeout = setTimeout(() => this.handleConnectionDrop(), WEBSOCKET_TIMEOUT_IN_MS);
+            break;
+            
+          case MessageType.GQL_PONG:
+            clearTimeout(this.pongTimeout);
             break;
 
           default:
@@ -360,40 +369,13 @@ export class GraphQLService {
     this.connectionStatus$.next(status);
   }
 
-  private monitorConnectionHealth(): void {
-    this.monitorWithNativeEvent();
-    this.monitorWithKeepAlive();
-  }
-  
-  private monitorWithKeepAlive() {
-    this.socket.addEventListener('message', (event) => {
-      if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
-        this.setConnectionStatus(ConnectionStatus.CONNECTED);
-
-        clearTimeout(this.keepAliveMonitor);
-        this.keepAliveMonitor = setTimeout(
-          () => this.handleConnectionDrop(),
-          WEBSOCKET_TIMEOUT_IN_MS,
-        );
-      }
-    });
-
-    this.keepAliveMonitor = setTimeout(
-        () => this.handleConnectionDrop(),
-        WEBSOCKET_TIMEOUT_IN_MS,
-    );
+  private monitorBrowserConnection(): void {
+    window.addEventListener('offline', this.verifyConnectionWithCurrentContext);
   }
 
-  private monitorWithNativeEvent() {
-    addEventListener('offline', this.browserConnectionLossHandler);
-  }
-
-  private async verifyConnection(): Promise<void> {
-    try {
-      throw new Error('Connection lost!');
-    } catch (e) {
-      this.handleConnectionDrop();
-    }
+  private verifyConnection(): void {
+    this.pongTimeout = setTimeout(() => this.handleConnectionDrop(), PING_PONG_TIMEOUT_IN_MS);
+    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
   private handleConnectionDrop(): void {
@@ -406,8 +388,9 @@ export class GraphQLService {
   }
   
   private clearMonitoring(): void {
-    clearTimeout(this.keepAliveMonitor);
-    removeEventListener('offline', this.browserConnectionLossHandler);
+    window.removeEventListener('offline', this.verifyConnectionWithCurrentContext);
+    clearTimeout(this.pongTimeout);
+    clearTimeout(this.keepAliveTimeout);
   }
 }
 
