@@ -8,6 +8,9 @@ import { filter, firstValueFrom, Subscriber } from 'rxjs';
 import * as sinon from 'sinon';
 import { GraphQLService } from '../../src/services/GraphQLService';
 import { ConnectionStatus } from '../../src/model/connection-status.js';
+import WebSocket from 'isomorphic-ws';
+
+jest.mock('isomorphic-ws', () => jest.fn());
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphQLService;
@@ -38,28 +41,18 @@ describe('GraphQL subscriptions', () => {
   describe('.subscribe', () => {
     it('fetches temporary api key when a new connection is opened', async () => {
       graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-      const spy = jest.fn();
-      graphqlService.WebSocket = spy as any;
       // wait until the web socket connection was opened
       await new Promise(process.nextTick);
       expect(fetchSpy.args[0][0]).toBe(
         'https://api.qminder.com/graphql/connection-key',
       );
-      expect(spy).toBeCalledWith(
+      expect(WebSocket).toBeCalledWith(
         `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
       );
     });
   });
 
   describe('with websocket cleanup', () => {
-    afterEach(async () => {
-      await firstValueFrom(
-        graphqlService
-          .getSubscriptionConnectionObservable()
-          .pipe(filter((state) => state === ConnectionStatus.DISCONNECTED)),
-      );
-    });
-
     beforeEach(() => {
       jest
         .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
