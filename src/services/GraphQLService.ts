@@ -85,7 +85,8 @@ export class GraphQLService {
   private pongTimeout: any;
   private pingPongInterval: any;
   private sendPingWithThisBound = this.sendPing.bind(this);
-  private handleConnectionDropWithThisBound = this.handleConnectionDrop.bind(this);
+  private handleConnectionDropWithThisBound =
+    this.handleConnectionDrop.bind(this);
 
   constructor() {
     this.setServer('api.qminder.com');
@@ -402,15 +403,21 @@ export class GraphQLService {
   }
 
   private monitorWithPingPong(): void {
-    this.pingPongInterval = setInterval(this.sendPingWithThisBound, PING_PONG_INTERVAL_IN_MS);
+    this.pingPongInterval = setInterval(
+      this.sendPingWithThisBound,
+      PING_PONG_INTERVAL_IN_MS,
+    );
   }
 
   private monitorWithOfflineEvent(): void {
     window.addEventListener('offline', this.sendPingWithThisBound);
   }
-  
+
   private sendPing(): void {
-    this.pongTimeout = setTimeout(this.handleConnectionDropWithThisBound, PONG_TIMEOUT_IN_MS);
+    this.pongTimeout = setTimeout(
+      this.handleConnectionDropWithThisBound,
+      PONG_TIMEOUT_IN_MS,
+    );
     this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
