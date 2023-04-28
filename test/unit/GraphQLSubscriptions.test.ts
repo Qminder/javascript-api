@@ -4,10 +4,9 @@
  */
 
 import { gql } from 'graphql-tag';
-import { filter, firstValueFrom, Subscriber } from 'rxjs';
+import { Subscriber } from 'rxjs';
 import * as sinon from 'sinon';
 import { GraphQLService } from '../../src/services/GraphQLService';
-import { ConnectionStatus } from '../../src/model/connection-status.js';
 import WebSocket from 'isomorphic-ws';
 
 jest.mock('isomorphic-ws', () => jest.fn());
