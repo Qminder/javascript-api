@@ -52,8 +52,8 @@ enum MessageType {
   GQL_PONG = 'pong',
 }
 
-const WEBSOCKET_TIMEOUT_IN_MS = 30000;
-const PING_PONG_TIMEOUT_IN_MS = 1000;
+const PONG_TIMEOUT_IN_MS = 2000;
+const PING_PONG_INTERVAL = 20000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -82,9 +82,10 @@ export class GraphQLService {
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
   private subscriptionConnection$: Observable<ConnectionStatus>;
 
-  private keepAliveTimeout: any;
   private pongTimeout: any;
-  private verifyConnectionWithCurrentContext = this.verifyConnection.bind(this);
+  private pingPongInterval: any;
+  private sendPingWithThisBound = this.sendPing.bind(this);
+  private handleConnectionDropWithThisBound = this.handleConnectionDrop.bind(this);
 
   constructor() {
     this.setServer('api.qminder.com');
@@ -327,10 +328,13 @@ export class GraphQLService {
         const message: OperationMessage = JSON.parse(rawMessage.data);
 
         switch (message.type) {
+          case MessageType.GQL_CONNECTION_KEEP_ALIVE:
+            break;
+
           case MessageType.GQL_CONNECTION_ACK:
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             console.info('[Qminder API - 27.04.]: Connected to websocket!');
-            this.monitorBrowserConnection();
+            this.startConnectionMonitoring();
             this.subscriptions.forEach((subscription) => {
               const payload = { query: subscription.query };
               const msg = JSON.stringify({
@@ -350,14 +354,6 @@ export class GraphQLService {
 
           case MessageType.GQL_COMPLETE:
             this.subscriptionObserverMap[message.id]?.complete();
-            break;
-
-          case MessageType.GQL_CONNECTION_KEEP_ALIVE:
-            clearTimeout(this.keepAliveTimeout);
-            this.keepAliveTimeout = setTimeout(
-              () => this.handleConnectionDrop(),
-              WEBSOCKET_TIMEOUT_IN_MS,
-            );
             break;
 
           case MessageType.GQL_PONG:
@@ -400,15 +396,21 @@ export class GraphQLService {
     this.connectionStatus$.next(status);
   }
 
-  private monitorBrowserConnection(): void {
-    window.addEventListener('offline', this.verifyConnectionWithCurrentContext);
+  private startConnectionMonitoring(): void {
+    this.monitorWithPingPong();
+    this.monitorWithOfflineEvent();
   }
 
-  private verifyConnection(): void {
-    this.pongTimeout = setTimeout(
-      () => this.handleConnectionDrop(),
-      PING_PONG_TIMEOUT_IN_MS,
-    );
+  private monitorWithPingPong(): void {
+    this.pingPongInterval = setInterval(this.sendPingWithThisBound, PING_PONG_INTERVAL);
+  }
+
+  private monitorWithOfflineEvent(): void {
+    window.addEventListener('offline', this.sendPingWithThisBound);
+  }
+  
+  private sendPing(): void {
+    this.pongTimeout = setTimeout(this.handleConnectionDropWithThisBound, PONG_TIMEOUT_IN_MS);
     this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
@@ -422,12 +424,9 @@ export class GraphQLService {
   }
 
   private clearMonitoring(): void {
-    window.removeEventListener(
-      'offline',
-      this.verifyConnectionWithCurrentContext,
-    );
+    window.removeEventListener('offline', this.sendPingWithThisBound);
     clearTimeout(this.pongTimeout);
-    clearTimeout(this.keepAliveTimeout);
+    clearInterval(this.pingPongInterval);
   }
 }
 
