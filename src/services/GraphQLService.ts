@@ -53,7 +53,7 @@ enum MessageType {
 }
 
 const PONG_TIMEOUT_IN_MS = 2000;
-const PING_PONG_INTERVAL = 20000;
+const PING_PONG_INTERVAL_IN_MS = 20000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -402,7 +402,7 @@ export class GraphQLService {
   }
 
   private monitorWithPingPong(): void {
-    this.pingPongInterval = setInterval(this.sendPingWithThisBound, PING_PONG_INTERVAL);
+    this.pingPongInterval = setInterval(this.sendPingWithThisBound, PING_PONG_INTERVAL_IN_MS);
   }
 
   private monitorWithOfflineEvent(): void {
