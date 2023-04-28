@@ -66,7 +66,6 @@ const CLIENT_SIDE_CLOSE_EVENT = 1000;
  * trying to import GraphQLService.
  */
 export class GraphQLService {
-
   private apiKey: string;
   private apiServer: string;
 
@@ -202,7 +201,11 @@ export class GraphQLService {
    * a websocket connection before proceeding.
    */
   openPendingWebSocket(): void {
-    if (![ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(this.connectionStatus)) {
+    if (
+      ![ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
+        this.connectionStatus,
+      )
+    ) {
       this.openSocket();
     }
   }
@@ -243,13 +246,17 @@ export class GraphQLService {
   }
 
   private openSocket() {
-    if ([ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(this.connectionStatus)) {
+    if (
+      [ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
+        this.connectionStatus,
+      )
+    ) {
       return;
     }
 
     console.info('[Qminder API - 27.04.]: Trying to connect to websocket!');
     this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
-      this.createSocketConnection(temporaryApiKey);  
+      this.createSocketConnection(temporaryApiKey);
     });
   }
 
@@ -264,26 +271,43 @@ export class GraphQLService {
     };
 
     try {
-      const response = await this.fetch(`https://${this.apiServer}/${url}`, body);
+      const response = await this.fetch(
+        `https://${this.apiServer}/${url}`,
+        body,
+      );
       const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-      console.warn(`[Qminder API - 27.04.]: Failed fetching temporary API key! Retrying in ${ timeOut / 1000 } seconds!`);
-      return new Promise(resolve => setTimeout(() => 
-          resolve(this.fetchTemporaryApiKey(retryCount + 1)), 
-          timeOut
-      ));
+      console.warn(
+        `[Qminder API - 27.04.]: Failed fetching temporary API key! Retrying in ${
+          timeOut / 1000
+        } seconds!`,
+      );
+      return new Promise((resolve) =>
+        setTimeout(
+          () => resolve(this.fetchTemporaryApiKey(retryCount + 1)),
+          timeOut,
+        ),
+      );
     }
   }
 
   private createSocketConnection(temporaryApiKey: string) {
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
-    this.socket = new WebSocket(`wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`);
+    this.socket = new WebSocket(
+      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`,
+    );
 
     const socket = this.socket;
     socket.onopen = () => {
-      this.sendRawMessage(JSON.stringify({ id: undefined, type: MessageType.GQL_CONNECTION_INIT, payload: null }));
+      this.sendRawMessage(
+        JSON.stringify({
+          id: undefined,
+          type: MessageType.GQL_CONNECTION_INIT,
+          payload: null,
+        }),
+      );
     };
 
     socket.onclose = (event: { code: number }) => {
@@ -319,25 +343,32 @@ export class GraphQLService {
             break;
 
           case MessageType.GQL_DATA:
-            this.subscriptionObserverMap[message.id]?.next(message.payload.data);
+            this.subscriptionObserverMap[message.id]?.next(
+              message.payload.data,
+            );
             break;
 
           case MessageType.GQL_COMPLETE:
             this.subscriptionObserverMap[message.id]?.complete();
             break;
-            
+
           case MessageType.GQL_CONNECTION_KEEP_ALIVE:
             clearTimeout(this.keepAliveTimeout);
-            this.keepAliveTimeout = setTimeout(() => this.handleConnectionDrop(), WEBSOCKET_TIMEOUT_IN_MS);
+            this.keepAliveTimeout = setTimeout(
+              () => this.handleConnectionDrop(),
+              WEBSOCKET_TIMEOUT_IN_MS,
+            );
             break;
-            
+
           case MessageType.GQL_PONG:
             clearTimeout(this.pongTimeout);
             break;
 
           default:
             if (message.payload && message.payload.data) {
-              this.subscriptionObserverMap[message.id]?.error(message.payload.data);
+              this.subscriptionObserverMap[message.id]?.error(
+                message.payload.data,
+              );
             } else if (message.errors && message.errors.length > 0) {
               this.subscriptionObserverMap[message.id]?.error(message.errors);
             }
@@ -374,7 +405,10 @@ export class GraphQLService {
   }
 
   private verifyConnection(): void {
-    this.pongTimeout = setTimeout(() => this.handleConnectionDrop(), PING_PONG_TIMEOUT_IN_MS);
+    this.pongTimeout = setTimeout(
+      () => this.handleConnectionDrop(),
+      PING_PONG_TIMEOUT_IN_MS,
+    );
     this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
@@ -386,9 +420,12 @@ export class GraphQLService {
 
     this.openSocket();
   }
-  
+
   private clearMonitoring(): void {
-    window.removeEventListener('offline', this.verifyConnectionWithCurrentContext);
+    window.removeEventListener(
+      'offline',
+      this.verifyConnectionWithCurrentContext,
+    );
     clearTimeout(this.pongTimeout);
     clearTimeout(this.keepAliveTimeout);
   }
