@@ -255,7 +255,7 @@ export class GraphQLService {
       return;
     }
 
-    console.info('[Qminder API - 27.04.]: Trying to connect to websocket!');
+    console.info('[Qminder API - 28.04.]: Trying to connect to websocket!');
     this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
       this.createSocketConnection(temporaryApiKey);
     });
@@ -281,7 +281,7 @@ export class GraphQLService {
     } catch (e) {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
       console.warn(
-        `[Qminder API - 27.04.]: Failed fetching temporary API key! Retrying in ${
+        `[Qminder API - 28.04.]: Failed fetching temporary API key! Retrying in ${
           timeOut / 1000
         } seconds!`,
       );
@@ -320,7 +320,7 @@ export class GraphQLService {
     };
 
     socket.onerror = () => {
-      console.error('[Qminder API - 27.04.]: An error occurred!');
+      console.error('[Qminder API - 28.04.]: An error occurred!');
     };
 
     socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
@@ -333,7 +333,7 @@ export class GraphQLService {
 
           case MessageType.GQL_CONNECTION_ACK:
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
-            console.info('[Qminder API - 27.04.]: Connected to websocket!');
+            console.info('[Qminder API - 28.04.]: Connected to websocket!');
             this.startConnectionMonitoring();
             this.subscriptions.forEach((subscription) => {
               const payload = { query: subscription.query };
@@ -415,7 +415,7 @@ export class GraphQLService {
   }
 
   private handleConnectionDrop(): void {
-    console.warn(`[Qminder API - 27.04.]: Websocket connection dropped!`);
+    console.warn(`[Qminder API - 28.04.]: Websocket connection dropped!`);
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearMonitoring();
