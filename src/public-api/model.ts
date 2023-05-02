@@ -1,5 +1,5 @@
-export { TicketCreationParameters } from '../lib/services/ticket/model/ticket-creation-parameters';
-export { GraphqlResponse } from '../lib/services/graphql/model/graphql-response';
+export { TicketCreationParameters } from '../lib/model/ticket-creation-parameters';
+export { GraphqlResponse } from '../lib/model/graphql-response';
 export { ClientError } from '../lib/model/client-error';
 export { ConnectionStatus } from '../lib/model/connection-status';
 export { Desk } from '../lib/model/desk';
