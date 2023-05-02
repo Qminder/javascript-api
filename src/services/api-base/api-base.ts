@@ -84,10 +84,25 @@ interface CorrectRequestInit {
   };
   mode?: 'cors' | 'same-origin' | 'navigate' | 'no-cors';
   credentials?: 'omit' | 'same-origin' | 'include';
-  cache?: string;
+  cache?:
+      | 'default'
+      | 'force-cache'
+      | 'no-cache'
+      | 'no-store'
+      | 'only-if-cached'
+      | 'reload';
   body?: string | Blob;
   referrer?: string;
-  referrerPolicy?: string;
+  referrerPolicy?:
+      | ''
+      | 'no-referrer'
+      | 'no-referrer-when-downgrade'
+      | 'origin'
+      | 'origin-when-cross-origin'
+      | 'same-origin'
+      | 'strict-origin'
+      | 'strict-origin-when-cross-origin'
+      | 'unsafe-url';
 }
 
 /**
@@ -147,7 +162,7 @@ export class ApiBase {
    * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
-  static request<T = {}>(
+  static async request<T = {}>(
     url: string,
     data?: object | File | string,
     method: HTTPMethod = 'GET',
@@ -187,21 +202,16 @@ export class ApiBase {
       init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
 
-    return fetch(`https://${this.apiServer}/v1/${url}`, init)
-      .then((response: Response) => response.json())
-      .then((responseJson: ApiResponse) => {
-        if (responseIsLegacyError(responseJson)) {
-          throw new Error(
-            responseJson.developerMessage || responseJson.message,
-          );
-        }
-        if (responseIsClientError(responseJson)) {
-          const key = Object.keys(responseJson.error)[0];
-          const message = Object.values(responseJson.error)[0];
-          throw new ClientError(key, message);
-        }
-        return responseJson;
-      });
+    try {
+      const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
+      const responseJson = await response.json();
+      this.validate(responseJson);
+      return responseJson;
+    } catch (e: any) {
+      if (e instanceof Error) {
+        throw new Error(e.message);
+      }
+    }
   }
 
   /**
@@ -241,5 +251,17 @@ export class ApiBase {
         }
         return responseJson as Promise<GraphqlResponse>;
       });
+  }
+
+  private static validate(responseJson: any): void {
+    if (responseIsLegacyError(responseJson)) {
+      throw new Error(responseJson.developerMessage || responseJson.message);
+    }
+
+    if (responseIsClientError(responseJson)) {
+      const key = Object.keys(responseJson.error)[0];
+      const message = Object.values(responseJson.error)[0] as string;
+      throw new ClientError(key, message);
+    }
   }
 }
