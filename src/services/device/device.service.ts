@@ -1,4 +1,4 @@
-import ApiBase from '../../api-base';
+import ApiBase from '../api-base/api-base';
 import Device from '../../model/device';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 

@@ -9,7 +9,7 @@ import Webhook from './model/webhook';
 import { ClientError } from './model/client-error';
 
 // Import services
-import ApiBase from './api-base.js';
+import ApiBase from './services/api-base/api-base';
 import DeviceService from './services/device/device.service';
 import LineService from './services/line/line.service';
 import LocationService from './services/location/location.service';

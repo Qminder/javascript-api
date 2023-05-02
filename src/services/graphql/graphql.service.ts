@@ -11,8 +11,9 @@ import {
   map,
   shareReplay,
 } from 'rxjs/operators';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../../api-base';
+import ApiBase, { GraphqlQuery } from '../api-base/api-base';
 import { ConnectionStatus } from '../../model/connection-status';
+import { GraphqlResponse } from '../../model/graphql-response';
 
 type QueryOrDocument = string | DocumentNode;
 

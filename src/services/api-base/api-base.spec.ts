@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
-import * as Qminder from './qminder-api';
-import { GraphQLApiError } from './util/errors';
-import { ClientError } from './model/client-error';
+import * as Qminder from '../../qminder-api';
+import { GraphQLApiError } from '../../util/errors';
+import { ClientError } from '../../model/client-error';
 
 /**
  * A function that generates an object with the following keys:

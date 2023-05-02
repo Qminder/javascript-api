@@ -1,5 +1,5 @@
 import Location, { InputField } from '../../model/location';
-import ApiBase from '../../api-base';
+import ApiBase from '../api-base/api-base';
 import Desk from '../../model/desk';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 

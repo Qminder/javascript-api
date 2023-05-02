@@ -1,7 +1,7 @@
 import Ticket, { TicketStatus, TicketMessage } from '../../model/ticket';
 import User from '../../model/user';
 import Line from '../../model/line';
-import ApiBase from '../../api-base';
+import ApiBase from '../api-base/api-base';
 import {
   extractId,
   extractIdToNumber,
