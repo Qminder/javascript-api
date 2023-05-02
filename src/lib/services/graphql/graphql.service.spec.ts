@@ -1,10 +1,10 @@
 import * as sinon from 'sinon';
 import { gql } from 'graphql-tag';
 
-import * as Qminder from '../../../qminder-api';
+import { Qminder } from '../../qminder';
 import { GraphqlService } from './graphql.service';
 import { filter, firstValueFrom, Subscriber } from 'rxjs';
-import { ConnectionStatus } from '../../../qminder-api';
+import { ConnectionStatus } from '../../model/connection-status';
 
 describe('GraphQLService', function () {
   const ME_ID_REQUEST = '{ me { id } }';

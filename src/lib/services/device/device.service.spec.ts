@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import * as Qminder from '../../../qminder-api';
+import { Qminder } from '../../qminder';
 
 describe('Qminder.devices', function () {
   const TV_DETAILS = {

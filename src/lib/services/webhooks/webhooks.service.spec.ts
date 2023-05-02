@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import * as Qminder from '../../../qminder-api';
+import { Qminder } from '../../qminder';
 
 describe('Qminder.webhooks', function () {
   let requestStub: sinon.SinonStub;
