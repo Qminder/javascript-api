@@ -1,5 +1,5 @@
 import ApiBase, { SuccessResponse } from '../../api-base';
-import Webhook from '../../model/Webhook';
+import Webhook from '../../model/webhook';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /** @hidden */

@@ -1,12 +1,12 @@
 // Import data structures
-import Desk from './model/Desk.js';
-import Device from './model/Device.js';
-import Line from './model/Line.js';
-import Location from './model/Location.js';
-import Ticket from './model/Ticket.js';
-import User from './model/User.js';
-import Webhook from './model/Webhook.js';
-import { ClientError } from './model/ClientError.js';
+import Desk from './model/desk';
+import Device from './model/device';
+import Line from './model/line';
+import Location from './model/location';
+import Ticket from './model/ticket';
+import User from './model/user';
+import Webhook from './model/webhook';
+import { ClientError } from './model/client-error';
 
 // Import services
 import ApiBase from './api-base.js';

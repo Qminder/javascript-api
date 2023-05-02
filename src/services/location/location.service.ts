@@ -1,6 +1,6 @@
-import Location, { InputField } from '../../model/Location';
+import Location, { InputField } from '../../model/location';
 import ApiBase from '../../api-base';
-import Desk from '../../model/Desk';
+import Desk from '../../model/desk';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /** @hidden */
