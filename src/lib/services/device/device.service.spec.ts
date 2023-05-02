@@ -1,7 +1,8 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
+import { DeviceService } from './device.service';
 
-describe('Qminder.devices', function () {
+describe('Device service', function () {
   const TV_DETAILS = {
     statusCode: 200,
     id: 41078,
@@ -22,16 +23,16 @@ describe('Qminder.devices', function () {
     });
 
     it('requests the correct API URL', function () {
-      Qminder.devices.details('1234');
+      DeviceService.details('1234');
       expect(requestStub.calledWith('tv/1234')).toBeTruthy();
     });
 
     it('throws when the TV ID is not passed in', function () {
-      expect(() => (Qminder.devices.details as any)()).toThrow();
+      expect(() => (DeviceService.details as any)()).toThrow();
     });
 
     it('constructs a Device for the response', function (done) {
-      Qminder.devices.details('5').then((device) => {
+      DeviceService.details('5').then((device) => {
         done();
       }, done);
     });

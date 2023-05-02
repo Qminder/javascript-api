@@ -1,7 +1,8 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
+import { LocationService } from './location.service';
 
-describe('Qminder.locations', function () {
+describe('Location service', function () {
   const LOCATIONS = [
     {
       id: 1,
@@ -58,12 +59,12 @@ describe('Qminder.locations', function () {
     });
 
     it('calls ApiBase.request with GET locations/', function () {
-      Qminder.locations.list();
+      LocationService.list();
       expect(requestStub.calledWith('locations/')).toBeTruthy();
     });
 
     it('resolves with an Array of Location objects', function (done) {
-      Qminder.locations.list().then((locations) => {
+      LocationService.list().then((locations) => {
         expect(locations instanceof Array).toBeTruthy();
         done();
       });
@@ -71,7 +72,7 @@ describe('Qminder.locations', function () {
 
     it('resolves with correct location data', async () => {
       const groundTruth = LOCATIONS;
-      const locations = await Qminder.locations.list();
+      const locations = await LocationService.list();
       for (let i = 0; i < locations.length; i++) {
         expect(locations[i].id).toBe(groundTruth[i].id);
         expect(locations[i].name).toBe(groundTruth[i].name);
@@ -84,7 +85,7 @@ describe('Qminder.locations', function () {
   describe('list() - Fails', function () {
     it('rejects when the server errors', function (done) {
       requestStub.withArgs('locations/').rejects({ statusCode: 500 });
-      Qminder.locations.list().then(
+      LocationService.list().then(
         (response) => {
           expect(response).toBeUndefined();
           expect(true).toBe(false);
@@ -104,7 +105,7 @@ describe('Qminder.locations', function () {
     beforeEach(function (done) {
       requestStub.withArgs(`locations/${LOCATION_ID}/`).resolves(DETAILS);
 
-      Qminder.locations.details(LOCATION_ID).then((details) => {
+      LocationService.details(LOCATION_ID).then((details) => {
         locationDetailsReply = details;
         done();
       });
@@ -130,7 +131,7 @@ describe('Qminder.locations', function () {
         .withArgs(`locations/${LOCATION_ID}/desks`)
         .resolves({ desks: DESKS });
 
-      Qminder.locations.getDesks({ id: LOCATION_ID }).then((desks) => {
+      LocationService.getDesks({ id: LOCATION_ID }).then((desks) => {
         desksReply = desks;
         done();
       });

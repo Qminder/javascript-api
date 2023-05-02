@@ -6,7 +6,7 @@ import { GraphqlService } from './graphql.service';
 import { filter, firstValueFrom, Subscriber } from 'rxjs';
 import { ConnectionStatus } from '../../model/connection-status';
 
-describe('GraphQLService', function () {
+describe('GraphQL service', function () {
   const ME_ID_REQUEST = '{ me { id } }';
   const ME_ID_SUCCESS_RESPONSE: any = {
     statusCode: 200,
@@ -22,6 +22,7 @@ describe('GraphQLService', function () {
     ],
   };
   let requestStub: sinon.SinonStub;
+  let graphqlService = new GraphqlService();
   beforeEach(function () {
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
@@ -35,13 +36,13 @@ describe('GraphQLService', function () {
       requestStub.onFirstCall().resolves(ME_ID_SUCCESS_RESPONSE);
     });
     it('calls ApiBase.queryGraph with the correct parameters', async () => {
-      await Qminder.graphql.query(ME_ID_REQUEST);
+      await graphqlService.query(ME_ID_REQUEST);
       const graphqlQuery = { query: ME_ID_REQUEST };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
     it('calls ApiBase.queryGraph with both query & variables', async () => {
       const variables = { x: 5, y: 4 };
-      await Qminder.graphql.query(ME_ID_REQUEST, variables);
+      await graphqlService.query(ME_ID_REQUEST, variables);
       const graphqlQuery = { query: ME_ID_REQUEST, variables };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
@@ -53,13 +54,13 @@ describe('GraphQLService', function () {
           }
         }
       `;
-      await Qminder.graphql.query(query);
+      await graphqlService.query(query);
       const graphqlQuery = { query: ME_ID_REQUEST };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
 
     it('throws when query is missing', async () => {
-      expect(() => (Qminder.graphql.query as any)()).toThrow();
+      expect(() => (graphqlService.query as any)()).toThrow();
       expect(requestStub.callCount).toBe(0);
     });
   });
@@ -68,10 +69,10 @@ describe('GraphQLService', function () {
     beforeEach(function () {
       requestStub.onFirstCall().resolves(ME_ID_SUCCESS_RESPONSE);
     });
-    it('Qminder.graphql.query works correctly when passed a gql`` tagged query', () => {
+    it('GraphqlService.query works correctly when passed a gql`` tagged query', () => {
       expect(
         () =>
-          Qminder.graphql.query(gql`
+        graphqlService.query(gql`
             {
               me {
                 id
@@ -85,10 +86,10 @@ describe('GraphQLService', function () {
         query: '{ me { id }\n}',
       });
     });
-    it('Qminder.graphql.query works correctly when passed a long query with variables and fragments', () => {
+    it('GraphqlService.query works correctly when passed a long query with variables and fragments', () => {
       expect(
         () =>
-          Qminder.graphql.query(gql`
+        graphqlService.query(gql`
             query MyIdQuery($id: ID!) {
               location(id: $id) {
                 id

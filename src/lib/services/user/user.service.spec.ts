@@ -1,7 +1,9 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
+import { User } from '../../model/user';
+import { UserService } from './user.service';
 
-describe('UserService', function () {
+describe('User service', function () {
   const LOCATION_ID = 673;
   const USERS = [
     {
@@ -54,14 +56,14 @@ describe('UserService', function () {
         .withArgs(`locations/${LOCATION_ID}/users`)
         .resolves({ data: USERS });
 
-      Qminder.users.list(LOCATION_ID).then((users: Qminder.User[]) => {
+      UserService.list(LOCATION_ID).then((users: User[]) => {
         usersReply = users;
         done();
       });
     });
 
     it('returns the right user IDs', function () {
-      const returnedIds = usersReply.map((user: Qminder.User) => user.id);
+      const returnedIds = usersReply.map((user: User) => user.id);
       const groundTruth = USERS.map((user) => user.id);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -69,7 +71,7 @@ describe('UserService', function () {
       }
     });
     it('returns the right email addresses', function () {
-      const returned = usersReply.map((user: Qminder.User) => user.email);
+      const returned = usersReply.map((user: User) => user.email);
       const groundTruth = USERS.map((user) => user.email);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -77,7 +79,7 @@ describe('UserService', function () {
       }
     });
     it('returns the right first names', function () {
-      const returned = usersReply.map((user: Qminder.User) => user.firstName);
+      const returned = usersReply.map((user: User) => user.firstName);
       const groundTruth = USERS.map((user) => user.firstName);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -85,7 +87,7 @@ describe('UserService', function () {
       }
     });
     it('returns the right last names', function () {
-      const returned = usersReply.map((user: Qminder.User) => user.lastName);
+      const returned = usersReply.map((user: User) => user.lastName);
       const groundTruth = USERS.map((user) => user.lastName);
 
       for (let i = 0; i < groundTruth.length; i++) {
@@ -94,7 +96,7 @@ describe('UserService', function () {
     });
     it('returns the right pictures', function () {
       const returned = usersReply
-        .map((user: Qminder.User) => user.picture[0])
+        .map((user: User) => user.picture[0])
         .sort(pictureSort);
       const groundTruth = USERS.map((user) => user.picture[0]).sort(
         pictureSort,
@@ -106,11 +108,11 @@ describe('UserService', function () {
     });
   });
   describe('create()', function () {
-    // Qminder.users.create(userdata)
+    // UserService.create(userdata)
 
     it('Sends the user roles as a JSON array', function () {
       const user: Omit<
-        Qminder.User,
+        User,
         'id' | 'desk' | 'selectedLocation' | 'picture'
       > = {
         email: 'test@qminder.com',
@@ -130,7 +132,7 @@ describe('UserService', function () {
         ],
       };
 
-      Qminder.users.create(user);
+      UserService.create(user);
       expect(
         requestStub.calledWith(
           'users/',
@@ -142,11 +144,11 @@ describe('UserService', function () {
     });
   });
   describe('details()', function () {
-    // Qminder.users.details(userId|userEmail)
+    // UserService.details(userId|userEmail)
   });
   describe('setLines()', function () {
     it('Works with a list of Line IDs', function () {
-      Qminder.users.setLines(123, [1, 2, 3, 4]);
+      UserService.setLines(123, [1, 2, 3, 4]);
       expect(
         requestStub.calledWith(
           'users/123/lines',
@@ -162,7 +164,7 @@ describe('UserService', function () {
         { id: 3, name: 'Test', color: '#f00', disabled: false },
       ];
 
-      Qminder.users.setLines(123, lines);
+      UserService.setLines(123, lines);
       expect(
         requestStub.calledWith(
           'users/123/lines',
@@ -177,7 +179,7 @@ describe('UserService', function () {
         { id: 2, name: 'Test', color: '#fff', disabled: false },
         { id: 3, name: 'Test', color: '#f00', disabled: false },
       ];
-      expect(() => Qminder.users.setLines(123, lines)).not.toThrow();
+      expect(() => UserService.setLines(123, lines)).not.toThrow();
     });
   });
 });
