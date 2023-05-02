@@ -20,14 +20,14 @@ export function edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
     throw new Error('TV name not provided');
   }
   return ApiBase.request(
-      `tv/${tvId}`,
-      { name: newName },
-      'POST',
+    `tv/${tvId}`,
+    { name: newName },
+    'POST',
   ) as Promise<Device>;
 }
 
 export function remove(
-    tv: IdOrObject<Device>,
+  tv: IdOrObject<Device>,
 ): Promise<{ statusCode: number }> {
   const tvId = extractId(tv);
   if (!tvId || typeof tvId !== 'string') {

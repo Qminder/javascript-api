@@ -14,14 +14,14 @@ export function create(url: string): Promise<Webhook> {
     throw new Error(ERROR_NO_URL);
   }
   return ApiBase.request(
-      `webhooks`,
-      { url },
-      'POST',
+    `webhooks`,
+    { url },
+    'POST',
   ) as Promise<CreateWebhookResponse>;
 }
 
 export function remove(
-    webhook: IdOrObject<Webhook>,
+  webhook: IdOrObject<Webhook>,
 ): Promise<DeleteWebhookResponse> {
   const id = extractId(webhook);
   return ApiBase.request(`webhooks/${id}`, undefined, 'DELETE');

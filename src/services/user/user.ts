@@ -12,17 +12,17 @@ import {
 export function list(location: IdOrObject<Location>): Promise<User[]> {
   const locationId = extractId(location);
   return ApiBase.request(`locations/${locationId}/users`).then(
-      (users: { data: User[] }) => {
-        if (!users.data) {
-          throw new Error('User list response was invalid!');
-        }
-        return users.data as User[];
-      },
+    (users: { data: User[] }) => {
+      if (!users.data) {
+        throw new Error('User list response was invalid!');
+      }
+      return users.data as User[];
+    },
   );
 }
 
 export function create(
-    user: Pick<User, 'email' | 'firstName' | 'lastName' | 'roles'>,
+  user: Pick<User, 'email' | 'firstName' | 'lastName' | 'roles'>,
 ): Promise<User> {
   const { email, firstName, lastName, roles } = user;
   if (!email || typeof email !== 'string') {
@@ -38,25 +38,25 @@ export function create(
     throw new Error("The user's roles are missing");
   }
   return ApiBase.request(
-      `users/`,
-      {
-        email,
-        firstName,
-        lastName,
-        roles: JSON.stringify(roles),
-      },
-      'POST',
+    `users/`,
+    {
+      email,
+      firstName,
+      lastName,
+      roles: JSON.stringify(roles),
+    },
+    'POST',
   ) as Promise<User>;
 }
 
 export function details(
-    userIdOrEmail: IdOrObject<User> | string,
+  userIdOrEmail: IdOrObject<User> | string,
 ): Promise<User> {
   const search = extractId(userIdOrEmail);
 
   if (!search) {
     throw new Error(
-        'User to search by was invalid. Searching only works by email or user ID or User object.',
+      'User to search by was invalid. Searching only works by email or user ID or User object.',
     );
   }
 
@@ -75,16 +75,16 @@ export function removeDesk(user: IdOrObject<User>): Promise<SuccessResponse> {
 }
 
 export function setLines(
-    user: IdOrObject<User>,
-    lines: IdOrObject<Line>[],
+  user: IdOrObject<User>,
+  lines: IdOrObject<Line>[],
 ): Promise<SuccessResponse> {
   const userId = extractId(user);
   const lineIds = lines.map((line: IdOrObject<Line>) =>
-      extractIdToNumber(line),
+    extractIdToNumber(line),
   );
   return ApiBase.request(
-      `users/${userId}/lines`,
-      JSON.stringify(lineIds),
-      'POST',
+    `users/${userId}/lines`,
+    JSON.stringify(lineIds),
+    'POST',
   );
 }

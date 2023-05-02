@@ -5,7 +5,7 @@ import { ApiBase } from '../api-base/api-base';
 
 type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
 type LineUpdateParameters = Pick<Line, 'id'> &
-    Partial<Pick<Line, 'color' | 'name'>>;
+  Partial<Pick<Line, 'color' | 'name'>>;
 
 export function list(location: IdOrObject<Location>): Promise<Line[]> {
   const locationId = extractId(location);
@@ -13,7 +13,7 @@ export function list(location: IdOrObject<Location>): Promise<Line[]> {
     throw new Error('Location ID invalid or missing.');
   }
   return ApiBase.request(`locations/${locationId}/lines`).then(
-      (response: { data: Line[] }) => response.data,
+    (response: { data: Line[] }) => response.data,
   );
 }
 
@@ -26,8 +26,8 @@ export function details(line: IdOrObject<Line>): Promise<Line> {
 }
 
 export function create(
-    location: IdOrObject<Location>,
-    line: LineCreateParameters,
+  location: IdOrObject<Location>,
+  line: LineCreateParameters,
 ): Promise<Line> {
   const locationId = extractId(location);
   if (!locationId || typeof locationId !== 'string') {
@@ -40,9 +40,9 @@ export function create(
     throw new Error('Cannot create a line without a line name.');
   }
   return ApiBase.request(
-      `locations/${locationId}/lines`,
-      line,
-      'POST',
+    `locations/${locationId}/lines`,
+    line,
+    'POST',
   ) as Promise<Line>;
 }
 
@@ -76,9 +76,9 @@ export function enable(line: IdOrObject<Line>): Promise<any> {
     throw new Error('Line ID invalid or missing.');
   }
   return ApiBase.request(
-      `lines/${lineId}/enable`,
-      undefined,
-      'POST',
+    `lines/${lineId}/enable`,
+    undefined,
+    'POST',
   ) as Promise<any>;
 }
 
@@ -88,9 +88,9 @@ export function disable(line: IdOrObject<Line>): Promise<any> {
     throw new Error('Line ID invalid or missing.');
   }
   return ApiBase.request(
-      `lines/${lineId}/disable`,
-      undefined,
-      'POST',
+    `lines/${lineId}/disable`,
+    undefined,
+    'POST',
   ) as Promise<any>;
 }
 
@@ -100,9 +100,9 @@ export function archive(line: IdOrObject<Line>): Promise<any> {
     throw new Error('Line ID invalid or missing.');
   }
   return ApiBase.request(
-      `lines/${lineId}/archive`,
-      undefined,
-      'POST',
+    `lines/${lineId}/archive`,
+    undefined,
+    'POST',
   ) as Promise<any>;
 }
 
@@ -113,9 +113,9 @@ export function unarchive(line: IdOrObject<Line>): Promise<any> {
     throw new Error('Line ID invalid or missing.');
   }
   return ApiBase.request(
-      `lines/${lineId}/unarchive`,
-      undefined,
-      'POST',
+    `lines/${lineId}/unarchive`,
+    undefined,
+    'POST',
   ) as Promise<any>;
 }
 
@@ -126,8 +126,8 @@ export function deleteLine(line: IdOrObject<Line>): Promise<any> {
     throw new Error('Line ID invalid or missing.');
   }
   return ApiBase.request(
-      `lines/${lineId}`,
-      undefined,
-      'DELETE',
+    `lines/${lineId}`,
+    undefined,
+    'DELETE',
   ) as Promise<any>;
 }

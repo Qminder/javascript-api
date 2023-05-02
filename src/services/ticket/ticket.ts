@@ -6,7 +6,7 @@ import {
   extractIdToNumber,
   IdOrObject,
 } from '../../util/id-or-object';
-import { TicketCreationParameters } from './model/ticket-creation-parameters';
+import { TicketCreationParameters } from '../../model/ticket-creation-parameters';
 import { ApiBase } from '../api-base/api-base';
 
 /**
@@ -183,10 +183,10 @@ interface TicketSearchCriteria {
    * responseScope: 'MESSAGES,INTERACTIONS'
    */
   responseScope?:
-      | string
-      | Array<'MESSAGES' | 'INTERACTIONS'>
-      | 'MESSAGES'
-      | 'INTERACTIONS';
+    | string
+    | Array<'MESSAGES' | 'INTERACTIONS'>
+    | 'MESSAGES'
+    | 'INTERACTIONS';
 }
 
 /**
@@ -204,7 +204,7 @@ export const ERROR_NO_LINE_ID: string = 'Line ID missing from arguments.';
  * @hidden
  */
 export const ERROR_INVALID_LINE: string =
-    'Line is not a number or Line object.';
+  'Line is not a number or Line object.';
 
 /** This error is thrown when the Ticket ID is not passed to the API method, or when its type is
  *  not a number.
@@ -212,31 +212,31 @@ export const ERROR_INVALID_LINE: string =
 export const ERROR_NO_TICKET_ID: string = 'Ticket ID missing from arguments.';
 /** @hidden */
 export const ERROR_INVALID_TICKET: string =
-    'Ticket is not a number or Ticket object.';
+  'Ticket is not a number or Ticket object.';
 /** This error is thrown when the Ticket Changes object is not passed to TicketService.edit.
  * @hidden */
 export const ERROR_NO_TICKET_CHANGES: string =
-    'Ticket changes missing from arguments.';
+  'Ticket changes missing from arguments.';
 
 /** This error is thrown when a user is not passed into API methods that take a user.
  * @hidden */
 export const ERROR_NO_USER: string = 'User missing from arguments.';
 /** @hidden */
 export const ERROR_INVALID_USER: string =
-    'User is not a number or User object.';
+  'User is not a number or User object.';
 /** This error is thrown when the desired queue position is not passed into
  *  TicketService.returnToQueue.
  *  @hidden */
 export const ERROR_NO_QUEUE_POSITION: string =
-    'Queue position missing from arguments.';
+  'Queue position missing from arguments.';
 /** @hidden */
 export const ERROR_INVALID_DESK: string =
-    'Desk is not a number or Desk object.';
+  'Desk is not a number or Desk object.';
 
 export type TicketEditingParameters = Pick<
-    Ticket,
-    'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email' | 'extra'
-    > & { user: IdOrObject<User> };
+  Ticket,
+  'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email' | 'extra'
+> & { user: IdOrObject<User> };
 
 /**
  * The format of the HTTP request to send when creating a ticket.
@@ -290,11 +290,11 @@ export function search(search: TicketSearchCriteria): Promise<Array<Ticket>> {
   }
 
   const queryStr = new URLSearchParams(
-      newSearch as Record<string, string>,
+    newSearch as Record<string, string>,
   ).toString();
 
   return ApiBase.request(`tickets/search?${queryStr}`).then(
-      (response: { data: Ticket[] }) => response.data,
+    (response: { data: Ticket[] }) => response.data,
   );
 }
 
@@ -322,17 +322,17 @@ export function count(search: TicketCountCriteria): Promise<number> {
     delete (newSearch as TicketSearchCriteria).responseScope;
   }
   const queryStr = new URLSearchParams(
-      newSearch as Record<string, string>,
+    newSearch as Record<string, string>,
   ).toString();
   return ApiBase.request(`tickets/count?${queryStr}`).then(
-      (response: { count: number }) => response.count,
+    (response: { count: number }) => response.count,
   );
 }
 
 export function create(
-    line: IdOrObject<Line>,
-    ticket: TicketCreationParameters,
-    idempotencyKey?: string | number,
+  line: IdOrObject<Line>,
+  ticket: TicketCreationParameters,
+  idempotencyKey?: string | number,
 ): Promise<TicketCreationResponse> {
   if (line === undefined) {
     throw new Error(ERROR_NO_LINE_ID);
@@ -351,10 +351,10 @@ export function create(
   const requestParams: TicketCreationRequest = { ...converted };
 
   return ApiBase.request(
-      `lines/${lineId}/ticket`,
-      requestParams,
-      'POST',
-      idempotencyKey,
+    `lines/${lineId}/ticket`,
+    requestParams,
+    'POST',
+    idempotencyKey,
   ).then((response: TicketCreationResponse) => {
     const ticketId = parseInt(`${response.id}`, 10);
     const reply: TicketCreationResponse = { id: ticketId };
@@ -368,8 +368,8 @@ export function details(ticket: IdOrObject<Ticket>): Promise<Ticket> {
 }
 
 export function edit(
-    ticket: IdOrObject<Ticket>,
-    changes: TicketEditingParameters,
+  ticket: IdOrObject<Ticket>,
+  changes: TicketEditingParameters,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
 
@@ -392,15 +392,15 @@ export function edit(
   const request: TicketEditingRequest = intermediate;
 
   return ApiBase.request(`tickets/${ticketId}/edit`, request).then(
-      (response: { result: 'success' }) => response.result,
+    (response: { result: 'success' }) => response.result,
   );
 }
 
 export function call(
-    ticket: IdOrObject<Ticket>,
-    user?: IdOrObject<Ticket>,
-    desk?: IdOrObject<Ticket>,
-    keepActiveTicketsOpen?: boolean,
+  ticket: IdOrObject<Ticket>,
+  user?: IdOrObject<Ticket>,
+  desk?: IdOrObject<Ticket>,
+  keepActiveTicketsOpen?: boolean,
 ): Promise<Ticket> {
   if (!ticket) {
     throw new Error(ERROR_NO_TICKET_ID);
@@ -437,7 +437,7 @@ export function recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
     throw new Error(ERROR_NO_TICKET_ID);
   }
   return ApiBase.request(`tickets/${ticketId}/recall`, undefined, 'POST').then(
-      (response: { result: 'success' }) => response.result,
+    (response: { result: 'success' }) => response.result,
   );
 }
 
@@ -449,9 +449,9 @@ export function markServed(ticket: IdOrObject<Ticket>): Promise<'success'> {
   }
 
   return ApiBase.request(
-      `tickets/${ticketId}/markserved`,
-      undefined,
-      'POST',
+    `tickets/${ticketId}/markserved`,
+    undefined,
+    'POST',
   ).then((response: { result: 'success' }) => response.result);
 }
 
@@ -462,15 +462,15 @@ export function markNoShow(ticket: IdOrObject<Ticket>): Promise<'success'> {
     throw new Error(ERROR_NO_TICKET_ID);
   }
   return ApiBase.request(
-      `tickets/${ticketId}/marknoshow`,
-      undefined,
-      'POST',
+    `tickets/${ticketId}/marknoshow`,
+    undefined,
+    'POST',
   ).then((response: { result: 'success' }) => response.result);
 }
 
 export function cancel(
-    ticket: IdOrObject<Ticket>,
-    user: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  user: IdOrObject<User>,
 ): Promise<string> {
   const ticketId = extractId(ticket);
   const userId = extractId(user);
@@ -483,16 +483,16 @@ export function cancel(
   }
 
   return ApiBase.request(
-      `tickets/${ticketId}/cancel`,
-      { user: userId },
-      'POST',
+    `tickets/${ticketId}/cancel`,
+    { user: userId },
+    'POST',
   ).then((response: { result: 'success' }) => response.result);
 }
 
 export function returnToQueue(
-    ticket: IdOrObject<Ticket>,
-    user: IdOrObject<User>,
-    position: DesiredQueuePosition,
+  ticket: IdOrObject<Ticket>,
+  user: IdOrObject<User>,
+  position: DesiredQueuePosition,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
   const userId = extractId(user);
@@ -514,16 +514,16 @@ export function returnToQueue(
     user: userId,
   }).toString();
   return ApiBase.request(
-      `tickets/${ticketId}/returntoqueue?${query}`,
-      undefined,
-      'POST',
+    `tickets/${ticketId}/returntoqueue?${query}`,
+    undefined,
+    'POST',
   ).then((response: { result: 'success' }) => response.result);
 }
 
 export function addLabel(
-    ticket: IdOrObject<Ticket>,
-    label: string,
-    user?: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  label: string,
+  user?: IdOrObject<User>,
 ): Promise<'success' | 'no action'> {
   const ticketId = extractId(ticket);
   const userId = user ? extractId(user) : undefined;
@@ -545,13 +545,13 @@ export function addLabel(
   }
 
   return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST').then(
-      (response: { result: 'success' | 'no action' }) => response.result,
+    (response: { result: 'success' | 'no action' }) => response.result,
   );
 }
 
 export function setLabels(
-    ticket: IdOrObject<Ticket>,
-    labels: Array<string>,
+  ticket: IdOrObject<Ticket>,
+  labels: Array<string>,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
 
@@ -566,16 +566,16 @@ export function setLabels(
   const body: { labels: Array<string> } = { labels };
 
   return ApiBase.request(
-      `tickets/${ticketId}/labels`,
-      JSON.stringify(body),
-      'PUT',
+    `tickets/${ticketId}/labels`,
+    JSON.stringify(body),
+    'PUT',
   ).then((response: { result: 'success' }) => response.result);
 }
 
 export function removeLabel(
-    ticket: IdOrObject<Ticket>,
-    label: string,
-    user: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  label: string,
+  user: IdOrObject<User>,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
   const userId = extractId(user);
@@ -598,16 +598,16 @@ export function removeLabel(
   };
 
   return ApiBase.request(
-      `tickets/${ticketId}/labels/remove`,
-      body,
-      'POST',
+    `tickets/${ticketId}/labels/remove`,
+    body,
+    'POST',
   ).then((response: { result: 'success' }) => response.result);
 }
 
 export function assignToUser(
-    ticket: IdOrObject<Ticket>,
-    assigner: IdOrObject<User>,
-    assignee: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  assigner: IdOrObject<User>,
+  assignee: IdOrObject<User>,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
   const assignerId = extractId(assigner);
@@ -630,13 +630,13 @@ export function assignToUser(
     assignee: assigneeId,
   };
   return ApiBase.request(`tickets/${ticketId}/assign`, body, 'POST').then(
-      (response: { result: 'success' }) => response.result,
+    (response: { result: 'success' }) => response.result,
   );
 }
 
 export function unassign(
-    ticket: IdOrObject<Ticket>,
-    unassigner: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  unassigner: IdOrObject<User>,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
   const unassignerId = extractId(unassigner);
@@ -647,20 +647,20 @@ export function unassign(
 
   if (!unassignerId || typeof unassignerId !== 'string') {
     throw new Error(
-        'Qminder.tickets.unassign was called without a valid unassigner user.',
+      'Qminder.tickets.unassign was called without a valid unassigner user.',
     );
   }
 
   return ApiBase.request(
-      `tickets/${ticketId}/unassign`,
-      { user: unassignerId },
-      'POST',
+    `tickets/${ticketId}/unassign`,
+    { user: unassignerId },
+    'POST',
   ).then((response: { result: 'success' }) => response.result);
 }
 
 export function reorder(
-    ticket: IdOrObject<Ticket>,
-    afterTicket: IdOrObject<Ticket> | null,
+  ticket: IdOrObject<Ticket>,
+  afterTicket: IdOrObject<Ticket> | null,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
 
@@ -669,7 +669,7 @@ export function reorder(
   }
 
   const afterTicketId: string | null =
-      afterTicket === null ? (afterTicket as null) : extractId(afterTicket);
+    afterTicket === null ? (afterTicket as null) : extractId(afterTicket);
 
   let postData: { after: string | null } | undefined;
   if (afterTicketId) {
@@ -679,12 +679,12 @@ export function reorder(
   }
 
   return ApiBase.request(`tickets/${ticketId}/reorder`, postData, 'POST').then(
-      (response: { result: 'success' }) => response.result,
+    (response: { result: 'success' }) => response.result,
   );
 }
 
 export function getEstimatedTimeOfService(
-    ticket: IdOrObject<Ticket>,
+  ticket: IdOrObject<Ticket>,
 ): Promise<number> {
   const ticketId = extractId(ticket);
 
@@ -693,13 +693,13 @@ export function getEstimatedTimeOfService(
   }
 
   return ApiBase.request(`tickets/${ticketId}/estimated-time`).then(
-      (response: { estimatedTimeOfService: number }) =>
-          response.estimatedTimeOfService,
+    (response: { estimatedTimeOfService: number }) =>
+      response.estimatedTimeOfService,
   );
 }
 
 export function getMessages(
-    ticket: IdOrObject<Ticket>,
+  ticket: IdOrObject<Ticket>,
 ): Promise<Array<TicketMessage>> {
   const ticketId = extractId(ticket);
 
@@ -707,14 +707,14 @@ export function getMessages(
     throw new Error(ERROR_NO_TICKET_ID);
   }
   return ApiBase.request(`tickets/${ticketId}/messages`).then(
-      (response: { messages: TicketMessage[] }) => response.messages,
+    (response: { messages: TicketMessage[] }) => response.messages,
   );
 }
 
 export function sendMessage(
-    ticket: IdOrObject<Ticket>,
-    message: string,
-    user: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  message: string,
+  user: IdOrObject<User>,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
   const userId = extractId(user);
@@ -737,14 +737,14 @@ export function sendMessage(
   };
 
   return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST').then(
-      (response: { result: 'success' }) => response.result,
+    (response: { result: 'success' }) => response.result,
   );
 }
 
 export function forward(
-    ticket: IdOrObject<Ticket>,
-    line: IdOrObject<Line>,
-    user?: IdOrObject<User>,
+  ticket: IdOrObject<Ticket>,
+  line: IdOrObject<Line>,
+  user?: IdOrObject<User>,
 ): Promise<object> {
   const ticketId = extractId(ticket);
   const lineId = extractId(line);
@@ -775,10 +775,10 @@ export function forward(
 }
 
 export function setExternalData(
-    ticket: IdOrObject<Ticket>,
-    provider: string,
-    title: string,
-    data: any,
+  ticket: IdOrObject<Ticket>,
+  provider: string,
+  title: string,
+  data: any,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
 
@@ -805,6 +805,6 @@ export function setExternalData(
   };
 
   return ApiBase.request(`tickets/${ticketId}/external`, payload, 'POST').then(
-      (response: { result: 'success' }) => response.result,
+    (response: { result: 'success' }) => response.result,
   );
 }
