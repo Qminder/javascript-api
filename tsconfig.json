@@ -16,5 +16,5 @@
     "declaration": true
   },
   "include": ["src/**/*"],
-  "files": ["src/qminder-api.ts"]
+  "files": ["src/index.ts"]
 }
