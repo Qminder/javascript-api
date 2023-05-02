@@ -317,6 +317,13 @@ export class GraphQLService {
         this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
         this.clearMonitoring();
         this.socket = null;
+        return;
+      }
+
+      if (this.connectionStatus === ConnectionStatus.CONNECTING) {
+        console.error(
+          `Received socket close event before a connection was established! Close code: ${event.code}`,
+        );
       }
     };
 
