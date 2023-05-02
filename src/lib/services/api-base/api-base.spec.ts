@@ -1,10 +1,6 @@
 import * as sinon from 'sinon';
-<<<<<<< Updated upstream:src/services/api-base/api-base.spec.ts
 import fetch from 'cross-fetch';
-import * as Qminder from '../../qminder-api';
-=======
-import * as Qminder from '../../../qminder-api';
->>>>>>> Stashed changes:src/lib/services/api-base/api-base.spec.ts
+import { Qminder } from '../../qminder';
 import { GraphQLApiError } from '../../util/errors';
 import { ClientError } from '../../model/client-error';
 
