@@ -125,7 +125,7 @@ describe('ApiBase', () => {
     it('does not throw an error when setKey has been called', async () => {
       Qminder.setKey(API_KEY);
       await expect(
-          Qminder.ApiBase.request('locations/673/'),
+        Qminder.ApiBase.request('locations/673/'),
       ).resolves.not.toThrow();
     });
 
@@ -164,8 +164,8 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then((response) => {
         expect(fetchSpy).toHaveBeenCalledWith(
-            'https://api.qminder.com/v1/TEST',
-            init,
+          'https://api.qminder.com/v1/TEST',
+          init,
         );
         done();
       });
@@ -205,7 +205,7 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST', body).then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual(
-            'id=5&firstName=John&lastName=Smith',
+          'id=5&firstName=John&lastName=Smith',
         );
         expect(fetchSpy.mock.calls[0][1].method).toEqual('POST');
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
@@ -224,7 +224,7 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST', body).then(() => {
         expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
-            'application/x-www-form-urlencoded',
+          'application/x-www-form-urlencoded',
         );
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
         done();
@@ -242,10 +242,10 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST', body, undefined, '9e3a333e').then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual(
-            'id=5&firstName=John&lastName=Smith',
+          'id=5&firstName=John&lastName=Smith',
         );
         expect(fetchSpy.mock.calls[0][1].headers['Idempotency-Key']).toEqual(
-            '9e3a333e',
+          '9e3a333e',
         );
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
         done();
@@ -260,7 +260,7 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST', body, 'POST').then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual(body);
         expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
-            'application/json',
+          'application/json',
         );
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
         done();
@@ -275,7 +275,7 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST', body, 'POST').then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual('a=test');
         expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
-            'application/x-www-form-urlencoded',
+          'application/x-www-form-urlencoded',
         );
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
         done();
@@ -293,11 +293,11 @@ describe('ApiBase', () => {
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
-          () => done(new Error('Should have errored')),
-          (error: GraphQLApiError) => {
-            expect(error).toEqual(new Error('Oh, snap!'));
-            done();
-          },
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
       );
     });
 
@@ -312,11 +312,11 @@ describe('ApiBase', () => {
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
-          () => done(new Error('Should have errored')),
-          (error: GraphQLApiError) => {
-            expect(error).toEqual(new Error('Oh, snap!'));
-            done();
-          },
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(new Error('Oh, snap!'));
+          done();
+        },
       );
     });
 
@@ -331,13 +331,13 @@ describe('ApiBase', () => {
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
-          () => done(new Error('Should have errored')),
-          (error: GraphQLApiError) => {
-            expect(error).toEqual(
-                new ClientError('email', 'Email already in use'),
-            );
-            done();
-          },
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(
+            new ClientError('email', 'Email already in use'),
+          );
+          done();
+        },
       );
     });
   });
@@ -354,7 +354,7 @@ describe('ApiBase', () => {
       errors: [
         {
           message:
-              "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
+            "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
           locations: [
             {
               line: 4,
@@ -382,11 +382,11 @@ describe('ApiBase', () => {
     it('does not throw when no variables are passed', async () => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
-          Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
+        Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
       );
 
       await expect(
-          Qminder.ApiBase.queryGraph(ME_ID.request),
+        Qminder.ApiBase.queryGraph(ME_ID.request),
       ).resolves.not.toThrow();
     });
 
@@ -398,7 +398,7 @@ describe('ApiBase', () => {
     it('sends a correct request', () => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
-          Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
+        Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
       );
       Qminder.ApiBase.queryGraph(ME_ID.request);
       expect(fetchSpy).toHaveBeenCalledWith(API_URL, ME_ID.expectedFetch);
@@ -407,7 +407,7 @@ describe('ApiBase', () => {
     it('resolves with the entire response object, not only response data', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
-          Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
+        Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
       );
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
@@ -419,29 +419,29 @@ describe('ApiBase', () => {
     it('throws an error when getting errors as response', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
-          Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
+        Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
       );
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then(
-          () => done(new Error('QueryGraph should have thrown an error')),
-          () => done(),
+        () => done(new Error('QueryGraph should have thrown an error')),
+        () => done(),
       );
     });
 
     it('resolves with response, even if response has errors', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
-          Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
+        Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
       );
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then(
-          () => done(new Error('Should have errored')),
-          (error: GraphQLApiError) => {
-            expect(error).toEqual(
-                new GraphQLApiError(ERROR_UNDEFINED_FIELD.errors),
-            );
-            done();
-          },
+        () => done(new Error('Should have errored')),
+        (error: GraphQLApiError) => {
+          expect(error).toEqual(
+            new GraphQLApiError(ERROR_UNDEFINED_FIELD.errors),
+          );
+          done();
+        },
       );
     });
   });
