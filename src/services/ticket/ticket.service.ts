@@ -1,7 +1,4 @@
-import Ticket, {
-  TicketStatus,
-  TicketMessage,
-} from '../../model/ticket';
+import Ticket, { TicketStatus, TicketMessage } from '../../model/ticket';
 import User from '../../model/user';
 import Line from '../../model/line';
 import ApiBase from '../../api-base';

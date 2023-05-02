@@ -113,7 +113,7 @@ describe('GraphQLService', function () {
       });
     });
   });
-  
+
   describe('subscriptions', () => {
     let graphqlService: GraphqlService;
     let fetchSpy: sinon.SinonStub;
@@ -148,10 +148,10 @@ describe('GraphQLService', function () {
         // wait until the web socket connection was opened
         await new Promise(process.nextTick);
         expect(fetchSpy.args[0][0]).toBe(
-            'https://api.qminder.com/graphql/connection-key',
+          'https://api.qminder.com/graphql/connection-key',
         );
         expect(spy).toBeCalledWith(
-            `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
+          `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
         );
       });
     });
@@ -159,90 +159,99 @@ describe('GraphQLService', function () {
     describe('with websocket cleanup', () => {
       afterEach(async () => {
         await firstValueFrom(
-            graphqlService
-                .getSubscriptionConnectionObservable()
-                .pipe(filter((state) => state === ConnectionStatus.DISCONNECTED)),
+          graphqlService
+            .getSubscriptionConnectionObservable()
+            .pipe(filter((state) => state === ConnectionStatus.DISCONNECTED)),
         );
       });
 
       beforeEach(() => {
         jest
-            .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
-            .mockResolvedValue(keyValue);
+          .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
+          .mockResolvedValue(keyValue);
         (graphqlService as any).enableAutomaticReconnect = false;
       });
 
       describe('.subscribe', () => {
         it('fires an Apollo compliant subscribe event, when a new subscriber comes in', async () => {
-          const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
+          const sendMessageSpy = jest.spyOn(
+            graphqlService as any,
+            'sendMessage',
+          );
           graphqlService.subscribe('subscription { baba }').subscribe(() => {});
           // wait until the web socket connection was opened
           await new Promise(process.nextTick);
           expect((graphqlService as any).subscriptions.length).toBe(1);
           expect(sendMessageSpy).toHaveBeenCalledWith(
-              expect.anything(),
-              'start',
-              expect.objectContaining({
-                query: 'subscription { baba }',
-              }),
+            expect.anything(),
+            'start',
+            expect.objectContaining({
+              query: 'subscription { baba }',
+            }),
           );
         });
 
         it('sends an un-subscribe message when the subscription is unsubscribe from', () => {
           const stopSubscriptionSpy = jest.spyOn(
-              graphqlService as any,
-              'stopSubscription',
+            graphqlService as any,
+            'stopSubscription',
           );
           const subscription = graphqlService
-              .subscribe('subscription { baba }')
-              .subscribe(() => {});
+            .subscribe('subscription { baba }')
+            .subscribe(() => {});
           subscription.unsubscribe();
           expect(stopSubscriptionSpy).toHaveBeenCalledWith('1');
         });
 
         it('works with graphql-tag generated documents', async () => {
-          const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
+          const sendMessageSpy = jest.spyOn(
+            graphqlService as any,
+            'sendMessage',
+          );
           graphqlService
-          .subscribe(
+            .subscribe(
               gql`
                 subscription {
                   baba
                 }
               `,
-          )
-          .subscribe(() => {});
+            )
+            .subscribe(() => {});
           // wait until the web socket connection was opened
           await new Promise(process.nextTick);
           expect((graphqlService as any).subscriptions.length).toBe(1);
           expect(sendMessageSpy).toHaveBeenCalledWith(
-              expect.anything(),
-              'start',
-              expect.objectContaining({
-                query: 'subscription {\n  baba\n}\n',
-              }),
+            expect.anything(),
+            'start',
+            expect.objectContaining({
+              query: 'subscription {\n  baba\n}\n',
+            }),
           );
         });
 
         it('does not automatically add leading "subscription {" and trailing "}"', async () => {
-          const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
+          const sendMessageSpy = jest.spyOn(
+            graphqlService as any,
+            'sendMessage',
+          );
           graphqlService
-          .subscribe(
+            .subscribe(
               gql`
                 subscription {
                   baba
                 }
               `,
-          )
-          .subscribe(() => {});
+            )
+            .subscribe(() => {});
           // wait until the web socket connection was opened
           await new Promise(process.nextTick);
           expect((graphqlService as any).subscriptions.length).toBe(1);
           expect(sendMessageSpy).toHaveBeenCalledWith(
-              expect.anything(),
-              'start',
-              expect.objectContaining({
-                query: 'subscription {\n  baba\n}\n',
-              }),
+            expect.anything(),
+            'start',
+            expect.objectContaining({
+              query: 'subscription {\n  baba\n}\n',
+            }),
           );
         });
       });
@@ -251,13 +260,13 @@ describe('GraphQLService', function () {
         it('deletes the subscription from the mapping of ID -> callbacks', () => {
           // start the test with an empty observer-map
           expect(
-              Object.keys((graphqlService as any).subscriptionObserverMap).length,
+            Object.keys((graphqlService as any).subscriptionObserverMap).length,
           ).toBe(0);
           // subscribe once
           const spy = jest.fn();
           const subscription = graphqlService
-              .subscribe('subscription { baba }')
-              .subscribe(spy);
+            .subscribe('subscription { baba }')
+            .subscribe(spy);
 
           // the observer map should equal { "1": Subscriber => spy }
           expect((graphqlService as any).subscriptionObserverMap).toEqual({
@@ -267,7 +276,7 @@ describe('GraphQLService', function () {
           // unsubscribing should clean up
           subscription.unsubscribe();
           expect(
-              Object.keys((graphqlService as any).subscriptionObserverMap).length,
+            Object.keys((graphqlService as any).subscriptionObserverMap).length,
           ).toBe(0);
         });
       });
@@ -275,11 +284,11 @@ describe('GraphQLService', function () {
       describe('receiving messages', () => {
         it('when receiving a published message for a subscription that does not exist anymore, it does not throw', async () => {
           expect(
-              Object.keys((graphqlService as any).subscriptionObserverMap).length,
+            Object.keys((graphqlService as any).subscriptionObserverMap).length,
           ).toBe(0);
           const subscription = graphqlService
-              .subscribe('subscription { baba }')
-              .subscribe(() => {});
+            .subscribe('subscription { baba }')
+            .subscribe(() => {});
           // wait until the web socket connection was opened
           await new Promise(process.nextTick);
           subscription.unsubscribe();
@@ -302,7 +311,7 @@ describe('GraphQLService', function () {
       });
     });
   });
-  
+
   afterEach(function () {
     requestStub.restore();
   });
