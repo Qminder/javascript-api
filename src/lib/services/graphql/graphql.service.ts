@@ -448,8 +448,6 @@ export class GraphQLService {
     return source$.pipe(
       pairwise(),
       tap(([oldValue, newValue]) => {
-        console.log('Old value ', oldValue);
-        console.log('New value ', newValue);
         if (
           oldValue === ConnectionStatus.RECONNECTING &&
           newValue === ConnectionStatus.CONNECTED
