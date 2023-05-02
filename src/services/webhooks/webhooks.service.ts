@@ -1,19 +1,9 @@
-import { ApiBase, SuccessResponse } from '../api-base/api-base';
-import { Webhook } from '../../model/webhook';
-import { extractId, IdOrObject } from '../../util/id-or-object';
-
-/** @hidden */
-export const ERROR_NO_URL = 'No URL provided';
-/** @hidden */
-export const ERROR_NO_WEBHOOK_ID = 'No Webhook ID provided';
-
-type CreateWebhookResponse = Webhook;
-type DeleteWebhookResponse = SuccessResponse;
+import { create, remove } from './webhooks';
 
 /**
  * The Webhooks API allows the developer to create and remove webhooks.
  */
-export class WebhooksService {
+export const WebhooksService = {
   /**
    * Create a webhook.
    * Creating a webhook registers the given URL for the current account. All events for the current
@@ -42,17 +32,7 @@ export class WebhooksService {
    * @throws ERROR_NO_URL when the URL was not provided
    * @see Webhook
    */
-  static create(url: string): Promise<Webhook> {
-    if (!url || typeof url !== 'string') {
-      throw new Error(ERROR_NO_URL);
-    }
-    return ApiBase.request(
-      `webhooks`,
-      { url },
-      'POST',
-    ) as Promise<CreateWebhookResponse>;
-  }
-
+  create,
   /**
    * Remove a webhook.
    *
@@ -77,8 +57,5 @@ export class WebhooksService {
    * @returns a promise that resolves when the API call worked, and rejects when it failed.
    * @throws {Error} ERROR_NO_WEBHOOK_ID when the webhook ID is not provided or is not a number
    */
-  static remove(webhook: IdOrObject<Webhook>): Promise<DeleteWebhookResponse> {
-    const id = extractId(webhook);
-    return ApiBase.request(`webhooks/${id}`, undefined, 'DELETE');
-  }
-}
+  remove,
+};

@@ -1,12 +1,10 @@
-import { ApiBase } from '../api-base/api-base';
-import { Device } from '../../model/device';
-import { extractId, IdOrObject } from '../../util/id-or-object';
+import { details, edit, remove } from './device';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder
  * Sign-In app installed, or Apple TVs with the Qminder TV app.
  */
-export class DeviceService {
+export const DeviceService = {
   /**
    * Read the details of a particular TV based on its ID.
    * Returns the ID, name, theme and settings of the TV.
@@ -25,15 +23,7 @@ export class DeviceService {
    * something went wrong.
    * @throws Error if the TV ID is not provided.
    */
-  static details(tv: IdOrObject<Device>): Promise<Device> {
-    const tvId = extractId(tv);
-    if (!tvId || typeof tvId !== 'string') {
-      throw new Error('TV ID not provided');
-    }
-
-    return ApiBase.request(`tv/${tvId}`) as Promise<Device>;
-  }
-
+  details,
   /**
    * Modify the TV's name.
    * This changes the TV's display name in the TV List in the Qminder Dashboard.
@@ -53,21 +43,7 @@ export class DeviceService {
    * @returns a Promise that resolves to the new TV details, or rejects if something went wrong.
    * @throws Error if the TV ID and TV name are not provided.
    */
-  static edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
-    const tvId = extractId(tv);
-    if (!tvId || typeof tvId !== 'string') {
-      throw new Error('TV ID not provided');
-    }
-    if (!newName || typeof newName !== 'string') {
-      throw new Error('TV name not provided');
-    }
-    return ApiBase.request(
-      `tv/${tvId}`,
-      { name: newName },
-      'POST',
-    ) as Promise<Device>;
-  }
-
+  edit,
   /**
    * Remove a TV. This deletes the TV and revokes the API key, removing it from the list of TVs.
    *
@@ -88,13 +64,5 @@ export class DeviceService {
    * @returns A promise that resolves when successful and rejects when something went wrong.
    * @throws Error if the TV ID is not provided
    */
-  static remove(tv: IdOrObject<Device>): Promise<{ statusCode: number }> {
-    const tvId = extractId(tv);
-    if (!tvId || typeof tvId !== 'string') {
-      throw new Error('TV ID not provided');
-    }
-    return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{
-      statusCode: number;
-    }>;
-  }
-}
+  remove,
+};
