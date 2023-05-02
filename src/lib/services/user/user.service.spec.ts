@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import * as Qminder from '../../qminder-api';
+import * as Qminder from '../../../qminder-api';
 
 describe('UserService', function () {
   const LOCATION_ID = 673;

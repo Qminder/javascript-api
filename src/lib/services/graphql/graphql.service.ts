@@ -459,5 +459,3 @@ export class GraphqlService {
     );
   }
 }
-
-export const GraphQLService = new GraphqlService();
