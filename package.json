@@ -26,7 +26,6 @@
   "bugs": "https://github.com/Qminder/javascript-api/issues",
   "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
   "license": "Apache-2.0",
-  "type": "module",
   "engines": {
     "node": ">=14.0"
   },
