@@ -1,5 +1,5 @@
 import * as sinon from 'sinon';
-import * as Qminder from '../../src/qminder-api';
+import * as Qminder from '../../qminder-api';
 
 describe('TicketService', function () {
   const JON_SNOW = {

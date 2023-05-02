@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
-import * as Qminder from '../../src/qminder-api';
-import { GraphQLApiError } from '../../src/util/errors';
-import { ClientError } from '../../src/model/ClientError';
+import * as Qminder from './qminder-api';
+import { GraphQLApiError } from './util/errors';
+import { ClientError } from './model/ClientError';
 
 /**
  * A function that generates an object with the following keys:
@@ -446,6 +446,28 @@ describe('ApiBase', function () {
           done();
         },
       );
+    });
+  });
+
+  describe('setKey', function () {
+    let requestStub: sinon.SinonStub;
+    beforeEach(function () {
+      Qminder.setKey('EXAMPLE_API_KEY');
+      requestStub = sinon.stub(Qminder.ApiBase, 'request');
+      requestStub.onFirstCall().resolves({ data: [] });
+    });
+
+    it('sets the API key for the REST API', function () {
+      expect(Qminder.ApiBase.apiKey).toBe('EXAMPLE_API_KEY');
+    });
+
+    it('allows using the REST API', function () {
+      expect(() => Qminder.locations.list()).not.toThrow();
+      expect(requestStub.called).toBeTruthy();
+    });
+
+    afterEach(function () {
+      (Qminder.ApiBase.request as sinon.SinonStub).restore();
     });
   });
 });
