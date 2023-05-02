@@ -4,13 +4,7 @@ import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
-import {
-  distinctUntilChanged,
-  pairwise,
-  tap,
-  map,
-  shareReplay,
-} from 'rxjs/operators';
+import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
 import { ConnectionStatus } from '../model/connection-status.js';
 
@@ -34,7 +28,7 @@ interface OperationMessage {
 }
 
 class Subscription {
-  public id: string;
+  id: string;
   query: string;
 
   constructor(id: string, query: string) {
@@ -48,16 +42,21 @@ enum MessageType {
   GQL_CONNECTION_INIT = 'connection_init',
   GQL_START = 'start',
   GQL_STOP = 'stop',
+  GQL_PING = 'ping',
 
   // From Server
   GQL_CONNECTION_ACK = 'connection_ack',
   GQL_DATA = 'data',
   GQL_CONNECTION_KEEP_ALIVE = 'ka',
   GQL_COMPLETE = 'complete',
+  GQL_PONG = 'pong',
 }
 
-const KEEP_ALIVE_MESSAGE = 'ka';
-const WEBSOCKET_TIMEOUT_IN_MS = 30000;
+const PONG_TIMEOUT_IN_MS = 2000;
+const PING_PONG_INTERVAL_IN_MS = 20000;
+
+// https://www.w3.org/TR/websockets/#concept-websocket-close-fail
+const CLIENT_SIDE_CLOSE_EVENT = 1000;
 
 /**
  * A service that lets the user query Qminder API via GraphQL statements.
@@ -68,10 +67,7 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  */
 export class GraphQLService {
   private apiKey: string;
-
   private apiServer: string;
-  private enableAutomaticReconnect = true;
-  WebSocket: typeof WebSocket;
 
   fetch: Function;
 
@@ -83,28 +79,22 @@ export class GraphQLService {
   private nextSubscriptionId: number = 1;
 
   private subscriptions: Subscription[] = [];
-
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
-
-  /** A timeout object after which to retry connecting to Qminder API. */
-  private retryTimeout: any;
-
-  /** Counts the amount of times the event emitter retried connecting. This is used for
-   *  exponential retry falloff. */
-  private connectionRetries = 0;
-
   private subscriptionConnection$: Observable<ConnectionStatus>;
+
+  private pongTimeout: any;
+  private pingPongInterval: any;
+  private sendPingWithThisBound = this.sendPing.bind(this);
+  private handleConnectionDropWithThisBound =
+    this.handleConnectionDrop.bind(this);
 
   constructor() {
     this.setServer('api.qminder.com');
-    this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.fetch = fetch;
-    this.WebSocket = WebSocket;
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
-      startWith(ConnectionStatus.INITIALIZING),
+      startWith(ConnectionStatus.CONNECTING),
       distinctUntilChanged(),
-      this.logWebsocketReconnection,
       shareReplay(1),
     );
   }
@@ -214,7 +204,7 @@ export class GraphQLService {
    */
   openPendingWebSocket(): void {
     if (
-      ![ConnectionStatus.INITIALIZING, ConnectionStatus.CONNECTED].includes(
+      ![ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
         this.connectionStatus,
       )
     ) {
@@ -258,16 +248,21 @@ export class GraphQLService {
   }
 
   private openSocket() {
-    if (this.connectionStatus !== ConnectionStatus.DISCONNECTED) {
+    if (
+      [ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
+        this.connectionStatus,
+      )
+    ) {
       return;
     }
-    this.setConnectionStatus(ConnectionStatus.CONNECTING);
-    this.fetchTemporaryApiKey().then((tempApiKey: string) => {
-      this.createSocketConnection(tempApiKey);
+
+    console.info('[Qminder API]: Connecting to websocket!');
+    this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
+      this.createSocketConnection(temporaryApiKey);
     });
   }
 
-  private fetchTemporaryApiKey(): Promise<string> {
+  private async fetchTemporaryApiKey(retryCount = 0): Promise<string> {
     const url = 'graphql/connection-key';
     const body = {
       method: 'POST',
@@ -277,58 +272,56 @@ export class GraphQLService {
       },
     };
 
-    return this.fetch(`https://${this.apiServer}/${url}`, body)
-      .then((response: Response) => response.json())
-      .then((responseJson: { key: string }) => responseJson.key);
+    try {
+      const response = await this.fetch(
+        `https://${this.apiServer}/${url}`,
+        body,
+      );
+      const responseJson = await response.json();
+      return responseJson.key;
+    } catch (e) {
+      const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
+      console.warn(
+        `[Qminder API]: Failed fetching temporary API key! Retrying in ${
+          timeOut / 1000
+        } seconds!`,
+      );
+      return new Promise((resolve) =>
+        setTimeout(
+          () => resolve(this.fetchTemporaryApiKey(retryCount + 1)),
+          timeOut,
+        ),
+      );
+    }
   }
 
-  private createSocketConnection(tempApiKey: string) {
-    const socket = new this.WebSocket(
-      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${tempApiKey}`,
+  private createSocketConnection(temporaryApiKey: string) {
+    this.setConnectionStatus(ConnectionStatus.CONNECTING);
+    this.socket = new WebSocket(
+      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`,
     );
-    this.socket = socket;
 
+    const socket = this.socket;
     socket.onopen = () => {
-      console.log('[GraphQL subscription] Connection established!');
-      this.setConnectionStatus(ConnectionStatus.INITIALIZING);
-      this.connectionRetries = 0;
-      this.sendMessage(undefined, MessageType.GQL_CONNECTION_INIT, null);
-
-      this.startTrackingConnectionInterruptions();
+      this.sendRawMessage(
+        JSON.stringify({
+          id: undefined,
+          type: MessageType.GQL_CONNECTION_INIT,
+          payload: null,
+        }),
+      );
     };
 
     socket.onclose = (event: { code: number }) => {
-      // NOTE: if the event code is 1006, it is any of the errors in the list here:
-      // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
-      console.log(`[GraphQL subscription] Connection lost: ${event.code}`);
-      this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-      this.socket = null;
-
-      // If it wasn't a client-side close socket, retry connecting.
-      if (this.enableAutomaticReconnect && event.code !== 1000) {
-        // Increase the retry timeout, the more times we retry
-        const timeoutMult = Math.floor(this.connectionRetries / 10);
-        const newTimeout = Math.min(5000 + timeoutMult * 1000, 60000);
-
-        if (this.retryTimeout) {
-          clearTimeout(this.retryTimeout);
-        }
-
-        console.log(
-          `[GraphQL subscription] Reconnecting in ${
-            newTimeout / 1000
-          } seconds...`,
-        );
-        this.retryTimeout = setTimeout(this.openSocket.bind(this), newTimeout);
-
-        this.connectionRetries += 1;
+      if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
+        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+        this.clearMonitoring();
+        this.socket = null;
       }
     };
 
     socket.onerror = () => {
-      console.log(
-        '[GraphQL subscription] An error occurred, the websocket will disconnect.',
-      );
+      console.error('[Qminder API]: An error occurred!');
     };
 
     socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
@@ -341,10 +334,10 @@ export class GraphQLService {
 
           case MessageType.GQL_CONNECTION_ACK:
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
+            console.info('[Qminder API]: Connected to websocket!');
+            this.startConnectionMonitoring();
             this.subscriptions.forEach((subscription) => {
-              const payload = {
-                query: subscription.query,
-              };
+              const payload = { query: subscription.query };
               const msg = JSON.stringify({
                 id: subscription.id,
                 type: MessageType.GQL_START,
@@ -364,6 +357,10 @@ export class GraphQLService {
             this.subscriptionObserverMap[message.id]?.complete();
             break;
 
+          case MessageType.GQL_PONG:
+            clearTimeout(this.pongTimeout);
+            break;
+
           default:
             if (message.payload && message.payload.data) {
               this.subscriptionObserverMap[message.id]?.error(
@@ -378,12 +375,8 @@ export class GraphQLService {
   }
 
   private sendMessage(id: string, type: MessageType, payload: any) {
-    const message = JSON.stringify({ id, type, payload });
-    if (
-      this.connectionStatus === ConnectionStatus.CONNECTED ||
-      this.connectionStatus === ConnectionStatus.INITIALIZING
-    ) {
-      this.sendRawMessage(message);
+    if (this.connectionStatus === ConnectionStatus.CONNECTED) {
+      this.sendRawMessage(JSON.stringify({ id, type, payload }));
     } else {
       this.openSocket();
     }
@@ -404,58 +397,43 @@ export class GraphQLService {
     this.connectionStatus$.next(status);
   }
 
-  private startTrackingConnectionInterruptions(): void {
-    this.startTrackingWithNativeEvent();
-    this.startTrackingWithKeepAlive();
+  private startConnectionMonitoring(): void {
+    this.monitorWithPingPong();
+    this.monitorWithOfflineEvent();
   }
 
-  private startTrackingWithNativeEvent(): void {
-    addEventListener('offline', () => {
-      this.notifyOfConnectionDrop('native');
-    });
-  }
-
-  private startTrackingWithKeepAlive(): void {
-    let timeOut: any;
-
-    this.socket.addEventListener('message', (event) => {
-      if (JSON.parse(event.data as any).type === KEEP_ALIVE_MESSAGE) {
-        this.setConnectionStatus(ConnectionStatus.CONNECTED);
-
-        clearTimeout(timeOut);
-        timeOut = setTimeout(
-          () => this.notifyOfConnectionDrop('keep-alive'),
-          WEBSOCKET_TIMEOUT_IN_MS,
-        );
-      }
-    });
-
-    timeOut = setTimeout(
-      () => this.notifyOfConnectionDrop('keep-alive'),
-      WEBSOCKET_TIMEOUT_IN_MS,
+  private monitorWithPingPong(): void {
+    this.pingPongInterval = setInterval(
+      this.sendPingWithThisBound,
+      PING_PONG_INTERVAL_IN_MS,
     );
   }
 
-  private notifyOfConnectionDrop(source: 'native' | 'keep-alive'): void {
-    console.warn(`Websocket connection dropped: Picked up by ${source} event`);
-    this.setConnectionStatus(ConnectionStatus.RECONNECTING);
+  private monitorWithOfflineEvent(): void {
+    window.addEventListener('offline', this.sendPingWithThisBound);
   }
 
-  private logWebsocketReconnection(
-    source$: Observable<ConnectionStatus>,
-  ): Observable<ConnectionStatus> {
-    return source$.pipe(
-      pairwise(),
-      tap(([oldValue, newValue]) => {
-        if (
-          oldValue === ConnectionStatus.RECONNECTING &&
-          newValue === ConnectionStatus.CONNECTED
-        ) {
-          console.log('Websocket connection reestablished');
-        }
-      }),
-      map(([_, newValue]) => newValue),
+  private sendPing(): void {
+    this.pongTimeout = setTimeout(
+      this.handleConnectionDropWithThisBound,
+      PONG_TIMEOUT_IN_MS,
     );
+    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
+  }
+
+  private handleConnectionDrop(): void {
+    console.warn(`[Qminder API]: Websocket connection dropped!`);
+
+    this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+    this.clearMonitoring();
+
+    this.openSocket();
+  }
+
+  private clearMonitoring(): void {
+    window.removeEventListener('offline', this.sendPingWithThisBound);
+    clearTimeout(this.pongTimeout);
+    clearInterval(this.pingPongInterval);
   }
 }
 
