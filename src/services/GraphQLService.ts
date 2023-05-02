@@ -256,7 +256,7 @@ export class GraphQLService {
       return;
     }
 
-    console.info('[Qminder API]: Trying to connect to websocket!');
+    console.info('[Qminder API]: Connecting to websocket!');
     this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
       this.createSocketConnection(temporaryApiKey);
     });
