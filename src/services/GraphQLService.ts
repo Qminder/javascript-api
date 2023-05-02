@@ -282,7 +282,9 @@ export class GraphQLService {
     } catch (e) {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
       console.warn(
-        `[Qminder API]: Failed fetching temporary API key! Retrying in ${ timeOut / 1000 } seconds!`,
+        `[Qminder API]: Failed fetching temporary API key! Retrying in ${
+          timeOut / 1000
+        } seconds!`,
       );
       return new Promise((resolve) =>
         setTimeout(
