@@ -1,6 +1,7 @@
 import * as sinon from 'sinon';
 import { Qminder } from '../../qminder';
 import { LocationService } from './location.service';
+import { Desk } from '../../model/desk';
 
 describe('Location service', function () {
   const LOCATIONS = [
@@ -137,7 +138,7 @@ describe('Location service', function () {
       });
     });
     it('returns the right desks', function () {
-      const returned = desksReply.map((desk: Qminder.Desk) => desk.name);
+      const returned = desksReply.map((desk: Desk) => desk.name);
       const groundTruth = DESKS.map((desk) => desk.name);
 
       for (let i = 0; i < groundTruth.length; i++) {
