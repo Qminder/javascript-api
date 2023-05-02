@@ -10,13 +10,13 @@ import { ClientError } from './model/ClientError.js';
 
 // Import services
 import ApiBase from './api-base.js';
-import DeviceService from './services/device/DeviceService';
-import LineService from './services/line/LineService';
-import LocationService from './services/location/LocationService';
-import TicketService from './services/ticket/TicketService';
-import UserService from './services/user/UserService';
-import WebhooksService from './services/webhooks/WebhooksService';
-import GraphQLService from './services/graphql/GraphQLService';
+import DeviceService from './services/device/device.service';
+import LineService from './services/line/line.service';
+import LocationService from './services/location/location.service';
+import TicketService from './services/ticket/ticket.service';
+import UserService from './services/user/user.service';
+import WebhooksService from './services/webhooks/webhooks.service';
+import GraphQLService from './services/graphql/graphql.service';
 import { ConnectionStatus } from './model/connection-status.js';
 
 // Export all data structures

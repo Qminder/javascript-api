@@ -64,9 +64,9 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  * Queries and subscriptions are supported. There is no support for mutations.
  *
  * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
- * trying to import GraphQLService.
+ * trying to import GraphqlService.
  */
-export class GraphQLService {
+export class GraphqlService {
   private apiKey: string;
 
   private apiServer: string;
@@ -148,7 +148,7 @@ export class GraphQLService {
     const query = queryToString(queryDocument);
     if (!query || query.length === 0) {
       throw new Error(
-        'GraphQLService query expects a GraphQL query as its first argument',
+        'GraphqlService query expects a GraphQL query as its first argument',
       );
     }
 
@@ -191,7 +191,7 @@ export class GraphQLService {
 
     if (!query || query.length === 0) {
       throw new Error(
-        'GraphQLService query expects a GraphQL query as its first argument',
+        'GraphqlService query expects a GraphQL query as its first argument',
       );
     }
 
@@ -459,4 +459,4 @@ export class GraphQLService {
   }
 }
 
-export default new GraphQLService();
+export default new GraphqlService();
