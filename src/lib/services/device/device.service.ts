@@ -14,9 +14,9 @@ export const DeviceService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
-   * const tv = await Qminder.devices.details(1425);
+   * const tv = await Qminder.Device.details(1425);
    * ```
    * @param tv the Device that represents the TV, or the TV ID
    * @returns {Promise.<Device>} a Promise that resolves to device details, or rejects if
@@ -33,10 +33,10 @@ export const DeviceService = {
    * For example:9
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
-   * let device = Qminder.devices.details(1235);
-   * device = await Qminder.devices.edit(device, device.name + ' (Offsite)');
+   * let device = Qminder.Device.details(1235);
+   * device = await Qminder.Device.edit(device, device.name + ' (Offsite)');
    * ```
    * @param tv the Device that represents the TV, or the TV ID.
    * @param newName the desired new name of the TV.
@@ -52,13 +52,13 @@ export const DeviceService = {
    * For example:
    *
    * ```
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    * // Example 1. Delete based on device ID
-   * await Qminder.devices.remove(1235);
+   * await Qminder.Device.remove(1235);
    * // Example 2. Delete based on Device object
-   * const device = Qminder.devices.details(125);
-   * await Qminder.devices.remove(device);
+   * const device = Qminder.Device.details(125);
+   * await Qminder.Device.remove(device);
    * ```
    * @param tv the Device that represents the TV, or the TV ID.
    * @returns A promise that resolves when successful and rejects when something went wrong.

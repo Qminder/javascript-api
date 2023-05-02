@@ -1,9 +1,9 @@
-import { create, remove } from './webhooks';
+import { create, remove } from './webhook';
 
 /**
  * The Webhooks API allows the developer to create and remove webhooks.
  */
-export const WebhooksService = {
+export const WebhookService = {
   /**
    * Create a webhook.
    * Creating a webhook registers the given URL for the current account. All events for the current
@@ -18,11 +18,11 @@ export const WebhooksService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    * // Example. Add a webhook
    * const url = 'https://example.com/webhooks/qminder';
-   * const webhook: Webhook = await Qminder.webhooks.create(url);
+   * const webhook: Webhook = await Qminder.Webhook.create(url);
    * console.log(webhook.id); // 123
    * console.log(webhook.secret); // 'hmacSecretText'
    * // You can use the webhook.secret to check the message validity via HMAC.
@@ -44,14 +44,14 @@ export const WebhooksService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    * // Example 1. Remove the webhook with ID '5924b157-313b-4829-bcb4-ced968347f0c'
-   * await Qminder.webhooks.remove('5924b157-313b-4829-bcb4-ced968347f0c');
+   * await Qminder.Webhook.remove('5924b157-313b-4829-bcb4-ced968347f0c');
    * // Example 2. Create and remove a webhook
    * const url = 'https://example.com/webhooks/qminder';
-   * const webhook = await Qminder.webhooks.create(url);
-   * await Qminder.webhooks.remove(webhook);
+   * const webhook = await Qminder.Webhook.create(url);
+   * await Qminder.Webhook.remove(webhook);
    * ```
    * @param webhook  the Webhook object or the webhook ID.
    * @returns a promise that resolves when the API call worked, and rejects when it failed.

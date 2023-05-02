@@ -7,9 +7,9 @@ import { details, getDesks, list } from './location';
  *
  * ```javascript
  * // List all Locations
- * import * as Qminder from 'qminder-api';
+ * import { Qminder } from 'qminder-api';
  * Qminder.setKey('API_KEY_GOES_HERE');
- * const locations = await Qminder.locations.list();
+ * const locations = await Qminder.Location.list();
  * console.log('Locations are', locations);
  * // => 'Locations are' [ { id: 14152, name: 'Service Center', ... } ]
  * ```
@@ -25,10 +25,10 @@ export const LocationService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    *
-   * const locationList = await Qminder.locations.list();
+   * const locationList = await Qminder.Location.list();
    * ```
    * @returns A promise that resolves to an array of locations.
    */
@@ -42,10 +42,10 @@ export const LocationService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    *
-   * const locationDetails = await Qminder.locations.details(1234);
+   * const locationDetails = await Qminder.Location.details(1234);
    * // locationDetails.id = 1234
    * // locationDetails.name = 'Example Location'
    * ```
@@ -63,10 +63,10 @@ export const LocationService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    *
-   * const desks = await Qminder.locations.getDesks(11424);
+   * const desks = await Qminder.Location.getDesks(11424);
    * console.log(desks);
    * // [ { "id": 9950, "name": "Desk 1" }, ... ]
    * ```

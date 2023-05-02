@@ -21,7 +21,7 @@ export const UserService = {
    * ```javascript
    * // Fetch the user list for location ID 1234
    * const locationId = 1234;
-   * const users = await Qminder.users.list(locationId);
+   * const users = await Qminder.User.list(locationId);
    * ```
    * @param location the Location to find all users for.
    * @returns a Promise that resolves to a list of Users who have access to the location, or
@@ -60,19 +60,19 @@ export const UserService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    *
    * // Example 1. Get user details by their email address
-   * const user = await Qminder.users.details("john@example.com");
+   * const user = await Qminder.User.details("john@example.com");
    *
    * // Example 2. Get user details by user ID
-   * const user = await Qminder.users.details(14152);
+   * const user = await Qminder.User.details(14152);
    *
    * // Example 3. Get user details by User object
-   * const usersList: Array<User> = Qminder.users.list(1234);
+   * const usersList: Array<User> = Qminder.User.list(1234);
    * let firstUser = usersList[0];
-   * firstUser = await Qminder.users.details(firstUser);
+   * firstUser = await Qminder.User.details(firstUser);
    * ```
    * @param user The user, the user's ID, or the user's email address.
    * @returns a Promise that resolves to the user's details, and rejects when
@@ -89,10 +89,10 @@ export const UserService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    * // Example. Set the user 14152's desk to Desk 4
-   * await Qminder.users.selectDesk(14152, 4);
+   * await Qminder.User.selectDesk(14152, 4);
    * ```
    * @param user The user to modify.
    * @param desk The desired desk.
@@ -120,10 +120,10 @@ export const UserService = {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    * // Example. Set user 5342's selected lines to 12345, 54321, 98765
-   * await Qminder.users.setLines(5342, [12345, 54321, 98765])
+   * await Qminder.User.setLines(5342, [12345, 54321, 98765])
    * ```
    * @param user The user whose lines to set.
    * @param lines array of Line, or array of line IDs

@@ -64,7 +64,7 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  * A service that lets the user query Qminder API via GraphQL statements.
  * Queries and subscriptions are supported. There is no support for mutations.
  *
- * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
+ * Note: the GraphQL API is accessible via `Qminder.GraphQL`. You should use that, instead of
  * trying to import GraphQLService.
  */
 export class GraphqlService {
@@ -120,17 +120,17 @@ export class GraphqlService {
    * For example:
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
    * // 1. Figure out the selected location ID of the current user, with async/await
    * try {
-   *     const response = await Qminder.graphql.query(`{ me { selectedLocation } }`);
+   *     const response = await Qminder.GraphQL.query(`{ me { selectedLocation } }`);
    *     console.log(response.me.selectedLocation); // "12345"
    * } catch (error) {
    *     console.log(error);
    * }
    * // 2. Figure out the selected location ID of the current user, with promises
-   * Qminder.graphql.query("{ me { selectedLocation } }").then(function(response) {
+   * Qminder.GraphQL.query("{ me { selectedLocation } }").then(function(response) {
    *     console.log(response.me.selectedLocation);
    * }, function(error) {
    *     console.log(error);
@@ -171,10 +171,10 @@ export class GraphqlService {
    * For example
    *
    * ```javascript
-   * import * as Qminder from 'qminder-api';
+   * import { Qminder } from 'qminder-api';
    * // 1. Be notified of any created tickets
    * try {
-   *     const observable = Qminder.graphql.subscribe("subscription { createdTickets(locationId: 123) { id firstName } }")
+   *     const observable = Qminder.GraphQL.subscribe("subscription { createdTickets(locationId: 123) { id firstName } }")
    *
    *     observable.subscribe(data => console.log(data));
    *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
