@@ -111,10 +111,7 @@ describe('User service', function () {
     // UserService.create(userdata)
 
     it('Sends the user roles as a JSON array', function () {
-      const user: Omit<
-        User,
-        'id' | 'desk' | 'selectedLocation' | 'picture'
-      > = {
+      const user: Omit<User, 'id' | 'desk' | 'selectedLocation' | 'picture'> = {
         email: 'test@qminder.com',
         firstName: 'Jon',
         lastName: 'Snow',

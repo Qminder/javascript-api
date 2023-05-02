@@ -1402,9 +1402,7 @@ describe('Ticket service', function () {
       ).not.toThrow();
     });
     it('throws an error when the position is missing', function () {
-      expect(() =>
-        (TicketService.returnToQueue as any)(12345, 1234),
-      ).toThrow();
+      expect(() => (TicketService.returnToQueue as any)(12345, 1234)).toThrow();
     });
   });
   describe('addLabel()', function () {
@@ -1456,14 +1454,10 @@ describe('Ticket service', function () {
       });
     });
     it('does not throw an error when the user is null (#147)', function () {
-      expect(() =>
-        TicketService.addLabel(12345, 'LABEL', null),
-      ).not.toThrow();
+      expect(() => TicketService.addLabel(12345, 'LABEL', null)).not.toThrow();
     });
     it('does not throw an error when the user is a number', function () {
-      expect(() =>
-        TicketService.addLabel(12345, 'LABEL', 1234),
-      ).not.toThrow();
+      expect(() => TicketService.addLabel(12345, 'LABEL', 1234)).not.toThrow();
     });
   });
   describe('setLabels()', function () {

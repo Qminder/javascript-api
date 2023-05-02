@@ -72,7 +72,7 @@ describe('GraphQL service', function () {
     it('GraphqlService.query works correctly when passed a gql`` tagged query', () => {
       expect(
         () =>
-        graphqlService.query(gql`
+          graphqlService.query(gql`
             {
               me {
                 id
@@ -89,7 +89,7 @@ describe('GraphQL service', function () {
     it('GraphqlService.query works correctly when passed a long query with variables and fragments', () => {
       expect(
         () =>
-        graphqlService.query(gql`
+          graphqlService.query(gql`
             query MyIdQuery($id: ID!) {
               location(id: $id) {
                 id
