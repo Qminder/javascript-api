@@ -1,7 +1,7 @@
-import Ticket, { TicketStatus, TicketMessage } from '../../model/ticket';
-import User from '../../model/user';
-import Line from '../../model/line';
-import ApiBase from '../api-base/api-base';
+import { Ticket, TicketStatus, TicketMessage } from '../../model/ticket';
+import { User } from '../../model/user';
+import { Line } from '../../model/line';
+import { ApiBase } from '../api-base/api-base';
 import {
   extractId,
   extractIdToNumber,
@@ -315,7 +315,7 @@ type TicketCreationResponse = Pick<Ticket, 'id'>;
  * // => { id: 141592145 }
  * ```
  */
-export default class TicketService {
+export class TicketService {
   /**
    * Searches for tickets according to the given search criteria.
    * Resolves to a list of tickets that match the search.

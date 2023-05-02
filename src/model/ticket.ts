@@ -15,7 +15,7 @@
  * To create a Ticket, call {@link TicketService.create}.
  * To search for tickets, call {@link TicketService.search}.
  */
-export default interface Ticket {
+export interface Ticket {
   /**
    * This ticket's unique ID. For example, 14995020
    */

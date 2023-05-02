@@ -4,7 +4,7 @@ import { Id } from './id';
  * downstream listeners about various events such as ticket creation or location changes.
  */
 
-export default interface Webhook {
+export interface Webhook {
   id: Id;
   secret: string;
 }

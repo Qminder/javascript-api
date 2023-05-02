@@ -1,5 +1,5 @@
-import ApiBase, { SuccessResponse } from '../api-base/api-base';
-import Webhook from '../../model/webhook';
+import { ApiBase, SuccessResponse } from '../api-base/api-base';
+import { Webhook } from '../../model/webhook';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /** @hidden */
@@ -13,7 +13,7 @@ type DeleteWebhookResponse = SuccessResponse;
 /**
  * The Webhooks API allows the developer to create and remove webhooks.
  */
-class WebhooksService {
+export class WebhooksService {
   /**
    * Create a webhook.
    * Creating a webhook registers the given URL for the current account. All events for the current
@@ -82,5 +82,3 @@ class WebhooksService {
     return ApiBase.request(`webhooks/${id}`, undefined, 'DELETE');
   }
 }
-
-export default WebhooksService;

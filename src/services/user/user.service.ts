@@ -1,8 +1,8 @@
-import ApiBase, { SuccessResponse } from '../api-base/api-base';
-import User, { UserRole } from '../../model/user';
-import Desk from '../../model/desk';
-import Location from '../../model/location';
-import Line from '../../model/line';
+import { ApiBase, SuccessResponse } from '../api-base/api-base';
+import { User, UserRole } from '../../model/user';
+import { Desk } from '../../model/desk';
+import { Location } from '../../model/location';
+import { Line } from '../../model/line';
 import {
   extractId,
   extractIdToNumber,
@@ -12,7 +12,7 @@ import {
 /**
  * User Service
  */
-export default class UserService {
+export class UserService {
   /**
    * List all Users in a Location.
    *

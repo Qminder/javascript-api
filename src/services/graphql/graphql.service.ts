@@ -11,7 +11,7 @@ import {
   map,
   shareReplay,
 } from 'rxjs/operators';
-import ApiBase, { GraphqlQuery } from '../api-base/api-base';
+import { ApiBase, GraphqlQuery } from '../api-base/api-base';
 import { ConnectionStatus } from '../../model/connection-status';
 import { GraphqlResponse } from '../../model/graphql-response';
 
@@ -65,7 +65,7 @@ const WEBSOCKET_TIMEOUT_IN_MS = 30000;
  * Queries and subscriptions are supported. There is no support for mutations.
  *
  * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
- * trying to import GraphqlService.
+ * trying to import GraphQLService.
  */
 export class GraphqlService {
   private apiKey: string;
@@ -149,7 +149,7 @@ export class GraphqlService {
     const query = queryToString(queryDocument);
     if (!query || query.length === 0) {
       throw new Error(
-        'GraphqlService query expects a GraphQL query as its first argument',
+        'GraphQLService query expects a GraphQL query as its first argument',
       );
     }
 
@@ -192,7 +192,7 @@ export class GraphqlService {
 
     if (!query || query.length === 0) {
       throw new Error(
-        'GraphqlService query expects a GraphQL query as its first argument',
+        'GraphQLService query expects a GraphQL query as its first argument',
       );
     }
 
@@ -460,4 +460,4 @@ export class GraphqlService {
   }
 }
 
-export default new GraphqlService();
+export const GraphQLService = new GraphqlService();

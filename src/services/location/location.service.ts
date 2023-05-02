@@ -1,6 +1,6 @@
-import Location, { InputField } from '../../model/location';
-import ApiBase from '../api-base/api-base';
-import Desk from '../../model/desk';
+import { Location, InputField } from '../../model/location';
+import { ApiBase } from '../api-base/api-base';
+import { Desk } from '../../model/desk';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /** @hidden */
@@ -20,7 +20,7 @@ const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
  * // => 'Locations are' [ { id: 14152, name: 'Service Center', ... } ]
  * ```
  */
-export default class LocationService {
+export class LocationService {
   /**
    * List all locations the API key has access to.
    * The API key belongs to a particular account and has access to all locations of the account.

@@ -103,12 +103,12 @@ export class ApiBase {
    * Stores the Qminder API key.
    * @private
    */
-  apiKey: string;
+  private static apiKey: string;
   /**
    * Keeps track of the API server's name.
    * @private
    */
-  apiServer: string;
+  private static apiServer = 'api.qminder.com';
 
   /** The fetch() function to use for API calls.
    * @private */
@@ -120,14 +120,13 @@ export class ApiBase {
    */
   constructor() {
     this.fetch = fetch;
-    this.setServer('api.qminder.com');
   }
 
   /**
    * Set the Qminder API key used for all requests.
    * After setting the API key, you can use the library to make API calls.
    */
-  setKey(key: string) {
+  static setKey(key: string) {
     this.apiKey = key;
   }
 
@@ -136,7 +135,7 @@ export class ApiBase {
    * @param  server the server's domain name, eg 'api.qminder.com'
    * @hidden
    */
-  setServer(server: string) {
+  static setServer(server: string) {
     this.apiServer = server;
   }
 
@@ -148,7 +147,7 @@ export class ApiBase {
    * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
-  request<T = {}>(
+  static request<T = {}>(
     url: string,
     data?: object | File | string,
     method: HTTPMethod = 'GET',
@@ -188,7 +187,7 @@ export class ApiBase {
       init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
 
-    return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
+    return fetch(`https://${this.apiServer}/v1/${url}`, init)
       .then((response: Response) => response.json())
       .then((responseJson: ApiResponse) => {
         if (responseIsLegacyError(responseJson)) {
@@ -216,7 +215,7 @@ export class ApiBase {
    * @throws when the API key is missing or invalid, or when errors in the
    * response are found
    */
-  queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
+  static queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -231,7 +230,7 @@ export class ApiBase {
       body: JSON.stringify(query),
     };
 
-    return this.fetch(`https://${this.apiServer}/graphql`, init)
+    return fetch(`https://${this.apiServer}/graphql`, init)
       .then((response: Response) => response.json())
       .then((responseJson: any) => {
         if (responseJson.errorMessage) {
@@ -244,5 +243,3 @@ export class ApiBase {
       });
   }
 }
-
-export default new ApiBase();
