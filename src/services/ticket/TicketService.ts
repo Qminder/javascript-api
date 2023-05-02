@@ -2,16 +2,16 @@ import Ticket, {
   TicketStatus,
   TicketMessage,
   TicketExtra,
-} from '../model/Ticket.js';
-import User from '../model/User.js';
-import Desk from '../model/Desk.js';
-import Line from '../model/Line.js';
-import ApiBase from '../api-base.js';
+} from '../../model/Ticket';
+import User from '../../model/User';
+import Desk from '../../model/Desk';
+import Line from '../../model/Line';
+import ApiBase from '../../api-base';
 import {
   extractId,
   extractIdToNumber,
   IdOrObject,
-} from '../util/id-or-object.js';
+} from '../../util/id-or-object';
 
 /**
  * Represents a collection of search criteria for TicketService.count().
