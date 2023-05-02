@@ -98,7 +98,7 @@ interface CorrectRequestInit {
  *
  * @hidden
  */
-class ApiBase {
+export class ApiBase {
   /**
    * Stores the Qminder API key.
    * @private
