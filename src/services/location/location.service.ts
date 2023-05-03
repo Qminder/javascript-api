@@ -1,10 +1,4 @@
-import { Location, InputField } from '../../model/location';
-import { ApiBase } from '../api-base/api-base';
-import { Desk } from '../../model/desk';
-import { extractId, IdOrObject } from '../../util/id-or-object';
-
-/** @hidden */
-const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
+import { details, getDesks, list } from './location';
 
 /**
  * The LocationService allows you to get data about Locations.
@@ -20,7 +14,7 @@ const ERROR_NO_LOCATION_ID = 'No Location ID specified.';
  * // => 'Locations are' [ { id: 14152, name: 'Service Center', ... } ]
  * ```
  */
-export class LocationService {
+export const LocationService = {
   /**
    * List all locations the API key has access to.
    * The API key belongs to a particular account and has access to all locations of the account.
@@ -38,13 +32,7 @@ export class LocationService {
    * ```
    * @returns A promise that resolves to an array of locations.
    */
-  static list(): Promise<Location[]> {
-    return ApiBase.request('locations/').then(
-      (locations: { data: Location[] }) => {
-        return locations.data;
-      },
-    );
-  }
+  list,
 
   /**
    * Get details about a location.
@@ -64,10 +52,7 @@ export class LocationService {
    * @param locationId the location's unique ID, for example 1234
    * @returns A promise that resolves to the location.
    */
-  static details(location: IdOrObject<Location>): Promise<Location> {
-    const locationId = extractId(location);
-    return ApiBase.request(`locations/${locationId}/`);
-  }
+  details,
 
   /**
    * Fetch all desks of the location.
@@ -88,15 +73,5 @@ export class LocationService {
    *
    * @returns a Promise that resolves to the list of desks in this location
    */
-  static getDesks(location: IdOrObject<Location>): Promise<Desk[]> {
-    const locationId = extractId(location);
-    return ApiBase.request(`locations/${locationId}/desks`).then(
-      (response: { desks: Desk[] }) => {
-        if (!response.desks) {
-          throw new Error(`Desk list response was invalid - ${response}`);
-        }
-        return response.desks;
-      },
-    );
-  }
-}
+  getDesks,
+};

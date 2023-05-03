@@ -1,18 +1,13 @@
-import { ApiBase, SuccessResponse } from '../api-base/api-base';
-import { User, UserRole } from '../../model/user';
-import { Desk } from '../../model/desk';
-import { Location } from '../../model/location';
-import { Line } from '../../model/line';
 import {
-  extractId,
-  extractIdToNumber,
-  IdOrObject,
-} from '../../util/id-or-object';
+  list,
+  create,
+  details,
+  selectDesk,
+  removeDesk,
+  setLines,
+} from './user';
 
-/**
- * User Service
- */
-export class UserService {
+export const UserService = {
   /**
    * List all Users in a Location.
    *
@@ -32,17 +27,7 @@ export class UserService {
    * @returns a Promise that resolves to a list of Users who have access to the location, or
    * rejects when something went wrong.
    */
-  static list(location: IdOrObject<Location>): Promise<User[]> {
-    const locationId = extractId(location);
-    return ApiBase.request(`locations/${locationId}/users`).then(
-      (users: { data: User[] }) => {
-        if (!users.data) {
-          throw new Error('User list response was invalid!');
-        }
-        return users.data as User[];
-      },
-    );
-  }
+  list,
 
   /**
    * Create a new User.
@@ -62,33 +47,8 @@ export class UserService {
    * @throws Error when the user's first name, last name, email or roles are missing, or invalid.
    * @see UserRole
    */
-  static create(
-    user: Pick<User, 'email' | 'firstName' | 'lastName' | 'roles'>,
-  ): Promise<User> {
-    const { email, firstName, lastName, roles } = user;
-    if (!email || typeof email !== 'string') {
-      throw new Error("The user's email address is invalid or missing");
-    }
-    if (!firstName || typeof firstName !== 'string') {
-      throw new Error("The user's first name is invalid or missing");
-    }
-    if (!lastName || typeof lastName !== 'string') {
-      throw new Error("The user's last name is invalid or missing");
-    }
-    if (!roles) {
-      throw new Error("The user's roles are missing");
-    }
-    return ApiBase.request(
-      `users/`,
-      {
-        email,
-        firstName,
-        lastName,
-        roles: JSON.stringify(roles),
-      },
-      'POST',
-    ) as Promise<User>;
-  }
+  create,
+
   /**
    * Fetch the user's details.
    *
@@ -119,17 +79,7 @@ export class UserService {
    * something goes wrong.
    * @throws Error when the user argument was invalid (not a string, not a number, or not a User)
    */
-  static details(userIdOrEmail: IdOrObject<User> | string): Promise<User> {
-    const search = extractId(userIdOrEmail);
-
-    if (!search) {
-      throw new Error(
-        'User to search by was invalid. Searching only works by email or user ID or User object.',
-      );
-    }
-
-    return ApiBase.request(`users/${search}`) as Promise<User>;
-  }
+  details,
 
   /**
    * Set the user's currently selected Desk.
@@ -149,11 +99,7 @@ export class UserService {
    * @returns A promise that resolves when setting the desk works, and rejects
    * if it failed.
    */
-  static selectDesk(user: IdOrObject<User>, desk: IdOrObject<Desk>) {
-    const userId = extractId(user);
-    const deskId = extractId(desk);
-    return ApiBase.request(`users/${userId}/desk`, { desk: deskId }, 'POST');
-  }
+  selectDesk,
 
   /**
    * Unset the user's currently selected Desk.
@@ -164,10 +110,7 @@ export class UserService {
    * @param user The user to modify
    * @returns A promise that resolves when setting the desk works, and rejects if it failed.
    */
-  static removeDesk(user: IdOrObject<User>): Promise<SuccessResponse> {
-    const userId = extractId(user);
-    return ApiBase.request(`users/${userId}/desk`, undefined, 'DELETE');
-  }
+  removeDesk,
 
   /**
    * Set the lines selected by current user. All other lines that aren't specified are set to unselected.
@@ -187,19 +130,5 @@ export class UserService {
    * @returns A promise that resolves when setting the lines works, and rejects
    * if it failed.
    */
-
-  static setLines(
-    user: IdOrObject<User>,
-    lines: IdOrObject<Line>[],
-  ): Promise<SuccessResponse> {
-    const userId = extractId(user);
-    const lineIds = lines.map((line: IdOrObject<Line>) =>
-      extractIdToNumber(line),
-    );
-    return ApiBase.request(
-      `users/${userId}/lines`,
-      JSON.stringify(lineIds),
-      'POST',
-    );
-  }
-}
+  setLines,
+};

@@ -1,11 +1,14 @@
-import { ApiBase } from '../api-base/api-base';
-import { Line } from '../../model/line';
-import { Location } from '../../model/location';
-import { extractId, IdOrObject } from '../../util/id-or-object';
-
-type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
-type LineUpdateParameters = Pick<Line, 'id'> &
-  Partial<Pick<Line, 'color' | 'name'>>;
+import {
+  list,
+  details,
+  create,
+  update,
+  enable,
+  disable,
+  archive,
+  unarchive,
+  deleteLine,
+} from './line';
 
 /**
  * The LineService allows you to access data about Lines in Qminder.
@@ -22,7 +25,7 @@ type LineUpdateParameters = Pick<Line, 'id'> &
  * console.log(lines);
  * ```
  */
-export class LineService {
+export const LineService = {
   /**
    * Fetch the location's line list.
    * The lines will have the line ID, name, and color filled in.
@@ -37,15 +40,7 @@ export class LineService {
    * @param location the Location or its ID
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
    */
-  static list(location: IdOrObject<Location>): Promise<Line[]> {
-    const locationId = extractId(location);
-    if (!locationId || typeof locationId !== 'string') {
-      throw new Error('Location ID invalid or missing.');
-    }
-    return ApiBase.request(`locations/${locationId}/lines`).then(
-      (response: { data: Line[] }) => response.data,
-    );
-  }
+  list,
 
   /**
    * Fetch detailed information about one line.
@@ -60,13 +55,7 @@ export class LineService {
    * @param line The line to get detailed info about, or the line's ID.
    * @returns a promise that resolves to the Line object, or rejects if something went wrong.
    */
-  static details(line: IdOrObject<Line>): Promise<Line> {
-    const lineId = extractId(line);
-    if (!lineId) {
-      throw new Error('Line ID invalid or missing.');
-    }
-    return ApiBase.request(`lines/${lineId}/`);
-  }
+  details,
 
   /**
    * Create a new Line and return its details.
@@ -84,26 +73,7 @@ export class LineService {
    * @returns a Promise that resolves to a new Line object, created according
    * to the parameters.
    */
-  static create(
-    location: IdOrObject<Location>,
-    line: LineCreateParameters,
-  ): Promise<Line> {
-    const locationId = extractId(location);
-    if (!locationId || typeof locationId !== 'string') {
-      throw new Error('Location ID invalid or missing.');
-    }
-    if (!line || typeof line !== 'object') {
-      throw new Error('Line invalid or missing.');
-    }
-    if (!line.name || typeof line.name !== 'string') {
-      throw new Error('Cannot create a line without a line name.');
-    }
-    return ApiBase.request(
-      `locations/${locationId}/lines`,
-      line,
-      'POST',
-    ) as Promise<Line>;
-  }
+  create,
 
   /**
    * Update an existing Line name and color.
@@ -120,29 +90,7 @@ export class LineService {
    * @returns A Promise that resolves when the line was updated, and rejects
    * when something went wrong.
    */
-  static update(line: LineUpdateParameters): Promise<any> {
-    if (!line || typeof line !== 'object') {
-      throw new Error('Line is invalid or missing.');
-    }
-
-    const lineId = extractId(line);
-    if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID is invalid or missing.');
-    }
-
-    const lineName = line.name;
-    if (!lineName || typeof lineName !== 'string') {
-      throw new Error('Cannot update a line without a name.');
-    }
-
-    const lineColor = line.color;
-    if (!lineColor || typeof lineColor !== 'string') {
-      throw new Error('Cannot update a line without a color.');
-    }
-
-    const data = { name: lineName, color: lineColor };
-    return ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>;
-  }
+  update,
 
   /**
    * Enable a disabled Line.
@@ -158,17 +106,7 @@ export class LineService {
    * @returns A Promise that resolves when the line was enabled, and rejects
    * when something went wrong.
    */
-  static enable(line: IdOrObject<Line>): Promise<any> {
-    const lineId = extractId(line);
-    if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
-    }
-    return ApiBase.request(
-      `lines/${lineId}/enable`,
-      undefined,
-      'POST',
-    ) as Promise<any>;
-  }
+  enable,
 
   /**
    * Disable a Line.
@@ -184,17 +122,7 @@ export class LineService {
    * @returns A Promise that resolves when the line was disabled, and rejects
    * when there active tickets in the line or something went wrong.
    */
-  static disable(line: IdOrObject<Line>): Promise<any> {
-    const lineId = extractId(line);
-    if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
-    }
-    return ApiBase.request(
-      `lines/${lineId}/disable`,
-      undefined,
-      'POST',
-    ) as Promise<any>;
-  }
+  disable,
 
   /**
    * Archive a Line.
@@ -212,17 +140,7 @@ export class LineService {
    * @returns A Promise that resolves when the line was archived, and rejects
    * when something went wrong.
    */
-  static archive(line: IdOrObject<Line>): Promise<any> {
-    const lineId = extractId(line);
-    if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
-    }
-    return ApiBase.request(
-      `lines/${lineId}/archive`,
-      undefined,
-      'POST',
-    ) as Promise<any>;
-  }
+  archive,
 
   /**
    * Unarchive a Line.
@@ -238,18 +156,7 @@ export class LineService {
    * @returns A Promise that resolves when the line was unarchived, and rejects
    * when something went wrong.
    */
-  static unarchive(line: IdOrObject<Line>): Promise<any> {
-    const lineId = extractId(line);
-
-    if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
-    }
-    return ApiBase.request(
-      `lines/${lineId}/unarchive`,
-      undefined,
-      'POST',
-    ) as Promise<any>;
-  }
+  unarchive,
 
   /**
    * Delete a Line.
@@ -267,16 +174,5 @@ export class LineService {
    * @returns A Promise that resolves when the line was deleted, and rejects
    * when something went wrong.
    */
-  static delete(line: IdOrObject<Line>): Promise<any> {
-    const lineId = extractId(line);
-
-    if (!lineId || typeof lineId !== 'string') {
-      throw new Error('Line ID invalid or missing.');
-    }
-    return ApiBase.request(
-      `lines/${lineId}`,
-      undefined,
-      'DELETE',
-    ) as Promise<any>;
-  }
-}
+  delete: deleteLine,
+};
