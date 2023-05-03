@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
-import { GraphQLApiError } from './util/errors.js';
-import { ClientError } from './model/ClientError.js';
+import { GraphQLApiError } from '../../util/errors';
+import { ClientError } from '../../model/client-error';
+import { GraphqlResponse } from '../../model/graphql-response';
 
 type HTTPMethod =
   | 'GET'
@@ -19,26 +20,6 @@ interface GraphqlQueryVariables {
 export interface GraphqlQuery {
   query: string;
   variables?: GraphqlQueryVariables;
-}
-
-interface GraphqlError {
-  message: string;
-  errorType: string;
-  validationErrorType?: string;
-  queryPath: string[];
-  path?: any;
-  extensions?: any;
-  locations: { line: number; column: number; sourceName: string }[];
-}
-
-/**
- * The shape of the JSON response from the GraphQL API.
- */
-export interface GraphqlResponse {
-  /** An array that contains any GraphQL errors. */
-  errors?: GraphqlError[];
-  /** If the data was loaded without any errors, contains the requested object. */
-  data?: object;
 }
 
 interface LegacyErrorResponse {
@@ -103,10 +84,25 @@ interface CorrectRequestInit {
   };
   mode?: 'cors' | 'same-origin' | 'navigate' | 'no-cors';
   credentials?: 'omit' | 'same-origin' | 'include';
-  cache?: string;
+  cache?:
+    | 'default'
+    | 'force-cache'
+    | 'no-cache'
+    | 'no-store'
+    | 'only-if-cached'
+    | 'reload';
   body?: string | Blob;
   referrer?: string;
-  referrerPolicy?: string;
+  referrerPolicy?:
+    | ''
+    | 'no-referrer'
+    | 'no-referrer-when-downgrade'
+    | 'origin'
+    | 'origin-when-cross-origin'
+    | 'same-origin'
+    | 'strict-origin'
+    | 'strict-origin-when-cross-origin'
+    | 'unsafe-url';
 }
 
 /**
@@ -117,17 +113,17 @@ interface CorrectRequestInit {
  *
  * @hidden
  */
-class ApiBase {
+export class ApiBase {
   /**
    * Stores the Qminder API key.
    * @private
    */
-  apiKey: string;
+  private static apiKey: string;
   /**
    * Keeps track of the API server's name.
    * @private
    */
-  apiServer: string;
+  private static apiServer = 'api.qminder.com';
 
   /** The fetch() function to use for API calls.
    * @private */
@@ -139,14 +135,13 @@ class ApiBase {
    */
   constructor() {
     this.fetch = fetch;
-    this.setServer('api.qminder.com');
   }
 
   /**
    * Set the Qminder API key used for all requests.
    * After setting the API key, you can use the library to make API calls.
    */
-  setKey(key: string) {
+  static setKey(key: string) {
     this.apiKey = key;
   }
 
@@ -155,7 +150,7 @@ class ApiBase {
    * @param  server the server's domain name, eg 'api.qminder.com'
    * @hidden
    */
-  setServer(server: string) {
+  static setServer(server: string) {
     this.apiServer = server;
   }
 
@@ -167,7 +162,7 @@ class ApiBase {
    * @param idempotencyKey  optional: the idempotency key for this request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
-  request<T = {}>(
+  static async request<T = {}>(
     url: string,
     data?: object | File | string,
     method: HTTPMethod = 'GET',
@@ -207,21 +202,16 @@ class ApiBase {
       init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
 
-    return this.fetch(`https://${this.apiServer}/v1/${url}`, init)
-      .then((response: Response) => response.json())
-      .then((responseJson: ApiResponse) => {
-        if (responseIsLegacyError(responseJson)) {
-          throw new Error(
-            responseJson.developerMessage || responseJson.message,
-          );
-        }
-        if (responseIsClientError(responseJson)) {
-          const key = Object.keys(responseJson.error)[0];
-          const message = Object.values(responseJson.error)[0];
-          throw new ClientError(key, message);
-        }
-        return responseJson;
-      });
+    try {
+      const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
+      const responseJson = await response.json();
+      this.validate(responseJson);
+      return responseJson;
+    } catch (e: any) {
+      if (e instanceof Error) {
+        throw new Error(e.message);
+      }
+    }
   }
 
   /**
@@ -235,7 +225,7 @@ class ApiBase {
    * @throws when the API key is missing or invalid, or when errors in the
    * response are found
    */
-  queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
+  static queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -250,7 +240,7 @@ class ApiBase {
       body: JSON.stringify(query),
     };
 
-    return this.fetch(`https://${this.apiServer}/graphql`, init)
+    return fetch(`https://${this.apiServer}/graphql`, init)
       .then((response: Response) => response.json())
       .then((responseJson: any) => {
         if (responseJson.errorMessage) {
@@ -262,6 +252,16 @@ class ApiBase {
         return responseJson as Promise<GraphqlResponse>;
       });
   }
-}
 
-export default new ApiBase();
+  private static validate(responseJson: any): void {
+    if (responseIsLegacyError(responseJson)) {
+      throw new Error(responseJson.developerMessage || responseJson.message);
+    }
+
+    if (responseIsClientError(responseJson)) {
+      const key = Object.keys(responseJson.error)[0];
+      const message = Object.values(responseJson.error)[0] as string;
+      throw new ClientError(key, message);
+    }
+  }
+}

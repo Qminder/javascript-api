@@ -2,7 +2,7 @@
  * The Device object represents a physical device that is paired to Qminder, such as an iPad or
  * Apple TV or custom TV screen.
  */
-export default interface Device {
+export interface Device {
   /** The unique identifier for this device, for example 1342 */
   id: string;
   /**

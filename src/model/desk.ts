@@ -10,7 +10,7 @@
  *
  * Desks need to be enabled in a Location to be able to use them.
  */
-export default interface Desk {
+export interface Desk {
   /**
    * The desk's ID.
    *

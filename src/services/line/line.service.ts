@@ -1,6 +1,6 @@
-import Line from '../../model/Line';
-import Location from '../../model/Location';
-import ApiBase from '../../api-base';
+import { ApiBase } from '../api-base/api-base';
+import { Line } from '../../model/line';
+import { Location } from '../../model/location';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
@@ -22,7 +22,7 @@ type LineUpdateParameters = Pick<Line, 'id'> &
  * console.log(lines);
  * ```
  */
-export default class LineService {
+export class LineService {
   /**
    * Fetch the location's line list.
    * The lines will have the line ID, name, and color filled in.

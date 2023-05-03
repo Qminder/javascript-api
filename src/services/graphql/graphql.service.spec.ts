@@ -6,13 +6,13 @@
 import { gql } from 'graphql-tag';
 import { Subscriber } from 'rxjs';
 import * as sinon from 'sinon';
-import { GraphQLService } from '../../src/services/graphql/GraphQLService';
+import { GraphqlService } from './graphql.service';
 import WebSocket from 'isomorphic-ws';
 
 jest.mock('isomorphic-ws', () => jest.fn());
 
 describe('GraphQL subscriptions', () => {
-  let graphqlService: GraphQLService;
+  let graphqlService: GraphqlService;
   let fetchSpy: sinon.SinonStub;
   const keyValue = 'temporary_api_key';
   const FAKE_RESPONSE = {
@@ -22,7 +22,7 @@ describe('GraphQL subscriptions', () => {
   };
 
   beforeEach(() => {
-    graphqlService = new GraphQLService();
+    graphqlService = new GraphqlService();
     fetchSpy = sinon.stub(graphqlService, 'fetch');
     fetchSpy.onCall(0).resolves(FAKE_RESPONSE);
   });

@@ -26,7 +26,7 @@
   },
   "overrides": [
     {
-      "files": ["*.test.ts", "test/unit/jestSetupFile.ts"],
+      "files": ["*.spec.ts"],
       "env": {
         "jest": true,
         "node": true

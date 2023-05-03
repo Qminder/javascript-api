@@ -8,7 +8,7 @@
  * Lines additionally have a color, which is used in statistics views to show a common color for
  * one line.
  */
-export default interface Line {
+export interface Line {
   /**
    * The line's ID.
    * This is the unique identifier for a given Line.

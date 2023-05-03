@@ -5,9 +5,9 @@ import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../../api-base';
+import { ApiBase, GraphqlQuery } from '../api-base/api-base';
 import { ConnectionStatus } from '../../model/connection-status';
-
+import { GraphqlResponse } from '../../model/graphql-response';
 type QueryOrDocument = string | DocumentNode;
 
 function queryToString(query: QueryOrDocument): string {
@@ -65,7 +65,7 @@ const CLIENT_SIDE_CLOSE_EVENT = 1000;
  * Note: the GraphQL API is accessible via `Qminder.graphql`. You should use that, instead of
  * trying to import GraphQLService.
  */
-export class GraphQLService {
+export class GraphqlService {
   private apiKey: string;
   private apiServer: string;
 
@@ -444,4 +444,4 @@ export class GraphQLService {
   }
 }
 
-export default new GraphQLService();
+export const GraphQLService = new GraphqlService();

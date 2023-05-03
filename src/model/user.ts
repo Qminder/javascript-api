@@ -1,4 +1,3 @@
-import Location from './Location.js';
 /**
  * Represents a single user picture.
  * The 'medium' sized user picture is available if the user has an image.
@@ -35,7 +34,7 @@ export interface UserRole {
  * Employees can have a profile picture, which will be scaled to potentially multiple sizes.
  * The 'medium' picture size is 200x200.
  */
-export default interface User {
+export interface User {
   /**
    * This user's unique ID.
    * For example, 12345

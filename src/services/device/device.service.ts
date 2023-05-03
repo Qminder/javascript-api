@@ -1,12 +1,12 @@
-import ApiBase from '../../api-base';
-import Device from '../../model/Device';
+import { ApiBase } from '../api-base/api-base';
+import { Device } from '../../model/device';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder
  * Sign-In app installed, or Apple TVs with the Qminder TV app.
  */
-export default class DeviceService {
+export class DeviceService {
   /**
    * Read the details of a particular TV based on its ID.
    * Returns the ID, name, theme and settings of the TV.

@@ -3,7 +3,7 @@
  * service clerks, and multiple iPads and TVs. A location can have SMS enabled, when using the
  * Pro plan.
  */
-export default interface Location {
+export interface Location {
   /**
    * The location's unique ID.
    */

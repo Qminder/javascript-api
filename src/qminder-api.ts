@@ -1,22 +1,22 @@
 // Import data structures
-import Desk from './model/Desk.js';
-import Device from './model/Device.js';
-import Line from './model/Line.js';
-import Location from './model/Location.js';
-import Ticket from './model/Ticket.js';
-import User from './model/User.js';
-import Webhook from './model/Webhook.js';
-import { ClientError } from './model/ClientError.js';
+import { Desk } from './model/desk';
+import { Device } from './model/device';
+import { Line } from './model/line';
+import { Location } from './model/location';
+import { Ticket } from './model/ticket';
+import { User } from './model/user';
+import { Webhook } from './model/webhook';
+import { ClientError } from './model/client-error';
 
 // Import services
-import ApiBase from './api-base.js';
-import DeviceService from './services/device/DeviceService';
-import LineService from './services/line/LineService';
-import LocationService from './services/location/LocationService';
-import TicketService from './services/ticket/TicketService';
-import UserService from './services/user/UserService';
-import WebhooksService from './services/webhooks/WebhooksService';
-import GraphQLService from './services/graphql/GraphQLService';
+import { ApiBase } from './services/api-base/api-base';
+import { DeviceService } from './services/device/device.service';
+import { LineService } from './services/line/line.service';
+import { LocationService } from './services/location/location.service';
+import { TicketService } from './services/ticket/ticket.service';
+import { UserService } from './services/user/user.service';
+import { WebhooksService } from './services/webhooks/webhooks.service';
+import { GraphQLService } from './services/graphql/graphql.service';
 import { ConnectionStatus } from './model/connection-status.js';
 
 // Export all data structures
@@ -55,7 +55,7 @@ export {
 };
 
 /**
- * Set the Qminder API key.
+ * Set the Qminder API key
  *
  * This function sets the API key and enables you to use the API methods.
  *
