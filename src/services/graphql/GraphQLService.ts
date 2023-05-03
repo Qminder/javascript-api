@@ -5,8 +5,8 @@ import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
-import ApiBase, { GraphqlQuery, GraphqlResponse } from '../api-base.js';
-import { ConnectionStatus } from '../model/connection-status.js';
+import ApiBase, { GraphqlQuery, GraphqlResponse } from '../../api-base';
+import { ConnectionStatus } from '../../model/connection-status';
 
 type QueryOrDocument = string | DocumentNode;
 
