@@ -1,6 +1,5 @@
 import { Line } from '../../model/line';
 import { Location } from '../../model/location';
-import { ApiBase } from '../api-base/api-base';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
