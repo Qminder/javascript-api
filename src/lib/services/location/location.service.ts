@@ -1,4 +1,4 @@
-import { details, getDesks, list } from './location';
+import { details, getDesks, list } from './location.js';
 
 /**
  * The LocationService allows you to get data about Locations.

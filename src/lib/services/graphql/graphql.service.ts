@@ -1,13 +1,12 @@
-/* eslint-disable max-classes-per-file */
 import fetch from 'cross-fetch';
 import { DocumentNode } from 'graphql';
 import { print } from 'graphql/language/printer.js';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
-import { ApiBase, GraphqlQuery } from '../api-base/api-base';
-import { ConnectionStatus } from '../../model/connection-status';
-import { GraphqlResponse } from '../../model/graphql-response';
+import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
+import { ConnectionStatus } from '../../model/connection-status.js';
+import { GraphqlResponse } from '../../model/graphql-response.js';
 
 type QueryOrDocument = string | DocumentNode;
 

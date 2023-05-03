@@ -1,2 +1,2 @@
-export * from './public-api/api';
-export * from './public-api/model';
+export * from './public-api/api.js';
+export * from './public-api/model.js';

@@ -8,7 +8,7 @@ import {
   archive,
   unarchive,
   deleteLine,
-} from './line';
+} from './line.js';
 
 /**
  * The LineService allows you to access data about Lines in Qminder.

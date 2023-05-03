@@ -1,4 +1,4 @@
-import { details, edit, remove } from './device';
+import { details, edit, remove } from './device.js';
 
 /**
  * DeviceService allows the developer to manage devices such as iPads that have the Qminder

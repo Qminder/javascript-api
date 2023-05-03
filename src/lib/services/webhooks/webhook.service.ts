@@ -1,4 +1,4 @@
-import { create, remove } from './webhook';
+import { create, remove } from './webhook.js';
 
 /**
  * The Webhooks API allows the developer to create and remove webhooks.

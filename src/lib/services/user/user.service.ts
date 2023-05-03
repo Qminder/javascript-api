@@ -5,7 +5,7 @@ import {
   selectDesk,
   removeDesk,
   setLines,
-} from './user';
+} from './user.js';
 
 export const UserService = {
   /**

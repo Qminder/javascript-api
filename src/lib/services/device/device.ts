@@ -1,6 +1,6 @@
-import { Device } from '../../model/device';
-import { extractId, IdOrObject } from '../../util/id-or-object';
-import { ApiBase } from '../api-base/api-base';
+import { Device } from '../../model/device.js';
+import { extractId, IdOrObject } from '../../util/id-or-object.js';
+import { ApiBase } from '../api-base/api-base.js';
 
 export function details(tv: IdOrObject<Device>): Promise<Device> {
   const tvId = extractId(tv);

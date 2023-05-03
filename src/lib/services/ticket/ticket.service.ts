@@ -21,7 +21,7 @@ import {
   sendMessage,
   forward,
   setExternalData,
-} from './ticket';
+} from './ticket.js';
 
 /**
  * TicketService includes methods that work with tickets. Tickets represent a visitor that is
