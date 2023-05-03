@@ -55,7 +55,7 @@ export {
 };
 
 /**
- * Set the Qminder API key.
+ * Set the Qminder API key
  *
  * This function sets the API key and enables you to use the API methods.
  *
