@@ -44,7 +44,7 @@
   "types": "./build/qminder-api.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
-    "@babel/core": "7.21.5",
+    "@babel/core": "7.21.8",
     "@babel/preset-env": "7.21.5",
     "@types/jest": "29.5.0",
     "@types/node": "18.15.11",
