@@ -1,11 +1,6 @@
-import Ticket, {
-  TicketStatus,
-  TicketMessage,
-  TicketExtra,
-} from '../../model/Ticket';
-import User from '../../model/User';
-import Desk from '../../model/Desk';
-import Line from '../../model/Line';
+import Ticket, { TicketStatus, TicketMessage } from '../../model/ticket';
+import User from '../../model/user';
+import Line from '../../model/line';
 import ApiBase from '../../api-base';
 import {
   extractId,

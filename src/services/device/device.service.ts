@@ -1,5 +1,5 @@
 import ApiBase from '../../api-base';
-import Device from '../../model/Device';
+import Device from '../../model/device';
 import { extractId, IdOrObject } from '../../util/id-or-object';
 
 /**
