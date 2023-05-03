@@ -1,11 +1,11 @@
-import { ApiBase } from './services/api-base/api-base';
-import { GraphqlService } from './services/graphql/graphql.service';
-import { UserService } from './services/user/user.service';
-import { LocationService } from './services/location/location.service';
-import { WebhooksService } from './services/webhooks/webhooks.service';
-import { TicketService } from './services/ticket/ticket.service';
-import { LineService } from './services/line/line.service';
-import { DeviceService } from './services/device/device.service';
+import { ApiBase } from './services/api-base/api-base.js';
+import { GraphqlService } from './services/graphql/graphql.service.js';
+import { UserService } from './services/user/user.service.js';
+import { LocationService } from './services/location/location.service.js';
+import { WebhookService } from './services/webhooks/webhook.service.js';
+import { TicketService } from './services/ticket/ticket.service.js';
+import { LineService } from './services/line/line.service.js';
+import { DeviceService } from './services/device/device.service.js';
 
 export class Qminder {
   public static ApiBase = ApiBase;
@@ -14,7 +14,7 @@ export class Qminder {
   public static Device = DeviceService;
   public static Line = LineService;
   public static Ticket = TicketService;
-  public static Webhooks = WebhooksService;
+  public static Webhook = WebhookService;
   public static User = UserService;
   public static Location = LocationService;
 

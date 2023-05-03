@@ -8,7 +8,7 @@ import {
   archive,
   unarchive,
   deleteLine,
-} from './line';
+} from './line.js';
 
 /**
  * The LineService allows you to access data about Lines in Qminder.
@@ -16,11 +16,11 @@ import {
  * For example, list all Lines of your Location:
  *
  * ```javascript
- * import * as Qminder from 'qminder-api';
+ * import { Qminder } from 'qminder-api';
  * Qminder.setKey('API_KEY_GOES_HERE');
  *
  * const locationId = 12345;
- * const lines = await Qminder.lines.list(locationId);
+ * const lines = await Qminder.Line.list(locationId);
  *
  * console.log(lines);
  * ```
@@ -35,7 +35,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * const lines = await Qminder.lines.list(159);
+   * const lines = await Qminder.Line.list(159);
    * ```
    * @param location the Location or its ID
    * @returns a promise that resolves to a list of lines, or rejects if something went wrong.
@@ -50,7 +50,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * const line: Line = await Qminder.lines.details(1425);
+   * const line: Line = await Qminder.Line.details(1425);
    * ```
    * @param line The line to get detailed info about, or the line's ID.
    * @returns a promise that resolves to the Line object, or rejects if something went wrong.
@@ -65,7 +65,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * const line: Line = await Qminder.lines.create(950, { name: 'Priority Service' });
+   * const line: Line = await Qminder.Line.create(950, { name: 'Priority Service' });
    * console.log(line.id); // 1425
    * ```
    * @param location the location to add the line under
@@ -84,7 +84,7 @@ export const LineService = {
    *
    * ```javascript
    * const line = { "id": 950, "name": "Front Desk", "color": "#ffffff" };
-   * await Qminder.lines.update(line);
+   * await Qminder.Line.update(line);
    * ```
    * @param line the Line to be updated - must include the line id, the desired new name and color.
    * @returns A Promise that resolves when the line was updated, and rejects
@@ -100,7 +100,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.enable(1425);
+   * await Qminder.Line.enable(1425);
    * ```
    * @param line the Line or the ID of the line to be enabled.
    * @returns A Promise that resolves when the line was enabled, and rejects
@@ -116,7 +116,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.disable(1425);
+   * await Qminder.Line.disable(1425);
    * ```
    * @param line the Line or the ID of the line to be disabled.
    * @returns A Promise that resolves when the line was disabled, and rejects
@@ -134,7 +134,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.archive(1425);
+   * await Qminder.Line.archive(1425);
    * ```
    * @param line the Line or the line's ID to archive
    * @returns A Promise that resolves when the line was archived, and rejects
@@ -150,7 +150,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.unarchive(1425);
+   * await Qminder.Line.unarchive(1425);
    * ```
    * @param line the Line or the line's ID to unarchive
    * @returns A Promise that resolves when the line was unarchived, and rejects
@@ -168,7 +168,7 @@ export const LineService = {
    * For example:
    *
    * ```javascript
-   * await Qminder.lines.delete(1425);
+   * await Qminder.Line.delete(1425);
    * ```
    * @param line the Line or the line's ID to delete
    * @returns A Promise that resolves when the line was deleted, and rejects

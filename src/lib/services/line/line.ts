@@ -1,7 +1,7 @@
-import { Line } from '../../model/line';
-import { Location } from '../../model/location';
-import { extractId, IdOrObject } from '../../util/id-or-object';
-import { ApiBase } from '../api-base/api-base';
+import { Line } from '../../model/line.js';
+import { Location } from '../../model/location.js';
+import { extractId, IdOrObject } from '../../util/id-or-object.js';
+import { ApiBase } from '../api-base/api-base.js';
 
 type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
 type LineUpdateParameters = Pick<Line, 'id'> &

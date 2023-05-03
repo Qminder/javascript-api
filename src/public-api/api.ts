@@ -1,1 +1,1 @@
-export * from '../lib/qminder';
+export * from '../lib/qminder.js';

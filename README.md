@@ -38,14 +38,14 @@ UserService, LineService, LocationService) will be of interest.
 
 For starters, you can find all tickets in a line with ID 12345:
 
-    const tickets = await Qminder.tickets.search({ status: ['NEW'], line: 12345 });
+    const tickets = await Qminder.Ticket.search({ status: ['NEW'], line: 12345 });
 
-Qminder.tickets refers to TicketService, for which you can find documentation in the
+Qminder.Ticket refers to TicketService, for which you can find documentation in the
 [API reference][api].
 
 Alternatively, you can send a [GraphQL](https://graphql.org/) query to the Qminder API:
 
-    const locations = await Qminder.graphql.query(`{
+    const locations = await Qminder.GrahphQL.query(`{
         locations {
             id
             name

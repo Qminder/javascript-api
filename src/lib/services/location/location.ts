@@ -1,7 +1,7 @@
-import { Location } from '../../model/location';
-import { Desk } from '../../model/desk';
-import { extractId, IdOrObject } from '../../util/id-or-object';
-import { ApiBase } from '../api-base/api-base';
+import { Location } from '../../model/location.js';
+import { Desk } from '../../model/desk.js';
+import { extractId, IdOrObject } from '../../util/id-or-object.js';
+import { ApiBase } from '../api-base/api-base.js';
 
 export function list(): Promise<Location[]> {
   return ApiBase.request('locations/').then(
