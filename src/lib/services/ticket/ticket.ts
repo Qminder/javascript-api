@@ -1,13 +1,13 @@
-import { Ticket, TicketStatus, TicketMessage } from '../../model/ticket';
-import { User } from '../../model/user';
-import { Line } from '../../model/line';
+import { Ticket, TicketStatus, TicketMessage } from '../../model/ticket.js';
+import { User } from '../../model/user.js';
+import { Line } from '../../model/line.js';
 import {
   extractId,
   extractIdToNumber,
   IdOrObject,
-} from '../../util/id-or-object';
-import { TicketCreationParameters } from '../../model/ticket-creation-parameters';
-import { ApiBase } from '../api-base/api-base';
+} from '../../util/id-or-object.js';
+import { TicketCreationParameters } from '../../model/ticket-creation-parameters.js';
+import { ApiBase } from '../api-base/api-base.js';
 
 /**
  * Represents a collection of search criteria for TicketService.count().

@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
-import { GraphQLApiError } from '../../util/errors';
-import { ClientError } from '../../model/client-error';
-import { GraphqlResponse } from '../../model/graphql-response';
+import { GraphQLApiError } from '../../util/errors.js';
+import { ClientError } from '../../model/client-error.js';
+import { GraphqlResponse } from '../../model/graphql-response.js';
 
 type HTTPMethod =
   | 'GET'

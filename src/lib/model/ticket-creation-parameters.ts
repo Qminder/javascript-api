@@ -1,4 +1,4 @@
-import { Ticket } from './ticket';
+import { Ticket } from './ticket.js';
 
 export type TicketCreationParameters = Pick<
   Ticket,

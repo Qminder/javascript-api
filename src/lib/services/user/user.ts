@@ -1,13 +1,13 @@
-import { ApiBase, SuccessResponse } from '../api-base/api-base';
-import { User } from '../../model/user';
-import { Desk } from '../../model/desk';
-import { Location } from '../../model/location';
-import { Line } from '../../model/line';
+import { ApiBase, SuccessResponse } from '../api-base/api-base.js';
+import { User } from '../../model/user.js';
+import { Desk } from '../../model/desk.js';
+import { Location } from '../../model/location.js';
+import { Line } from '../../model/line.js';
 import {
   extractId,
   extractIdToNumber,
   IdOrObject,
-} from '../../util/id-or-object';
+} from '../../util/id-or-object.js';
 
 export function list(location: IdOrObject<Location>): Promise<User[]> {
   const locationId = extractId(location);
