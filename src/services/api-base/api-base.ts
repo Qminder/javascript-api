@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
-import { GraphQLApiError } from './util/errors.js';
-import { ClientError } from './model/client-error';
+import { GraphQLApiError } from '../../util/errors';
+import { ClientError } from '../../model/client-error';
+import { GraphqlResponse } from '../../model/graphql-response';
 
 type HTTPMethod =
   | 'GET'
@@ -19,26 +20,6 @@ interface GraphqlQueryVariables {
 export interface GraphqlQuery {
   query: string;
   variables?: GraphqlQueryVariables;
-}
-
-interface GraphqlError {
-  message: string;
-  errorType: string;
-  validationErrorType?: string;
-  queryPath: string[];
-  path?: any;
-  extensions?: any;
-  locations: { line: number; column: number; sourceName: string }[];
-}
-
-/**
- * The shape of the JSON response from the GraphQL API.
- */
-export interface GraphqlResponse {
-  /** An array that contains any GraphQL errors. */
-  errors?: GraphqlError[];
-  /** If the data was loaded without any errors, contains the requested object. */
-  data?: object;
 }
 
 interface LegacyErrorResponse {
@@ -117,7 +98,7 @@ interface CorrectRequestInit {
  *
  * @hidden
  */
-class ApiBase {
+export class ApiBase {
   /**
    * Stores the Qminder API key.
    * @private

@@ -1,4 +1,4 @@
-import ApiBase, { SuccessResponse } from '../../api-base';
+import ApiBase, { SuccessResponse } from '../api-base/api-base';
 import User, { UserRole } from '../../model/user';
 import Desk from '../../model/desk';
 import Location from '../../model/location';
