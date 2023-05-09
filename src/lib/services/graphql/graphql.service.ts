@@ -1,6 +1,5 @@
 import fetch from 'cross-fetch';
-import { DocumentNode } from 'graphql';
-import { print } from 'graphql/language/printer.js';
+import { DocumentNode, print } from 'graphql';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
