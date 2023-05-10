@@ -254,7 +254,7 @@ export class GraphqlService {
     ) {
       return;
     }
-
+    this.setConnectionStatus(ConnectionStatus.CONNECTING);
     console.info('[Qminder API]: Connecting to websocket!');
     this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
       this.createSocketConnection(temporaryApiKey);
@@ -295,7 +295,6 @@ export class GraphqlService {
   }
 
   private createSocketConnection(temporaryApiKey: string) {
-    this.setConnectionStatus(ConnectionStatus.CONNECTING);
     this.socket = new WebSocket(
       `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`,
     );

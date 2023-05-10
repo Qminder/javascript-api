@@ -1,10 +1,10 @@
-import * as sinon from 'sinon';
 import { gql } from 'graphql-tag';
+import * as sinon from 'sinon';
 
+import WebSocket from 'isomorphic-ws';
+import { Subscriber } from 'rxjs';
 import { Qminder } from '../../qminder';
 import { GraphqlService } from './graphql.service';
-import { Subscriber } from 'rxjs';
-import WebSocket from 'isomorphic-ws';
 
 jest.mock('isomorphic-ws', () => jest.fn());
 
@@ -170,6 +170,9 @@ describe('GraphQL service', function () {
       });
 
       describe('.subscribe', () => {
+        beforeEach(() => {
+          (WebSocket as unknown as jest.Mock).mockReset();
+        });
         it('fetches temporary api key when a new connection is opened', async () => {
           graphqlService.subscribe('subscription { baba }').subscribe(() => {});
           // wait until the web socket connection was opened
@@ -180,6 +183,17 @@ describe('GraphQL service', function () {
           expect(WebSocket).toBeCalledWith(
             `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
           );
+        });
+
+        it('opens 1 connection if multiple calls to connection key were performed', async () => {
+          graphqlService.subscribe('subscription { aaaa }').subscribe(() => {});
+          graphqlService.subscribe('subscription { aaab }').subscribe(() => {});
+          graphqlService.subscribe('subscription { aaac }').subscribe(() => {});
+          graphqlService.subscribe('subscription { aaad }').subscribe(() => {});
+          // wait until the web socket connection was opened
+          await new Promise(process.nextTick);
+          expect(fetchSpy).toHaveBeenCalledTimes(1);
+          expect(WebSocket).toHaveBeenCalledTimes(1);
         });
       });
 
