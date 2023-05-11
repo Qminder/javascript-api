@@ -1,6 +1,5 @@
 import fetch from 'cross-fetch';
 import { GraphQLApiError } from '../../util/errors.js';
-import { ClientError } from '../../model/client-error.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
 
 type HTTPMethod =
@@ -22,58 +21,8 @@ export interface GraphqlQuery {
   variables?: GraphqlQueryVariables;
 }
 
-interface LegacyErrorResponse {
-  statusCode: number;
-  message: string;
-  developerMessage: string;
-}
-
-interface ClientErrorResponse {
-  statusCode: number;
-  error: {
-    [key: string]: string;
-  };
-}
-
 export interface SuccessResponse {
-  statusCode: number;
-}
-
-type ApiResponse<T = {}> =
-  | LegacyErrorResponse
-  | ClientErrorResponse
-  | (SuccessResponse & T);
-
-/**
- * Returns true if an ApiResponse is an Error response, usable as a type guard.
- * @param response an ApiResponse to narrow down
- * @returns true if the ApiResponse is an LegacyErrorResponse, false if it is a SuccessResponse
- * @hidden
- */
-function responseIsLegacyError(
-  response: ApiResponse,
-): response is LegacyErrorResponse {
-  return (
-    response.statusCode &&
-    Math.floor(response.statusCode / 100) !== 2 &&
-    !Object.prototype.hasOwnProperty.call(response, 'error')
-  );
-}
-
-/**
- * Returns true if an ApiResponse is an ClientErrorResponse response, usable as a type guard.
- * @param response an ApiResponse to narrow down
- * @returns true if the ApiResponse is an ClientErrorResponse, false if it is a SuccessResponse
- * @hidden
- */
-function responseIsClientError(
-  response: ApiResponse,
-): response is ClientErrorResponse {
-  return (
-    response.statusCode &&
-    Math.floor(response.statusCode / 100) === 4 &&
-    Object.prototype.hasOwnProperty.call(response, 'error')
-  );
+  status: number;
 }
 
 // NOTE: this is defined because the RequestInit type has issues
@@ -204,9 +153,12 @@ export class ApiBase {
 
     try {
       const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
-      const responseJson = await response.json();
-      this.validate(responseJson);
-      return responseJson;
+
+      if (!response.ok) {
+        throw new Error(`Request failed!`)  
+      }
+
+      return await response.json();
     } catch (e: any) {
       if (e instanceof Error) {
         throw new Error(e.message);
@@ -221,7 +173,7 @@ export class ApiBase {
    * response.
    * @param query required: GraphQL query, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
-   * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
+   * @returns a Promise that resolves to the entire response ({ status, data?, errors? ... })
    * @throws when the API key is missing or invalid, or when errors in the
    * response are found
    */
@@ -251,17 +203,5 @@ export class ApiBase {
         }
         return responseJson as Promise<GraphqlResponse>;
       });
-  }
-
-  private static validate(responseJson: any): void {
-    if (responseIsLegacyError(responseJson)) {
-      throw new Error(responseJson.developerMessage || responseJson.message);
-    }
-
-    if (responseIsClientError(responseJson)) {
-      const key = Object.keys(responseJson.error)[0];
-      const message = Object.values(responseJson.error)[0] as string;
-      throw new ClientError(key, message);
-    }
   }
 }
