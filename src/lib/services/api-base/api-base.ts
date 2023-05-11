@@ -154,9 +154,9 @@ export class ApiBase {
     try {
       const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
       const parsedResponse = await response.json();
-      
+
       if (!response.ok) {
-        throw new Error(parsedResponse.error)  
+        throw new Error(parsedResponse.error);
       }
 
       return parsedResponse;

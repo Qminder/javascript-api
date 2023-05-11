@@ -289,7 +289,7 @@ describe('ApiBase', () => {
       const response: any = {
         ok: false,
         statusCode: 409,
-        error: "Internal Server Error",
+        error: 'Internal Server Error',
       };
 
       fetchSpy.mockReturnValue(new MockResponse(response));
@@ -297,7 +297,7 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
         (error: GraphQLApiError) => {
-          expect(error.message).toEqual("Internal Server Error");
+          expect(error.message).toEqual('Internal Server Error');
           done();
         },
       );
