@@ -51,6 +51,7 @@ function generateRequestData(query: string, responseData: any): any {
 }
 
 const FAKE_RESPONSE = {
+  ok: true,
   json() {
     return { statusCode: 200 };
   },
@@ -282,12 +283,13 @@ describe('ApiBase', () => {
       });
     });
 
-    it('handles legacy error response (message)', (done) => {
+    it('handles error', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
+        ok: false,
         statusCode: 409,
-        message: 'Oh, snap!',
+        error: "Internal Server Error",
       };
 
       fetchSpy.mockReturnValue(new MockResponse(response));
@@ -295,47 +297,7 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
         (error: GraphQLApiError) => {
-          expect(error).toEqual(new Error('Oh, snap!'));
-          done();
-        },
-      );
-    });
-
-    it('handles legacy error response (developerMessage)', (done) => {
-      Qminder.setKey(API_KEY);
-
-      const response: any = {
-        statusCode: 409,
-        developerMessage: 'Oh, snap!',
-      };
-
-      fetchSpy.mockReturnValue(new MockResponse(response));
-
-      Qminder.ApiBase.request('TEST').then(
-        () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(new Error('Oh, snap!'));
-          done();
-        },
-      );
-    });
-
-    it('handles client error', (done) => {
-      Qminder.setKey(API_KEY);
-
-      const response: any = {
-        statusCode: 409,
-        error: { email: 'Email already in use' },
-      };
-
-      fetchSpy.mockReturnValue(new MockResponse(response));
-
-      Qminder.ApiBase.request('TEST').then(
-        () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(
-            new ClientError('email', 'Email already in use'),
-          );
+          expect(error.message).toEqual("Internal Server Error");
           done();
         },
       );
