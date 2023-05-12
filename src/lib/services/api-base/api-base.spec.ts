@@ -282,7 +282,7 @@ describe('ApiBase', () => {
       });
     });
 
-    it('handles error when return object has "error" property', (done) => {
+    it('should handle error with message in "error" property', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
@@ -302,7 +302,7 @@ describe('ApiBase', () => {
       );
     });
 
-    it('handles error when return object has "developerMessage" property', (done) => {
+    it('should handle error with message in "developerMessage" property', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
@@ -322,7 +322,7 @@ describe('ApiBase', () => {
       );
     });
 
-    it('handles client error', (done) => {
+    it('should handle error with complex error in "error" property', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
@@ -431,7 +431,7 @@ describe('ApiBase', () => {
       );
     });
 
-    it('resolves with response, even if response has errors', (done) => {
+    it('should resolve with response, even if response has errors', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
