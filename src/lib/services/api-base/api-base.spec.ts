@@ -314,11 +314,11 @@ describe('ApiBase', () => {
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
-          () => done(new Error('Should have errored')),
-          (error: ClientError) => {
-            expect(error.message).toEqual('Oh, snap!');
-            done();
-          },
+        () => done(new Error('Should have errored')),
+        (error: ClientError) => {
+          expect(error.message).toEqual('Oh, snap!');
+          done();
+        },
       );
     });
 
@@ -334,19 +334,22 @@ describe('ApiBase', () => {
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
-          () => done(new Error('Should have errored')),
-          (error: ClientError) => {
-            expect(error.error).toEqual({ email: 'Email already in use' });
-            expect(error.message).toEqual('Request failed! More info in the error property.');
-            done();
+        () => done(new Error('Should have errored')),
+        (error: ClientError) => {
+          expect(error.error).toEqual({ email: 'Email already in use' });
+          expect(error.message).toEqual(
+            'Request failed! More info in the error property.',
+          );
+          done();
         },
       );
     });
   });
 
   describe('queryGraph()', () => {
-    const VALIDATION_ERROR = "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'";
-    
+    const VALIDATION_ERROR =
+      "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'";
+
     const ME_ID = generateRequestData('{ me { id } }', {
       me: {
         id: 12345,

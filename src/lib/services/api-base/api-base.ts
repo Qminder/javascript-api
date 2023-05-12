@@ -200,22 +200,29 @@ export class ApiBase {
         return responseJson as Promise<GraphqlResponse>;
       });
   }
-  
+
   private static extractError(response: any): ClientError {
     if (typeof response.error === 'string') {
       return new ClientError(response.error);
     }
-    
+
     if (response.developerMessage) {
       return new ClientError(response.developerMessage);
     }
-    
+
     if (Object.prototype.hasOwnProperty.call(response, 'error')) {
-      return new ClientError('Request failed! More info in the error property.', response.error);
+      return new ClientError(
+        'Request failed! More info in the error property.',
+        response.error,
+      );
     }
   }
-  
-  private static extractGraphQLError(response: { errors: GraphQLError[] }): ClientError {
-    return new ClientError(response.errors.map((error) => error.message).join('\n'));
+
+  private static extractGraphQLError(response: {
+    errors: GraphQLError[];
+  }): ClientError {
+    return new ClientError(
+      response.errors.map((error) => error.message).join('\n'),
+    );
   }
 }
