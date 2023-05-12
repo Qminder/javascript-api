@@ -214,8 +214,8 @@ export class ApiBase {
     if (Object.prototype.hasOwnProperty.call(response, 'error')) {
       return new ComplexError(response.error);
     }
-    
-    return new SimpleError('Error occurred! Could not extract error message!')
+
+    return new SimpleError('Error occurred! Could not extract error message!');
   }
 
   private static extractGraphQLError(response: {

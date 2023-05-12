@@ -316,7 +316,9 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
         (error: SimpleError) => {
-          expect(error.message).toEqual('Error occurred! Could not extract error message!');
+          expect(error.message).toEqual(
+            'Error occurred! Could not extract error message!',
+          );
           done();
         },
       );
@@ -357,7 +359,9 @@ describe('ApiBase', () => {
         () => done(new Error('Should have errored')),
         (error: ComplexError) => {
           expect(error.error).toEqual({ email: 'Email already in use' });
-          expect(error.message).toEqual('Error occurred! Check error property for more information!');
+          expect(error.message).toEqual(
+            'Error occurred! Check error property for more information!',
+          );
           done();
         },
       );
