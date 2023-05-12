@@ -1,6 +1,7 @@
 import fetch from 'cross-fetch';
-import { GraphQLApiError } from '../../util/errors.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
+import { ClientError } from '../../model/client-error';
+import { GraphQLError } from 'graphql';
 
 type HTTPMethod =
   | 'GET'
@@ -151,20 +152,14 @@ export class ApiBase {
       init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
 
-    try {
-      const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
-      const parsedResponse = await response.json();
+    const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
+    const parsedResponse = await response.json();
 
-      if (!response.ok) {
-        throw new Error(parsedResponse.error);
-      }
-
-      return parsedResponse;
-    } catch (e: any) {
-      if (e instanceof Error) {
-        throw new Error(e.message);
-      }
+    if (!response.ok) {
+      throw this.extractError(parsedResponse);
     }
+
+    return parsedResponse;
   }
 
   /**
@@ -200,9 +195,27 @@ export class ApiBase {
           throw new Error(responseJson.errorMessage);
         }
         if (responseJson.errors && responseJson.errors.length > 0) {
-          throw new GraphQLApiError(responseJson.errors);
+          throw this.extractGraphQLError(responseJson);
         }
         return responseJson as Promise<GraphqlResponse>;
       });
+  }
+  
+  private static extractError(response: any): ClientError {
+    if (typeof response.error === 'string') {
+      return new ClientError(response.error);
+    }
+    
+    if (response.developerMessage) {
+      return new ClientError(response.developerMessage);
+    }
+    
+    if (Object.prototype.hasOwnProperty.call(response, 'error')) {
+      return new ClientError('Request failed! More info in the error property.', response.error);
+    }
+  }
+  
+  private static extractGraphQLError(response: { errors: GraphQLError[] }): ClientError {
+    return new ClientError(response.errors.map((error) => error.message).join('\n'));
   }
 }

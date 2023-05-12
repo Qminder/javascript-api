@@ -1,7 +1,6 @@
 import * as sinon from 'sinon';
 import fetch from 'cross-fetch';
 import { Qminder } from '../../qminder';
-import { GraphQLApiError } from '../../util/errors';
 import { ClientError } from '../../model/client-error';
 
 jest.mock('cross-fetch', () => {
@@ -283,28 +282,71 @@ describe('ApiBase', () => {
       });
     });
 
-    it('handles error', (done) => {
+    it('handles error when return object has "error" property', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
         ok: false,
         statusCode: 409,
-        error: 'Internal Server Error',
+        error: 'Internal server error',
       };
 
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error.message).toEqual('Internal Server Error');
+        (error: ClientError) => {
+          expect(error.message).toEqual('Internal server error');
           done();
+        },
+      );
+    });
+
+    it('handles error when return object has "developerMessage" property', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
+        statusCode: 409,
+        developerMessage: 'Oh, snap!',
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+          () => done(new Error('Should have errored')),
+          (error: ClientError) => {
+            expect(error.message).toEqual('Oh, snap!');
+            done();
+          },
+      );
+    });
+
+    it('handles client error', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
+        statusCode: 409,
+        error: { email: 'Email already in use' },
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+          () => done(new Error('Should have errored')),
+          (error: ClientError) => {
+            expect(error.error).toEqual({ email: 'Email already in use' });
+            expect(error.message).toEqual('Request failed! More info in the error property.');
+            done();
         },
       );
     });
   });
 
   describe('queryGraph()', () => {
+    const VALIDATION_ERROR = "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'";
+    
     const ME_ID = generateRequestData('{ me { id } }', {
       me: {
         id: 12345,
@@ -315,8 +357,7 @@ describe('ApiBase', () => {
       statusCode: 200,
       errors: [
         {
-          message:
-            "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
+          message: VALIDATION_ERROR,
           locations: [
             {
               line: 4,
@@ -398,10 +439,8 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then(
         () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(
-            new GraphQLApiError(ERROR_UNDEFINED_FIELD.errors),
-          );
+        (error: ClientError) => {
+          expect(error.message).toEqual(VALIDATION_ERROR);
           done();
         },
       );

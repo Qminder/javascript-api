@@ -1,8 +1,8 @@
 export class ClientError extends Error {
-  private field: string;
+	error?: { [key: string]: string };
 
-  constructor(field: string, message: string) {
-    super(message);
-    this.field = field;
-  }
+	constructor(message: string, error?: { [key: string]: string }) {
+		super(message);
+		this.error = error;
+	}
 }
