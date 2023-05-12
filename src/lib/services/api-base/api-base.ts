@@ -174,7 +174,7 @@ export class ApiBase {
    * response.
    * @param query required: GraphQL query, for example "{ me { email } }", or
    * "query X($id: ID!) { location($id) { name } }"
-   * @returns a Promise that resolves to the entire response ({ status, data?, errors? ... })
+   * @returns a Promise that resolves to the entire response ({ statusCode, data?, errors? ... })
    * @throws when the API key is missing or invalid, or when errors in the
    * response are found
    */
