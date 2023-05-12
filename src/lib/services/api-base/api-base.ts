@@ -203,8 +203,8 @@ export class ApiBase {
   }
 
   private static extractError(response: any): Error {
-    if (typeof response.error === 'string') {
-      return new SimpleError(response.error);
+    if (response.message) {
+      return new SimpleError(response.message);
     }
 
     if (response.developerMessage) {
@@ -214,6 +214,8 @@ export class ApiBase {
     if (Object.prototype.hasOwnProperty.call(response, 'error')) {
       return new ComplexError(response.error);
     }
+    
+    return new SimpleError('Error occurred! Could not extract error message!')
   }
 
   private static extractGraphQLError(response: {

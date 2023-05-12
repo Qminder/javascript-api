@@ -289,7 +289,7 @@ describe('ApiBase', () => {
       const response: any = {
         ok: false,
         statusCode: 409,
-        error: 'Internal server error',
+        message: 'Internal server error',
       };
 
       fetchSpy.mockReturnValue(new MockResponse(response));
@@ -298,6 +298,25 @@ describe('ApiBase', () => {
         () => done(new Error('Should have errored')),
         (error: SimpleError) => {
           expect(error.message).toEqual('Internal server error');
+          done();
+        },
+      );
+    });
+
+    it('should handle error with unrecognised response type', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
+        statusCode: 409,
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: SimpleError) => {
+          expect(error.message).toEqual('Error occurred! Could not extract error message!');
           done();
         },
       );
