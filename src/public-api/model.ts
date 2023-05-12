@@ -1,6 +1,5 @@
 export { TicketCreationParameters } from '../lib/model/ticket-creation-parameters.js';
 export { GraphqlResponse } from '../lib/model/graphql-response.js';
-export { ClientError } from '../lib/model/client-error.js';
 export { ConnectionStatus } from '../lib/model/connection-status.js';
 export { Desk } from '../lib/model/desk.js';
 export { Device } from '../lib/model/device.js';
@@ -12,3 +11,5 @@ export { TicketLabel } from '../lib/model/ticket-label.js';
 export { Ticket } from '../lib/model/ticket.js';
 export { User } from '../lib/model/user.js';
 export { Webhook } from '../lib/model/webhook.js';
+export { SimpleError } from '../lib/model/errors/simple-error.js'
+export { ComplexError } from '../lib/model/errors/complex-error.js'

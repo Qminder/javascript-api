@@ -1,7 +1,8 @@
 import * as sinon from 'sinon';
 import fetch from 'cross-fetch';
 import { Qminder } from '../../qminder';
-import { ClientError } from '../../model/client-error';
+import { SimpleError } from '../../model/errors/simple-error';
+import { ComplexError } from '../../model/errors/complex-error';
 
 jest.mock('cross-fetch', () => {
   const crossFetch = jest.requireActual('cross-fetch');
@@ -295,7 +296,7 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: ClientError) => {
+        (error: SimpleError) => {
           expect(error.message).toEqual('Internal server error');
           done();
         },
@@ -315,7 +316,7 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: ClientError) => {
+        (error: SimpleError) => {
           expect(error.message).toEqual('Oh, snap!');
           done();
         },
@@ -335,11 +336,9 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: ClientError) => {
+        (error: ComplexError) => {
           expect(error.error).toEqual({ email: 'Email already in use' });
-          expect(error.message).toEqual(
-            'Request failed! More info in the error property.',
-          );
+          expect(error.message).toEqual('Error occurred! Check error property for more information!');
           done();
         },
       );
@@ -442,7 +441,7 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then(
         () => done(new Error('Should have errored')),
-        (error: ClientError) => {
+        (error: SimpleError) => {
           expect(error.message).toEqual(VALIDATION_ERROR);
           done();
         },

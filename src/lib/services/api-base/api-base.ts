@@ -1,7 +1,8 @@
 import fetch from 'cross-fetch';
 import { GraphQLError } from 'graphql';
 import { GraphqlResponse } from '../../model/graphql-response.js';
-import { ClientError } from '../../model/client-error.js';
+import { SimpleError } from '../../model/errors/simple-error.js';
+import { ComplexError } from '../../model/errors/complex-error.js';
 
 type HTTPMethod =
   | 'GET'
@@ -201,27 +202,24 @@ export class ApiBase {
       });
   }
 
-  private static extractError(response: any): ClientError {
+  private static extractError(response: any): Error {
     if (typeof response.error === 'string') {
-      return new ClientError(response.error);
+      return new SimpleError(response.error);
     }
 
     if (response.developerMessage) {
-      return new ClientError(response.developerMessage);
+      return new SimpleError(response.developerMessage);
     }
 
     if (Object.prototype.hasOwnProperty.call(response, 'error')) {
-      return new ClientError(
-        'Request failed! More info in the error property.',
-        response.error,
-      );
+      return new ComplexError(response.error);
     }
   }
 
   private static extractGraphQLError(response: {
     errors: GraphQLError[];
-  }): ClientError {
-    return new ClientError(
+  }): Error {
+    return new SimpleError(
       response.errors.map((error) => error.message).join('\n'),
     );
   }
