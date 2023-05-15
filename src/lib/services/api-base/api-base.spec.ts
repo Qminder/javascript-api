@@ -1,8 +1,9 @@
 import * as sinon from 'sinon';
 import fetch from 'cross-fetch';
 import { Qminder } from '../../qminder';
-import { GraphQLApiError } from '../../util/errors';
-import { ClientError } from '../../model/client-error';
+import { SimpleError } from '../../model/errors/simple-error';
+import { ComplexError } from '../../model/errors/complex-error';
+import { UnknownError } from '../../model/errors/unknown-error';
 
 jest.mock('cross-fetch', () => {
   const crossFetch = jest.requireActual('cross-fetch');
@@ -51,6 +52,7 @@ function generateRequestData(query: string, responseData: any): any {
 }
 
 const FAKE_RESPONSE = {
+  ok: true,
   json() {
     return { statusCode: 200 };
   },
@@ -282,29 +284,75 @@ describe('ApiBase', () => {
       });
     });
 
-    it('handles legacy error response (message)', (done) => {
+    it('should handle error with message in "error" property', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
+        ok: false,
         statusCode: 409,
-        message: 'Oh, snap!',
+        message: 'Internal server error',
       };
 
       fetchSpy.mockReturnValue(new MockResponse(response));
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(new Error('Oh, snap!'));
+        (error: SimpleError) => {
+          expect(error.message).toEqual('Internal server error');
+          expect(error instanceof SimpleError).toBeTruthy();
           done();
         },
       );
     });
 
-    it('handles legacy error response (developerMessage)', (done) => {
+    it('should handle error with unrecognised response type', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
+        ok: false,
+        statusCode: 409,
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: SimpleError) => {
+          expect(error.message).toEqual(
+            'Error occurred! Could not extract error message!',
+          );
+          expect(error instanceof UnknownError).toBeTruthy();
+          done();
+        },
+      );
+    });
+
+    it('should handle error with error property as string', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
+        error: 'Internal Server Error',
+        statusCode: 409,
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: SimpleError) => {
+          expect(error.message).toEqual('Internal Server Error');
+          expect(error instanceof SimpleError).toBeTruthy();
+          done();
+        },
+      );
+    });
+
+    it('should handle error with message in "developerMessage" property', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
         statusCode: 409,
         developerMessage: 'Oh, snap!',
       };
@@ -313,17 +361,19 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(new Error('Oh, snap!'));
+        (error: SimpleError) => {
+          expect(error.message).toEqual('Oh, snap!');
+          expect(error instanceof SimpleError).toBeTruthy();
           done();
         },
       );
     });
 
-    it('handles client error', (done) => {
+    it('should handle error with complex error in "error" property', (done) => {
       Qminder.setKey(API_KEY);
 
       const response: any = {
+        ok: false,
         statusCode: 409,
         error: { email: 'Email already in use' },
       };
@@ -332,10 +382,12 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(
-            new ClientError('email', 'Email already in use'),
+        (error: ComplexError) => {
+          expect(error.error).toEqual({ email: 'Email already in use' });
+          expect(error.message).toEqual(
+            'Error occurred! Check error property for more information!',
           );
+          expect(error instanceof ComplexError).toBeTruthy();
           done();
         },
       );
@@ -343,6 +395,9 @@ describe('ApiBase', () => {
   });
 
   describe('queryGraph()', () => {
+    const VALIDATION_ERROR =
+      "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'";
+
     const ME_ID = generateRequestData('{ me { id } }', {
       me: {
         id: 12345,
@@ -353,8 +408,7 @@ describe('ApiBase', () => {
       statusCode: 200,
       errors: [
         {
-          message:
-            "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
+          message: VALIDATION_ERROR,
           locations: [
             {
               line: 4,
@@ -428,7 +482,7 @@ describe('ApiBase', () => {
       );
     });
 
-    it('resolves with response, even if response has errors', (done) => {
+    it('should resolve with response, even if response has errors', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
@@ -436,10 +490,8 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then(
         () => done(new Error('Should have errored')),
-        (error: GraphQLApiError) => {
-          expect(error).toEqual(
-            new GraphQLApiError(ERROR_UNDEFINED_FIELD.errors),
-          );
+        (error: SimpleError) => {
+          expect(error.message).toEqual(VALIDATION_ERROR);
           done();
         },
       );

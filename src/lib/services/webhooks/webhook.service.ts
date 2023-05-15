@@ -29,7 +29,7 @@ export const WebhookService = {
    * ```
    * @param url  the public URL to receive the webhooks, such as https://example.com/webhook
    * @returns a Webhook object with the webhook's ID and HMAC secret.
-   * @throws ERROR_NO_URL when the URL was not provided
+   * @throws {SimpleError}
    * @see Webhook
    */
   create,
@@ -55,7 +55,7 @@ export const WebhookService = {
    * ```
    * @param webhook  the Webhook object or the webhook ID.
    * @returns a promise that resolves when the API call worked, and rejects when it failed.
-   * @throws {Error} ERROR_NO_WEBHOOK_ID when the webhook ID is not provided or is not a number
+   * @throws {SimpleError}
    */
   remove,
 };
