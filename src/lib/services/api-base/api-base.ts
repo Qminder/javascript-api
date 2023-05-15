@@ -212,6 +212,10 @@ export class ApiBase {
       return new SimpleError(response.developerMessage);
     }
 
+    if (typeof response.error === 'string') {
+      return new SimpleError(response.error);
+    }
+
     if (Object.prototype.hasOwnProperty.call(response, 'error')) {
       return new ComplexError(response.error);
     }

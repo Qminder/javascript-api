@@ -327,6 +327,27 @@ describe('ApiBase', () => {
       );
     });
 
+    it('should handle error with error property as string', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
+        error: 'Internal Server Error',
+        statusCode: 409,
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: SimpleError) => {
+          expect(error.message).toEqual('Internal Server Error');
+          expect(error instanceof SimpleError).toBeTruthy();
+          done();
+        },
+      );
+    });
+
     it('should handle error with message in "developerMessage" property', (done) => {
       Qminder.setKey(API_KEY);
 
