@@ -216,7 +216,7 @@ export class ApiBase {
       return new ComplexError(response.error);
     }
 
-    return new UnknownError('Error occurred! Could not extract error message!');
+    return new UnknownError();
   }
 
   private static extractGraphQLError(response: {

@@ -1,5 +1,5 @@
 export class UnknownError extends Error {
-  constructor(message: string) {
-    super(message);
+  constructor() {
+    super('Error occurred! Could not extract error message!');
   }
 }
