@@ -3,6 +3,7 @@ import { GraphQLError } from 'graphql';
 import { GraphqlResponse } from '../../model/graphql-response.js';
 import { SimpleError } from '../../model/errors/simple-error.js';
 import { ComplexError } from '../../model/errors/complex-error.js';
+import { UnknownError } from '../../model/errors/unknown-error.js';
 
 type HTTPMethod =
   | 'GET'
@@ -215,7 +216,7 @@ export class ApiBase {
       return new ComplexError(response.error);
     }
 
-    return new SimpleError('Error occurred! Could not extract error message!');
+    return new UnknownError('Error occurred! Could not extract error message!');
   }
 
   private static extractGraphQLError(response: {

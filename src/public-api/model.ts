@@ -13,3 +13,4 @@ export { User } from '../lib/model/user.js';
 export { Webhook } from '../lib/model/webhook.js';
 export { SimpleError } from '../lib/model/errors/simple-error.js';
 export { ComplexError } from '../lib/model/errors/complex-error.js';
+export { UnknownError } from '../lib/model/errors/unknown-error.js';

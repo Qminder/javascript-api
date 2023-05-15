@@ -3,6 +3,7 @@ import fetch from 'cross-fetch';
 import { Qminder } from '../../qminder';
 import { SimpleError } from '../../model/errors/simple-error';
 import { ComplexError } from '../../model/errors/complex-error';
+import { UnknownError } from '../../model/errors/unknown-error';
 
 jest.mock('cross-fetch', () => {
   const crossFetch = jest.requireActual('cross-fetch');
@@ -298,6 +299,7 @@ describe('ApiBase', () => {
         () => done(new Error('Should have errored')),
         (error: SimpleError) => {
           expect(error.message).toEqual('Internal server error');
+          expect(error instanceof SimpleError).toBeTruthy();
           done();
         },
       );
@@ -316,9 +318,8 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
         (error: SimpleError) => {
-          expect(error.message).toEqual(
-            'Error occurred! Could not extract error message!',
-          );
+          expect(error.message).toEqual('Error occurred! Could not extract error message!'); 
+          expect(error instanceof UnknownError).toBeTruthy();
           done();
         },
       );
@@ -339,6 +340,7 @@ describe('ApiBase', () => {
         () => done(new Error('Should have errored')),
         (error: SimpleError) => {
           expect(error.message).toEqual('Oh, snap!');
+          expect(error instanceof SimpleError).toBeTruthy();
           done();
         },
       );
@@ -362,6 +364,7 @@ describe('ApiBase', () => {
           expect(error.message).toEqual(
             'Error occurred! Check error property for more information!',
           );
+          expect(error instanceof ComplexError).toBeTruthy();
           done();
         },
       );
