@@ -318,7 +318,9 @@ describe('ApiBase', () => {
       Qminder.ApiBase.request('TEST').then(
         () => done(new Error('Should have errored')),
         (error: SimpleError) => {
-          expect(error.message).toEqual('Error occurred! Could not extract error message!'); 
+          expect(error.message).toEqual(
+            'Error occurred! Could not extract error message!',
+          );
           expect(error instanceof UnknownError).toBeTruthy();
           done();
         },
