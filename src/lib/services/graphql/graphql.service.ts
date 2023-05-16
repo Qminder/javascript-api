@@ -326,7 +326,7 @@ export class GraphqlService {
     };
 
     socket.onerror = (event) => {
-        console.error('[Qminder API]: An error occurred!', event);
+      console.error('[Qminder API]: An error occurred!', event);
     };
 
     socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
