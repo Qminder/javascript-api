@@ -19,11 +19,10 @@ export function edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
   if (!newName || typeof newName !== 'string') {
     throw new Error('TV name not provided');
   }
-  return ApiBase.request(
-    `tv/${tvId}`,
-    { name: newName },
-    'POST',
-  ) as Promise<Device>;
+  return ApiBase.request(`tv/${tvId}`, {
+    body: { name: newName },
+    method: 'POST',
+  }) as Promise<Device>;
 }
 
 export function remove(
@@ -33,7 +32,7 @@ export function remove(
   if (!tvId || typeof tvId !== 'string') {
     throw new Error('TV ID not provided');
   }
-  return ApiBase.request(`tv/${tvId}`, undefined, 'DELETE') as Promise<{
+  return ApiBase.request(`tv/${tvId}`, { method: 'DELETE' }) as Promise<{
     statusCode: number;
   }>;
 }
