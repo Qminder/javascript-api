@@ -39,11 +39,10 @@ export function create(
   if (!line.name || typeof line.name !== 'string') {
     throw new Error('Cannot create a line without a line name.');
   }
-  return ApiBase.request(
-    `locations/${locationId}/lines`,
-    line,
-    'POST',
-  ) as Promise<Line>;
+  return ApiBase.request(`locations/${locationId}/lines`, {
+    body: line,
+    method: 'POST',
+  }) as Promise<Line>;
 }
 
 export function update(line: LineUpdateParameters): Promise<any> {
@@ -67,7 +66,10 @@ export function update(line: LineUpdateParameters): Promise<any> {
   }
 
   const data = { name: lineName, color: lineColor };
-  return ApiBase.request(`lines/${lineId}`, data, 'POST') as Promise<any>;
+  return ApiBase.request(`lines/${lineId}`, {
+    body: data,
+    method: 'POST',
+  }) as Promise<any>;
 }
 
 export function enable(line: IdOrObject<Line>): Promise<any> {
@@ -75,11 +77,9 @@ export function enable(line: IdOrObject<Line>): Promise<any> {
   if (!lineId || typeof lineId !== 'string') {
     throw new Error('Line ID invalid or missing.');
   }
-  return ApiBase.request(
-    `lines/${lineId}/enable`,
-    undefined,
-    'POST',
-  ) as Promise<any>;
+  return ApiBase.request(`lines/${lineId}/enable`, {
+    method: 'POST',
+  }) as Promise<any>;
 }
 
 export function disable(line: IdOrObject<Line>): Promise<any> {
@@ -87,11 +87,9 @@ export function disable(line: IdOrObject<Line>): Promise<any> {
   if (!lineId || typeof lineId !== 'string') {
     throw new Error('Line ID invalid or missing.');
   }
-  return ApiBase.request(
-    `lines/${lineId}/disable`,
-    undefined,
-    'POST',
-  ) as Promise<any>;
+  return ApiBase.request(`lines/${lineId}/disable`, {
+    method: 'POST',
+  }) as Promise<any>;
 }
 
 export function archive(line: IdOrObject<Line>): Promise<any> {
@@ -99,11 +97,9 @@ export function archive(line: IdOrObject<Line>): Promise<any> {
   if (!lineId || typeof lineId !== 'string') {
     throw new Error('Line ID invalid or missing.');
   }
-  return ApiBase.request(
-    `lines/${lineId}/archive`,
-    undefined,
-    'POST',
-  ) as Promise<any>;
+  return ApiBase.request(`lines/${lineId}/archive`, {
+    method: 'POST',
+  }) as Promise<any>;
 }
 
 export function unarchive(line: IdOrObject<Line>): Promise<any> {
@@ -112,11 +108,9 @@ export function unarchive(line: IdOrObject<Line>): Promise<any> {
   if (!lineId || typeof lineId !== 'string') {
     throw new Error('Line ID invalid or missing.');
   }
-  return ApiBase.request(
-    `lines/${lineId}/unarchive`,
-    undefined,
-    'POST',
-  ) as Promise<any>;
+  return ApiBase.request(`lines/${lineId}/unarchive`, {
+    method: 'POST',
+  }) as Promise<any>;
 }
 
 export function deleteLine(line: IdOrObject<Line>): Promise<any> {
@@ -125,9 +119,7 @@ export function deleteLine(line: IdOrObject<Line>): Promise<any> {
   if (!lineId || typeof lineId !== 'string') {
     throw new Error('Line ID invalid or missing.');
   }
-  return ApiBase.request(
-    `lines/${lineId}`,
-    undefined,
-    'DELETE',
-  ) as Promise<any>;
+  return ApiBase.request(`lines/${lineId}`, {
+    method: 'DELETE',
+  }) as Promise<any>;
 }
