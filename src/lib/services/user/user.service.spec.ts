@@ -70,6 +70,7 @@ describe('User service', function () {
         expect(returnedIds[i]).toBe(groundTruth[i]);
       }
     });
+
     it('returns the right email addresses', function () {
       const returned = usersReply.map((user: User) => user.email);
       const groundTruth = USERS.map((user) => user.email);
@@ -78,6 +79,7 @@ describe('User service', function () {
         expect(returned[i]).toBe(groundTruth[i]);
       }
     });
+
     it('returns the right first names', function () {
       const returned = usersReply.map((user: User) => user.firstName);
       const groundTruth = USERS.map((user) => user.firstName);
@@ -86,6 +88,7 @@ describe('User service', function () {
         expect(returned[i]).toBe(groundTruth[i]);
       }
     });
+
     it('returns the right last names', function () {
       const returned = usersReply.map((user: User) => user.lastName);
       const groundTruth = USERS.map((user) => user.lastName);
@@ -94,6 +97,7 @@ describe('User service', function () {
         expect(returned[i]).toBe(groundTruth[i]);
       }
     });
+
     it('returns the right pictures', function () {
       const returned = usersReply
         .map((user: User) => user.picture[0])
@@ -107,6 +111,7 @@ describe('User service', function () {
       }
     });
   });
+
   describe('create()', function () {
     // UserService.create(userdata)
 
@@ -134,22 +139,26 @@ describe('User service', function () {
         requestStub.calledWith(
           'users/',
           sinon.match({
-            roles: JSON.stringify(user.roles),
+            body: {
+              roles: JSON.stringify(user.roles),
+            },
           }),
         ),
       ).toBeTruthy();
     });
   });
+
   describe('details()', function () {
     // UserService.details(userId|userEmail)
   });
+
   describe('setLines()', function () {
     it('Works with a list of Line IDs', function () {
       UserService.setLines(123, [1, 2, 3, 4]);
       expect(
         requestStub.calledWith(
           'users/123/lines',
-          sinon.match(JSON.stringify([1, 2, 3, 4])),
+          sinon.match({ body: JSON.stringify([1, 2, 3, 4]) }),
         ),
       ).toBeTruthy();
     });
@@ -165,7 +174,7 @@ describe('User service', function () {
       expect(
         requestStub.calledWith(
           'users/123/lines',
-          sinon.match(JSON.stringify([1, 2, 3])),
+          sinon.match({ body: JSON.stringify([1, 2, 3]) }),
         ),
       ).toBeTruthy();
     });

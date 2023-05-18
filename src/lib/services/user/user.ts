@@ -37,16 +37,15 @@ export function create(
   if (!roles) {
     throw new Error("The user's roles are missing");
   }
-  return ApiBase.request(
-    `users/`,
-    {
+  return ApiBase.request(`users/`, {
+    body: {
       email,
       firstName,
       lastName,
       roles: JSON.stringify(roles),
     },
-    'POST',
-  ) as Promise<User>;
+    method: 'POST',
+  }) as Promise<User>;
 }
 
 export function details(
@@ -66,12 +65,15 @@ export function details(
 export function selectDesk(user: IdOrObject<User>, desk: IdOrObject<Desk>) {
   const userId = extractId(user);
   const deskId = extractId(desk);
-  return ApiBase.request(`users/${userId}/desk`, { desk: deskId }, 'POST');
+  return ApiBase.request(`users/${userId}/desk`, {
+    body: { desk: deskId },
+    method: 'POST',
+  });
 }
 
 export function removeDesk(user: IdOrObject<User>): Promise<SuccessResponse> {
   const userId = extractId(user);
-  return ApiBase.request(`users/${userId}/desk`, undefined, 'DELETE');
+  return ApiBase.request(`users/${userId}/desk`, { method: 'DELETE' });
 }
 
 export function setLines(
@@ -82,9 +84,8 @@ export function setLines(
   const lineIds = lines.map((line: IdOrObject<Line>) =>
     extractIdToNumber(line),
   );
-  return ApiBase.request(
-    `users/${userId}/lines`,
-    JSON.stringify(lineIds),
-    'POST',
-  );
+  return ApiBase.request(`users/${userId}/lines`, {
+    body: JSON.stringify(lineIds),
+    method: 'POST',
+  });
 }
