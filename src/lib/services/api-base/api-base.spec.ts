@@ -177,7 +177,7 @@ describe('ApiBase', () => {
       Qminder.setKey(API_KEY);
       const url = 'https://api.qminder.com/v1/TEST';
 
-      Qminder.ApiBase.request('TEST', { id: 1 }).then(() => {
+      Qminder.ApiBase.request('TEST', { body: { id: 1 } }).then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual('id=1');
         expect(fetchSpy.mock.calls[0][1].method).toEqual('POST');
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
@@ -189,7 +189,7 @@ describe('ApiBase', () => {
       Qminder.setKey(API_KEY);
       const url = 'https://api.qminder.com/v1/TEST';
 
-      Qminder.ApiBase.request('TEST', undefined, 'POST').then(() => {
+      Qminder.ApiBase.request('TEST', { method: 'POST' }).then(() => {
         expect(fetchSpy.mock.calls[0][1].method).toEqual('POST');
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
         done();
@@ -205,7 +205,7 @@ describe('ApiBase', () => {
         lastName: 'Smith',
       };
 
-      Qminder.ApiBase.request('TEST', body).then(() => {
+      Qminder.ApiBase.request('TEST', { body: body }).then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual(
           'id=5&firstName=John&lastName=Smith',
         );
@@ -224,7 +224,7 @@ describe('ApiBase', () => {
         lastName: 'Smith',
       };
 
-      Qminder.ApiBase.request('TEST', body).then(() => {
+      Qminder.ApiBase.request('TEST', { body: body }).then(() => {
         expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
           'application/x-www-form-urlencoded',
         );
@@ -233,7 +233,7 @@ describe('ApiBase', () => {
       });
     });
 
-    it('sets the HTTP header Idempotency-Key if idempotencyKey has been provided', (done) => {
+    it('sets the custom HTTP headers if provided', (done) => {
       Qminder.setKey(API_KEY);
       const url = 'https://api.qminder.com/v1/TEST';
       const body = {
@@ -242,13 +242,20 @@ describe('ApiBase', () => {
         lastName: 'Smith',
       };
 
-      Qminder.ApiBase.request('TEST', body, undefined, '9e3a333e').then(() => {
+      const headers = {
+        'X-Qminder-Test-Header': 'test',
+      };
+
+      Qminder.ApiBase.request('TEST', {
+        body: body,
+        headers: headers,
+      }).then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual(
           'id=5&firstName=John&lastName=Smith',
         );
-        expect(fetchSpy.mock.calls[0][1].headers['Idempotency-Key']).toEqual(
-          '9e3a333e',
-        );
+        expect(
+          fetchSpy.mock.calls[0][1].headers['X-Qminder-Test-Header'],
+        ).toEqual('test');
         expect(fetchSpy.mock.calls[0][0]).toEqual(url);
         done();
       });
@@ -259,14 +266,16 @@ describe('ApiBase', () => {
       const url = 'https://api.qminder.com/v1/TEST';
       const body = JSON.stringify([123, 456, 789]);
 
-      Qminder.ApiBase.request('TEST', body, 'POST').then(() => {
-        expect(fetchSpy.mock.calls[0][1].body).toEqual(body);
-        expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
-          'application/json',
-        );
-        expect(fetchSpy.mock.calls[0][0]).toEqual(url);
-        done();
-      });
+      Qminder.ApiBase.request('TEST', { body: body, method: 'POST' }).then(
+        () => {
+          expect(fetchSpy.mock.calls[0][1].body).toEqual(body);
+          expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
+            'application/json',
+          );
+          expect(fetchSpy.mock.calls[0][0]).toEqual(url);
+          done();
+        },
+      );
     });
 
     it('sends objects as www-form-urlencoded', (done) => {
@@ -274,14 +283,16 @@ describe('ApiBase', () => {
       const url = 'https://api.qminder.com/v1/TEST';
       const body = { a: 'test' };
 
-      Qminder.ApiBase.request('TEST', body, 'POST').then(() => {
-        expect(fetchSpy.mock.calls[0][1].body).toEqual('a=test');
-        expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
-          'application/x-www-form-urlencoded',
-        );
-        expect(fetchSpy.mock.calls[0][0]).toEqual(url);
-        done();
-      });
+      Qminder.ApiBase.request('TEST', { body: body, method: 'POST' }).then(
+        () => {
+          expect(fetchSpy.mock.calls[0][1].body).toEqual('a=test');
+          expect(fetchSpy.mock.calls[0][1].headers['Content-Type']).toEqual(
+            'application/x-www-form-urlencoded',
+          );
+          expect(fetchSpy.mock.calls[0][0]).toEqual(url);
+          done();
+        },
+      );
     });
 
     it('should handle error with message in "error" property', (done) => {

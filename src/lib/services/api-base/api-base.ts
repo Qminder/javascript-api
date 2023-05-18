@@ -15,6 +15,11 @@ type HTTPMethod =
   | 'DELETE'
   | 'CONNECT';
 
+type RequestInitWithMethodRequired = Pick<
+  CorrectRequestInit,
+  'method' | 'headers'
+> & { body?: string | File | object };
+
 interface GraphqlQueryVariables {
   [key: string]: any;
 }
@@ -30,7 +35,7 @@ export interface SuccessResponse {
 
 // NOTE: this is defined because the RequestInit type has issues
 interface CorrectRequestInit {
-  method?: string;
+  method?: HTTPMethod;
   headers?: {
     [key: string]: string;
   };
@@ -108,50 +113,44 @@ export class ApiBase {
 
   /**
    * Send a HTTP request to the Qminder API at the given URL.
-   * @param url  the URL part to append to the API server, for example "tickets/create"
-   * @param data  the the request data, as a File or JS object (serialized to formdata)
-   * @param method  the HTTP method to use, defaults to GET. POST and DELETE are used too.
-   * @param idempotencyKey  optional: the idempotency key for this request
+   * @param url the URL part to append to the API server, for example "tickets/create"
+   * @param options the custom options to configure the request
    * @returns  returns a promise that resolves to the API call's JSON response as a plain object.
    */
   static async request<T = {}>(
     url: string,
-    data?: object | File | string,
-    method: HTTPMethod = 'GET',
-    idempotencyKey?: string | number,
+    options?: RequestInitWithMethodRequired,
   ): Promise<T> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
 
     const init: CorrectRequestInit = {
-      method,
+      method: options?.method || 'GET',
       mode: 'cors',
       headers: {
+        ...options?.headers,
         'X-Qminder-REST-API-Key': this.apiKey,
       },
     };
 
-    if (data) {
-      if (method !== 'PUT') {
+    if (options?.body) {
+      if (options?.method !== 'PUT') {
         init.method = 'POST';
       }
-      if (typeof File !== 'undefined' && data instanceof File) {
-        init.body = data;
-        init.headers['Content-Type'] = data.type;
-      } else if (typeof data === 'object') {
-        init.body = new URLSearchParams(data as any).toString();
+
+      if (typeof File !== 'undefined' && options.body instanceof File) {
+        init.body = options.body;
+        init.headers['Content-Type'] = options.body.type;
+      } else if (typeof options.body === 'object') {
+        init.body = new URLSearchParams(options.body as any).toString();
         init.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-      } else if (typeof data === 'string') {
-        init.body = data;
+      } else if (typeof options.body === 'string') {
+        init.body = options.body;
         init.headers['Content-Type'] = 'application/json';
       } else {
         throw new Error('Cannot determine Content-Type of data');
       }
-    }
-
-    if (idempotencyKey) {
-      init.headers['Idempotency-Key'] = `${idempotencyKey}`;
     }
 
     const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
