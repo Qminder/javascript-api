@@ -8,7 +8,7 @@ export { Line } from '../lib/model/line.js';
 export { Location } from '../lib/model/location.js';
 export { TicketExtra } from '../lib/model/ticket-extra.js';
 export { TicketLabel } from '../lib/model/ticket-label.js';
-export { Ticket } from '../lib/model/ticket.js';
+export { Ticket, TicketStatus } from '../lib/model/ticket.js';
 export { User } from '../lib/model/user.js';
 export { Webhook } from '../lib/model/webhook.js';
 export { SimpleError } from '../lib/model/errors/simple-error.js';
