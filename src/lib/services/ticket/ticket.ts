@@ -349,13 +349,15 @@ export function create(
   }
 
   const requestParams: TicketCreationRequest = { ...converted };
+  const headers = idempotencyKey && {
+    'Idempotency-Key': `${idempotencyKey}`,
+  };
 
-  return ApiBase.request(
-    `lines/${lineId}/ticket`,
-    requestParams,
-    'POST',
-    idempotencyKey,
-  ).then((response: TicketCreationResponse) => {
+  return ApiBase.request(`lines/${lineId}/ticket`, {
+    method: 'POST',
+    body: requestParams,
+    headers: headers,
+  }).then((response: TicketCreationResponse) => {
     const ticketId = parseInt(`${response.id}`, 10);
     const reply: TicketCreationResponse = { id: ticketId };
     return reply;
@@ -391,7 +393,7 @@ export function edit(
 
   const request: TicketEditingRequest = intermediate;
 
-  return ApiBase.request(`tickets/${ticketId}/edit`, request).then(
+  return ApiBase.request(`tickets/${ticketId}/edit`, { body: request }).then(
     (response: { result: 'success' }) => response.result,
   );
 }
@@ -427,7 +429,10 @@ export function call(
     request = undefined;
   }
 
-  return ApiBase.request(`tickets/${ticketId}/call`, request, 'POST');
+  return ApiBase.request(`tickets/${ticketId}/call`, {
+    body: request,
+    method: 'POST',
+  });
 }
 
 export function recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
@@ -436,7 +441,7 @@ export function recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
   if (!ticketId || typeof ticketId !== 'string') {
     throw new Error(ERROR_NO_TICKET_ID);
   }
-  return ApiBase.request(`tickets/${ticketId}/recall`, undefined, 'POST').then(
+  return ApiBase.request(`tickets/${ticketId}/recall`, { method: 'POST' }).then(
     (response: { result: 'success' }) => response.result,
   );
 }
@@ -448,11 +453,9 @@ export function markServed(ticket: IdOrObject<Ticket>): Promise<'success'> {
     throw new Error(ERROR_NO_TICKET_ID);
   }
 
-  return ApiBase.request(
-    `tickets/${ticketId}/markserved`,
-    undefined,
-    'POST',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/markserved`, {
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function markNoShow(ticket: IdOrObject<Ticket>): Promise<'success'> {
@@ -461,11 +464,9 @@ export function markNoShow(ticket: IdOrObject<Ticket>): Promise<'success'> {
   if (!ticketId || typeof ticketId !== 'string') {
     throw new Error(ERROR_NO_TICKET_ID);
   }
-  return ApiBase.request(
-    `tickets/${ticketId}/marknoshow`,
-    undefined,
-    'POST',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/marknoshow`, {
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function cancel(
@@ -482,11 +483,10 @@ export function cancel(
     throw new Error(ERROR_NO_USER);
   }
 
-  return ApiBase.request(
-    `tickets/${ticketId}/cancel`,
-    { user: userId },
-    'POST',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/cancel`, {
+    body: { user: userId },
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function returnToQueue(
@@ -513,11 +513,9 @@ export function returnToQueue(
     position: `${position}`,
     user: userId,
   }).toString();
-  return ApiBase.request(
-    `tickets/${ticketId}/returntoqueue?${query}`,
-    undefined,
-    'POST',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/returntoqueue?${query}`, {
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function addLabel(
@@ -544,9 +542,10 @@ export function addLabel(
     body.user = userId;
   }
 
-  return ApiBase.request(`tickets/${ticketId}/labels/add`, body, 'POST').then(
-    (response: { result: 'success' | 'no action' }) => response.result,
-  );
+  return ApiBase.request(`tickets/${ticketId}/labels/add`, {
+    body: body,
+    method: 'POST',
+  }).then((response: { result: 'success' | 'no action' }) => response.result);
 }
 
 export function setLabels(
@@ -565,11 +564,10 @@ export function setLabels(
 
   const body: { labels: Array<string> } = { labels };
 
-  return ApiBase.request(
-    `tickets/${ticketId}/labels`,
-    JSON.stringify(body),
-    'PUT',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/labels`, {
+    body: JSON.stringify(body),
+    method: 'PUT',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function removeLabel(
@@ -597,11 +595,10 @@ export function removeLabel(
     user: userId,
   };
 
-  return ApiBase.request(
-    `tickets/${ticketId}/labels/remove`,
-    body,
-    'POST',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/labels/remove`, {
+    body: body,
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function assignToUser(
@@ -629,9 +626,10 @@ export function assignToUser(
     assigner: assignerId,
     assignee: assigneeId,
   };
-  return ApiBase.request(`tickets/${ticketId}/assign`, body, 'POST').then(
-    (response: { result: 'success' }) => response.result,
-  );
+  return ApiBase.request(`tickets/${ticketId}/assign`, {
+    body: body,
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function unassign(
@@ -651,11 +649,10 @@ export function unassign(
     );
   }
 
-  return ApiBase.request(
-    `tickets/${ticketId}/unassign`,
-    { user: unassignerId },
-    'POST',
-  ).then((response: { result: 'success' }) => response.result);
+  return ApiBase.request(`tickets/${ticketId}/unassign`, {
+    body: { user: unassignerId },
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function reorder(
@@ -678,9 +675,10 @@ export function reorder(
     };
   }
 
-  return ApiBase.request(`tickets/${ticketId}/reorder`, postData, 'POST').then(
-    (response: { result: 'success' }) => response.result,
-  );
+  return ApiBase.request(`tickets/${ticketId}/reorder`, {
+    body: postData,
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function getEstimatedTimeOfService(
@@ -736,9 +734,10 @@ export function sendMessage(
     user: userId,
   };
 
-  return ApiBase.request(`tickets/${ticketId}/messages`, body, 'POST').then(
-    (response: { result: 'success' }) => response.result,
-  );
+  return ApiBase.request(`tickets/${ticketId}/messages`, {
+    body: body,
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function forward(
@@ -771,7 +770,7 @@ export function forward(
     body.user = userId;
   }
 
-  return ApiBase.request(`tickets/${ticketId}/forward`, body);
+  return ApiBase.request(`tickets/${ticketId}/forward`, { body: body });
 }
 
 export function setExternalData(
@@ -804,7 +803,8 @@ export function setExternalData(
     data: JSON.stringify(data),
   };
 
-  return ApiBase.request(`tickets/${ticketId}/external`, payload, 'POST').then(
-    (response: { result: 'success' }) => response.result,
-  );
+  return ApiBase.request(`tickets/${ticketId}/external`, {
+    body: payload,
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }

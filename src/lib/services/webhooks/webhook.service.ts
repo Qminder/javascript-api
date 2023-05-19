@@ -27,7 +27,8 @@ export const WebhookService = {
    * console.log(webhook.secret); // 'hmacSecretText'
    * // You can use the webhook.secret to check the message validity via HMAC.
    * ```
-   * @param url  the public URL to receive the webhooks, such as https://example.com/webhook
+   * @param url the public URL to receive the webhooks, such as https://example.com/webhook
+   * @param headers the custom HTTP headers to include in the request
    * @returns a Webhook object with the webhook's ID and HMAC secret.
    * @throws {SimpleError}
    * @see Webhook
