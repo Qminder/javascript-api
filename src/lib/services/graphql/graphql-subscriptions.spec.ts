@@ -6,6 +6,16 @@ import { GraphqlService } from './graphql.service';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 
+/**
+ * The message sequence during these tests is the following:
+ *
+ * client -> server: 'connection_init'
+ * server -> client: 'connection_ack'
+ * client -> server: 'start', ID, query
+ * server -> client: 'data', ID, payload
+ * client -> server: 'end', ID
+ * ...
+ */
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphqlService;
   let server: WS;
@@ -98,31 +108,29 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  describe('.stopSubscription', () => {
-    it('cleans up internal state when unsubscribing', async () => {
-      // start the test with an empty observer-map
-      expect(
-        Object.keys((graphqlService as any).subscriptionObserverMap).length,
-      ).toBe(0);
-      // subscribe once
-      const spy = jest.fn();
-      const subscription = graphqlService
-        .subscribe('subscription { baba }')
-        .subscribe(spy);
-      await handleConnectionInit();
-      await server.nextMessage;
-      // the observer map should equal { "1": Subscriber => spy }
-      expect((graphqlService as any).subscriptionObserverMap).toEqual({
-        '1': expect.any(Subscriber),
-      });
-
-      // unsubscribing should clean up
-      subscription.unsubscribe();
-      await server.nextMessage;
-      expect(
-        Object.keys((graphqlService as any).subscriptionObserverMap).length,
-      ).toBe(0);
+  it('cleans up internal state when unsubscribing', async () => {
+    // start the test with an empty observer-map
+    expect(
+      Object.keys((graphqlService as any).subscriptionObserverMap).length,
+    ).toBe(0);
+    // subscribe once
+    const spy = jest.fn();
+    const subscription = graphqlService
+      .subscribe('subscription { baba }')
+      .subscribe(spy);
+    await handleConnectionInit();
+    await server.nextMessage;
+    // the observer map should equal { "1": Subscriber => spy }
+    expect((graphqlService as any).subscriptionObserverMap).toEqual({
+      '1': expect.any(Subscriber),
     });
+
+    // unsubscribing should clean up
+    subscription.unsubscribe();
+    await server.nextMessage;
+    expect(
+      Object.keys((graphqlService as any).subscriptionObserverMap).length,
+    ).toBe(0);
   });
 
   it('when receiving a published message for a subscription that does not exist anymore, it does not throw', async () => {
@@ -147,5 +155,11 @@ describe('GraphQL subscriptions', () => {
         },
       },
     });
+  });
+
+  it('when the server closes the connection, it will reconnect', async () => {
+    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    await handleConnectionInit();
+    await server.nextMessage;
   });
 });
