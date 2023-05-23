@@ -42,7 +42,7 @@ describe('GraphQL subscriptions', () => {
       );
     });
 
-    it('opens 1 connection if multiple calls to connection key were performed', async () => {
+    it('opens 1 connection if multiple subscriptions are opened simultaneously', async () => {
       graphqlService.subscribe('subscription { aaaa }').subscribe(() => {});
       graphqlService.subscribe('subscription { aaab }').subscribe(() => {});
       graphqlService.subscribe('subscription { aaac }').subscribe(() => {});
@@ -54,7 +54,7 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  it('fires an Apollo compliant subscribe event, when a new subscriber comes in', async () => {
+  it('sends a subscribe message to the socket when someone subscribes', async () => {
     const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     // wait until the web socket connection was opened
@@ -69,7 +69,7 @@ describe('GraphQL subscriptions', () => {
     );
   });
 
-  it('sends an un-subscribe message when the subscription is unsubscribe from', () => {
+  it('sends an un-subscribe message when the subscription is unsubscribed from', () => {
     const stopSubscriptionSpy = jest.spyOn(
       graphqlService as any,
       'stopSubscription',
@@ -128,7 +128,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('.stopSubscription', () => {
-    it('deletes the subscription from the mapping of ID -> callbacks', () => {
+    it('cleans up internal state when unsubscribing', () => {
       // start the test with an empty observer-map
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,
