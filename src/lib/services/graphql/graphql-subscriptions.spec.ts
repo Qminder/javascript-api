@@ -1,5 +1,7 @@
+import gql from 'graphql-tag';
 import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
+import { Subscriber } from 'rxjs';
 import { GraphqlService } from './graphql.service';
 
 jest.mock('isomorphic-ws', () => WebSocket);
@@ -78,9 +80,7 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  /*
   it('works with graphql-tag generated documents', async () => {
-    const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
     graphqlService
       .subscribe(
         gql`
@@ -90,43 +90,17 @@ describe('GraphQL subscriptions', () => {
         `,
       )
       .subscribe(() => {});
-    // wait until the web socket connection was opened
-    await new Promise(process.nextTick);
+    await handleConnectionInit();
     expect((graphqlService as any).subscriptions.length).toBe(1);
-    expect(sendMessageSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      'start',
-      expect.objectContaining({
-        query: 'subscription {\n  baba\n}\n',
-      }),
-    );
-  });
-
-  it('does not automatically add leading "subscription {" and trailing "}"', async () => {
-    const sendMessageSpy = jest.spyOn(graphqlService as any, 'sendMessage');
-    graphqlService
-      .subscribe(
-        gql`
-          subscription {
-            baba
-          }
-        `,
-      )
-      .subscribe(() => {});
-    // wait until the web socket connection was opened
-    await new Promise(process.nextTick);
-    expect((graphqlService as any).subscriptions.length).toBe(1);
-    expect(sendMessageSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      'start',
-      expect.objectContaining({
-        query: 'subscription {\n  baba\n}\n',
-      }),
-    );
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription {\n  baba\n}\n' },
+    });
   });
 
   describe('.stopSubscription', () => {
-    it('cleans up internal state when unsubscribing', () => {
+    it('cleans up internal state when unsubscribing', async () => {
       // start the test with an empty observer-map
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,
@@ -136,7 +110,8 @@ describe('GraphQL subscriptions', () => {
       const subscription = graphqlService
         .subscribe('subscription { baba }')
         .subscribe(spy);
-
+      await handleConnectionInit();
+      await server.nextMessage;
       // the observer map should equal { "1": Subscriber => spy }
       expect((graphqlService as any).subscriptionObserverMap).toEqual({
         '1': expect.any(Subscriber),
@@ -144,6 +119,7 @@ describe('GraphQL subscriptions', () => {
 
       // unsubscribing should clean up
       subscription.unsubscribe();
+      await server.nextMessage;
       expect(
         Object.keys((graphqlService as any).subscriptionObserverMap).length,
       ).toBe(0);
@@ -157,24 +133,20 @@ describe('GraphQL subscriptions', () => {
     const subscription = graphqlService
       .subscribe('subscription { baba }')
       .subscribe(() => {});
-    // wait until the web socket connection was opened
-    await new Promise(process.nextTick);
-    subscription.unsubscribe();
-    const internalSock = (graphqlService as any).socket;
 
-    expect(() => {
-      internalSock.onmessage({
-        data: JSON.stringify({
-          type: 'data',
-          id: '1',
-          payload: {
-            data: {
-              baba: 12345,
-            },
-          },
-        }),
-      });
-    }).not.toThrow();
+    await handleConnectionInit();
+    await server.nextMessage;
+    subscription.unsubscribe();
+    await server.nextMessage;
+
+    server.send({
+      id: '1',
+      type: 'data',
+      payload: {
+        data: {
+          baba: 9,
+        },
+      },
+    });
   });
-  */
 });
