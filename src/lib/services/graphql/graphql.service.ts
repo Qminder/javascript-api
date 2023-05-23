@@ -5,6 +5,7 @@ import { Observable, Observer, Subject, startWith } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { ConnectionStatus } from '../../model/connection-status.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
+import { randomizedExponentialBackoff } from '../../util/randomized-exponential-backoff.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 
 type QueryOrDocument = string | DocumentNode;
@@ -86,6 +87,8 @@ export class GraphqlService {
   private sendPingWithThisBound = this.sendPing.bind(this);
   private handleConnectionDropWithThisBound =
     this.handleConnectionDrop.bind(this);
+
+  private connectionAttemptsCount = 0;
 
   constructor() {
     this.setServer('api.qminder.com');
@@ -325,9 +328,9 @@ export class GraphqlService {
         this.clearMonitoring();
         return;
       } else {
-        setTimeout(() => {
+        randomizedExponentialBackoff(this.connectionAttemptsCount).then(() => {
           this.openSocket();
-        }, 2000);
+        });
       }
 
       if (this.connectionStatus === ConnectionStatus.CONNECTING) {
@@ -350,6 +353,7 @@ export class GraphqlService {
             break;
 
           case MessageType.GQL_CONNECTION_ACK:
+            this.connectionAttemptsCount = 0;
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             console.info('[Qminder API]: Connected to websocket!');
             this.startConnectionMonitoring();
