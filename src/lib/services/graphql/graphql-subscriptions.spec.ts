@@ -29,7 +29,8 @@ describe('GraphQL subscriptions', () => {
   let mockSetInterval: MockSetInterval;
 
   const keyValue = 'temporary_api_key';
-  const SERVER_URL = 'ws://localhost:42990';
+  const PORT = 42990;
+  const SERVER_URL = `ws://localhost:${PORT}`;
 
   beforeEach(async () => {
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
@@ -86,11 +87,7 @@ describe('GraphQL subscriptions', () => {
       .subscribe('subscription { baba }')
       .subscribe(() => {});
     await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
+    await consumeSubscribeMessage();
     subscription.unsubscribe();
     expect(await server.nextMessage).toEqual({
       type: 'stop',
@@ -129,7 +126,7 @@ describe('GraphQL subscriptions', () => {
       .subscribe('subscription { baba }')
       .subscribe(spy);
     await handleConnectionInit();
-    await server.nextMessage;
+    await consumeSubscribeMessage();
     // the observer map should equal { "1": Subscriber => spy }
     expect((graphqlService as any).subscriptionObserverMap).toEqual({
       '1': expect.any(Subscriber),
@@ -137,7 +134,7 @@ describe('GraphQL subscriptions', () => {
 
     // unsubscribing should clean up
     subscription.unsubscribe();
-    await server.nextMessage;
+    await consumeAnyMessage();
     expect(
       Object.keys((graphqlService as any).subscriptionObserverMap).length,
     ).toBe(0);
@@ -152,9 +149,9 @@ describe('GraphQL subscriptions', () => {
       .subscribe(() => {});
 
     await handleConnectionInit();
-    await server.nextMessage;
+    await consumeSubscribeMessage();
     subscription.unsubscribe();
-    await server.nextMessage;
+    await consumeAnyMessage();
 
     server.send({
       id: '1',
@@ -170,17 +167,8 @@ describe('GraphQL subscriptions', () => {
   it('when the server closes the connection, it will reconnect and subscribe again', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
-    await server.close({
-      reason: 'Server going down',
-      code: 1001,
-      wasClean: true,
-    });
-    await server.closed;
+    await consumeSubscribeMessage();
+    await closeWithCode(1001);
 
     jest.useFakeTimers();
     expect(() => mockSetInterval.advanceAll()).toThrow();
@@ -203,11 +191,7 @@ describe('GraphQL subscriptions', () => {
     );
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
+    await consumeSubscribeMessage();
 
     jest.useFakeTimers();
     mockSetInterval.advanceAll();
@@ -226,17 +210,8 @@ describe('GraphQL subscriptions', () => {
   it('when the server sends an error, it will reconnect and subscribe again', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
-    await server.error({
-      reason: 'Server going down',
-      code: 1001,
-      wasClean: true,
-    });
-    await server.closed;
+    await consumeSubscribeMessage();
+    await closeWithError(1002);
 
     jest.useFakeTimers();
     expect(() => mockSetInterval.advanceAll()).toThrow();
@@ -255,17 +230,8 @@ describe('GraphQL subscriptions', () => {
   it('when the connection closes abnormally, it will reconnect and subscribe again', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
-    await server.error({
-      reason: 'Connection reset by peer',
-      code: 1006,
-      wasClean: false,
-    });
-    await server.closed;
+    await consumeSubscribeMessage();
+    await closeWithError(1006);
 
     jest.useFakeTimers();
     expect(() => mockSetInterval.advanceAll()).toThrow();
@@ -280,4 +246,51 @@ describe('GraphQL subscriptions', () => {
       payload: { query: 'subscription { baba }' },
     });
   });
+
+  it.skip('when a reconnection fails, it will continue to retry', async () => {
+    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    await handleConnectionInit();
+    await consumeSubscribeMessage();
+    await closeWithError(1006);
+
+    jest.useFakeTimers();
+    expect(() => mockSetInterval.advanceAll()).toThrow();
+
+    jest.advanceTimersByTime(2000);
+    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+
+    jest.useRealTimers();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+  });
+
+  async function closeWithError(closeCode: number) {
+    await server.error({
+      reason: 'Connection reset by peer',
+      code: closeCode,
+      wasClean: false,
+    });
+    await server.closed;
+  }
+  async function closeWithCode(closeCode: number) {
+    await server.close({
+      reason: 'Connection reset by peer',
+      code: closeCode,
+      wasClean: true,
+    });
+    await server.closed;
+  }
+  async function consumeSubscribeMessage() {
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+  }
+  async function consumeAnyMessage() {
+    await server.nextMessage;
+  }
 });
