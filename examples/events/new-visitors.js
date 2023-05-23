@@ -9,9 +9,7 @@ import { Qminder } from '../../build/index.js';
 Qminder.setKey(process.env.API_KEY);
 
 async function findAllLocations() {
-  const response = await Qminder.GraphQL.query(
-    '{ locations { id name } }',
-  );
+  const response = await Qminder.GraphQL.query('{ locations { id name } }');
   return response.data.locations;
 }
 
@@ -55,7 +53,13 @@ findAllLocations().then((locations) => {
 });
 
 Qminder.GraphQL.getSubscriptionConnectionObservable().subscribe({
-  next(value) { console.log('subscription connection status: ', value); },
-  error(value) { console.error('failed sub conn status: ', value); },
-  complete() { console.info('sub conn status completed'); }
+  next(value) {
+    console.log('subscription connection status: ', value);
+  },
+  error(value) {
+    console.error('failed sub conn status: ', value);
+  },
+  complete() {
+    console.info('sub conn status completed');
+  },
 });
