@@ -272,7 +272,7 @@ describe('GraphQL subscriptions', () => {
     jest.useFakeTimers();
     await closeWithError(1006);
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.advanceTimersByTime(2000);
+    jest.advanceTimersByTime(61000);
     jest.useRealTimers();
 
     await handleConnectionInit();
