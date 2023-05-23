@@ -8,7 +8,6 @@ jest.mock('isomorphic-ws', () => WebSocket);
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphqlService;
-  let temporaryApiKeySpy: jest.SpyInstance;
   let server: WS;
 
   const keyValue = 'temporary_api_key';
@@ -17,7 +16,7 @@ describe('GraphQL subscriptions', () => {
     const SERVER_URL = 'ws://localhost:42990';
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
     graphqlService = new GraphqlService();
-    temporaryApiKeySpy = jest
+    jest
       .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
       .mockResolvedValue(keyValue);
     jest
