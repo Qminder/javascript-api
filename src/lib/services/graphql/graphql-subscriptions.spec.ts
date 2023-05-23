@@ -1,21 +1,29 @@
 import { gql } from 'graphql-tag';
 
-import WebSocket from 'isomorphic-ws';
+import WS from 'jest-websocket-mock';
 import { Subscriber } from 'rxjs';
 import { GraphqlService } from './graphql.service';
-
-jest.mock('isomorphic-ws', () => jest.fn());
 
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphqlService;
   let temporaryApiKeySpy: jest.SpyInstance;
+  let server: WS;
+
   const keyValue = 'temporary_api_key';
 
-  beforeEach(() => {
+  beforeEach(async () => {
+    const SERVER_URL = 'ws://localhost:42990';
+    server = new WS(SERVER_URL);
     graphqlService = new GraphqlService();
     temporaryApiKeySpy = jest
       .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
       .mockResolvedValue(keyValue);
+    jest
+      .spyOn(graphqlService as any, 'getServerUrl')
+      .mockReturnValue(SERVER_URL);
+  });
+  afterEach(async () => {
+    WS.clean();
   });
 
   describe('.generateOperationId', () => {
@@ -25,32 +33,6 @@ describe('GraphQL subscriptions', () => {
       expect((graphqlService as any).generateOperationId()).toBe('3');
       expect((graphqlService as any).generateOperationId()).toBe('4');
       expect((graphqlService as any).generateOperationId()).toBe('5');
-    });
-  });
-
-  describe('.subscribe', () => {
-    beforeEach(() => {
-      (WebSocket as unknown as jest.Mock).mockReset();
-    });
-    it('fetches temporary api key when a new connection is opened', async () => {
-      graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-      // wait until the web socket connection was opened
-      await new Promise(process.nextTick);
-      expect(temporaryApiKeySpy).toHaveBeenCalled();
-      expect(WebSocket).toBeCalledWith(
-        `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
-      );
-    });
-
-    it('opens 1 connection if multiple subscriptions are opened simultaneously', async () => {
-      graphqlService.subscribe('subscription { aaaa }').subscribe(() => {});
-      graphqlService.subscribe('subscription { aaab }').subscribe(() => {});
-      graphqlService.subscribe('subscription { aaac }').subscribe(() => {});
-      graphqlService.subscribe('subscription { aaad }').subscribe(() => {});
-      // wait until the web socket connection was opened
-      await new Promise(process.nextTick);
-      expect(temporaryApiKeySpy).toHaveBeenCalledTimes(1);
-      expect(WebSocket).toHaveBeenCalledTimes(1);
     });
   });
 

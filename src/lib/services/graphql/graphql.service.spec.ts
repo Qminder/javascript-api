@@ -1,8 +1,11 @@
 import { gql } from 'graphql-tag';
+import WebSocket from 'isomorphic-ws';
 import * as sinon from 'sinon';
 
 import { Qminder } from '../../qminder';
 import { GraphqlService } from './graphql.service';
+
+jest.mock('isomorphic-ws', () => jest.fn());
 
 describe('GraphQL service', function () {
   const ME_ID_REQUEST = '{ me { id } }';
@@ -20,13 +23,20 @@ describe('GraphQL service', function () {
     ],
   };
   let requestStub: sinon.SinonStub;
-  let graphqlService = new GraphqlService();
+  let graphqlService: GraphqlService;
+  let temporaryApiKeySpy: jest.SpyInstance;
+  const keyValue = 'temporary_api_key';
+
   beforeEach(function () {
     Qminder.setKey('EXAMPLE_API_KEY');
     Qminder.setServer('api.qminder.com');
-
+    graphqlService = new GraphqlService();
     // Stub ApiBase.request to feed specific data to API
     requestStub = sinon.stub(Qminder.ApiBase, 'queryGraph');
+
+    temporaryApiKeySpy = jest
+      .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
+      .mockResolvedValue(keyValue);
   });
 
   describe('query', function () {
@@ -110,6 +120,32 @@ describe('GraphQL service', function () {
         query:
           'query MyIdQuery($id: ID!) { location(id: $id) { id name timezone lines { ...MyFrag } }\n} fragment MyFrag on Line { id name\n}',
       });
+    });
+  });
+
+  describe('.subscribe', () => {
+    beforeEach(() => {
+      (WebSocket as unknown as jest.Mock).mockReset();
+    });
+    it('fetches temporary api key when a new connection is opened', async () => {
+      graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
+      expect(temporaryApiKeySpy).toHaveBeenCalled();
+      expect(WebSocket).toBeCalledWith(
+        `wss://api.qminder.com:443/graphql/subscription?rest-api-key=${keyValue}`,
+      );
+    });
+
+    it('opens 1 connection if multiple subscriptions are opened simultaneously', async () => {
+      graphqlService.subscribe('subscription { aaaa }').subscribe(() => {});
+      graphqlService.subscribe('subscription { aaab }').subscribe(() => {});
+      graphqlService.subscribe('subscription { aaac }').subscribe(() => {});
+      graphqlService.subscribe('subscription { aaad }').subscribe(() => {});
+      // wait until the web socket connection was opened
+      await new Promise(process.nextTick);
+      expect(temporaryApiKeySpy).toHaveBeenCalledTimes(1);
+      expect(WebSocket).toHaveBeenCalledTimes(1);
     });
   });
 
