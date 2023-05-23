@@ -268,9 +268,13 @@ describe('GraphQL subscriptions', () => {
         graphqlService.getSubscriptionConnectionObservable().pipe(take(1)),
       ),
     ).toBe(ConnectionStatus.CONNECTING);
-    console.log('advancing');
+
+    jest.useFakeTimers();
     await closeWithError(1006);
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    jest.advanceTimersByTime(2000);
+    jest.useRealTimers();
+
     await handleConnectionInit();
     await consumeSubscribeMessage();
   });

@@ -324,6 +324,10 @@ export class GraphqlService {
       if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
         this.clearMonitoring();
         return;
+      } else {
+        setTimeout(() => {
+          this.openSocket();
+        }, 2000);
       }
 
       if (this.connectionStatus === ConnectionStatus.CONNECTING) {
