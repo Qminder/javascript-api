@@ -3,6 +3,11 @@ import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
 import { Subscriber } from 'rxjs';
 import { GraphqlService } from './graphql.service';
+import {
+  MockSetInterval,
+  mockSetIntervalGlobals,
+  resetSetIntervalGlobals,
+} from './mock-set-interval';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 
@@ -16,14 +21,17 @@ jest.mock('isomorphic-ws', () => WebSocket);
  * client -> server: 'end', ID
  * ...
  */
+
+// Close codes: https://www.rfc-editor.org/rfc/rfc6455#section-7.4
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphqlService;
   let server: WS;
+  let mockSetInterval: MockSetInterval;
 
   const keyValue = 'temporary_api_key';
+  const SERVER_URL = 'ws://localhost:42990';
 
   beforeEach(async () => {
-    const SERVER_URL = 'ws://localhost:42990';
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
     graphqlService = new GraphqlService();
     jest
@@ -32,17 +40,19 @@ describe('GraphQL subscriptions', () => {
     jest
       .spyOn(graphqlService as any, 'getServerUrl')
       .mockReturnValue(SERVER_URL);
+    mockSetInterval = mockSetIntervalGlobals();
   });
 
   afterEach(async () => {
     WS.clean();
+    resetSetIntervalGlobals();
   });
 
   async function handleConnectionInit() {
     await server.connected;
     const initMessage = (await server.nextMessage) as { type: string };
     expect(initMessage.type).toBe('connection_init');
-    await server.send({
+    server.send({
       type: 'connection_ack',
     });
   }
@@ -157,9 +167,117 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  it('when the server closes the connection, it will reconnect', async () => {
+  it('when the server closes the connection, it will reconnect and subscribe again', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
-    await server.nextMessage;
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+    await server.close({
+      reason: 'Server going down',
+      code: 1001,
+      wasClean: true,
+    });
+    await server.closed;
+
+    jest.useFakeTimers();
+    expect(() => mockSetInterval.advanceAll()).toThrow();
+
+    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    jest.advanceTimersByTime(2000);
+    jest.useRealTimers();
+    await handleConnectionInit();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+  });
+
+  it('when the server replies to ping message, does not reconnect', async () => {
+    const reconnectSpy = jest.spyOn(
+      graphqlService as any,
+      'handleConnectionDropWithThisBound',
+    );
+    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    await handleConnectionInit();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+
+    jest.useFakeTimers();
+    mockSetInterval.advanceAll();
+    jest.advanceTimersToNextTimer(); // NOTE: internal timer in mock-socket
+
+    expect(await server.nextMessage).toEqual({
+      type: 'ping',
+    });
+
+    server.send({ type: 'pong' });
+    jest.advanceTimersByTime(2000);
+    jest.useRealTimers();
+    expect(reconnectSpy).not.toHaveBeenCalled();
+  });
+
+  it('when the server sends an error, it will reconnect and subscribe again', async () => {
+    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    await handleConnectionInit();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+    await server.error({
+      reason: 'Server going down',
+      code: 1001,
+      wasClean: true,
+    });
+    await server.closed;
+
+    jest.useFakeTimers();
+    expect(() => mockSetInterval.advanceAll()).toThrow();
+
+    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    jest.advanceTimersByTime(2000);
+    jest.useRealTimers();
+    await handleConnectionInit();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+  });
+
+  it('when the connection closes abnormally, it will reconnect and subscribe again', async () => {
+    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    await handleConnectionInit();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+    await server.error({
+      reason: 'Connection reset by peer',
+      code: 1006,
+      wasClean: false,
+    });
+    await server.closed;
+
+    jest.useFakeTimers();
+    expect(() => mockSetInterval.advanceAll()).toThrow();
+
+    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    jest.advanceTimersByTime(2000);
+    jest.useRealTimers();
+    await handleConnectionInit();
+    expect(await server.nextMessage).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
   });
 });
