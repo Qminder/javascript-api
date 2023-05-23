@@ -329,6 +329,7 @@ export class GraphqlService {
         return;
       } else {
         randomizedExponentialBackoff(this.connectionAttemptsCount).then(() => {
+          this.connectionAttemptsCount += 1;
           this.openSocket();
         });
       }
