@@ -1,3 +1,5 @@
+/* global globalThis: false */
+/* eslint-env jest */
 class MockInterval<T = unknown> {
   constructor(
     public callback: (context?: T) => void,
@@ -42,14 +44,14 @@ let oldClearInterval: Window['clearInterval'] | undefined;
 
 export function mockSetIntervalGlobals(): MockSetInterval {
   const mockSetInterval = new MockSetInterval();
-  oldSetInterval = window.setInterval;
-  oldClearInterval = window.clearInterval;
-  window.setInterval = mockSetInterval.setInterval as any;
-  window.clearInterval = mockSetInterval.clearInterval;
+  oldSetInterval = globalThis.setInterval;
+  oldClearInterval = globalThis.clearInterval;
+  globalThis.setInterval = mockSetInterval.setInterval as any;
+  globalThis.clearInterval = mockSetInterval.clearInterval;
   return mockSetInterval;
 }
 
 export function resetSetIntervalGlobals() {
-  window.setInterval = oldSetInterval as any;
-  window.clearInterval = oldClearInterval;
+  globalThis.setInterval = oldSetInterval as any;
+  globalThis.clearInterval = oldClearInterval;
 }

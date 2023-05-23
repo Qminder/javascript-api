@@ -2,7 +2,10 @@
   "env": {
     "browser": true
   },
-  "plugins": ["import", "@typescript-eslint"],
+  "plugins": [
+    "import",
+    "@typescript-eslint"
+  ],
   "extends": [
     "eslint:recommended",
     "prettier",
@@ -26,10 +29,15 @@
   },
   "overrides": [
     {
-      "files": ["*.spec.ts"],
+      "files": [
+        "*.spec.ts"
+      ],
       "env": {
         "jest": true,
         "node": true
+      },
+      "globals": {
+        "globalThis": false
       },
       "rules": {
         "func-names": "off"
