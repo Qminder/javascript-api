@@ -312,7 +312,11 @@ export class GraphqlService {
       );
     };
 
-    socket.onclose = (event: { code: number }) => {
+    socket.onclose = (event: { code: number; reason?: string }) => {
+      console.warn('[Qminder API] WebSocket connection closed:', {
+        code: event.code,
+        reason: event.reason,
+      });
       if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
         this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
         this.clearMonitoring();
