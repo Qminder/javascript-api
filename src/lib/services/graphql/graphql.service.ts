@@ -1,11 +1,11 @@
 import fetch from 'cross-fetch';
 import { DocumentNode, print } from 'graphql';
 import WebSocket from 'isomorphic-ws';
-import { Observable, Observer, startWith, Subject } from 'rxjs';
+import { Observable, Observer, Subject, startWith } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
-import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { ConnectionStatus } from '../../model/connection-status.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
+import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 
 type QueryOrDocument = string | DocumentNode;
 
@@ -294,10 +294,12 @@ export class GraphqlService {
     }
   }
 
+  private getServerUrl(temporaryApiKey: string): string {
+    return `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`;
+  }
+
   private createSocketConnection(temporaryApiKey: string) {
-    this.socket = new WebSocket(
-      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`,
-    );
+    this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
     const socket = this.socket;
     socket.onopen = () => {
