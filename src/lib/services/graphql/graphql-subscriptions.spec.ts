@@ -1,7 +1,8 @@
 import gql from 'graphql-tag';
 import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
-import { Subscriber } from 'rxjs';
+import { Subscriber, lastValueFrom, take } from 'rxjs';
+import { ConnectionStatus } from '../../model/connection-status';
 import { GraphqlService } from './graphql.service';
 import {
   MockSetInterval,
@@ -247,7 +248,7 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  it.skip('when a reconnection fails, it will continue to retry', async () => {
+  it('when a reconnection fails, it will continue to retry', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
     await consumeSubscribeMessage();
@@ -255,16 +256,23 @@ describe('GraphQL subscriptions', () => {
 
     jest.useFakeTimers();
     expect(() => mockSetInterval.advanceAll()).toThrow();
-
-    jest.advanceTimersByTime(2000);
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-
+    jest.advanceTimersByTime(2000);
     jest.useRealTimers();
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
+
+    await server.connected;
+    // NOTE: when we don't send a CONNECTION_ACK, then we will still be in the
+    // CONNECTING state.
+    expect(
+      await lastValueFrom(
+        graphqlService.getSubscriptionConnectionObservable().pipe(take(1)),
+      ),
+    ).toBe(ConnectionStatus.CONNECTING);
+    console.log('advancing');
+    await closeWithError(1006);
+    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    await handleConnectionInit();
+    await consumeSubscribeMessage();
   });
 
   async function closeWithError(closeCode: number) {

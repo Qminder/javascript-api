@@ -317,10 +317,12 @@ export class GraphqlService {
         code: event.code,
         reason: event.reason,
       });
+
+      this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+      this.socket = null;
+
       if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
-        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
         this.clearMonitoring();
-        this.socket = null;
         return;
       }
 
