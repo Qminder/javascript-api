@@ -1,16 +1,15 @@
 import gql from 'graphql-tag';
 import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
-import { Subscriber, lastValueFrom, take } from 'rxjs';
+import { Subscriber, filter, lastValueFrom, take } from 'rxjs';
 import { ConnectionStatus } from '../../model/connection-status';
 import { GraphqlService } from './graphql.service';
-import {
-  MockSetInterval,
-  mockSetIntervalGlobals,
-  resetSetIntervalGlobals,
-} from './mock-set-interval';
 
 jest.mock('isomorphic-ws', () => WebSocket);
+jest.mock('../../util/randomized-exponential-backoff', () => ({
+  randomizedExponentialBackoff: () =>
+    new Promise((resolve) => setTimeout(resolve, 4)),
+}));
 
 /**
  * The message sequence during these tests is the following:
@@ -27,7 +26,7 @@ jest.mock('isomorphic-ws', () => WebSocket);
 describe('GraphQL subscriptions', () => {
   let graphqlService: GraphqlService;
   let server: WS;
-  let mockSetInterval: MockSetInterval;
+  // let mockSetInterval: MockSetInterval;
 
   const keyValue = 'temporary_api_key';
   const PORT = 42990;
@@ -42,22 +41,12 @@ describe('GraphQL subscriptions', () => {
     jest
       .spyOn(graphqlService as any, 'getServerUrl')
       .mockReturnValue(SERVER_URL);
-    mockSetInterval = mockSetIntervalGlobals();
   });
 
   afterEach(async () => {
     WS.clean();
-    resetSetIntervalGlobals();
+    await server.closed;
   });
-
-  async function handleConnectionInit() {
-    await server.connected;
-    const initMessage = (await server.nextMessage) as { type: string };
-    expect(initMessage.type).toBe('connection_init');
-    server.send({
-      type: 'connection_ack',
-    });
-  }
 
   it('sends connection init to start', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
@@ -169,14 +158,8 @@ describe('GraphQL subscriptions', () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
     await consumeSubscribeMessage();
-    await closeWithCode(1001);
-
-    jest.useFakeTimers();
-    expect(() => mockSetInterval.advanceAll()).toThrow();
-
+    await closeWithCode(1001); // sets timeout to try again later
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.advanceTimersByTime(2000);
-    jest.useRealTimers();
     await handleConnectionInit();
     expect(await server.nextMessage).toEqual({
       id: '1',
@@ -191,20 +174,16 @@ describe('GraphQL subscriptions', () => {
       'handleConnectionDropWithThisBound',
     );
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    useFakeSetInterval();
     await handleConnectionInit();
+    await jest.advanceTimersToNextTimerAsync();
     await consumeSubscribeMessage();
-
-    jest.useFakeTimers();
-    mockSetInterval.advanceAll();
-    jest.advanceTimersToNextTimer(); // NOTE: internal timer in mock-socket
-
     expect(await server.nextMessage).toEqual({
       type: 'ping',
     });
-
-    server.send({ type: 'pong' });
-    jest.advanceTimersByTime(2000);
     jest.useRealTimers();
+    server.send({ type: 'pong' });
+
     expect(reconnectSpy).not.toHaveBeenCalled();
   });
 
@@ -212,13 +191,10 @@ describe('GraphQL subscriptions', () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
     await consumeSubscribeMessage();
-    await closeWithError(1002);
-
     jest.useFakeTimers();
-    expect(() => mockSetInterval.advanceAll()).toThrow();
-
+    await closeWithError(1002);
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.advanceTimersByTime(2000);
+    jest.runAllTimers();
     jest.useRealTimers();
     await handleConnectionInit();
     expect(await server.nextMessage).toEqual({
@@ -232,15 +208,13 @@ describe('GraphQL subscriptions', () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
     await consumeSubscribeMessage();
+    useFakeSetInterval();
     await closeWithError(1006);
-
-    jest.useFakeTimers();
-    expect(() => mockSetInterval.advanceAll()).toThrow();
-
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.advanceTimersByTime(2000);
-    jest.useRealTimers();
+    jest.runAllTimers();
     await handleConnectionInit();
+    jest.advanceTimersToNextTimer();
+    jest.useRealTimers();
     expect(await server.nextMessage).toEqual({
       id: '1',
       type: 'start',
@@ -252,15 +226,12 @@ describe('GraphQL subscriptions', () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
     await handleConnectionInit();
     await consumeSubscribeMessage();
+    useFakeSetInterval();
     await closeWithError(1006);
-
-    jest.useFakeTimers();
-    expect(() => mockSetInterval.advanceAll()).toThrow();
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.advanceTimersByTime(2000);
-    jest.useRealTimers();
-
+    jest.runAllTimers();
     await server.connected;
+    jest.advanceTimersToNextTimer();
     // NOTE: when we don't send a CONNECTION_ACK, then we will still be in the
     // CONNECTING state.
     expect(
@@ -269,18 +240,26 @@ describe('GraphQL subscriptions', () => {
       ),
     ).toBe(ConnectionStatus.CONNECTING);
 
-    jest.useFakeTimers();
     await closeWithError(1006);
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.advanceTimersByTime(61000);
+    jest.advanceTimersToNextTimer();
     jest.useRealTimers();
 
     await handleConnectionInit();
     await consumeSubscribeMessage();
   });
 
+  async function handleConnectionInit() {
+    await server.connected;
+    const initMessage = (await server.nextMessage) as { type: string };
+    expect(initMessage.type).toBe('connection_init');
+    server.send({
+      type: 'connection_ack',
+    });
+  }
+
   async function closeWithError(closeCode: number) {
-    await server.error({
+    server.error({
       reason: 'Connection reset by peer',
       code: closeCode,
       wasClean: false,
@@ -288,7 +267,7 @@ describe('GraphQL subscriptions', () => {
     await server.closed;
   }
   async function closeWithCode(closeCode: number) {
-    await server.close({
+    server.close({
       reason: 'Connection reset by peer',
       code: closeCode,
       wasClean: true,
@@ -304,5 +283,33 @@ describe('GraphQL subscriptions', () => {
   }
   async function consumeAnyMessage() {
     await server.nextMessage;
+  }
+  async function waitForClientToClose() {
+    await lastValueFrom(
+      graphqlService.getSubscriptionConnectionObservable().pipe(
+        filter((status) => status === ConnectionStatus.DISCONNECTED),
+        take(1),
+      ),
+    );
+  }
+  // Only fake setInterval
+  function useFakeSetInterval() {
+    jest.useFakeTimers({
+      doNotFake: [
+        'Date',
+        'hrtime',
+        'nextTick',
+        'performance',
+        'queueMicrotask',
+        'requestAnimationFrame',
+        'cancelAnimationFrame',
+        'requestIdleCallback',
+        'cancelIdleCallback',
+        'setImmediate',
+        'clearImmediate',
+        'setTimeout',
+        'clearTimeout',
+      ],
+    });
   }
 });
