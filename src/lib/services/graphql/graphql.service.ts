@@ -324,10 +324,8 @@ export class GraphqlService {
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
 
-      if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
-        this.clearMonitoring();
-        return;
-      } else {
+      this.clearMonitoring();
+      if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
         randomizedExponentialBackoff(this.connectionAttemptsCount).then(() => {
           this.connectionAttemptsCount += 1;
           this.openSocket();
