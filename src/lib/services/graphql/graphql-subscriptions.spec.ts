@@ -189,19 +189,18 @@ describe('GraphQL subscriptions', () => {
 
   it('when the server sends an error, it will reconnect and subscribe again', async () => {
     graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    useFakeSetInterval();
     await handleConnectionInit();
     await consumeSubscribeMessage();
-    jest.useFakeTimers();
     await closeWithError(1002);
     server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    jest.runAllTimers();
-    jest.useRealTimers();
     await handleConnectionInit();
     expect(await server.nextMessage).toEqual({
       id: '1',
       type: 'start',
       payload: { query: 'subscription { baba }' },
     });
+    jest.useRealTimers();
   });
 
   it('when the connection closes abnormally, it will reconnect and subscribe again', async () => {
