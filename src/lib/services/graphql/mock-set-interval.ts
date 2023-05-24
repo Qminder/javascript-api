@@ -9,7 +9,8 @@ class MockInterval<T = unknown> {
 }
 
 export class MockSetInterval {
-  intervals: MockInterval<unknown>[] = [];
+  private intervals: Record<number, MockInterval<unknown>> = {};
+  private nextIndex = 0;
 
   constructor() {
     this.setInterval = this.setInterval.bind(this);
@@ -21,19 +22,21 @@ export class MockSetInterval {
     delay: number,
     context?: T,
   ): number {
-    const id = this.intervals.length;
-    this.intervals.push(
-      new MockInterval(callback, delay, context) as MockInterval<unknown>,
-    );
+    const id = this.nextIndex + 1;
+    this.intervals[id] = new MockInterval(
+      callback,
+      delay,
+      context,
+    ) as MockInterval<unknown>;
     return id;
   }
 
   clearInterval(id: number) {
-    this.intervals.splice(id, 1);
+    delete this.intervals[id];
   }
 
   advanceAll() {
-    for (const interval of this.intervals) {
+    for (const interval of Object.values(this.intervals)) {
       interval.callback(interval.context);
     }
   }
@@ -54,4 +57,15 @@ export function mockSetIntervalGlobals(): MockSetInterval {
 export function resetSetIntervalGlobals() {
   globalThis.setInterval = oldSetInterval as any;
   globalThis.clearInterval = oldClearInterval;
+}
+
+export async function withMockSetIntervalGlobals(
+  callback: (m: MockSetInterval) => Promise<void>,
+): Promise<void> {
+  try {
+    const mockSetInterval = mockSetIntervalGlobals();
+    await callback(mockSetInterval);
+  } finally {
+    resetSetIntervalGlobals();
+  }
 }
