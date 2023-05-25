@@ -2,12 +2,14 @@
  * @jest-environment jsdom
  */
 import { WebSocket } from 'mock-socket';
-import { NEVER, firstValueFrom } from 'rxjs';
+import { NEVER, Subject, firstValueFrom } from 'rxjs';
 import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
+import { sleepMs } from '../../util/sleep-ms';
+import { ConnectionStatus } from '../../model/connection-status';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../util/sleep-ms', () => ({
-  sleepMs: () => firstValueFrom(NEVER),
+  sleepMs: jest.fn(),
 }));
 
 /**
@@ -34,6 +36,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('when the browser returns online before a retry attempt, it will reconnect sooner', async () => {
+    (sleepMs as jest.Mock).mockImplementationOnce(() => firstValueFrom(NEVER));
     fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
@@ -45,4 +48,58 @@ describe('GraphQL subscriptions', () => {
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
   });
+
+
+  it('does not initialize multiple connections if all indicators of disconnect are fired at the same time', async () => {
+    const sleepMsController = new Subject<void>();
+    const openSocketSpy = jest.spyOn(fixture.graphqlService as any, 'openSocket');
+    const createSocketConnectionSpy = jest.spyOn(fixture.graphqlService as any, 'createSocketConnection');
+    (sleepMs as jest.Mock).mockImplementationOnce(() => firstValueFrom(sleepMsController));
+
+
+    fixture.triggerSubscription();
+    useFakeSetInterval();
+    await fixture.handleConnectionInit(); // setInterval
+    expect(openSocketSpy).toHaveBeenCalledTimes(1);
+    expect(createSocketConnectionSpy).toHaveBeenCalledTimes(1);
+
+    await fixture.consumeSubscribeMessage();
+    jest.runOnlyPendingTimers(); // setInterval() triggers ping message
+    await fixture.consumePingMessage();
+    await fixture.closeWithError(1006); // calls sleepMs()
+    jest.runAllTimers(); // mock-socket internals
+    sleepMsController.next(); // resolves sleepMs, calling createTemporaryApiKey and awaiting
+
+    jest.useFakeTimers(); // setTimeout is also now under jest control
+    await jest.runOnlyPendingTimersAsync(); // resolve await, calls openSocket
+
+    expect(openSocketSpy).toHaveBeenCalledTimes(2);
+    expect(createSocketConnectionSpy).toHaveBeenCalledTimes(2);
+
+    window.dispatchEvent(new Event('offline')); // calls sendPing(), which sets a pong timeout of 2000ms
+    fixture.openServer();
+    await jest.runAllTimersAsync(); // waits 2000ms, calls handleConnectionDrop, which calls openSocket, which has an 'await' inside, which calls createSocketConnection
+    expect(openSocketSpy).toHaveBeenCalledTimes(3);
+    expect(createSocketConnectionSpy).toHaveBeenCalledTimes(3);
+  });
+
+  function useFakeSetInterval() {
+    jest.useFakeTimers({
+      doNotFake: [
+        'Date',
+        'hrtime',
+        'nextTick',
+        'performance',
+        'queueMicrotask',
+        'requestAnimationFrame',
+        'cancelAnimationFrame',
+        'requestIdleCallback',
+        'cancelIdleCallback',
+        'setImmediate',
+        'clearImmediate',
+        'setTimeout',
+        'clearTimeout',
+      ],
+    });
+  }
 });

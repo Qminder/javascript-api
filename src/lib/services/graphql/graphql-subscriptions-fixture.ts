@@ -28,7 +28,7 @@ export class GraphQLSubscriptionsFixture {
   triggerSubscription(
     query: DocumentNode | string = 'subscription { baba }',
   ): Subscription {
-    return this.graphqlService.subscribe(query).subscribe(() => {});
+    return this.graphqlService.subscribe(query).subscribe(() => { });
   }
 
   getGraphqlServiceActiveSubscriptionCount(): number {
@@ -97,6 +97,12 @@ export class GraphQLSubscriptionsFixture {
       id: '1',
       type: 'start',
       payload: { query: 'subscription { baba }' },
+    });
+  }
+
+  async consumePingMessage() {
+    expect(await this.server.nextMessage).toEqual({
+      type: 'ping'
     });
   }
 

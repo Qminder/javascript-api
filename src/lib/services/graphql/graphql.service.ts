@@ -435,6 +435,7 @@ export class GraphqlService {
   }
 
   private monitorWithOfflineEvent(): void {
+    this.clearWindowOfflineMonitoring();
     if (typeof window !== 'undefined') {
       window.addEventListener('offline', this.sendPingWithThisBound);
     }
