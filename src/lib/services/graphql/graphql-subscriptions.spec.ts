@@ -5,8 +5,8 @@ import { ConnectionStatus } from '../../model/connection-status';
 import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
-jest.mock('../../util/randomized-exponential-backoff', () => ({
-  randomizedExponentialBackoff: () =>
+jest.mock('../../util/sleep-ms', () => ({
+  sleepMs: () =>
     new Promise((resolve) => setTimeout(resolve, 4)),
 }));
 

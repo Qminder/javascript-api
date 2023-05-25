@@ -6,8 +6,8 @@ import { NEVER, firstValueFrom } from 'rxjs';
 import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
-jest.mock('../../util/randomized-exponential-backoff', () => ({
-  randomizedExponentialBackoff: () => firstValueFrom(NEVER),
+jest.mock('../../util/sleep-ms', () => ({
+  sleepMs: () => firstValueFrom(NEVER),
 }));
 
 /**
