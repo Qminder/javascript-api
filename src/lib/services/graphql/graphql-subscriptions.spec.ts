@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
-import { Subscriber, filter, lastValueFrom, take } from 'rxjs';
+import { Subscriber, lastValueFrom, take } from 'rxjs';
 import { ConnectionStatus } from '../../model/connection-status';
 import { GraphqlService } from './graphql.service';
 
@@ -283,15 +283,7 @@ describe('GraphQL subscriptions', () => {
   async function consumeAnyMessage() {
     await server.nextMessage;
   }
-  async function waitForClientToClose() {
-    await lastValueFrom(
-      graphqlService.getSubscriptionConnectionObservable().pipe(
-        filter((status) => status === ConnectionStatus.DISCONNECTED),
-        take(1),
-      ),
-    );
-  }
-  // Only fake setInterval
+
   function useFakeSetInterval() {
     jest.useFakeTimers({
       doNotFake: [
