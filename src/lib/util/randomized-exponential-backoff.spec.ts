@@ -1,5 +1,7 @@
 import { calculateRandomizedExponentialBackoffTime } from './randomized-exponential-backoff';
 
+globalThis.Math.random = () => 0.92939;
+
 describe('calculateRandomizedExponentialBackoffTime', () => {
   it.each([
     [1, 5000],
@@ -10,8 +12,8 @@ describe('calculateRandomizedExponentialBackoffTime', () => {
     [6, 5000],
     [7, 5000],
     [8, 5000],
-    [9, 5000],
-    [10, 6000],
+    [9, 5209],
+    [10, 6141],
     [11, 7400],
     [12, 8900],
     [13, 10699],
