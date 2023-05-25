@@ -78,6 +78,7 @@ describe('GraphQL subscriptions', () => {
     });
     await server.closed;
   }
+
   async function consumeSubscribeMessage() {
     expect(await server.nextMessage).toEqual({
       id: '1',

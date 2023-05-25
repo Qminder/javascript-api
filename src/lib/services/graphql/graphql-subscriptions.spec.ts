@@ -265,6 +265,7 @@ describe('GraphQL subscriptions', () => {
     });
     await server.closed;
   }
+
   async function closeWithCode(closeCode: number) {
     server.close({
       reason: 'Connection reset by peer',
@@ -273,6 +274,7 @@ describe('GraphQL subscriptions', () => {
     });
     await server.closed;
   }
+
   async function consumeSubscribeMessage() {
     expect(await server.nextMessage).toEqual({
       id: '1',
@@ -280,6 +282,7 @@ describe('GraphQL subscriptions', () => {
       payload: { query: 'subscription { baba }' },
     });
   }
+
   async function consumeAnyMessage() {
     await server.nextMessage;
   }
