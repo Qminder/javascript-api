@@ -6,8 +6,7 @@ import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../util/sleep-ms', () => ({
-  sleepMs: () =>
-    new Promise((resolve) => setTimeout(resolve, 4)),
+  sleepMs: () => new Promise((resolve) => setTimeout(resolve, 4)),
 }));
 
 /**
