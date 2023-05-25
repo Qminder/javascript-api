@@ -1,10 +1,9 @@
 /**
  * @jest-environment jsdom
  */
-import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
 import { NEVER, firstValueFrom } from 'rxjs';
-import { GraphqlService } from './graphql.service';
+import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../util/randomized-exponential-backoff', () => ({
@@ -24,66 +23,26 @@ jest.mock('../../util/randomized-exponential-backoff', () => ({
 
 // Close codes: https://www.rfc-editor.org/rfc/rfc6455#section-7.4
 describe('GraphQL subscriptions', () => {
-  let graphqlService: GraphqlService;
-  let server: WS;
-  // let mockSetInterval: MockSetInterval;
-
-  const keyValue = 'temporary_api_key';
-  const PORT = 42990;
-  const SERVER_URL = `ws://localhost:${PORT}`;
+  let fixture: GraphQLSubscriptionsFixture;
 
   beforeEach(async () => {
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    graphqlService = new GraphqlService();
-    jest
-      .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
-      .mockResolvedValue(keyValue);
-    jest
-      .spyOn(graphqlService as any, 'getServerUrl')
-      .mockReturnValue(SERVER_URL);
+    fixture = new GraphQLSubscriptionsFixture();
   });
 
   afterEach(async () => {
-    WS.clean();
-    await server.closed;
+    await fixture.cleanup();
   });
 
   it('when the browser returns online before a retry attempt, it will reconnect sooner', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
-    await closeWithError(1006);
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+    await fixture.closeWithError(1006);
+    fixture.openServer();
     window.dispatchEvent(new Event('offline')); // sends ping
     // 2 s timer expires (ping timeout)
     // reconnect starts
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
   });
-
-  async function handleConnectionInit() {
-    await server.connected;
-    const initMessage = (await server.nextMessage) as { type: string };
-    expect(initMessage.type).toBe('connection_init');
-    server.send({
-      type: 'connection_ack',
-    });
-  }
-
-  async function closeWithError(closeCode: number) {
-    server.error({
-      reason: 'Connection reset by peer',
-      code: closeCode,
-      wasClean: false,
-    });
-    await server.closed;
-  }
-
-  async function consumeSubscribeMessage() {
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
-  }
 });

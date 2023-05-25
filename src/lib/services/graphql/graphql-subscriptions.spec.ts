@@ -1,9 +1,8 @@
 import gql from 'graphql-tag';
-import WS from 'jest-websocket-mock';
 import { WebSocket } from 'mock-socket';
-import { Subscriber, lastValueFrom, take } from 'rxjs';
+import { Subscriber } from 'rxjs';
 import { ConnectionStatus } from '../../model/connection-status';
-import { GraphqlService } from './graphql.service';
+import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../util/randomized-exponential-backoff', () => ({
@@ -24,34 +23,20 @@ jest.mock('../../util/randomized-exponential-backoff', () => ({
 
 // Close codes: https://www.rfc-editor.org/rfc/rfc6455#section-7.4
 describe('GraphQL subscriptions', () => {
-  let graphqlService: GraphqlService;
-  let server: WS;
-  // let mockSetInterval: MockSetInterval;
-
-  const keyValue = 'temporary_api_key';
-  const PORT = 42990;
-  const SERVER_URL = `ws://localhost:${PORT}`;
+  let fixture: GraphQLSubscriptionsFixture;
 
   beforeEach(async () => {
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    graphqlService = new GraphqlService();
-    jest
-      .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
-      .mockResolvedValue(keyValue);
-    jest
-      .spyOn(graphqlService as any, 'getServerUrl')
-      .mockReturnValue(SERVER_URL);
+    fixture = new GraphQLSubscriptionsFixture();
   });
 
   afterEach(async () => {
-    WS.clean();
-    await server.closed;
+    await fixture.cleanup();
   });
 
   it('sends connection init to start', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-    await server.connected;
-    const initMessage = await server.nextMessage;
+    fixture.triggerSubscription();
+    await fixture.waitForConnection();
+    const initMessage = await fixture.getNextMessage();
     expect(initMessage).toEqual({
       type: 'connection_init',
       payload: null,
@@ -59,10 +44,10 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('sends a subscribe message to the socket when someone subscribes', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-    await handleConnectionInit();
-    const nextMessage = await server.nextMessage;
-    expect((graphqlService as any).subscriptions.length).toBe(1);
+    fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    const nextMessage = await fixture.getNextMessage();
+    expect(fixture.getGraphqlServiceActiveSubscriptionCount()).toBe(1);
     expect(nextMessage).toEqual({
       id: expect.anything(),
       type: 'start',
@@ -73,13 +58,11 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('sends an un-subscribe message when the subscription is unsubscribed from', async () => {
-    const subscription = graphqlService
-      .subscribe('subscription { baba }')
-      .subscribe(() => {});
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    const subscription = fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
     subscription.unsubscribe();
-    expect(await server.nextMessage).toEqual({
+    expect(await fixture.getNextMessage()).toEqual({
       type: 'stop',
       id: '1',
       payload: null,
@@ -87,18 +70,16 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('works with graphql-tag generated documents', async () => {
-    graphqlService
-      .subscribe(
-        gql`
-          subscription {
-            baba
-          }
-        `,
-      )
-      .subscribe(() => {});
-    await handleConnectionInit();
-    expect((graphqlService as any).subscriptions.length).toBe(1);
-    expect(await server.nextMessage).toEqual({
+    fixture.triggerSubscription(
+      gql`
+        subscription {
+          baba
+        }
+      `,
+    );
+    await fixture.handleConnectionInit();
+    expect(fixture.getGraphqlServiceActiveSubscriptionCount()).toBe(1);
+    expect(await fixture.getNextMessage()).toEqual({
       id: '1',
       type: 'start',
       payload: { query: 'subscription {\n  baba\n}\n' },
@@ -107,43 +88,31 @@ describe('GraphQL subscriptions', () => {
 
   it('cleans up internal state when unsubscribing', async () => {
     // start the test with an empty observer-map
-    expect(
-      Object.keys((graphqlService as any).subscriptionObserverMap).length,
-    ).toBe(0);
-    // subscribe once
-    const spy = jest.fn();
-    const subscription = graphqlService
-      .subscribe('subscription { baba }')
-      .subscribe(spy);
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    expect(fixture.getGraphqlServiceSubscriptionObserverMapSize()).toBe(0);
+    const subscription = fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
     // the observer map should equal { "1": Subscriber => spy }
-    expect((graphqlService as any).subscriptionObserverMap).toEqual({
+    expect(fixture.getGraphqlServiceSubscriptionObserverMap()).toEqual({
       '1': expect.any(Subscriber),
     });
 
     // unsubscribing should clean up
     subscription.unsubscribe();
-    await consumeAnyMessage();
-    expect(
-      Object.keys((graphqlService as any).subscriptionObserverMap).length,
-    ).toBe(0);
+    await fixture.consumeAnyMessage();
+    expect(fixture.getGraphqlServiceSubscriptionObserverMapSize()).toBe(0);
   });
 
   it('when receiving a published message for a subscription that does not exist anymore, it does not throw', async () => {
-    expect(
-      Object.keys((graphqlService as any).subscriptionObserverMap).length,
-    ).toBe(0);
-    const subscription = graphqlService
-      .subscribe('subscription { baba }')
-      .subscribe(() => {});
+    expect(fixture.getGraphqlServiceSubscriptionObserverMapSize()).toBe(0);
+    const subscription = fixture.triggerSubscription();
 
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
     subscription.unsubscribe();
-    await consumeAnyMessage();
+    await fixture.consumeAnyMessage();
 
-    server.send({
+    fixture.sendMessageToClient({
       id: '1',
       type: 'data',
       payload: {
@@ -155,13 +124,13 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('when the server closes the connection, it will reconnect and subscribe again', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
-    await closeWithCode(1001); // sets timeout to try again later
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
+    fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+    await fixture.closeWithCode(1001); // sets timeout to try again later
+    fixture.openServer();
+    await fixture.handleConnectionInit();
+    expect(await fixture.getNextMessage()).toEqual({
       id: '1',
       type: 'start',
       payload: { query: 'subscription { baba }' },
@@ -170,32 +139,32 @@ describe('GraphQL subscriptions', () => {
 
   it('when the server replies to ping message, does not reconnect', async () => {
     const reconnectSpy = jest.spyOn(
-      graphqlService as any,
+      fixture.graphqlService as any,
       'handleConnectionDropWithThisBound',
     );
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    fixture.triggerSubscription();
     useFakeSetInterval();
-    await handleConnectionInit();
+    await fixture.handleConnectionInit();
     await jest.advanceTimersToNextTimerAsync();
-    await consumeSubscribeMessage();
-    expect(await server.nextMessage).toEqual({
+    await fixture.consumeSubscribeMessage();
+    expect(await fixture.getNextMessage()).toEqual({
       type: 'ping',
     });
     jest.useRealTimers();
-    server.send({ type: 'pong' });
+    fixture.sendMessageToClient({ type: 'pong' });
 
     expect(reconnectSpy).not.toHaveBeenCalled();
   });
 
   it('when the server sends an error, it will reconnect and subscribe again', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
+    fixture.triggerSubscription();
     useFakeSetInterval();
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
-    await closeWithError(1002);
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
-    await handleConnectionInit();
-    expect(await server.nextMessage).toEqual({
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+    await fixture.closeWithError(1002);
+    fixture.openServer();
+    await fixture.handleConnectionInit();
+    expect(await fixture.getNextMessage()).toEqual({
       id: '1',
       type: 'start',
       payload: { query: 'subscription { baba }' },
@@ -204,17 +173,17 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('when the connection closes abnormally, it will reconnect and subscribe again', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
     useFakeSetInterval();
-    await closeWithError(1006);
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    await fixture.closeWithError(1006);
+    fixture.openServer();
     jest.runAllTimers();
-    await handleConnectionInit();
+    await fixture.handleConnectionInit();
     jest.advanceTimersToNextTimer();
     jest.useRealTimers();
-    expect(await server.nextMessage).toEqual({
+    expect(await fixture.getNextMessage()).toEqual({
       id: '1',
       type: 'start',
       payload: { query: 'subscription { baba }' },
@@ -222,70 +191,29 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('when a reconnection fails, it will continue to retry', async () => {
-    graphqlService.subscribe('subscription { baba }').subscribe(() => {});
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    fixture.triggerSubscription();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
     useFakeSetInterval();
-    await closeWithError(1006);
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    await fixture.closeWithError(1006);
+    fixture.openServer();
     jest.runAllTimers();
-    await server.connected;
+    await fixture.waitForConnection();
     jest.advanceTimersToNextTimer();
     // NOTE: when we don't send a CONNECTION_ACK, then we will still be in the
     // CONNECTING state.
-    expect(
-      await lastValueFrom(
-        graphqlService.getSubscriptionConnectionObservable().pipe(take(1)),
-      ),
-    ).toBe(ConnectionStatus.CONNECTING);
+    expect(await fixture.getConnectionStatus()).toBe(
+      ConnectionStatus.CONNECTING,
+    );
 
-    await closeWithError(1006);
-    server = new WS(SERVER_URL, { jsonProtocol: true, mock: false });
+    await fixture.closeWithError(1006);
+    fixture.openServer();
     jest.advanceTimersToNextTimer();
     jest.useRealTimers();
 
-    await handleConnectionInit();
-    await consumeSubscribeMessage();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
   });
-
-  async function handleConnectionInit() {
-    await server.connected;
-    const initMessage = (await server.nextMessage) as { type: string };
-    expect(initMessage.type).toBe('connection_init');
-    server.send({
-      type: 'connection_ack',
-    });
-  }
-
-  async function closeWithError(closeCode: number) {
-    server.error({
-      reason: 'Connection reset by peer',
-      code: closeCode,
-      wasClean: false,
-    });
-    await server.closed;
-  }
-
-  async function closeWithCode(closeCode: number) {
-    server.close({
-      reason: 'Connection reset by peer',
-      code: closeCode,
-      wasClean: true,
-    });
-    await server.closed;
-  }
-
-  async function consumeSubscribeMessage() {
-    expect(await server.nextMessage).toEqual({
-      id: '1',
-      type: 'start',
-      payload: { query: 'subscription { baba }' },
-    });
-  }
-
-  async function consumeAnyMessage() {
-    await server.nextMessage;
-  }
 
   function useFakeSetInterval() {
     jest.useFakeTimers({
