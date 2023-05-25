@@ -1,23 +1,28 @@
-import { randomizedExponentialBackoff } from './randomized-exponential-backoff';
+import { calculateRandomizedExponentialBackoffTime } from './randomized-exponential-backoff';
 
-describe('randomized exponential falloff', () => {
-  beforeAll(() => {
-    jest.useFakeTimers();
-  });
-  afterAll(() => {
-    jest.useRealTimers();
-  });
-  it('resolves after time interval', async () => {
-    const promise = randomizedExponentialBackoff(1);
-    jest.advanceTimersByTime(10000);
-    await promise;
-  });
+describe('calculateRandomizedExponentialBackoffTime', () => {
+  it.each([
+    [1, 5000],
+    [2, 5000],
+    [3, 5000],
+    [4, 5000],
+    [5, 5000],
+    [6, 5000],
+    [7, 5000],
+    [8, 5000],
+    [9, 5000],
+    [10, 6000],
+    [11, 7400],
+    [12, 8900],
+    [13, 10699],
+    [14, 12839],
+  ])(
+    'calculates exponential backoff correctly for %d iterations',
+    async (iterations, expectedTimeout) => {
+      const calculated = calculateRandomizedExponentialBackoffTime(iterations);
 
-  it('does not go past 61000 ms for any retryCount', async () => {
-    for (let i = 0; i < 100; i++) {
-      const promise = randomizedExponentialBackoff(i);
-      jest.advanceTimersByTime(61000);
-      await promise;
-    }
-  });
+      expect(calculated).toBeGreaterThanOrEqual(expectedTimeout);
+      expect(calculated).toBeLessThanOrEqual(expectedTimeout + 1005);
+    },
+  );
 });

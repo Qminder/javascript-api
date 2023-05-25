@@ -5,7 +5,8 @@ import { Observable, Observer, Subject, startWith } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { ConnectionStatus } from '../../model/connection-status.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
-import { randomizedExponentialBackoff } from '../../util/randomized-exponential-backoff.js';
+import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff.js';
+import { sleepMs } from '../../util/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 
 type QueryOrDocument = string | DocumentNode;
@@ -326,7 +327,11 @@ export class GraphqlService {
 
       this.clearPingMonitoring();
       if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
-        randomizedExponentialBackoff(this.connectionAttemptsCount).then(() => {
+        const timer = calculateRandomizedExponentialBackoffTime(
+          this.connectionAttemptsCount,
+        );
+        console.log(`Waiting for ${timer.toFixed(1)}ms before reconnecting`);
+        sleepMs(this.connectionAttemptsCount).then(() => {
           this.connectionAttemptsCount += 1;
           this.openSocket();
         });
