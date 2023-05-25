@@ -324,7 +324,7 @@ export class GraphqlService {
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
 
-      this.clearMonitoring();
+      this.clearPingMonitoring();
       if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
         randomizedExponentialBackoff(this.connectionAttemptsCount).then(() => {
           this.connectionAttemptsCount += 1;
@@ -447,15 +447,23 @@ export class GraphqlService {
     console.warn(`[Qminder API]: Websocket connection dropped!`);
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-    this.clearMonitoring();
+    this.clearPingMonitoring();
 
     this.openSocket();
   }
 
   private clearMonitoring(): void {
+    this.clearPingMonitoring();
+    this.clearWindowOfflineMonitoring();
+  }
+
+  private clearWindowOfflineMonitoring(): void {
     if (typeof window !== 'undefined') {
       window.removeEventListener('offline', this.sendPingWithThisBound);
     }
+  }
+
+  private clearPingMonitoring(): void {
     clearTimeout(this.pongTimeout);
     clearInterval(this.pingPongInterval);
   }
