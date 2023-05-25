@@ -440,7 +440,9 @@ export class GraphqlService {
       this.handleConnectionDropWithThisBound,
       PONG_TIMEOUT_IN_MS,
     );
-    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
+    if (this.socket) {
+      this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
+    }
   }
 
   private handleConnectionDrop(): void {
