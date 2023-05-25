@@ -1,5 +1,10 @@
 import fetch from 'cross-fetch';
-import { DocumentNode, print } from 'graphql';
+import {
+  DocumentNode,
+  GraphQLErrorExtensions,
+  SourceLocation,
+  print,
+} from 'graphql';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
@@ -21,11 +26,23 @@ function queryToString(query: QueryOrDocument): string {
   throw new Error('queryToString: query must be a string or a DocumentNode');
 }
 
-interface OperationMessage {
+export interface QminderGraphQLError {
+  message: string;
+  errorType?: string | null;
+  extensions?: GraphQLErrorExtensions | null;
+  sourcePreview?: string | null;
+  offendingToken?: string | null;
+  locations?: SourceLocation[] | null;
+  path?: (string | number)[] | null;
+}
+
+interface OperationMessage<T = object> {
   id?: string;
   type: MessageType;
-  payload?: any;
-  errors?: any[];
+  payload?: {
+    data?: T | null;
+    errors?: QminderGraphQLError[];
+  };
 }
 
 class Subscription {
@@ -403,8 +420,13 @@ export class GraphqlService {
               this.subscriptionObserverMap[message.id]?.error(
                 message.payload.data,
               );
-            } else if (message.errors && message.errors.length > 0) {
-              this.subscriptionObserverMap[message.id]?.error(message.errors);
+            } else if (
+              message.payload.errors &&
+              message.payload.errors.length > 0
+            ) {
+              this.subscriptionObserverMap[message.id]?.error(
+                message.payload.errors,
+              );
             }
         }
       }

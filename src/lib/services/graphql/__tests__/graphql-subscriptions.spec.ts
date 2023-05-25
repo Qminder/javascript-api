@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import { WebSocket } from 'mock-socket';
 import { Subscriber } from 'rxjs';
 import { ConnectionStatus } from '../../../model/connection-status';
+import { QminderGraphQLError } from '../graphql.service';
 import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
@@ -246,6 +247,42 @@ describe('GraphQL subscriptions', () => {
     await fixture.consumeSubscribeMessage();
   });
 
+  it('error messages are propagated to the subscriber', async () => {
+    const ERRORS: QminderGraphQLError[] = [
+      {
+        message:
+          "Invalid Syntax : offending token 'createdTickets' at line 1 column 1",
+        sourcePreview:
+          'createdTickets(locationId: 673) {\n' +
+          '            id\n' +
+          '            firstName\n' +
+          '            lastName\n',
+        offendingToken: 'createdTickets',
+        locations: [],
+        errorType: 'InvalidSyntax',
+        extensions: null,
+        path: null,
+      },
+    ];
+    const errorSpy = jest.fn();
+    const subscription = fixture.triggerSubscription('subscription { baba }', {
+      error: errorSpy,
+    });
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+    fixture.server.send({
+      id: '1',
+      type: 'error',
+      payload: {
+        data: null,
+        errors: ERRORS,
+      },
+    });
+
+    expect(errorSpy).toHaveBeenCalledWith(ERRORS);
+
+    subscription.unsubscribe();
+  });
   function useFakeSetInterval() {
     jest.useFakeTimers({
       doNotFake: [
