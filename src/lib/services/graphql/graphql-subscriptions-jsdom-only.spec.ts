@@ -78,42 +78,11 @@ describe('GraphQL subscriptions', () => {
     });
     await server.closed;
   }
-  async function closeWithCode(closeCode: number) {
-    server.close({
-      reason: 'Connection reset by peer',
-      code: closeCode,
-      wasClean: true,
-    });
-    await server.closed;
-  }
   async function consumeSubscribeMessage() {
     expect(await server.nextMessage).toEqual({
       id: '1',
       type: 'start',
       payload: { query: 'subscription { baba }' },
-    });
-  }
-  async function consumeAnyMessage() {
-    await server.nextMessage;
-  }
-
-  function useFakeSetInterval() {
-    jest.useFakeTimers({
-      doNotFake: [
-        'Date',
-        'hrtime',
-        'nextTick',
-        'performance',
-        'queueMicrotask',
-        'requestAnimationFrame',
-        'cancelAnimationFrame',
-        'requestIdleCallback',
-        'cancelIdleCallback',
-        'setImmediate',
-        'clearImmediate',
-        'setTimeout',
-        'clearTimeout',
-      ],
     });
   }
 });
