@@ -7,7 +7,7 @@ import { lastValueFrom, Observer, Subscription, take } from 'rxjs';
 import { ConnectionStatus } from '../../../model/connection-status';
 import { GraphqlService } from '../graphql.service';
 
-const keyValue = 'temporary_api_key';
+const DUMMY_API_KEY = 'temporary_api_key';
 const PORT = 42990;
 const SERVER_URL = `ws://localhost:${PORT}`;
 
@@ -19,7 +19,7 @@ export class GraphQLSubscriptionsFixture {
     this.openServer();
     jest
       .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
-      .mockResolvedValue(keyValue);
+      .mockResolvedValue(DUMMY_API_KEY);
     jest
       .spyOn(this.graphqlService as any, 'getServerUrl')
       .mockReturnValue(SERVER_URL);
