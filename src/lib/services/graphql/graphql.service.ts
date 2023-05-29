@@ -303,6 +303,14 @@ export class GraphqlService {
   }
 
   private createSocketConnection(temporaryApiKey: string) {
+    if (this.socket) {
+      this.socket.onclose = null;
+      this.socket.onmessage = null;
+      this.socket.onopen = null;
+      this.socket.onerror = null;
+      this.socket.close();
+      this.socket = null;
+    }
     this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
     const socket = this.socket;
