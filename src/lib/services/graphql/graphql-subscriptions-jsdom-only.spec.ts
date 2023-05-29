@@ -49,13 +49,19 @@ describe('GraphQL subscriptions', () => {
     await fixture.consumeSubscribeMessage();
   });
 
-
   it('does not initialize multiple connections if all indicators of disconnect are fired at the same time', async () => {
     const sleepMsController = new Subject<void>();
-    const openSocketSpy = jest.spyOn(fixture.graphqlService as any, 'openSocket');
-    const createSocketConnectionSpy = jest.spyOn(fixture.graphqlService as any, 'createSocketConnection');
-    (sleepMs as jest.Mock).mockImplementationOnce(() => firstValueFrom(sleepMsController));
-
+    const openSocketSpy = jest.spyOn(
+      fixture.graphqlService as any,
+      'openSocket',
+    );
+    const createSocketConnectionSpy = jest.spyOn(
+      fixture.graphqlService as any,
+      'createSocketConnection',
+    );
+    (sleepMs as jest.Mock).mockImplementationOnce(() =>
+      firstValueFrom(sleepMsController),
+    );
 
     fixture.triggerSubscription();
     useFakeSetInterval();
