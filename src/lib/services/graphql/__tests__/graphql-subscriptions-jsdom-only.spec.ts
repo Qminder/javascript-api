@@ -34,7 +34,7 @@ describe('GraphQL subscriptions', () => {
     await fixture.cleanup();
   });
 
-  it('when the browser returns online before a retry attempt, it will reconnect sooner', async () => {
+  it('should reconnect based on ping-pong before "onclose" retries connection', async () => {
     (sleepMs as jest.Mock).mockImplementationOnce(() => firstValueFrom(NEVER));
     fixture.triggerSubscription();
     await fixture.handleConnectionInit();
