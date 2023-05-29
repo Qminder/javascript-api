@@ -1,11 +1,11 @@
 import gql from 'graphql-tag';
 import { WebSocket } from 'mock-socket';
 import { Subscriber } from 'rxjs';
-import { ConnectionStatus } from '../../model/connection-status';
-import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
+import { ConnectionStatus } from '../../../model/connection-status';
+import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
-jest.mock('../../util/sleep-ms', () => ({
+jest.mock('../../../util/sleep-ms/sleep-ms', () => ({
   sleepMs: () => new Promise((resolve) => setTimeout(resolve, 4)),
 }));
 

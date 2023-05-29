@@ -3,9 +3,9 @@
 import { DocumentNode } from 'graphql';
 import WS from 'jest-websocket-mock';
 import { DeserializedMessage } from 'jest-websocket-mock/lib/websocket';
-import { Observer, Subscription, lastValueFrom, take } from 'rxjs';
-import { ConnectionStatus } from '../../model/connection-status';
-import { GraphqlService } from './graphql.service';
+import { lastValueFrom, Observer, Subscription, take } from 'rxjs';
+import { ConnectionStatus } from '../../../model/connection-status';
+import { GraphqlService } from '../graphql.service';
 
 const keyValue = 'temporary_api_key';
 const PORT = 42990;

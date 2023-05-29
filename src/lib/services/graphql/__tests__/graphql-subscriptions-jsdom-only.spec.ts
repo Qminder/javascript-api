@@ -2,13 +2,12 @@
  * @jest-environment jsdom
  */
 import { WebSocket } from 'mock-socket';
-import { NEVER, Subject, firstValueFrom } from 'rxjs';
-import { GraphQLSubscriptionsFixture } from './graphql-subscriptions-fixture';
-import { sleepMs } from '../../util/sleep-ms';
-import { ConnectionStatus } from '../../model/connection-status';
+import { firstValueFrom, NEVER, Subject } from 'rxjs';
+import { sleepMs } from '../../../util/sleep-ms/sleep-ms';
+import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
 
 jest.mock('isomorphic-ws', () => WebSocket);
-jest.mock('../../util/sleep-ms', () => ({
+jest.mock('../../../util/sleep-ms/sleep-ms', () => ({
   sleepMs: jest.fn(),
 }));
 

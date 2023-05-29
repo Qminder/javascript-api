@@ -1,12 +1,12 @@
 import fetch from 'cross-fetch';
 import { DocumentNode, print } from 'graphql';
 import WebSocket from 'isomorphic-ws';
-import { Observable, Observer, Subject, startWith } from 'rxjs';
+import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { ConnectionStatus } from '../../model/connection-status.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
-import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff.js';
-import { sleepMs } from '../../util/sleep-ms.js';
+import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
+import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 
 type QueryOrDocument = string | DocumentNode;

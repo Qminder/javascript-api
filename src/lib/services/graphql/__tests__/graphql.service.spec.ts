@@ -2,8 +2,8 @@ import { gql } from 'graphql-tag';
 import WebSocket from 'isomorphic-ws';
 import * as sinon from 'sinon';
 
-import { Qminder } from '../../qminder';
-import { GraphqlService } from './graphql.service';
+import { Qminder } from '../../../qminder';
+import { GraphqlService } from '../graphql.service';
 
 jest.mock('isomorphic-ws', () => jest.fn());
 
