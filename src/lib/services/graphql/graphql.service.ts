@@ -464,12 +464,6 @@ export class GraphqlService {
     this.openSocket();
   }
 
-  private clearWindowOfflineMonitoring(): void {
-    if (typeof window !== 'undefined') {
-      window.removeEventListener('offline', this.sendPingWithThisBound);
-    }
-  }
-
   private clearPingMonitoring(): void {
     clearTimeout(this.pongTimeout);
     clearInterval(this.pingPongInterval);
