@@ -136,23 +136,55 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
+  it('when the server does not reply to ping message, reconnects', async () => {
+    const reconnectSpy = jest.spyOn(
+      fixture.graphqlService as any,
+      'handleConnectionDropWithThisBound',
+    );
+    jest.useFakeTimers();
+    fixture.triggerSubscription();
+    await jest.runAllTimersAsync();
+
+    await fixture.handleConnectionInit();
+    await jest.runOnlyPendingTimersAsync();
+
+    await fixture.consumeSubscribeMessage();
+
+    await jest.advanceTimersToNextTimerAsync();
+    expect(await fixture.getNextMessage()).toEqual({
+      type: 'ping',
+    });
+
+    await jest.runOnlyPendingTimersAsync();
+
+    expect(reconnectSpy).toHaveBeenCalled();
+    jest.useRealTimers();
+  });
+
   it('when the server replies to ping message, does not reconnect', async () => {
     const reconnectSpy = jest.spyOn(
       fixture.graphqlService as any,
       'handleConnectionDropWithThisBound',
     );
+    jest.useFakeTimers();
     fixture.triggerSubscription();
-    useFakeSetInterval();
+    await jest.runAllTimersAsync();
+
     await fixture.handleConnectionInit();
-    await jest.advanceTimersToNextTimerAsync();
+    await jest.runOnlyPendingTimersAsync();
+
     await fixture.consumeSubscribeMessage();
+
+    await jest.advanceTimersToNextTimerAsync();
     expect(await fixture.getNextMessage()).toEqual({
       type: 'ping',
     });
-    jest.useRealTimers();
+
     fixture.sendMessageToClient({ type: 'pong' });
+    await jest.runOnlyPendingTimersAsync();
 
     expect(reconnectSpy).not.toHaveBeenCalled();
+    jest.useRealTimers();
   });
 
   it('when the server sends an error, it will reconnect and subscribe again', async () => {

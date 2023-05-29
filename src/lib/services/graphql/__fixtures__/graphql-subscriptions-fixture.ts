@@ -92,11 +92,13 @@ export class GraphQLSubscriptionsFixture {
     await this.server.closed;
   }
 
-  async consumeSubscribeMessage() {
+  async consumeSubscribeMessage(
+    query: DocumentNode | string = 'subscription { baba }',
+  ) {
     expect(await this.server.nextMessage).toEqual({
       id: '1',
       type: 'start',
-      payload: { query: 'subscription { baba }' },
+      payload: { query },
     });
   }
 
