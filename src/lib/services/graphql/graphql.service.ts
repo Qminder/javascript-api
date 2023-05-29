@@ -435,8 +435,8 @@ export class GraphqlService {
   }
 
   private monitorWithOfflineEvent(): void {
-    this.clearWindowOfflineMonitoring();
     if (typeof window !== 'undefined') {
+      window.removeEventListener('offline', this.sendPingWithThisBound);
       window.addEventListener('offline', this.sendPingWithThisBound);
     }
   }
@@ -458,11 +458,6 @@ export class GraphqlService {
     this.clearPingMonitoring();
 
     this.openSocket();
-  }
-
-  private clearMonitoring(): void {
-    this.clearPingMonitoring();
-    this.clearWindowOfflineMonitoring();
   }
 
   private clearWindowOfflineMonitoring(): void {
