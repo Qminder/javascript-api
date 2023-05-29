@@ -330,7 +330,11 @@ export class GraphqlService {
         const timer = calculateRandomizedExponentialBackoffTime(
           this.connectionAttemptsCount,
         );
-        console.log(`Waiting for ${timer.toFixed(1)}ms before reconnecting`);
+        console.log(
+          `[Qminder API]: Waiting for ${timer.toFixed(
+            1,
+          )}ms before reconnecting`,
+        );
         sleepMs(this.connectionAttemptsCount).then(() => {
           this.connectionAttemptsCount += 1;
           this.openSocket();
