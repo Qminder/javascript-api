@@ -62,30 +62,40 @@ describe('GraphQL subscriptions', () => {
       firstValueFrom(sleepMsController),
     );
 
+    jest.useFakeTimers(); // setTimeout is also now under jest control
     fixture.triggerSubscription();
-    useFakeSetInterval();
+    await jest.runAllTimersAsync();
+
     await fixture.handleConnectionInit(); // setInterval
     expect(openSocketSpy).toHaveBeenCalledTimes(1);
     expect(createSocketConnectionSpy).toHaveBeenCalledTimes(1);
+    await jest.advanceTimersToNextTimerAsync(); // setInterval() triggers ping message
 
     await fixture.consumeSubscribeMessage();
-    jest.runOnlyPendingTimers(); // setInterval() triggers ping message
+    await jest.runOnlyPendingTimersAsync(); // setInterval() triggers ping message
+    await jest.advanceTimersToNextTimerAsync(); // setInterval() triggers ping message
+
     await fixture.consumePingMessage();
+
     await fixture.closeWithError(1006); // calls sleepMs()
-    jest.runAllTimers(); // mock-socket internals
+    await jest.runAllTimersAsync(); // mock-socket internals
     sleepMsController.next(); // resolves sleepMs, calling createTemporaryApiKey and awaiting
 
-    jest.useFakeTimers(); // setTimeout is also now under jest control
-    await jest.runOnlyPendingTimersAsync(); // resolve await, calls openSocket
+    fixture.openServer();
+
+    await jest.advanceTimersToNextTimerAsync(); // resolve await, calls openSocket
+    await fixture.waitForConnection();
 
     expect(openSocketSpy).toHaveBeenCalledTimes(2);
     expect(createSocketConnectionSpy).toHaveBeenCalledTimes(2);
 
     window.dispatchEvent(new Event('offline')); // calls sendPing(), which sets a pong timeout of 2000ms
-    fixture.openServer();
-    await jest.runAllTimersAsync(); // waits 2000ms, calls handleConnectionDrop, which calls openSocket, which has an 'await' inside, which calls createSocketConnection
-    expect(openSocketSpy).toHaveBeenCalledTimes(3);
-    expect(createSocketConnectionSpy).toHaveBeenCalledTimes(3);
+    await jest.advanceTimersByTimeAsync(2000);
+    // waits 2000ms, calls handleConnectionDrop
+    // handleConnectionDrop does not openSocket because socket is open and
+    // GQL_CONNECTION_ACK not yet received
+    expect(openSocketSpy).toHaveBeenCalledTimes(2);
+    expect(createSocketConnectionSpy).toHaveBeenCalledTimes(2);
   });
 
   function useFakeSetInterval() {
