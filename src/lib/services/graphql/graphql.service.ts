@@ -464,10 +464,10 @@ export class GraphqlService {
   }
 
   private handleConnectionDrop(): void {
-    console.warn(`[Qminder API]: Websocket connection dropped!`);
     if (this.connectionStatus === ConnectionStatus.CONNECTING) {
       return;
     }
+    console.warn(`[Qminder API]: Websocket connection dropped!`);
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
 
