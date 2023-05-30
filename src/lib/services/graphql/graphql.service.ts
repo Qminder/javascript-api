@@ -343,7 +343,7 @@ export class GraphqlService {
             1,
           )}ms before reconnecting`,
         );
-        sleepMs(this.connectionAttemptsCount).then(() => {
+        sleepMs(timer).then(() => {
           this.connectionAttemptsCount += 1;
           this.openSocket();
         });
