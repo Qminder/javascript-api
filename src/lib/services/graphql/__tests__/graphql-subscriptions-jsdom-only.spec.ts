@@ -97,24 +97,4 @@ describe('GraphQL subscriptions', () => {
     expect(openSocketSpy).toHaveBeenCalledTimes(2);
     expect(createSocketConnectionSpy).toHaveBeenCalledTimes(2);
   });
-
-  function useFakeSetInterval() {
-    jest.useFakeTimers({
-      doNotFake: [
-        'Date',
-        'hrtime',
-        'nextTick',
-        'performance',
-        'queueMicrotask',
-        'requestAnimationFrame',
-        'cancelAnimationFrame',
-        'requestIdleCallback',
-        'cancelIdleCallback',
-        'setImmediate',
-        'clearImmediate',
-        'setTimeout',
-        'clearTimeout',
-      ],
-    });
-  }
 });
