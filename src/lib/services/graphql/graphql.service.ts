@@ -75,6 +75,8 @@ export class GraphqlService {
   private socket: WebSocket = null;
 
   private connectionStatus: ConnectionStatus;
+  private isWaitingToReconnect = false;
+
   private connectionStatus$ = new Subject<ConnectionStatus>();
 
   private nextSubscriptionId: number = 1;
@@ -252,6 +254,7 @@ export class GraphqlService {
 
   private openSocket() {
     if (
+      this.isWaitingToReconnect ||
       [ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
         this.connectionStatus,
       )
@@ -343,16 +346,12 @@ export class GraphqlService {
             1,
           )}ms before reconnecting`,
         );
+        this.isWaitingToReconnect = true;
         sleepMs(timer).then(() => {
           this.connectionAttemptsCount += 1;
+          this.isWaitingToReconnect = false;
           this.openSocket();
         });
-      }
-
-      if (this.connectionStatus === ConnectionStatus.CONNECTING) {
-        console.error(
-          `Received socket close event before a connection was established! Close code: ${event.code}`,
-        );
       }
     };
 
