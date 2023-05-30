@@ -31,6 +31,9 @@
         "jest": true,
         "node": true
       },
+      "globals": {
+        "globalThis": false
+      },
       "rules": {
         "func-names": "off"
       }

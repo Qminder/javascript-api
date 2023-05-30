@@ -3,9 +3,11 @@ import { DocumentNode, print } from 'graphql';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
-import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { ConnectionStatus } from '../../model/connection-status.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
+import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
+import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
+import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 
 type QueryOrDocument = string | DocumentNode;
 
@@ -86,6 +88,8 @@ export class GraphqlService {
   private sendPingWithThisBound = this.sendPing.bind(this);
   private handleConnectionDropWithThisBound =
     this.handleConnectionDrop.bind(this);
+
+  private connectionAttemptsCount = 0;
 
   constructor() {
     this.setServer('api.qminder.com');
@@ -294,10 +298,20 @@ export class GraphqlService {
     }
   }
 
+  private getServerUrl(temporaryApiKey: string): string {
+    return `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`;
+  }
+
   private createSocketConnection(temporaryApiKey: string) {
-    this.socket = new WebSocket(
-      `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`,
-    );
+    if (this.socket) {
+      this.socket.onclose = null;
+      this.socket.onmessage = null;
+      this.socket.onopen = null;
+      this.socket.onerror = null;
+      this.socket.close();
+      this.socket = null;
+    }
+    this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
     const socket = this.socket;
     socket.onopen = () => {
@@ -315,11 +329,24 @@ export class GraphqlService {
         code: event.code,
         reason: event.reason,
       });
-      if (event.code === CLIENT_SIDE_CLOSE_EVENT) {
-        this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-        this.clearMonitoring();
-        this.socket = null;
-        return;
+
+      this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
+      this.socket = null;
+
+      this.clearPingMonitoring();
+      if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
+        const timer = calculateRandomizedExponentialBackoffTime(
+          this.connectionAttemptsCount,
+        );
+        console.log(
+          `[Qminder API]: Waiting for ${timer.toFixed(
+            1,
+          )}ms before reconnecting`,
+        );
+        sleepMs(timer).then(() => {
+          this.connectionAttemptsCount += 1;
+          this.openSocket();
+        });
       }
 
       if (this.connectionStatus === ConnectionStatus.CONNECTING) {
@@ -342,6 +369,7 @@ export class GraphqlService {
             break;
 
           case MessageType.GQL_CONNECTION_ACK:
+            this.connectionAttemptsCount = 0;
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             console.info('[Qminder API]: Connected to websocket!');
             this.startConnectionMonitoring();
@@ -419,7 +447,10 @@ export class GraphqlService {
   }
 
   private monitorWithOfflineEvent(): void {
-    window.addEventListener('offline', this.sendPingWithThisBound);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('offline', this.sendPingWithThisBound);
+      window.addEventListener('offline', this.sendPingWithThisBound);
+    }
   }
 
   private sendPing(): void {
@@ -427,20 +458,23 @@ export class GraphqlService {
       this.handleConnectionDropWithThisBound,
       PONG_TIMEOUT_IN_MS,
     );
-    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
+    if (this.socket) {
+      this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
+    }
   }
 
   private handleConnectionDrop(): void {
+    if (this.connectionStatus === ConnectionStatus.CONNECTING) {
+      return;
+    }
     console.warn(`[Qminder API]: Websocket connection dropped!`);
-
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
-    this.clearMonitoring();
+    this.clearPingMonitoring();
 
     this.openSocket();
   }
 
-  private clearMonitoring(): void {
-    window.removeEventListener('offline', this.sendPingWithThisBound);
+  private clearPingMonitoring(): void {
     clearTimeout(this.pongTimeout);
     clearInterval(this.pingPongInterval);
   }
