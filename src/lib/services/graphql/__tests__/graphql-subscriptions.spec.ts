@@ -280,6 +280,10 @@ describe('GraphQL subscriptions', () => {
     });
 
     expect(errorSpy).toHaveBeenCalledWith(ERRORS);
+    // Cleans up as well
+    expect(
+      (fixture.graphqlService as any).subscriptionObserverMap['1'],
+    ).toBeUndefined();
 
     subscription.unsubscribe();
   });

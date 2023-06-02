@@ -2,8 +2,8 @@ import fetch from 'cross-fetch';
 import {
   DocumentNode,
   GraphQLErrorExtensions,
-  SourceLocation,
   print,
+  SourceLocation,
 } from 'graphql';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
@@ -68,6 +68,7 @@ enum MessageType {
   GQL_CONNECTION_KEEP_ALIVE = 'ka',
   GQL_COMPLETE = 'complete',
   GQL_PONG = 'pong',
+  GQL_ERROR = 'error',
 }
 
 const PONG_TIMEOUT_IN_MS = 2000;
@@ -260,7 +261,10 @@ export class GraphqlService {
 
   private stopSubscription(id: string) {
     this.sendMessage(id, MessageType.GQL_STOP, null);
+    this.cleanupSubscription(id);
+  }
 
+  private cleanupSubscription(id: string) {
     delete this.subscriptionObserverMap[id];
     this.subscriptions = this.subscriptions.filter((sub) => {
       return sub.id !== id;
@@ -413,6 +417,13 @@ export class GraphqlService {
 
           case MessageType.GQL_PONG:
             clearTimeout(this.pongTimeout);
+            break;
+
+          case MessageType.GQL_ERROR:
+            this.subscriptionObserverMap[message.id]?.error(
+              message.payload.errors,
+            );
+            this.cleanupSubscription(message.id);
             break;
 
           default:
