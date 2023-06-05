@@ -1,5 +1,10 @@
 import fetch from 'cross-fetch';
-import { DocumentNode, print } from 'graphql';
+import {
+  DocumentNode,
+  GraphQLErrorExtensions,
+  print,
+  SourceLocation,
+} from 'graphql';
 import WebSocket from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
@@ -21,11 +26,23 @@ function queryToString(query: QueryOrDocument): string {
   throw new Error('queryToString: query must be a string or a DocumentNode');
 }
 
-interface OperationMessage {
+export interface QminderGraphQLError {
+  message: string;
+  errorType?: string | null;
+  extensions?: GraphQLErrorExtensions | null;
+  sourcePreview?: string | null;
+  offendingToken?: string | null;
+  locations?: SourceLocation[] | null;
+  path?: (string | number)[] | null;
+}
+
+interface OperationMessage<T = object> {
   id?: string;
   type: MessageType;
-  payload?: any;
-  errors?: any[];
+  payload?: {
+    data?: T | null;
+    errors?: QminderGraphQLError[];
+  };
 }
 
 class Subscription {
@@ -51,6 +68,7 @@ enum MessageType {
   GQL_CONNECTION_KEEP_ALIVE = 'ka',
   GQL_COMPLETE = 'complete',
   GQL_PONG = 'pong',
+  GQL_ERROR = 'error',
 }
 
 const PONG_TIMEOUT_IN_MS = 2000;
@@ -243,7 +261,10 @@ export class GraphqlService {
 
   private stopSubscription(id: string) {
     this.sendMessage(id, MessageType.GQL_STOP, null);
+    this.cleanupSubscription(id);
+  }
 
+  private cleanupSubscription(id: string) {
     delete this.subscriptionObserverMap[id];
     this.subscriptions = this.subscriptions.filter((sub) => {
       return sub.id !== id;
@@ -398,13 +419,25 @@ export class GraphqlService {
             clearTimeout(this.pongTimeout);
             break;
 
+          case MessageType.GQL_ERROR:
+            this.subscriptionObserverMap[message.id]?.error(
+              message.payload.errors,
+            );
+            this.cleanupSubscription(message.id);
+            break;
+
           default:
             if (message.payload && message.payload.data) {
               this.subscriptionObserverMap[message.id]?.error(
                 message.payload.data,
               );
-            } else if (message.errors && message.errors.length > 0) {
-              this.subscriptionObserverMap[message.id]?.error(message.errors);
+            } else if (
+              message.payload.errors &&
+              message.payload.errors.length > 0
+            ) {
+              this.subscriptionObserverMap[message.id]?.error(
+                message.payload.errors,
+              );
             }
         }
       }

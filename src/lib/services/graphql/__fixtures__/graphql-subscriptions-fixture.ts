@@ -27,8 +27,11 @@ export class GraphQLSubscriptionsFixture {
 
   triggerSubscription(
     query: DocumentNode | string = 'subscription { baba }',
+    subscriber:
+      | Partial<Observer<object>>
+      | ((value: object) => void) = () => {},
   ): Subscription {
-    return this.graphqlService.subscribe(query).subscribe(() => {});
+    return this.graphqlService.subscribe(query).subscribe(subscriber);
   }
 
   getGraphqlServiceActiveSubscriptionCount(): number {
