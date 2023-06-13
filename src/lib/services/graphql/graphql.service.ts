@@ -298,8 +298,8 @@ export class GraphqlService {
 
     try {
       const response = await this.fetch(
-          `https://${this.apiServer}/${url}`,
-          body,
+        `https://${this.apiServer}/${url}`,
+        body,
       );
       const responseJson = await response.json();
       return responseJson.key;
