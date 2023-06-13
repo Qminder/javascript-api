@@ -1,3 +1,7 @@
+import { TicketExtraText } from './ticket-extra-text';
+import { TicketExtraOption } from './ticket-extra-option';
+import { TicketExtraUrl } from './ticket-extra-url';
+
 /**
  * Represents a custom field attached to a Ticket.
  * Users can define custom fields to show in the Service Screen. Those custom fields will be
@@ -38,8 +42,5 @@
  * { "title": "Twitter Page", "value": "Open", "url": "https://www.twitter.com/" }
  * ```
  */
-export interface TicketExtra {
-  title: string;
-  value: string;
-  url?: string;
-}
+
+export type TicketExtra = TicketExtraText | TicketExtraOption | TicketExtraUrl;

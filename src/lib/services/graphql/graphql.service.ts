@@ -297,10 +297,7 @@ export class GraphqlService {
     };
 
     try {
-      const response = await this.fetch(
-        `https://${this.apiServer}/${url}`,
-        body,
-      );
+      const response = await this.fetch(`https://${this.apiServer}/${url}`, body);
       const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
@@ -310,7 +307,7 @@ export class GraphqlService {
           timeOut / 1000
         } seconds!`,
       );
-      return new Promise((resolve) =>
+      return new Promise<string>((resolve) =>
         setTimeout(
           () => resolve(this.fetchTemporaryApiKey(retryCount + 1)),
           timeOut,
@@ -353,8 +350,8 @@ export class GraphqlService {
 
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
-
       this.clearPingMonitoring();
+      
       if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
         const timer = calculateRandomizedExponentialBackoffTime(
           this.connectionAttemptsCount,
@@ -503,7 +500,6 @@ export class GraphqlService {
     console.warn(`[Qminder API]: Websocket connection dropped!`);
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
-
     this.openSocket();
   }
 
