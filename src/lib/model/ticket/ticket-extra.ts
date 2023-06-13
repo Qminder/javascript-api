@@ -1,6 +1,6 @@
-import { TicketExtraText } from './ticket-extra-text';
-import { TicketExtraOption } from './ticket-extra-option';
-import { TicketExtraUrl } from './ticket-extra-url';
+import { TicketExtraText } from './ticket-extra-text.js';
+import { TicketExtraOption } from './ticket-extra-option.js';
+import { TicketExtraUrl } from './ticket-extra-url.js';
 
 /**
  * Represents a custom field attached to a Ticket.

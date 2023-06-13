@@ -15,9 +15,9 @@
  * To create a Ticket, call {@link TicketService.create}.
  * To search for tickets, call {@link TicketService.search}.
  */
-import { TicketExtra } from './ticket-extra';
-import { TicketLabel } from './ticket-label';
-import { TicketStatus } from './ticket-status';
+import { TicketExtra } from './ticket-extra.js';
+import { TicketLabel } from './ticket-label.js';
+import { TicketStatus } from './ticket-status.js';
 
 export interface Ticket {
   /**
