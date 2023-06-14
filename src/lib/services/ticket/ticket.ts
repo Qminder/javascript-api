@@ -1,4 +1,5 @@
-import { Ticket, TicketStatus, TicketMessage } from '../../model/ticket.js';
+import { Ticket, TicketMessage } from '../../model/ticket/ticket.js';
+import { TicketStatus } from '../../model/ticket/ticket-status.js';
 import { User } from '../../model/user.js';
 import { Line } from '../../model/line.js';
 import {
@@ -6,7 +7,7 @@ import {
   extractIdToNumber,
   IdOrObject,
 } from '../../util/id-or-object.js';
-import { TicketCreationParameters } from '../../model/ticket-creation-parameters.js';
+import { TicketCreationParameters } from '../../model/ticket/ticket-creation-parameters.js';
 import { ApiBase } from '../api-base/api-base.js';
 
 /**
