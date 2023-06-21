@@ -34,17 +34,19 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('sends connection init to start', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await fixture.waitForConnection();
     const initMessage = await fixture.getNextMessage();
     expect(initMessage).toEqual({
       type: 'connection_init',
       payload: null,
     });
+
+    subscription.unsubscribe();
   });
 
   it('sends a subscribe message to the socket when someone subscribes', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     const nextMessage = await fixture.getNextMessage();
     expect(fixture.getGraphqlServiceActiveSubscriptionCount()).toBe(1);
@@ -55,6 +57,8 @@ describe('GraphQL subscriptions', () => {
         query: 'subscription { baba }',
       },
     });
+
+    subscription.unsubscribe();
   });
 
   it('sends an un-subscribe message when the subscription is unsubscribed from', async () => {
@@ -70,7 +74,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('works with graphql-tag generated documents', async () => {
-    fixture.triggerSubscription(
+    const subscription = fixture.triggerSubscription(
       gql`
         subscription {
           baba
@@ -84,6 +88,8 @@ describe('GraphQL subscriptions', () => {
       type: 'start',
       payload: { query: 'subscription {\n  baba\n}\n' },
     });
+
+    subscription.unsubscribe();
   });
 
   it('cleans up internal state when unsubscribing', async () => {
@@ -124,7 +130,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('when the server closes the connection, it will reconnect and subscribe again', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
     await fixture.closeWithCode(1001); // sets timeout to try again later
@@ -135,6 +141,7 @@ describe('GraphQL subscriptions', () => {
       type: 'start',
       payload: { query: 'subscription { baba }' },
     });
+    subscription.unsubscribe();
   });
 
   it('when the server does not reply to ping message, reconnects', async () => {
@@ -143,7 +150,7 @@ describe('GraphQL subscriptions', () => {
       'handleConnectionDropWithThisBound',
     );
     jest.useFakeTimers();
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await jest.runAllTimersAsync();
 
     await fixture.handleConnectionInit();
@@ -160,6 +167,7 @@ describe('GraphQL subscriptions', () => {
 
     expect(reconnectSpy).toHaveBeenCalled();
     jest.useRealTimers();
+    subscription.unsubscribe();
   });
 
   it('when the server replies to ping message, does not reconnect', async () => {
@@ -168,7 +176,7 @@ describe('GraphQL subscriptions', () => {
       'handleConnectionDropWithThisBound',
     );
     jest.useFakeTimers();
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await jest.runAllTimersAsync();
 
     await fixture.handleConnectionInit();
@@ -186,10 +194,11 @@ describe('GraphQL subscriptions', () => {
 
     expect(reconnectSpy).not.toHaveBeenCalled();
     jest.useRealTimers();
+    subscription.unsubscribe();
   });
 
   it('when the server sends an error, it will reconnect and subscribe again', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     useFakeSetInterval();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
@@ -202,10 +211,11 @@ describe('GraphQL subscriptions', () => {
       payload: { query: 'subscription { baba }' },
     });
     jest.useRealTimers();
+    subscription.unsubscribe();
   });
 
   it('reconnects when there are open subscriptions, and the server closes with code 1000', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     useFakeSetInterval();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
@@ -218,22 +228,22 @@ describe('GraphQL subscriptions', () => {
       payload: { query: 'subscription { baba }' },
     });
     jest.useRealTimers();
+    subscription.unsubscribe();
   });
 
   it('does not reconnect when there are no open subscriptions, and the server closes with code 1000', async () => {
     const subscription = fixture.triggerSubscription();
-    useFakeSetInterval();
-
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
-
     subscription.unsubscribe();
-    await fixture.closeWithError(1000);
-    jest.useRealTimers();
+    await fixture.consumeAnyMessage();
+    await fixture.closeWithError(1000, 'Bye Bye');
+    fixture.openServer();
+    expect(fixture.server.messages).toHaveLength(0);
   });
 
   it('when the connection closes abnormally, it will reconnect and subscribe again', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
     useFakeSetInterval();
@@ -248,10 +258,11 @@ describe('GraphQL subscriptions', () => {
       type: 'start',
       payload: { query: 'subscription { baba }' },
     });
+    subscription.unsubscribe();
   });
 
   it('when a reconnection fails, it will continue to retry', async () => {
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
     useFakeSetInterval();
@@ -273,6 +284,7 @@ describe('GraphQL subscriptions', () => {
 
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
+    subscription.unsubscribe();
   });
 
   it('error messages are propagated to the subscriber', async () => {

@@ -77,9 +77,9 @@ export class GraphQLSubscriptionsFixture {
     });
   }
 
-  async closeWithError(closeCode: number) {
+  async closeWithError(closeCode: number, reason = 'Connection reset by peer') {
     this.server.error({
-      reason: 'Connection reset by peer',
+      reason,
       code: closeCode,
       wasClean: false,
     });
