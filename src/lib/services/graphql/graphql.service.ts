@@ -5,7 +5,7 @@ import {
   print,
   SourceLocation,
 } from 'graphql';
-import WebSocket from 'isomorphic-ws';
+import WebSocket, { CloseEvent } from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { ConnectionStatus } from '../../model/connection-status.js';
@@ -345,7 +345,7 @@ export class GraphqlService {
       );
     };
 
-    socket.onclose = (event: { code: number; reason?: string }) => {
+    socket.onclose = (event: CloseEvent) => {
       console.warn('[Qminder API] WebSocket connection closed:', {
         code: event.code,
         reason: event.reason,
@@ -355,7 +355,7 @@ export class GraphqlService {
       this.socket = null;
 
       this.clearPingMonitoring();
-      if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
+      if (this.shouldRetry(event)) {
         const timer = calculateRandomizedExponentialBackoffTime(
           this.connectionAttemptsCount,
         );
@@ -442,6 +442,14 @@ export class GraphqlService {
         }
       }
     };
+  }
+
+  private shouldRetry(event: CloseEvent) {
+    if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
+      return true;
+    }
+
+    return Object.entries(this.subscriptionObserverMap).length > 0;
   }
 
   private sendMessage(id: string, type: MessageType, payload: any) {

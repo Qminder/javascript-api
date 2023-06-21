@@ -2,8 +2,8 @@ import gql from 'graphql-tag';
 import { WebSocket } from 'mock-socket';
 import { Subscriber } from 'rxjs';
 import { ConnectionStatus } from '../../../model/connection-status';
-import { QminderGraphQLError } from '../graphql.service';
 import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
+import { QminderGraphQLError } from '../graphql.service';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../../util/sleep-ms/sleep-ms', () => ({
@@ -201,6 +201,34 @@ describe('GraphQL subscriptions', () => {
       type: 'start',
       payload: { query: 'subscription { baba }' },
     });
+    jest.useRealTimers();
+  });
+
+  it('reconnects when there are open subscriptions, and the server closes with code 1000', async () => {
+    fixture.triggerSubscription();
+    useFakeSetInterval();
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+    await fixture.closeWithError(1000);
+    fixture.openServer();
+    await fixture.handleConnectionInit();
+    expect(await fixture.getNextMessage()).toEqual({
+      id: '1',
+      type: 'start',
+      payload: { query: 'subscription { baba }' },
+    });
+    jest.useRealTimers();
+  });
+
+  it('does not reconnect when there are no open subscriptions, and the server closes with code 1000', async () => {
+    const subscription = fixture.triggerSubscription();
+    useFakeSetInterval();
+
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+
+    subscription.unsubscribe();
+    await fixture.closeWithError(1000);
     jest.useRealTimers();
   });
 
