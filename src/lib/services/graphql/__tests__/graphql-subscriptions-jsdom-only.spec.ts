@@ -36,7 +36,7 @@ describe('GraphQL subscriptions', () => {
 
   it('should reconnect based on ping-pong before "onclose" retries connection', async () => {
     (sleepMs as jest.Mock).mockImplementationOnce(() => firstValueFrom(NEVER));
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
     await fixture.closeWithError(1006);
@@ -46,6 +46,7 @@ describe('GraphQL subscriptions', () => {
     // reconnect starts
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
+    subscription.unsubscribe();
   });
 
   it('does not initialize multiple connections if all indicators of disconnect are fired at the same time', async () => {
@@ -63,7 +64,7 @@ describe('GraphQL subscriptions', () => {
     );
 
     jest.useFakeTimers(); // setTimeout is also now under jest control
-    fixture.triggerSubscription();
+    const subscription = fixture.triggerSubscription();
     await jest.runAllTimersAsync();
 
     await fixture.handleConnectionInit(); // setInterval
@@ -96,5 +97,6 @@ describe('GraphQL subscriptions', () => {
     // GQL_CONNECTION_ACK not yet received
     expect(openSocketSpy).toHaveBeenCalledTimes(2);
     expect(createSocketConnectionSpy).toHaveBeenCalledTimes(2);
+    subscription.unsubscribe();
   });
 });
