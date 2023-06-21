@@ -169,7 +169,7 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
-  it('connect, ping timeout, connect, ping timeout, connect', async () => {
+  it('handles multiple consecutive connect/ping/timeout cycles gracefully', async () => {
     const reconnectSpy = jest.spyOn(
       fixture.graphqlService as any,
       'handleConnectionDropWithThisBound',
