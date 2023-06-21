@@ -169,6 +169,52 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
+  it('connect, ping timeout, connect, ping timeout, connect', async () => {
+    const reconnectSpy = jest.spyOn(
+      fixture.graphqlService as any,
+      'handleConnectionDropWithThisBound',
+    );
+    jest.useFakeTimers();
+    const subscription = fixture.triggerSubscription();
+    await jest.runAllTimersAsync();
+
+    // connect
+    await fixture.handleConnectionInit();
+    await jest.runOnlyPendingTimersAsync();
+
+    await fixture.consumeSubscribeMessage();
+
+    // ping
+    await jest.advanceTimersToNextTimerAsync();
+    await fixture.consumePingMessage();
+
+    // timeout
+    await jest.runOnlyPendingTimersAsync();
+    expect(reconnectSpy).toHaveBeenCalledTimes(1);
+
+    // connect
+    await fixture.handleConnectionInit();
+    await jest.runOnlyPendingTimersAsync();
+    await fixture.consumeSubscribeMessage();
+
+    // ping
+    await jest.advanceTimersToNextTimerAsync();
+    await fixture.consumePingMessage();
+
+    // timeout
+    await jest.runOnlyPendingTimersAsync();
+    expect(reconnectSpy).toHaveBeenCalledTimes(2);
+
+    // connect
+    await fixture.handleConnectionInit();
+    await jest.runOnlyPendingTimersAsync();
+    await fixture.consumeSubscribeMessage();
+
+    expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
+    jest.useRealTimers();
+    subscription.unsubscribe();
+  });
+
   it('when the server replies to ping message, does not reconnect', async () => {
     const reconnectSpy = jest.spyOn(
       fixture.graphqlService as any,
