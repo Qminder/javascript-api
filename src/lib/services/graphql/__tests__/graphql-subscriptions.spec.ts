@@ -159,13 +159,12 @@ describe('GraphQL subscriptions', () => {
     await fixture.consumeSubscribeMessage();
 
     await jest.advanceTimersToNextTimerAsync();
-    expect(await fixture.getNextMessage()).toEqual({
-      type: 'ping',
-    });
+    await fixture.consumePingMessage();
 
     await jest.runOnlyPendingTimersAsync();
 
     expect(reconnectSpy).toHaveBeenCalled();
+    await fixture.consumeInitMessage();
     jest.useRealTimers();
     subscription.unsubscribe();
   });

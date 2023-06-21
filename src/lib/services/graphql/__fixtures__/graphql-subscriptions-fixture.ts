@@ -111,6 +111,13 @@ export class GraphQLSubscriptionsFixture {
     });
   }
 
+  async consumeInitMessage() {
+    expect(await this.server.nextMessage).toEqual({
+      type: 'connection_init',
+      payload: null,
+    });
+  }
+
   async consumeAnyMessage() {
     await this.server.nextMessage;
   }
