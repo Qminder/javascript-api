@@ -48,7 +48,7 @@
     "@babel/preset-env": "7.22.9",
     "@types/jest": "29.5.3",
     "@types/node": "18.16.16",
-    "@types/sinon": "10.0.15",
+    "@types/sinon": "10.0.16",
     "@typescript-eslint/eslint-plugin": "^5.49.0",
     "@typescript-eslint/parser": "^5.49.0",
     "eslint": "^8.32.0",
