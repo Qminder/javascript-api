@@ -1,17 +1,17 @@
-import { ApiBase, SuccessResponse } from '../api-base/api-base.js';
-import { User } from '../../model/user.js';
 import { Desk } from '../../model/desk.js';
-import { Location } from '../../model/location.js';
 import { Line } from '../../model/line.js';
+import { Location } from '../../model/location.js';
+import { User } from '../../model/user.js';
 import {
+  IdOrObject,
   extractId,
   extractIdToNumber,
-  IdOrObject,
 } from '../../util/id-or-object.js';
+import { ApiBase, SuccessResponse } from '../api-base/api-base.js';
 
 export function list(location: IdOrObject<Location>): Promise<User[]> {
   const locationId = extractId(location);
-  return ApiBase.request(`locations/${locationId}/users`).then(
+  return ApiBase.request(`v1/locations/${locationId}/users`).then(
     (users: { data: User[] }) => {
       if (!users.data) {
         throw new Error('User list response was invalid!');
@@ -37,7 +37,7 @@ export function create(
   if (!roles) {
     throw new Error("The user's roles are missing");
   }
-  return ApiBase.request(`users/`, {
+  return ApiBase.request(`v1/users/`, {
     body: {
       email,
       firstName,
@@ -59,13 +59,13 @@ export function details(
     );
   }
 
-  return ApiBase.request(`users/${search}`) as Promise<User>;
+  return ApiBase.request(`v1/users/${search}`) as Promise<User>;
 }
 
 export function selectDesk(user: IdOrObject<User>, desk: IdOrObject<Desk>) {
   const userId = extractId(user);
   const deskId = extractId(desk);
-  return ApiBase.request(`users/${userId}/desk`, {
+  return ApiBase.request(`v1/users/${userId}/desk`, {
     body: { desk: deskId },
     method: 'POST',
   });
@@ -73,7 +73,7 @@ export function selectDesk(user: IdOrObject<User>, desk: IdOrObject<Desk>) {
 
 export function removeDesk(user: IdOrObject<User>): Promise<SuccessResponse> {
   const userId = extractId(user);
-  return ApiBase.request(`users/${userId}/desk`, { method: 'DELETE' });
+  return ApiBase.request(`v1/users/${userId}/desk`, { method: 'DELETE' });
 }
 
 export function setLines(
@@ -84,7 +84,7 @@ export function setLines(
   const lineIds = lines.map((line: IdOrObject<Line>) =>
     extractIdToNumber(line),
   );
-  return ApiBase.request(`users/${userId}/lines`, {
+  return ApiBase.request(`v1/users/${userId}/lines`, {
     body: JSON.stringify(lineIds),
     method: 'POST',
   });

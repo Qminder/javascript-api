@@ -35,7 +35,7 @@ describe('Webhook service', function () {
       WebhookService.create('https://g.co').then(
         (data) => {
           expect(
-            requestStub.calledWith('webhooks', {
+            requestStub.calledWith('v1/webhooks', {
               body: { url: 'https://g.co' },
               method: 'POST',
             }),
@@ -58,7 +58,7 @@ describe('Webhook service', function () {
       WebhookService.create('https://g.co', headers).then(
         (data) => {
           expect(
-            requestStub.calledWith('webhooks', {
+            requestStub.calledWith('v1/webhooks', {
               body: { url: 'https://g.co' },
               method: 'POST',
               ...headers,
@@ -103,7 +103,7 @@ describe('Webhook service', function () {
     it('creates a request with the correct URL', function (done) {
       WebhookService.remove(12).then(() => {
         expect(
-          requestStub.calledWith('webhooks/12', { method: 'DELETE' }),
+          requestStub.calledWith('v1/webhooks/12', { method: 'DELETE' }),
         ).toBeTruthy();
         done();
       });

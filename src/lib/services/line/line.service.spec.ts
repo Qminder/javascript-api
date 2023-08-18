@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
+import { Line } from '../../model/line';
 import { Qminder } from '../../qminder';
 import { LineService } from './line.service';
-import { Line } from '../../model/line';
 
 describe('Line service', function () {
   const LINES = [
@@ -36,7 +36,7 @@ describe('Line service', function () {
   describe('list()', function () {
     beforeEach(function (done) {
       requestStub
-        .withArgs(`locations/${LOCATION_ID}/lines`)
+        .withArgs(`v1/locations/${LOCATION_ID}/lines`)
         .resolves({ data: LINES });
       LineService.list(LOCATION_ID).then((lines) => {
         reply = lines;
@@ -74,7 +74,7 @@ describe('Line service', function () {
 
   describe('update()', function () {
     beforeEach(function (done) {
-      requestStub.withArgs('lines/71490').resolves({});
+      requestStub.withArgs('v1/lines/71490').resolves({});
       done();
     });
 
@@ -121,7 +121,7 @@ describe('Line service', function () {
 
   describe('enable()', function () {
     beforeEach(function (done) {
-      requestStub.withArgs('lines/71490/enable').resolves({});
+      requestStub.withArgs('v1/lines/71490/enable').resolves({});
       done();
     });
 
@@ -156,7 +156,7 @@ describe('Line service', function () {
 
   describe('disable()', function () {
     beforeEach(function (done) {
-      requestStub.withArgs('lines/71490/disable').resolves({});
+      requestStub.withArgs('v1/lines/71490/disable').resolves({});
       done();
     });
 
@@ -191,7 +191,7 @@ describe('Line service', function () {
 
   describe('archive()', function () {
     beforeEach(function (done) {
-      requestStub.withArgs('lines/71490/archive').resolves({});
+      requestStub.withArgs('v1/lines/71490/archive').resolves({});
       done();
     });
 
@@ -226,7 +226,7 @@ describe('Line service', function () {
 
   describe('unarchive()', function () {
     beforeEach(function (done) {
-      requestStub.withArgs('lines/71490/unarchive').resolves({});
+      requestStub.withArgs('v1/lines/71490/unarchive').resolves({});
       done();
     });
 
@@ -261,7 +261,7 @@ describe('Line service', function () {
 
   describe('delete()', function () {
     beforeEach(function (done) {
-      requestStub.withArgs('lines/71490/delete').resolves({});
+      requestStub.withArgs('v1/lines/71490/delete').resolves({});
       done();
     });
 

@@ -1,6 +1,6 @@
 import * as sinon from 'sinon';
-import { Qminder } from '../../qminder';
 import { User } from '../../model/user';
+import { Qminder } from '../../qminder';
 import { UserService } from './user.service';
 
 describe('User service', function () {
@@ -53,7 +53,7 @@ describe('User service', function () {
     let usersReply: any;
     beforeEach(function (done) {
       requestStub
-        .withArgs(`locations/${LOCATION_ID}/users`)
+        .withArgs(`v1/locations/${LOCATION_ID}/users`)
         .resolves({ data: USERS });
 
       UserService.list(LOCATION_ID).then((users: User[]) => {
@@ -137,7 +137,7 @@ describe('User service', function () {
       UserService.create(user);
       expect(
         requestStub.calledWith(
-          'users/',
+          'v1/users/',
           sinon.match({
             body: {
               roles: JSON.stringify(user.roles),
@@ -157,7 +157,7 @@ describe('User service', function () {
       UserService.setLines(123, [1, 2, 3, 4]);
       expect(
         requestStub.calledWith(
-          'users/123/lines',
+          'v1/users/123/lines',
           sinon.match({ body: JSON.stringify([1, 2, 3, 4]) }),
         ),
       ).toBeTruthy();
@@ -173,7 +173,7 @@ describe('User service', function () {
       UserService.setLines(123, lines);
       expect(
         requestStub.calledWith(
-          'users/123/lines',
+          'v1/users/123/lines',
           sinon.match({ body: JSON.stringify([1, 2, 3]) }),
         ),
       ).toBeTruthy();

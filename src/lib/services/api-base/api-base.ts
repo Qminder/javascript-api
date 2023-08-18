@@ -1,9 +1,9 @@
 import fetch from 'cross-fetch';
 import { GraphQLError } from 'graphql';
-import { GraphqlResponse } from '../../model/graphql-response.js';
-import { SimpleError } from '../../model/errors/simple-error.js';
 import { ComplexError } from '../../model/errors/complex-error.js';
+import { SimpleError } from '../../model/errors/simple-error.js';
 import { UnknownError } from '../../model/errors/unknown-error.js';
+import { GraphqlResponse } from '../../model/graphql-response.js';
 
 type HTTPMethod =
   | 'GET'
@@ -153,7 +153,7 @@ export class ApiBase {
       }
     }
 
-    const response = await fetch(`https://${this.apiServer}/v1/${url}`, init);
+    const response = await fetch(`https://${this.apiServer}/${url}`, init);
     const parsedResponse = await response.json();
 
     if (!response.ok) {

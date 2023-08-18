@@ -8,7 +8,7 @@ export function details(tv: IdOrObject<Device>): Promise<Device> {
     throw new Error('TV ID not provided');
   }
 
-  return ApiBase.request(`tv/${tvId}`) as Promise<Device>;
+  return ApiBase.request(`v1/tv/${tvId}`) as Promise<Device>;
 }
 
 export function edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
@@ -19,7 +19,7 @@ export function edit(tv: IdOrObject<Device>, newName: string): Promise<Device> {
   if (!newName || typeof newName !== 'string') {
     throw new Error('TV name not provided');
   }
-  return ApiBase.request(`tv/${tvId}`, {
+  return ApiBase.request(`v1/tv/${tvId}`, {
     body: { name: newName },
     method: 'POST',
   }) as Promise<Device>;
@@ -32,7 +32,7 @@ export function remove(
   if (!tvId || typeof tvId !== 'string') {
     throw new Error('TV ID not provided');
   }
-  return ApiBase.request(`tv/${tvId}`, { method: 'DELETE' }) as Promise<{
+  return ApiBase.request(`v1/tv/${tvId}`, { method: 'DELETE' }) as Promise<{
     statusCode: number;
   }>;
 }
