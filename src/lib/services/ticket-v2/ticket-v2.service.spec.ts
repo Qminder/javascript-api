@@ -25,7 +25,7 @@ describe('Ticket service (V2)', function () {
         email: 'foo@bar.com',
       };
       const res = await TicketServiceV2.create(request);
-      expect(requestStub).toHaveBeenCalledWith('/ticket', {
+      expect(requestStub).toHaveBeenCalledWith('ticket', {
         body: JSON.stringify(request),
         headers: { 'X-Qminder-API-Version': '2020-09-01' },
         method: 'POST',
