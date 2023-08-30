@@ -144,9 +144,9 @@ export const TicketService = {
    *
    * @example
    * ```
-   * import { Qminder } from 'qminder-api';
+   * import { Qminder, TicketCreationRequest, TicketCreatedResponse } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
-   * const parameters: TicketCreationRequestV2 = {
+   * const parameters: TicketCreationRequest = {
    *     // Required parameter
    *     lineId: '194929',
    *     // First and last name are required
