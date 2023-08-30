@@ -1,26 +1,26 @@
 import {
-  search,
+  addLabel,
+  assignToUser,
+  call,
+  cancel,
   count,
   create,
   details,
   edit,
-  call,
-  recall,
-  markServed,
-  markNoShow,
-  cancel,
-  returnToQueue,
-  addLabel,
-  setLabels,
-  removeLabel,
-  assignToUser,
-  unassign,
-  reorder,
+  forward,
   getEstimatedTimeOfService,
   getMessages,
+  markNoShow,
+  markServed,
+  recall,
+  removeLabel,
+  reorder,
+  returnToQueue,
+  search,
   sendMessage,
-  forward,
   setExternalData,
+  setLabels,
+  unassign,
 } from './ticket.js';
 
 /**
@@ -136,51 +136,50 @@ export const TicketService = {
   count,
 
   /**
-   * Creates a new ticket and puts it into the queue as the last in the given line.
+   * Creates a new ticket and puts it into the queue as the last in the given
+   * line.
    *
-   * Calls this HTTP API: `POST /v1/lines/<ID>/ticket`
+   * @see TicketCreationRequestV2
+   * @see TicketCreatedResponse
    *
-   * For example:
-   *
-   * ```javascript
+   * @example
+   * ```
    * import { Qminder } from 'qminder-api';
    * Qminder.setKey('API_KEY_HERE');
-   *
-   * // Example 1. Create a ticket with first and last name, and phone number
-   * const lineId = 1234;
-   * const ticket: Ticket = new Qminder.Ticket({
-   *    firstName: "Jane",
-   *    lastName: "Smith",
-   *    phoneNumber: 3185551234,
-   * });
-   * const ticketId = await Qminder.Ticket.create(lineId, ticket);
-   * console.log(ticketId); // 12345678
-   *
-   * // Example 2. Create a ticket with custom fields
-   * const lineId = 1234;
-   * const ticket: Ticket = new Qminder.Ticket({
-   *    firstName: "Sarah Jane",
-   *    lastName: "Smith",
-   *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
-   * });
-   * const ticketId = await Qminder.Ticket.create(lineId, ticket);
-   * console.log(ticketId); // 12345681
-
-   * // Example 3. Create a ticket by using a Line object to specify the line
-   * const ticket: Ticket = new Qminder.Ticket({
-   *    firstName: "Sarah Jane",
-   *    lastName: "Smith",
-   *    extra: [ { "title": "Order ID", "value": "1234567890" } ]
-   * });
-   * const line: Line = await Qminder.lines.details(12345);
-   * const ticketId = await Qminder.Ticket.create(line, ticket);
-   * console.log(ticketId); // 12345689
+   * const parameters: TicketCreationRequestV2 = {
+   *     // Required parameter
+   *     lineId: '194929',
+   *     // First and last name are required
+   *     firstName: 'James',
+   *     lastName: 'Baxter',
+   *     // Phone number and email are optional. Do not include the field if it
+   *     // is not needed
+   *     phoneNumber: '+12125551234',
+   *     email: 'fred@example.com',
+   *     // Source, if left unspecified, falls back to 'MANUAL'
+   *     source: 'MANUAL',
+   *     // Input fields are referenced by UUID
+   *     fields: [
+   *       // Text, URL and Date fields are set with the "value" key
+   *       { inputFieldId: '5489ebf7-bcd9-4cd1-aae1-cad42538d83c', value: 'Yes' },
+   *       // Select fields are set with "optionIds" key
+   *       {
+   *          inputFieldId: '5489ebf7-bcd9-4cd1-aae1-cad42538d83c',
+   *          optionIds: [
+   *            '84c40725-e80a-4281-aa9a-9db252373f16',
+   *            'ed74eaa9-78ab-4cb7-9b91-26e0673ed70e'
+   *          ]
+   *       },
+   *     ],
+   *     labels: [
+   *       { value: 'from website' }
+   *     ],
+   * };
+   * const ticket: TicketCreatedResponse = await Qminder.Ticket.create(parameters);
    * ```
-   * @param line  the ticket's desired line
+   *
    * @param ticket  the ticket data
-   * @param idempotencyKey  optional: a unique identifier that lets you safely retry creating the same ticket twice
    * @returns a promise that resolves to the ID of the new ticket.
-   * @throws ERROR_NO_LINE_ID when the lineId parameter is undefined or not a number.
    */
   create,
 

@@ -3,7 +3,7 @@ import { InputFieldRequest } from './input-field-request';
 import { TicketLabelRequest } from './ticket-label-request';
 import { TicketType } from './ticket-type';
 
-export interface TicketCreationRequestV2 {
+export interface TicketCreationRequest {
   /** ID of the line to create the ticket into */
   lineId: ID;
   /**

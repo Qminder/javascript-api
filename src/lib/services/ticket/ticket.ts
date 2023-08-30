@@ -1,5 +1,6 @@
 import { Line } from '../../model/line.js';
-import { TicketCreationParameters } from '../../model/ticket/ticket-creation-parameters.js';
+import { TicketCreatedResponse } from '../../model/ticket/ticket-created-response.js';
+import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request.js';
 import { TicketStatus } from '../../model/ticket/ticket-status.js';
 import { Ticket, TicketMessage } from '../../model/ticket/ticket.js';
 import { User } from '../../model/user.js';
@@ -240,18 +241,6 @@ export type TicketEditingParameters = Pick<
 > & { user: IdOrObject<User> };
 
 /**
- * The format of the HTTP request to send when creating a ticket.
- */
-interface TicketCreationRequest {
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: number;
-  email?: string;
-  extra?: string;
-  source?: string;
-}
-
-/**
  * The format of the HTTP request to send when editing a ticket.
  */
 interface TicketEditingRequest extends TicketCreationRequest {
@@ -331,37 +320,16 @@ export function count(search: TicketCountCriteria): Promise<number> {
 }
 
 export function create(
-  line: IdOrObject<Line>,
-  ticket: TicketCreationParameters,
-  idempotencyKey?: string | number,
-): Promise<TicketCreationResponse> {
-  if (line === undefined) {
-    throw new Error(ERROR_NO_LINE_ID);
-  }
+  request: TicketCreationRequest,
+): Promise<TicketCreatedResponse> {
+  const body = JSON.stringify(request);
 
-  const lineId = extractId(line);
-
-  const converted: any = { ...ticket };
-  if (converted.lastName === null) {
-    delete converted.lastName;
-  }
-  if (converted.extra) {
-    converted.extra = JSON.stringify(converted.extra);
-  }
-
-  const requestParams: TicketCreationRequest = { ...converted };
-  const headers = idempotencyKey && {
-    'Idempotency-Key': `${idempotencyKey}`,
-  };
-
-  return ApiBase.request(`v1/lines/${lineId}/ticket`, {
+  return ApiBase.request(`ticket`, {
     method: 'POST',
-    body: requestParams,
-    headers: headers,
-  }).then((response: TicketCreationResponse) => {
-    const ticketId = parseInt(`${response.id}`, 10);
-    const reply: TicketCreationResponse = { id: ticketId };
-    return reply;
+    body,
+    headers: {
+      'X-Qminder-API-Version': '2020-09-01',
+    },
   });
 }
 

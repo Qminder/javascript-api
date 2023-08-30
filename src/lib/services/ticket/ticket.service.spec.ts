@@ -1,4 +1,7 @@
 import * as sinon from 'sinon';
+import { Ticket } from '../../model/ticket/ticket';
+import { TicketCreatedResponse } from '../../model/ticket/ticket-created-response';
+import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request';
 import { Qminder } from '../../qminder';
 import { TicketService } from './ticket.service';
 
@@ -764,234 +767,34 @@ describe('Ticket service', function () {
     });
   });
 
-  describe('create()', function () {
-    const createRequestBody: any = {
-      firstName: 'John',
-      lastName: 'Smith',
+  describe('create()', () => {
+    let requestStub: jest.SpyInstance;
+
+    const SUCCESSFUL_RESPONSE: TicketCreatedResponse = {
+      id: '49199020',
     };
 
-    const createResponseBody: any = {
-      id: '12345',
-    };
-
-    beforeEach(function () {
-      requestStub.resolves(createResponseBody);
+    beforeEach(() => {
+      Qminder.setKey('EXAMPLE_API_KEY');
+      Qminder.setServer('api.qminder.com');
+      requestStub = jest.spyOn(Qminder.ApiBase, 'request');
     });
 
-    it('calls the right URL when the line is specified as number', function (done) {
-      TicketService.create(11111, createRequestBody).then(() => {
-        expect(
-          requestStub.calledWith('v1/lines/11111/ticket', createRequestBody),
-        );
-        done();
+    it('passes the parameters along to ApiBase.request correctly', async () => {
+      requestStub.mockResolvedValue(SUCCESSFUL_RESPONSE);
+      const request: TicketCreationRequest = {
+        lineId: '41299290',
+        firstName: 'James',
+        lastName: 'Baxter',
+        email: 'foo@bar.com',
+      };
+      const res = await TicketService.create(request);
+      expect(requestStub).toHaveBeenCalledWith('ticket', {
+        body: JSON.stringify(request),
+        headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        method: 'POST',
       });
-    });
-
-    it('calls the right URL when the line is specified as Line', function (done) {
-      const line = { id: 11111 };
-      TicketService.create(line.id, createRequestBody).then(() => {
-        expect(
-          requestStub.calledWith('v1/lines/11111/ticket', createRequestBody),
-        );
-        done();
-      });
-    });
-
-    it('resolves to a Ticket object', function (done) {
-      TicketService.create(11111, createRequestBody).then((response) => {
-        expect(response.id).toBe(12345);
-        done();
-      });
-    });
-
-    it('throws when line ID is missing', function () {
-      expect(() => (TicketService.create as any)(undefined, {})).toThrow();
-    });
-
-    it('throws when line is a Qminder.Line with undefined ID', function () {
-      expect(() => (TicketService.create as any)({} as any)).toThrow();
-    });
-
-    it('Sends the extras as a JSON array', function () {
-      const ticket: any = {
-        firstName: 'Jon',
-        lastName: 'Snow',
-        phoneNumber: 3185551234,
-        extra: [
-          {
-            title: 'Favorite soup',
-            value: 'Borscht',
-          },
-        ],
-      };
-
-      TicketService.create(1, ticket);
-      console.log(requestStub.firstCall.args);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({
-            body: {
-              extra: JSON.stringify(ticket.extra),
-            },
-          }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('Does not send undefined keys', function () {
-      TicketService.create(1, {} as any);
-      expect(
-        requestStub.calledWithExactly('v1/lines/1/ticket', {
-          body: {
-            firstName: undefined,
-            lastName: undefined,
-            extra: undefined,
-            email: undefined,
-          },
-          method: 'POST',
-        }),
-      ).toBeFalsy();
-      expect(
-        requestStub.calledWith('v1/lines/1/ticket', sinon.match({ body: {} })),
-      ).toBeTruthy();
-    });
-
-    it('sends last name if it is not null', function () {
-      const ticket: any = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-      };
-      TicketService.create(1, ticket);
-      TicketService.create(1, ticket);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({ body: { lastName: 'Smith', firstName: 'Jane' } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('does not send last name if it is null', function () {
-      const ticket: any = {
-        firstName: 'Jane',
-        lastName: null,
-      };
-      TicketService.create(1, ticket);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match((value) => {
-            return value.lastName === undefined;
-          }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('sends email address if it is defined', function () {
-      const ticketWithEmail: any = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-        email: 'jsmith224@example.com',
-      };
-      TicketService.create(1, ticketWithEmail);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({ body: ticketWithEmail }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('does not send email address if it is not defined', function () {
-      const ticketWithoutEmail: any = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-      };
-      TicketService.create(1, ticketWithoutEmail);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({ body: ticketWithoutEmail }),
-        ),
-      ).toBeTruthy();
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({
-            body: {
-              email: sinon.match.defined,
-            },
-          }),
-        ),
-      ).toBeFalsy();
-    });
-
-    it('sends source if it is defined', function () {
-      const ticketWithSource: any = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-        source: 'NAME',
-      };
-      TicketService.create(1, ticketWithSource);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({ body: ticketWithSource }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('does not send source if it is not defined', function () {
-      const ticketWithoutSource: any = {
-        firstName: 'Jane',
-        lastName: 'Smith',
-      };
-      TicketService.create(1, ticketWithoutSource);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({ body: ticketWithoutSource }),
-        ),
-      ).toBeTruthy();
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({
-            body: {
-              source: sinon.match.defined,
-            },
-          }),
-        ),
-      ).toBeFalsy();
-    });
-
-    it('does not send Idempotency-Key if not provided', function () {
-      const ticket: any = { firstName: 'Joe', lastName: 'Santana' };
-      TicketService.create(1, ticket);
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({ body: ticket, method: 'POST' }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('sends Idempotency-Key if provided', function () {
-      const ticket: any = { firstName: 'Joe', lastName: 'Santana' };
-      TicketService.create(1, ticket, '9e3a333e');
-      expect(
-        requestStub.calledWith(
-          'v1/lines/1/ticket',
-          sinon.match({
-            method: 'POST',
-            body: ticket,
-            headers: {
-              'Idempotency-Key': '9e3a333e',
-            },
-          }),
-        ),
-      ).toBeTruthy();
+      expect(res).toEqual(SUCCESSFUL_RESPONSE);
     });
   });
 
@@ -1030,7 +833,7 @@ describe('Ticket service', function () {
     });
 
     it('throws when ticket is missing', function () {
-      expect(() => TicketService.details(undefined)).toThrow();
+      expect(() => TicketService.details(undefined as any)).toThrow();
     });
 
     it('throws when ticket is invalid', function () {
@@ -1043,7 +846,7 @@ describe('Ticket service', function () {
     });
 
     it('does not set the email key when response does not include email', function () {
-      const responseBody = { ...detailsResponseBody };
+      const responseBody: Partial<Ticket> = { ...detailsResponseBody };
       delete responseBody.email;
 
       requestStub.resetBehavior();
@@ -1108,7 +911,7 @@ describe('Ticket service', function () {
 
     it("throws when there's no changes", function () {
       expect(function () {
-        TicketService.edit({ id: 12345 }, undefined);
+        TicketService.edit({ id: 12345 }, undefined as any);
       }).toThrow();
     });
 
@@ -1363,7 +1166,7 @@ describe('Ticket service', function () {
 
     it('includes keepActiveTicketsOpen if set to true', function (done) {
       const request = sinon.match({ keepActiveTicketsOpen: true });
-      TicketService.call(12345, null, null, true).then(() => {
+      TicketService.call(12345, null as any, null as any, true).then(() => {
         expect(
           requestStub.calledWith('v1/tickets/12345/call', {
             body: request,
@@ -1376,7 +1179,7 @@ describe('Ticket service', function () {
 
     it('includes keepActiveTicketsOpen if set to false', function (done) {
       const request = sinon.match({ keepActiveTicketsOpen: false });
-      TicketService.call(12345, null, null, false).then(() => {
+      TicketService.call(12345, null as any, null as any, false).then(() => {
         expect(
           requestStub.calledWith('v1/tickets/12345/call', {
             body: request,
@@ -1388,7 +1191,7 @@ describe('Ticket service', function () {
     });
 
     it('sends no request body if all params undefined', function (done) {
-      TicketService.call(12345, null, null).then(() => {
+      TicketService.call(12345, null as any, null as any).then(() => {
         expect(requestStub.firstCall.args[1].body).toBeUndefined();
         done();
       });
@@ -1634,7 +1437,9 @@ describe('Ticket service', function () {
     });
 
     it('does not throw an error when the user is null (#147)', function () {
-      expect(() => TicketService.addLabel(12345, 'LABEL', null)).not.toThrow();
+      expect(() =>
+        TicketService.addLabel(12345, 'LABEL', null as any),
+      ).not.toThrow();
     });
 
     it('does not throw an error when the user is a number', function () {
