@@ -89,5 +89,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "packageManager": "yarn@3.5.1"
+  "packageManager": "yarn@3.6.3"
 }
