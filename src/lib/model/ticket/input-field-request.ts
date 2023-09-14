@@ -10,10 +10,6 @@ export type InputFieldRequest =
   | ValueInputFieldRequest
   | OptionIdsInputFieldRequest;
 
-interface BaseInputFieldRequest {
-  inputFieldId: UUID;
-}
-
 /** Specify the value of a text, date or URL input field. */
 export interface ValueInputFieldRequest extends BaseInputFieldRequest {
   /** The value of the input field. Max length: 500. */
@@ -23,4 +19,8 @@ export interface ValueInputFieldRequest extends BaseInputFieldRequest {
 /** Specify the value of a select input field. */
 export interface OptionIdsInputFieldRequest extends BaseInputFieldRequest {
   optionIds: UUID[];
+}
+
+interface BaseInputFieldRequest {
+  inputFieldId: UUID;
 }
