@@ -24,7 +24,7 @@ describe('Device service', function () {
 
     it('requests the correct API URL', function () {
       DeviceService.details('1234');
-      expect(requestStub.calledWith('tv/1234')).toBeTruthy();
+      expect(requestStub.calledWith('v1/tv/1234')).toBeTruthy();
     });
 
     it('throws when the TV ID is not passed in', function () {

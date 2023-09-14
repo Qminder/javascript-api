@@ -1,7 +1,7 @@
 import * as sinon from 'sinon';
+import { Desk } from '../../model/desk';
 import { Qminder } from '../../qminder';
 import { LocationService } from './location.service';
-import { Desk } from '../../model/desk';
 
 describe('Location service', function () {
   const LOCATIONS = [
@@ -56,12 +56,12 @@ describe('Location service', function () {
 
   describe('list() - OK', function () {
     beforeEach(function () {
-      requestStub.withArgs('locations/').resolves({ data: LOCATIONS });
+      requestStub.withArgs('v1/locations/').resolves({ data: LOCATIONS });
     });
 
     it('calls ApiBase.request with GET locations/', function () {
       LocationService.list();
-      expect(requestStub.calledWith('locations/')).toBeTruthy();
+      expect(requestStub.calledWith('v1/locations/')).toBeTruthy();
     });
 
     it('resolves with an Array of Location objects', function (done) {
@@ -85,7 +85,7 @@ describe('Location service', function () {
 
   describe('list() - Fails', function () {
     it('rejects when the server errors', function (done) {
-      requestStub.withArgs('locations/').rejects({ statusCode: 500 });
+      requestStub.withArgs('v1/locations/').rejects({ statusCode: 500 });
       LocationService.list().then(
         (response) => {
           expect(response).toBeUndefined();
@@ -104,7 +104,7 @@ describe('Location service', function () {
   describe('details() - plain location', function () {
     let locationDetailsReply: any;
     beforeEach(function (done) {
-      requestStub.withArgs(`locations/${LOCATION_ID}/`).resolves(DETAILS);
+      requestStub.withArgs(`v1/locations/${LOCATION_ID}/`).resolves(DETAILS);
 
       LocationService.details(LOCATION_ID).then((details) => {
         locationDetailsReply = details;
@@ -129,7 +129,7 @@ describe('Location service', function () {
     let desksReply: any[];
     beforeEach(function (done) {
       requestStub
-        .withArgs(`locations/${LOCATION_ID}/desks`)
+        .withArgs(`v1/locations/${LOCATION_ID}/desks`)
         .resolves({ desks: DESKS });
 
       LocationService.getDesks({ id: LOCATION_ID }).then((desks) => {

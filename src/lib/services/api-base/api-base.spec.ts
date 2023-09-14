@@ -1,9 +1,9 @@
-import * as sinon from 'sinon';
 import fetch from 'cross-fetch';
-import { Qminder } from '../../qminder';
-import { SimpleError } from '../../model/errors/simple-error';
+import * as sinon from 'sinon';
 import { ComplexError } from '../../model/errors/complex-error';
+import { SimpleError } from '../../model/errors/simple-error';
 import { UnknownError } from '../../model/errors/unknown-error';
+import { Qminder } from '../../qminder';
 
 jest.mock('cross-fetch', () => {
   const crossFetch = jest.requireActual('cross-fetch');
@@ -121,20 +121,22 @@ describe('ApiBase', () => {
     });
 
     it('throws an error when setKey has not been called', async () => {
-      await expect(Qminder.ApiBase.request('locations/673/')).rejects.toThrow();
+      await expect(
+        Qminder.ApiBase.request('v1/locations/673/'),
+      ).rejects.toThrow();
     });
 
     it('does not throw an error when setKey has been called', async () => {
       Qminder.setKey(API_KEY);
       await expect(
-        Qminder.ApiBase.request('locations/673/'),
+        Qminder.ApiBase.request('v1/locations/673/'),
       ).resolves.not.toThrow();
     });
 
-    it('sends a fetch() request to https://SERVER/v1/URL', () => {
+    it('sends a fetch() request to https://SERVER/URL', () => {
       Qminder.setKey(API_KEY);
       Qminder.ApiBase.request('TEST');
-      expect(fetchSpy).toHaveBeenCalledWith('https://api.qminder.com/v1/TEST', {
+      expect(fetchSpy).toHaveBeenCalledWith('https://api.qminder.com/TEST', {
         headers: { 'X-Qminder-REST-API-Key': 'testing' },
         method: 'GET',
         mode: 'cors',
@@ -166,7 +168,7 @@ describe('ApiBase', () => {
 
       Qminder.ApiBase.request('TEST').then((response) => {
         expect(fetchSpy).toHaveBeenCalledWith(
-          'https://api.qminder.com/v1/TEST',
+          'https://api.qminder.com/TEST',
           init,
         );
         done();
@@ -175,7 +177,7 @@ describe('ApiBase', () => {
 
     it('sends POST requests when the second argument is defined', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
 
       Qminder.ApiBase.request('TEST', { body: { id: 1 } }).then(() => {
         expect(fetchSpy.mock.calls[0][1].body).toEqual('id=1');
@@ -187,7 +189,7 @@ describe('ApiBase', () => {
 
     it('sends POST requests with its third argument set as POST', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
 
       Qminder.ApiBase.request('TEST', { method: 'POST' }).then(() => {
         expect(fetchSpy.mock.calls[0][1].method).toEqual('POST');
@@ -198,7 +200,7 @@ describe('ApiBase', () => {
 
     it('sends POST requests with the request body as formdata', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
       const body = {
         id: 5,
         firstName: 'John',
@@ -217,7 +219,7 @@ describe('ApiBase', () => {
 
     it('if POSTing with urlencoded data, sets the content type correctly', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
       const body = {
         id: 5,
         firstName: 'John',
@@ -235,7 +237,7 @@ describe('ApiBase', () => {
 
     it('sets the custom HTTP headers if provided', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
       const body = {
         id: 5,
         firstName: 'John',
@@ -263,7 +265,7 @@ describe('ApiBase', () => {
 
     it('sends strings as JSON', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
       const body = JSON.stringify([123, 456, 789]);
 
       Qminder.ApiBase.request('TEST', { body: body, method: 'POST' }).then(
@@ -280,7 +282,7 @@ describe('ApiBase', () => {
 
     it('sends objects as www-form-urlencoded', (done) => {
       Qminder.setKey(API_KEY);
-      const url = 'https://api.qminder.com/v1/TEST';
+      const url = 'https://api.qminder.com/TEST';
       const body = { a: 'test' };
 
       Qminder.ApiBase.request('TEST', { body: body, method: 'POST' }).then(

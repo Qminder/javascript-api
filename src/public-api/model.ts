@@ -18,3 +18,13 @@ export { Webhook } from '../lib/model/webhook.js';
 export { SimpleError } from '../lib/model/errors/simple-error.js';
 export { ComplexError } from '../lib/model/errors/complex-error.js';
 export { UnknownError } from '../lib/model/errors/unknown-error.js';
+export { TicketCreationRequest } from '../lib/model/ticket/ticket-creation-request.js';
+export { TicketCreatedResponse } from '../lib/model/ticket/ticket-created-response.js';
+export {
+  InputFieldRequest,
+  ValueInputFieldRequest,
+  OptionIdsInputFieldRequest,
+} from '../lib/model/ticket/input-field-request.js';
+export { TicketLabelRequest } from '../lib/model/ticket/ticket-label-request.js';
+export { TicketType } from '../lib/model/ticket/ticket-type.js';
+export { UUID } from '../lib/model/uuid.js';

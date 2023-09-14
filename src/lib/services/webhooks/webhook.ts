@@ -1,6 +1,6 @@
-import { ApiBase } from '../api-base/api-base.js';
 import { Webhook } from '../../model/webhook.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
+import { ApiBase } from '../api-base/api-base.js';
 
 export const ERROR_NO_URL = 'No URL provided';
 
@@ -13,7 +13,7 @@ export function create(
     throw new Error(ERROR_NO_URL);
   }
 
-  return ApiBase.request(`webhooks`, {
+  return ApiBase.request(`v1/webhooks`, {
     body: { url: url },
     method: 'POST',
     ...headers,
@@ -22,5 +22,5 @@ export function create(
 
 export function remove(webhook: IdOrObject<Webhook>): Promise<void> {
   const id = extractId(webhook);
-  return ApiBase.request(`webhooks/${id}`, { method: 'DELETE' });
+  return ApiBase.request(`v1/webhooks/${id}`, { method: 'DELETE' });
 }

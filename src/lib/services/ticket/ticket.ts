@@ -1,13 +1,14 @@
-import { Ticket, TicketMessage } from '../../model/ticket/ticket.js';
-import { TicketStatus } from '../../model/ticket/ticket-status.js';
-import { User } from '../../model/user.js';
 import { Line } from '../../model/line.js';
+import { TicketCreatedResponse } from '../../model/ticket/ticket-created-response.js';
+import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request.js';
+import { TicketStatus } from '../../model/ticket/ticket-status.js';
+import { Ticket, TicketMessage } from '../../model/ticket/ticket.js';
+import { User } from '../../model/user.js';
 import {
+  IdOrObject,
   extractId,
   extractIdToNumber,
-  IdOrObject,
 } from '../../util/id-or-object.js';
-import { TicketCreationParameters } from '../../model/ticket/ticket-creation-parameters.js';
 import { ApiBase } from '../api-base/api-base.js';
 
 /**
@@ -240,18 +241,6 @@ export type TicketEditingParameters = Pick<
 > & { user: IdOrObject<User> };
 
 /**
- * The format of the HTTP request to send when creating a ticket.
- */
-interface TicketCreationRequest {
-  firstName?: string;
-  lastName?: string;
-  phoneNumber?: number;
-  email?: string;
-  extra?: string;
-  source?: string;
-}
-
-/**
  * The format of the HTTP request to send when editing a ticket.
  */
 interface TicketEditingRequest extends TicketCreationRequest {
@@ -294,7 +283,7 @@ export function search(search: TicketSearchCriteria): Promise<Array<Ticket>> {
     newSearch as Record<string, string>,
   ).toString();
 
-  return ApiBase.request(`tickets/search?${queryStr}`).then(
+  return ApiBase.request(`v1/tickets/search?${queryStr}`).then(
     (response: { data: Ticket[] }) => response.data,
   );
 }
@@ -325,49 +314,28 @@ export function count(search: TicketCountCriteria): Promise<number> {
   const queryStr = new URLSearchParams(
     newSearch as Record<string, string>,
   ).toString();
-  return ApiBase.request(`tickets/count?${queryStr}`).then(
+  return ApiBase.request(`v1/tickets/count?${queryStr}`).then(
     (response: { count: number }) => response.count,
   );
 }
 
 export function create(
-  line: IdOrObject<Line>,
-  ticket: TicketCreationParameters,
-  idempotencyKey?: string | number,
-): Promise<TicketCreationResponse> {
-  if (line === undefined) {
-    throw new Error(ERROR_NO_LINE_ID);
-  }
+  request: TicketCreationRequest,
+): Promise<TicketCreatedResponse> {
+  const body = JSON.stringify(request);
 
-  const lineId = extractId(line);
-
-  const converted: any = { ...ticket };
-  if (converted.lastName === null) {
-    delete converted.lastName;
-  }
-  if (converted.extra) {
-    converted.extra = JSON.stringify(converted.extra);
-  }
-
-  const requestParams: TicketCreationRequest = { ...converted };
-  const headers = idempotencyKey && {
-    'Idempotency-Key': `${idempotencyKey}`,
-  };
-
-  return ApiBase.request(`lines/${lineId}/ticket`, {
+  return ApiBase.request('ticket', {
     method: 'POST',
-    body: requestParams,
-    headers: headers,
-  }).then((response: TicketCreationResponse) => {
-    const ticketId = parseInt(`${response.id}`, 10);
-    const reply: TicketCreationResponse = { id: ticketId };
-    return reply;
+    body,
+    headers: {
+      'X-Qminder-API-Version': '2020-09-01',
+    },
   });
 }
 
 export function details(ticket: IdOrObject<Ticket>): Promise<Ticket> {
   const ticketId = extractId(ticket);
-  return ApiBase.request(`tickets/${ticketId}`) as Promise<Ticket>;
+  return ApiBase.request(`v1/tickets/${ticketId}`) as Promise<Ticket>;
 }
 
 export function edit(
@@ -394,7 +362,7 @@ export function edit(
 
   const request: TicketEditingRequest = intermediate;
 
-  return ApiBase.request(`tickets/${ticketId}/edit`, { body: request }).then(
+  return ApiBase.request(`v1/tickets/${ticketId}/edit`, { body: request }).then(
     (response: { result: 'success' }) => response.result,
   );
 }
@@ -430,7 +398,7 @@ export function call(
     request = undefined;
   }
 
-  return ApiBase.request(`tickets/${ticketId}/call`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/call`, {
     body: request,
     method: 'POST',
   });
@@ -442,9 +410,9 @@ export function recall(ticket: IdOrObject<Ticket>): Promise<'success'> {
   if (!ticketId || typeof ticketId !== 'string') {
     throw new Error(ERROR_NO_TICKET_ID);
   }
-  return ApiBase.request(`tickets/${ticketId}/recall`, { method: 'POST' }).then(
-    (response: { result: 'success' }) => response.result,
-  );
+  return ApiBase.request(`v1/tickets/${ticketId}/recall`, {
+    method: 'POST',
+  }).then((response: { result: 'success' }) => response.result);
 }
 
 export function markServed(ticket: IdOrObject<Ticket>): Promise<'success'> {
@@ -454,7 +422,7 @@ export function markServed(ticket: IdOrObject<Ticket>): Promise<'success'> {
     throw new Error(ERROR_NO_TICKET_ID);
   }
 
-  return ApiBase.request(`tickets/${ticketId}/markserved`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/markserved`, {
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
 }
@@ -465,7 +433,7 @@ export function markNoShow(ticket: IdOrObject<Ticket>): Promise<'success'> {
   if (!ticketId || typeof ticketId !== 'string') {
     throw new Error(ERROR_NO_TICKET_ID);
   }
-  return ApiBase.request(`tickets/${ticketId}/marknoshow`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/marknoshow`, {
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
 }
@@ -484,7 +452,7 @@ export function cancel(
     throw new Error(ERROR_NO_USER);
   }
 
-  return ApiBase.request(`tickets/${ticketId}/cancel`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/cancel`, {
     body: { user: userId },
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
@@ -514,7 +482,7 @@ export function returnToQueue(
     position: `${position}`,
     user: userId,
   }).toString();
-  return ApiBase.request(`tickets/${ticketId}/returntoqueue?${query}`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/returntoqueue?${query}`, {
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
 }
@@ -543,7 +511,7 @@ export function addLabel(
     body.user = userId;
   }
 
-  return ApiBase.request(`tickets/${ticketId}/labels/add`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/labels/add`, {
     body: body,
     method: 'POST',
   }).then((response: { result: 'success' | 'no action' }) => response.result);
@@ -565,7 +533,7 @@ export function setLabels(
 
   const body: { labels: Array<string> } = { labels };
 
-  return ApiBase.request(`tickets/${ticketId}/labels`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/labels`, {
     body: JSON.stringify(body),
     method: 'PUT',
   }).then((response: { result: 'success' }) => response.result);
@@ -596,7 +564,7 @@ export function removeLabel(
     user: userId,
   };
 
-  return ApiBase.request(`tickets/${ticketId}/labels/remove`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/labels/remove`, {
     body: body,
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
@@ -627,7 +595,7 @@ export function assignToUser(
     assigner: assignerId,
     assignee: assigneeId,
   };
-  return ApiBase.request(`tickets/${ticketId}/assign`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/assign`, {
     body: body,
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
@@ -650,7 +618,7 @@ export function unassign(
     );
   }
 
-  return ApiBase.request(`tickets/${ticketId}/unassign`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/unassign`, {
     body: { user: unassignerId },
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
@@ -676,7 +644,7 @@ export function reorder(
     };
   }
 
-  return ApiBase.request(`tickets/${ticketId}/reorder`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/reorder`, {
     body: postData,
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
@@ -691,7 +659,7 @@ export function getEstimatedTimeOfService(
     throw new Error(ERROR_NO_TICKET_ID);
   }
 
-  return ApiBase.request(`tickets/${ticketId}/estimated-time`).then(
+  return ApiBase.request(`v1/tickets/${ticketId}/estimated-time`).then(
     (response: { estimatedTimeOfService: number }) =>
       response.estimatedTimeOfService,
   );
@@ -705,7 +673,7 @@ export function getMessages(
   if (!ticketId || typeof ticketId !== 'string') {
     throw new Error(ERROR_NO_TICKET_ID);
   }
-  return ApiBase.request(`tickets/${ticketId}/messages`).then(
+  return ApiBase.request(`v1/tickets/${ticketId}/messages`).then(
     (response: { messages: TicketMessage[] }) => response.messages,
   );
 }
@@ -735,7 +703,7 @@ export function sendMessage(
     user: userId,
   };
 
-  return ApiBase.request(`tickets/${ticketId}/messages`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/messages`, {
     body: body,
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
@@ -771,7 +739,7 @@ export function forward(
     body.user = userId;
   }
 
-  return ApiBase.request(`tickets/${ticketId}/forward`, { body: body });
+  return ApiBase.request(`v1/tickets/${ticketId}/forward`, { body: body });
 }
 
 export function setExternalData(
@@ -804,7 +772,7 @@ export function setExternalData(
     data: JSON.stringify(data),
   };
 
-  return ApiBase.request(`tickets/${ticketId}/external`, {
+  return ApiBase.request(`v1/tickets/${ticketId}/external`, {
     body: payload,
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
