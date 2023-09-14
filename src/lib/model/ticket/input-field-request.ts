@@ -10,7 +10,7 @@ export type InputFieldRequest =
   | ValueInputFieldRequest
   | OptionIdsInputFieldRequest;
 
-export interface BaseInputFieldRequest {
+interface BaseInputFieldRequest {
   inputFieldId: UUID;
 }
 
