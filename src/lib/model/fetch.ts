@@ -26,7 +26,6 @@ export interface RequestInit {
     | 'unsafe-url';
 }
 
-
 export type HTTPMethod =
   | 'GET'
   | 'POST'

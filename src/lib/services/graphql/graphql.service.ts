@@ -295,10 +295,7 @@ export class GraphqlService {
     };
 
     try {
-      const response = await fetch(
-        `https://${this.apiServer}/${url}`,
-        body,
-      );
+      const response = await fetch(`https://${this.apiServer}/${url}`, body);
       const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
@@ -307,7 +304,7 @@ export class GraphqlService {
         `[Qminder API]: Failed fetching temporary API key! Retrying in ${
           timeOut / 1000
         } seconds!`,
-        e
+        e,
       );
       return new Promise((resolve) =>
         setTimeout(

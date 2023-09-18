@@ -6,11 +6,9 @@ import { GraphqlResponse } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
 import fetch from 'cross-fetch';
 
-
-type RequestInitWithMethodRequired = Pick<
-  RequestInit,
-  'method' | 'headers'
-> & { body?: string | File | object };
+type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
+  body?: string | File | object;
+};
 
 interface GraphqlQueryVariables {
   [key: string]: any;
