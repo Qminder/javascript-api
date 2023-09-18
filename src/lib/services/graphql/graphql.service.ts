@@ -111,7 +111,7 @@ export class GraphqlService {
 
   constructor() {
     this.setServer('api.qminder.com');
-    this.fetch = fetch;
+    this.fetch = fetch.bind(window);
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
       startWith(ConnectionStatus.CONNECTING),
