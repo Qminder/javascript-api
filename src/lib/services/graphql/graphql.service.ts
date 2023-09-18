@@ -309,6 +309,7 @@ export class GraphqlService {
         `[Qminder API]: Failed fetching temporary API key! Retrying in ${
           timeOut / 1000
         } seconds!`,
+        e
       );
       return new Promise((resolve) =>
         setTimeout(
