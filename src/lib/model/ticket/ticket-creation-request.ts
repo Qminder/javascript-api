@@ -14,10 +14,10 @@ export interface TicketCreationRequest {
   firstName: string;
   /**
    * Last name (family name) of the visitor.
-   * Can be blank.
+   * Can be blank and undefined.
    * Max length: 50
    */
-  lastName: string;
+  lastName?: string;
   /** Phone number. Regex: /^\+?[0-9]{5,20}$/ */
   phoneNumber?: string;
   /** Email address. Regex: /^\S+@\S+\.\S+$/ */

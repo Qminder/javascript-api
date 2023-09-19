@@ -1,24 +1,14 @@
-import fetch from 'cross-fetch';
 import { GraphQLError } from 'graphql';
 import { ComplexError } from '../../model/errors/complex-error.js';
 import { SimpleError } from '../../model/errors/simple-error.js';
 import { UnknownError } from '../../model/errors/unknown-error.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
+import { RequestInit } from '../../model/fetch.js';
+import fetch from 'cross-fetch';
 
-type HTTPMethod =
-  | 'GET'
-  | 'POST'
-  | 'PUT'
-  | 'PATCH'
-  | 'OPTIONS'
-  | 'HEAD'
-  | 'DELETE'
-  | 'CONNECT';
-
-type RequestInitWithMethodRequired = Pick<
-  CorrectRequestInit,
-  'method' | 'headers'
-> & { body?: string | File | object };
+type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
+  body?: string | File | object;
+};
 
 interface GraphqlQueryVariables {
   [key: string]: any;
@@ -32,36 +22,6 @@ export interface GraphqlQuery {
 export interface SuccessResponse {
   status: number;
 }
-
-// NOTE: this is defined because the RequestInit type has issues
-interface CorrectRequestInit {
-  method?: HTTPMethod;
-  headers?: {
-    [key: string]: string;
-  };
-  mode?: 'cors' | 'same-origin' | 'navigate' | 'no-cors';
-  credentials?: 'omit' | 'same-origin' | 'include';
-  cache?:
-    | 'default'
-    | 'force-cache'
-    | 'no-cache'
-    | 'no-store'
-    | 'only-if-cached'
-    | 'reload';
-  body?: string | Blob;
-  referrer?: string;
-  referrerPolicy?:
-    | ''
-    | 'no-referrer'
-    | 'no-referrer-when-downgrade'
-    | 'origin'
-    | 'origin-when-cross-origin'
-    | 'same-origin'
-    | 'strict-origin'
-    | 'strict-origin-when-cross-origin'
-    | 'unsafe-url';
-}
-
 /**
  * Base functionality of the API, such as HTTP requests with the API key.
  *
@@ -81,18 +41,6 @@ export class ApiBase {
    * @private
    */
   private static apiServer = 'api.qminder.com';
-
-  /** The fetch() function to use for API calls.
-   * @private */
-  fetch: Function;
-
-  /**
-   * Constructs a new ApiBase instance.
-   * @constructor
-   */
-  constructor() {
-    this.fetch = fetch;
-  }
 
   /**
    * Set the Qminder API key used for all requests.
@@ -125,7 +73,7 @@ export class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: CorrectRequestInit = {
+    const init: RequestInit = {
       method: options?.method || 'GET',
       mode: 'cors',
       headers: {
@@ -179,7 +127,7 @@ export class ApiBase {
       throw new Error('Please set the API key before making any requests.');
     }
 
-    const init: CorrectRequestInit = {
+    const init: RequestInit = {
       method: 'POST',
       headers: {
         'X-Qminder-REST-API-Key': this.apiKey,

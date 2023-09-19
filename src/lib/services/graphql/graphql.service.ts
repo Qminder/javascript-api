@@ -13,6 +13,7 @@ import { GraphqlResponse } from '../../model/graphql-response.js';
 import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
+import { RequestInit } from '../../model/fetch.js';
 
 type QueryOrDocument = string | DocumentNode;
 
@@ -88,8 +89,6 @@ export class GraphqlService {
   private apiKey: string;
   private apiServer: string;
 
-  fetch: Function;
-
   private socket: WebSocket = null;
 
   private connectionStatus: ConnectionStatus;
@@ -111,7 +110,6 @@ export class GraphqlService {
 
   constructor() {
     this.setServer('api.qminder.com');
-    this.fetch = fetch;
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
       startWith(ConnectionStatus.CONNECTING),
@@ -288,7 +286,7 @@ export class GraphqlService {
 
   private async fetchTemporaryApiKey(retryCount = 0): Promise<string> {
     const url = 'graphql/connection-key';
-    const body = {
+    const body: RequestInit = {
       method: 'POST',
       mode: 'cors',
       headers: {
@@ -297,10 +295,7 @@ export class GraphqlService {
     };
 
     try {
-      const response = await this.fetch(
-        `https://${this.apiServer}/${url}`,
-        body,
-      );
+      const response = await fetch(`https://${this.apiServer}/${url}`, body);
       const responseJson = await response.json();
       return responseJson.key;
     } catch (e) {
@@ -309,6 +304,7 @@ export class GraphqlService {
         `[Qminder API]: Failed fetching temporary API key! Retrying in ${
           timeOut / 1000
         } seconds!`,
+        e,
       );
       return new Promise((resolve) =>
         setTimeout(
