@@ -324,7 +324,7 @@ export function create(
 ): Promise<TicketCreatedResponse> {
   const body = JSON.stringify(request);
 
-  return ApiBase.request('ticket', {
+  return ApiBase.request('tickets', {
     method: 'POST',
     body,
     headers: {
