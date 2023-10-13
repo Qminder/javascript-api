@@ -789,7 +789,7 @@ describe('Ticket service', function () {
         email: 'foo@bar.com',
       };
       const res = await TicketService.create(request);
-      expect(requestStub).toHaveBeenCalledWith('ticket', {
+      expect(requestStub).toHaveBeenCalledWith('tickets', {
         body: JSON.stringify(request),
         headers: { 'X-Qminder-API-Version': '2020-09-01' },
         method: 'POST',
