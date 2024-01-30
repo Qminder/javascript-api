@@ -41,9 +41,12 @@ describe('GraphQL subscriptions', () => {
     await fixture.consumeSubscribeMessage();
     await fixture.closeWithError(1006);
     fixture.openServer();
-    window.dispatchEvent(new Event('offline')); // sends ping
-    // 2 s timer expires (ping timeout)
+    jest.useFakeTimers();
+    window.dispatchEvent(new Event('offline'));
+    // 12 s timer expires (ping timeout)
     // reconnect starts
+    jest.advanceTimersToNextTimerAsync();
+    jest.useRealTimers()
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
     subscription.unsubscribe();
