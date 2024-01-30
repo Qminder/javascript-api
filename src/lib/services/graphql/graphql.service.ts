@@ -72,7 +72,7 @@ enum MessageType {
   GQL_ERROR = 'error',
 }
 
-const PONG_TIMEOUT_IN_MS = 2000;
+const PONG_TIMEOUT_IN_MS = 12000;
 const PING_PONG_INTERVAL_IN_MS = 20000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
