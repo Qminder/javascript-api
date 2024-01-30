@@ -46,7 +46,7 @@ describe('GraphQL subscriptions', () => {
     // 12 s timer expires (ping timeout)
     // reconnect starts
     jest.advanceTimersToNextTimerAsync();
-    jest.useRealTimers()
+    jest.useRealTimers();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
     subscription.unsubscribe();
