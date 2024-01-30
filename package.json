@@ -47,7 +47,7 @@
     "@babel/core": "7.23.7",
     "@babel/preset-env": "7.23.8",
     "@types/jest": "29.5.11",
-    "@types/node": "18.19.6",
+    "@types/node": "20.11.5",
     "@types/sinon": "10.0.20",
     "@typescript-eslint/eslint-plugin": "^6.0.0",
     "@typescript-eslint/parser": "^6.0.0",
@@ -89,5 +89,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "packageManager": "yarn@3.6.4"
+  "packageManager": "yarn@3.7.0"
 }
