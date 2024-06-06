@@ -44,8 +44,8 @@
   "types": "./build/index.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
-    "@babel/core": "7.24.5",
-    "@babel/preset-env": "7.24.5",
+    "@babel/core": "7.24.7",
+    "@babel/preset-env": "7.24.7",
     "@types/jest": "29.5.12",
     "@types/node": "20.14.2",
     "@types/sinon": "10.0.20",
