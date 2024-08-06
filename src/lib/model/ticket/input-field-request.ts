@@ -5,13 +5,13 @@ export type InputFieldRequest =
   | OptionIdsInputFieldRequest;
 
 export interface ValueInputFieldRequest extends BaseInputFieldRequest {
-  readonly value: string | number;
+  value: string | number;
 }
 
 export interface OptionIdsInputFieldRequest extends BaseInputFieldRequest {
-  readonly optionIds: UUID[];
+  optionIds: UUID[];
 }
 
 interface BaseInputFieldRequest {
-  readonly inputFieldId: UUID;
+  inputFieldId: UUID;
 }
