@@ -2647,12 +2647,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.14.5":
-  version: 20.14.5
-  resolution: "@types/node@npm:20.14.5"
+"@types/node@npm:20.14.15":
+  version: 20.14.15
+  resolution: "@types/node@npm:20.14.15"
   dependencies:
     undici-types: ~5.26.4
-  checksum: b337784407edbdd374b25149e9dfce80368846a9b0dc5b7d88a2591572ec87a5d87c11c9ddc1906294aef26a1ad889d56be8b08de6be3ce1256b8d9a836bc7d8
+  checksum: 0407600c1a426efd3e97c94ef1c13edce453142a06ea4be7102bf7be3e907ea578872c7795988a72e981b8ffe942f8cfaafd98552ba82915cd6f963dd1fa9adc
   languageName: node
   linkType: hard
 
@@ -7690,7 +7690,7 @@ __metadata:
     "@babel/core": 7.24.7
     "@babel/preset-env": 7.24.7
     "@types/jest": 29.5.12
-    "@types/node": 20.14.5
+    "@types/node": 20.14.15
     "@types/sinon": 17.0.3
     "@types/ws": ^8.0.0
     "@typescript-eslint/eslint-plugin": ^7.0.0
