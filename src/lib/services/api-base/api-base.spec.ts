@@ -77,7 +77,7 @@ describe('ApiBase', () => {
     (Qminder.ApiBase as any).apiKey = undefined;
     (Qminder.ApiBase as any).apiServer = 'api.qminder.com';
 
-    fetchSpy = fetch;
+    fetchSpy = jest.spyOn(global, 'fetch');
   });
 
   afterEach(() => {
