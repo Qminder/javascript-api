@@ -1,19 +1,8 @@
-import fetch from 'cross-fetch';
 import * as sinon from 'sinon';
 import { ComplexError } from '../../model/errors/complex-error';
 import { SimpleError } from '../../model/errors/simple-error';
 import { UnknownError } from '../../model/errors/unknown-error';
 import { Qminder } from '../../qminder';
-
-jest.mock('cross-fetch', () => {
-  const crossFetch = jest.requireActual('cross-fetch');
-  return {
-    __esModule: true,
-    ...crossFetch,
-    fetch: jest.fn(),
-    default: jest.fn(),
-  };
-});
 
 /**
  * A function that generates an object with the following keys:
