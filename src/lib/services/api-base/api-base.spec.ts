@@ -1,3 +1,7 @@
+// Needed because JSDOM does not support fetch
+// See https://github.com/jsdom/jsdom/issues/1724
+import 'cross-fetch/polyfill';
+
 import * as sinon from 'sinon';
 import { ComplexError } from '../../model/errors/complex-error';
 import { SimpleError } from '../../model/errors/simple-error';
