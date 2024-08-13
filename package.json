@@ -28,7 +28,7 @@
   "license": "Apache-2.0",
   "type": "module",
   "engines": {
-    "node": ">=14.0"
+    "node": ">=18.0"
   },
   "browserslist": [
     "last 2 major versions"
