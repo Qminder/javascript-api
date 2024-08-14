@@ -2647,7 +2647,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.14.15":
+"@types/node@npm:^20.14.15":
   version: 20.14.15
   resolution: "@types/node@npm:20.14.15"
   dependencies:
@@ -7690,7 +7690,7 @@ __metadata:
     "@babel/core": 7.24.7
     "@babel/preset-env": 7.24.7
     "@types/jest": 29.5.12
-    "@types/node": 20.14.15
+    "@types/node": ^20.14.15
     "@types/sinon": 17.0.3
     "@types/ws": ^8.0.0
     "@typescript-eslint/eslint-plugin": ^7.0.0
