@@ -44,8 +44,8 @@
   "types": "./build/index.d.ts",
   "repository": "Qminder/javascript-api",
   "devDependencies": {
-    "@babel/core": "7.24.7",
-    "@babel/preset-env": "7.24.7",
+    "@babel/core": "7.25.2",
+    "@babel/preset-env": "7.25.3",
     "@types/jest": "29.5.12",
     "@types/node": "^20.14.15",
     "@types/sinon": "17.0.3",
@@ -89,5 +89,5 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
-  "packageManager": "yarn@3.8.2"
+  "packageManager": "yarn@3.8.4"
 }
