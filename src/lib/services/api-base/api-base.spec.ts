@@ -1,19 +1,12 @@
-import fetch from 'cross-fetch';
+// Needed because JSDOM does not support fetch
+// See https://github.com/jsdom/jsdom/issues/1724
+import 'cross-fetch/polyfill';
+
 import * as sinon from 'sinon';
 import { ComplexError } from '../../model/errors/complex-error';
 import { SimpleError } from '../../model/errors/simple-error';
 import { UnknownError } from '../../model/errors/unknown-error';
 import { Qminder } from '../../qminder';
-
-jest.mock('cross-fetch', () => {
-  const crossFetch = jest.requireActual('cross-fetch');
-  return {
-    __esModule: true,
-    ...crossFetch,
-    fetch: jest.fn(),
-    default: jest.fn(),
-  };
-});
 
 /**
  * A function that generates an object with the following keys:
@@ -88,7 +81,7 @@ describe('ApiBase', () => {
     (Qminder.ApiBase as any).apiKey = undefined;
     (Qminder.ApiBase as any).apiServer = 'api.qminder.com';
 
-    fetchSpy = fetch;
+    fetchSpy = jest.spyOn(global, 'fetch');
   });
 
   afterEach(() => {

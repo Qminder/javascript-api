@@ -4,7 +4,6 @@ import { SimpleError } from '../../model/errors/simple-error.js';
 import { UnknownError } from '../../model/errors/unknown-error.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
-import fetch from 'cross-fetch';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
