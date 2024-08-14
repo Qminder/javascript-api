@@ -5507,10 +5507,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:15.8.0":
-  version: 15.8.0
-  resolution: "graphql@npm:15.8.0"
-  checksum: 423325271db8858428641b9aca01699283d1fe5b40ef6d4ac622569ecca927019fce8196208b91dd1d8eb8114f00263fe661d241d0eb40c10e5bfd650f86ec5e
+"graphql@npm:15.9.0":
+  version: 15.9.0
+  resolution: "graphql@npm:15.9.0"
+  checksum: fecf48b878baf8bd1d943b79860554f9e0bdf8d23a8f014356209fedcc1f1353729388538842d8a4a79078ea75b3f24d504d074223c815acf9b6059837c5c934
   languageName: node
   linkType: hard
 
@@ -7961,7 +7961,7 @@ __metadata:
     eslint-config-prettier: 9.1.0
     eslint-import-resolver-typescript: ^3.5.3
     eslint-plugin-import: ^2.27.5
-    graphql: 15.8.0
+    graphql: 15.9.0
     graphql-tag: 2.12.6
     isomorphic-ws: ^5.0.0
     jest: ^29.4.0
