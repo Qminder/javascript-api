@@ -299,7 +299,7 @@ export class GraphqlService {
       return responseJson.key;
     } catch (e) {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-      if (navigator.onLine) {
+      if (this.isBrowserOnline()) {
         console.warn(
           `[Qminder API]: Failed fetching temporary API key! Retrying in ${
             timeOut / 1000
@@ -382,7 +382,7 @@ export class GraphqlService {
 
     socket.onerror = () => {
       const message = '[Qminder API]: Websocket error occurred!';
-      if (navigator.onLine) {
+      if (this.isBrowserOnline()) {
         console.error(message);
       } else {
         console.info(message);
@@ -516,7 +516,7 @@ export class GraphqlService {
     if (this.connectionStatus === ConnectionStatus.CONNECTING) {
       return;
     }
-    if (navigator.onLine) {
+    if (this.isBrowserOnline()) {
       console.warn(`[Qminder API]: Websocket connection dropped!`);
     } else {
       console.info(
@@ -532,5 +532,16 @@ export class GraphqlService {
   private clearPingMonitoring(): void {
     clearTimeout(this.pongTimeout);
     clearInterval(this.pingPongInterval);
+  }
+
+  /**
+   * Returns the online status of the browser.
+   * In the non-browser environment (NodeJS) this always returns true.
+   */
+  private isBrowserOnline(): boolean {
+    if (!navigator) {
+      return true;
+    }
+    return navigator.onLine;
   }
 }
