@@ -539,7 +539,7 @@ export class GraphqlService {
    * In the non-browser environment (NodeJS) this always returns true.
    */
   private isBrowserOnline(): boolean {
-    if (!navigator) {
+    if (typeof navigator === 'undefined') {
       return true;
     }
     return navigator.onLine;
