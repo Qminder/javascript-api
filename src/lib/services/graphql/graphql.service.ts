@@ -301,15 +301,17 @@ export class GraphqlService {
       const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
       if (navigator.onLine) {
         console.warn(
-            `[Qminder API]: Failed fetching temporary API key! Retrying in ${
-                timeOut / 1000
-            } seconds`,
-            e,
+          `[Qminder API]: Failed fetching temporary API key! Retrying in ${
+            timeOut / 1000
+          } seconds`,
+          e,
         );
       } else {
-        console.info(`[Qminder API]: Failed fetching temporary API key! We are offline. Retrying in ${
+        console.info(
+          `[Qminder API]: Failed fetching temporary API key! We are offline. Retrying in ${
             timeOut / 1000
-        } seconds`);
+          } seconds`,
+        );
       }
       return new Promise((resolve) =>
         setTimeout(
@@ -517,7 +519,9 @@ export class GraphqlService {
     if (navigator.onLine) {
       console.warn(`[Qminder API]: Websocket connection dropped!`);
     } else {
-      console.info(`[Qminder API]: Websocket connection dropped. We are offline.`);
+      console.info(
+        `[Qminder API]: Websocket connection dropped. We are offline.`,
+      );
     }
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
