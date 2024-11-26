@@ -22,6 +22,8 @@ export interface TicketCreationRequest {
   phoneNumber?: string;
   /** Email address. Regex: /^\S+@\S+\.\S+$/ */
   email?: string;
+  /** Formatted in ISO 639-1. */
+  languageCode?: string;
   /** Ticket's source. If unspecified, falls back to TicketType.MANUAL */
   source?: TicketType;
   fields?: InputFieldRequest[];
