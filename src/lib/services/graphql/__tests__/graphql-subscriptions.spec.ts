@@ -1,4 +1,5 @@
 import gql from 'graphql-tag';
+import fetchMock from 'jest-fetch-mock';
 import { WebSocket } from 'mock-socket';
 import { Subscriber } from 'rxjs';
 import { ConnectionStatus } from '../../../model/connection-status';
@@ -26,7 +27,9 @@ describe('GraphQL subscriptions', () => {
   let fixture: GraphQLSubscriptionsFixture;
 
   beforeEach(async () => {
+    fetchMock.enableMocks();
     fixture = new GraphQLSubscriptionsFixture();
+    fixture.mockApiKeyFetching();
   });
 
   afterEach(async () => {
@@ -372,6 +375,27 @@ describe('GraphQL subscriptions', () => {
 
     subscription.unsubscribe();
   });
+
+  describe('API Key', () => {
+    it('fetches temporary API key', () => {
+      fixture.graphqlService.setKey('initialkey');
+      fixture.unmockApiKeyFetching();
+
+      fetchMock.mockResponseOnce(JSON.stringify({ key: '12345' }));
+      fixture.triggerSubscription();
+
+      expect(fetch).toHaveBeenCalledTimes(1);
+      expect(fetch).toHaveBeenCalledWith(
+        'https://api.qminder.com/graphql/connection-key',
+        {
+          headers: { 'X-Qminder-REST-API-Key': 'initialkey' },
+          method: 'POST',
+          mode: 'cors',
+        },
+      );
+    });
+  });
+
   function useFakeSetInterval() {
     jest.useFakeTimers({
       doNotFake: [
