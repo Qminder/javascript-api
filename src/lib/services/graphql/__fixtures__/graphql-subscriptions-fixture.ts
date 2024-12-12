@@ -25,8 +25,8 @@ export class GraphQLSubscriptionsFixture {
 
   mockApiKeyFetching() {
     this.#apiKeyMock = jest
-        .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
-        .mockResolvedValue(DUMMY_API_KEY);
+      .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
+      .mockResolvedValue(DUMMY_API_KEY);
   }
 
   unmockApiKeyFetching() {

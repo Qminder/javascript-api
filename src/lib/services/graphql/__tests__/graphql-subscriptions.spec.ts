@@ -385,11 +385,14 @@ describe('GraphQL subscriptions', () => {
       fixture.triggerSubscription();
 
       expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith('https://api.qminder.com/graphql/connection-key', {
-        headers: { 'X-Qminder-REST-API-Key': 'initialkey' },
-        method: 'POST',
-        mode: 'cors',
-      });
+      expect(fetch).toHaveBeenCalledWith(
+        'https://api.qminder.com/graphql/connection-key',
+        {
+          headers: { 'X-Qminder-REST-API-Key': 'initialkey' },
+          method: 'POST',
+          mode: 'cors',
+        },
+      );
     });
   });
 
