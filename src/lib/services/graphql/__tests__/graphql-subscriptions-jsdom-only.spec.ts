@@ -28,6 +28,7 @@ describe('GraphQL subscriptions', () => {
 
   beforeEach(async () => {
     fixture = new GraphQLSubscriptionsFixture();
+    fixture.mockApiKeyFetching();
   });
 
   afterEach(async () => {
