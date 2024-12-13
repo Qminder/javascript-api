@@ -10,6 +10,9 @@ describe('Temporary API Key Service', function () {
 
   beforeEach(async () => {
     fetchMock.enableMocks();
+
+    jest.spyOn(global.console, 'info').mockImplementation();
+    jest.spyOn(global.console, 'error').mockImplementation();
   });
 
   afterEach(async () => {
@@ -43,6 +46,7 @@ describe('Temporary API Key Service', function () {
   it('tries again when server responds with 5XX error', async () => {
     fetchMock.mockResponses(
       ['{}', { status: 500, statusText: 'Internal Server Error' }],
+      [JSON.stringify({ key: '12345' }), { status: 200 }],
       [JSON.stringify({ key: '12345' }), { status: 200 }],
     );
     await service.fetchTemporaryApiKey();
