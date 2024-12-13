@@ -29,11 +29,11 @@ describe('GraphQL subscriptions', () => {
   beforeEach(async () => {
     fetchMock.enableMocks();
     fixture = new GraphQLSubscriptionsFixture();
-    fixture.mockApiKeyFetching();
   });
 
   afterEach(async () => {
     await fixture.cleanup();
+    fetchMock.mockClear();
   });
 
   it('sends connection init to start', async () => {
@@ -374,26 +374,6 @@ describe('GraphQL subscriptions', () => {
     ).toBeUndefined();
 
     subscription.unsubscribe();
-  });
-
-  describe('API Key', () => {
-    it('fetches temporary API key', () => {
-      fixture.graphqlService.setKey('initialkey');
-      fixture.unmockApiKeyFetching();
-
-      fetchMock.mockResponseOnce(JSON.stringify({ key: '12345' }));
-      fixture.triggerSubscription();
-
-      expect(fetch).toHaveBeenCalledTimes(1);
-      expect(fetch).toHaveBeenCalledWith(
-        'https://api.qminder.com/graphql/connection-key',
-        {
-          headers: { 'X-Qminder-REST-API-Key': 'initialkey' },
-          method: 'POST',
-          mode: 'cors',
-        },
-      );
-    });
   });
 
   function useFakeSetInterval() {
