@@ -14,23 +14,17 @@ const SERVER_URL = `ws://localhost:${PORT}`;
 export class GraphQLSubscriptionsFixture {
   graphqlService = new GraphqlService();
   server: WS;
-  #apiKeyMock: jest.SpyInstance | undefined;
 
   constructor() {
+    this.graphqlService.setKey('permanentkey');
     this.openServer();
     jest
       .spyOn(this.graphqlService as any, 'getServerUrl')
       .mockReturnValue(SERVER_URL);
-  }
 
-  mockApiKeyFetching() {
-    this.#apiKeyMock = jest
+    jest
       .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
       .mockResolvedValue(DUMMY_API_KEY);
-  }
-
-  unmockApiKeyFetching() {
-    this.#apiKeyMock?.mockRestore();
   }
 
   triggerSubscription(

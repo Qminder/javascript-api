@@ -12,7 +12,7 @@ import { GraphqlResponse } from '../../model/graphql-response.js';
 import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
-import { RequestInit } from '../../model/fetch.js';
+import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service';
 
 type QueryOrDocument = string | DocumentNode;
 
@@ -85,7 +85,6 @@ const CLIENT_SIDE_CLOSE_EVENT = 1000;
  * trying to import GraphQLService.
  */
 export class GraphqlService {
-  private apiKey: string;
   private apiServer: string;
 
   private socket: WebSocket = null;
@@ -98,6 +97,7 @@ export class GraphqlService {
   private subscriptions: Subscription[] = [];
   private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
   private subscriptionConnection$: Observable<ConnectionStatus>;
+  private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
   private pongTimeout: any;
   private pingPongInterval: any;
@@ -237,7 +237,10 @@ export class GraphqlService {
    * @hidden
    */
   setKey(apiKey: string) {
-    this.apiKey = apiKey;
+    this.temporaryApiKeyService = new TemporaryApiKeyService(
+      this.apiServer,
+      apiKey,
+    );
   }
 
   /**
@@ -278,48 +281,17 @@ export class GraphqlService {
     }
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
     console.info('[Qminder API]: Connecting to websocket');
-    this.fetchTemporaryApiKey().then((temporaryApiKey: string) => {
-      this.createSocketConnection(temporaryApiKey);
-    });
+    this.fetchTemporaryApiKey()
+      .then((temporaryApiKey: string) => {
+        this.createSocketConnection(temporaryApiKey);
+      })
+      .catch((e) => {
+        throw e;
+      });
   }
 
-  private async fetchTemporaryApiKey(retryCount = 0): Promise<string> {
-    const url = 'graphql/connection-key';
-    const body: RequestInit = {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'X-Qminder-REST-API-Key': this.apiKey,
-      },
-    };
-
-    try {
-      const response = await fetch(`https://${this.apiServer}/${url}`, body);
-      const responseJson = await response.json();
-      return responseJson.key;
-    } catch (e) {
-      const timeOut = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-      if (this.isBrowserOnline()) {
-        console.warn(
-          `[Qminder API]: Failed fetching temporary API key! Retrying in ${
-            timeOut / 1000
-          } seconds`,
-          e,
-        );
-      } else {
-        console.info(
-          `[Qminder API]: Failed fetching temporary API key! We are offline. Retrying in ${
-            timeOut / 1000
-          } seconds`,
-        );
-      }
-      return new Promise((resolve) =>
-        setTimeout(
-          () => resolve(this.fetchTemporaryApiKey(retryCount + 1)),
-          timeOut,
-        ),
-      );
-    }
+  private async fetchTemporaryApiKey(): Promise<string> {
+    return this.temporaryApiKeyService.fetchTemporaryApiKey();
   }
 
   private getServerUrl(temporaryApiKey: string): string {
