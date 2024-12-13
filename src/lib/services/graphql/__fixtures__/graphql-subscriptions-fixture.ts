@@ -23,8 +23,8 @@ export class GraphQLSubscriptionsFixture {
       .mockReturnValue(SERVER_URL);
 
     jest
-        .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
-        .mockResolvedValue(DUMMY_API_KEY);
+      .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
+      .mockResolvedValue(DUMMY_API_KEY);
   }
 
   triggerSubscription(
