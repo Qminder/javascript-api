@@ -51,4 +51,12 @@ describe('Temporary API Key Service', function () {
     );
     await service.fetchTemporaryApiKey();
   });
+
+  it('tries again when response does not contain key', async () => {
+    fetchMock.mockResponses(
+      ['{}', { status: 200 }],
+      [JSON.stringify({ key: '12345' }), { status: 200 }],
+    );
+    await service.fetchTemporaryApiKey();
+  });
 });

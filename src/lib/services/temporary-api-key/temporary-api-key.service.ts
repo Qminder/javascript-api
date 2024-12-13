@@ -49,7 +49,14 @@ export class TemporaryApiKeyService {
 
     try {
       const responseJson = await response.json();
-      return responseJson.key;
+      const key = responseJson.key;
+      if (typeof key === 'undefined') {
+        throw new Error(
+          `Response does not contain key. Response: ${JSON.stringify(
+            responseJson,
+          )}`,
+        );
+      }
     } catch (e) {
       console.error(
         '[Qminder API]: Failed to parse the temporary API key response',
