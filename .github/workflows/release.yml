@@ -3,6 +3,10 @@ on:
     types:
       - published
 
+defaults:
+  run:
+    working-directory: ./packages/javascript-api
+
 name: Release
 jobs:
   release:
