@@ -14,7 +14,6 @@
     "lint-prettier": "prettier --check .",
     "lint": "yarn lint-eslint && yarn lint-prettier",
     "format": "prettier --write .",
-    "build": "sh ./scripts/build.sh",
     "docs": "sh ./scripts/build-documentation.sh",
     "prepack": "yarn run build",
     "watch": "tsc -w",
@@ -53,7 +52,7 @@
     "webpack-cli": "^5.0.1"
   },
   "workspaces": [
-    "./packages/*"
+    "packages/*"
   ],
   "packageManager": "yarn@4.5.3"
 }

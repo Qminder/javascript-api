@@ -6481,13 +6481,43 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qminder-api@workspace:packages/sdk":
+"qminder-api@workspace:packages/javascript-api":
   version: 0.0.0-use.local
-  resolution: "qminder-api@workspace:packages/sdk"
+  resolution: "qminder-api@workspace:packages/javascript-api"
   dependencies:
+    "@babel/core": "npm:7.26.0"
+    "@babel/preset-env": "npm:7.26.0"
+    "@types/jest": "npm:29.5.14"
+    "@types/node": "npm:^20.14.15"
+    "@types/sinon": "npm:17.0.3"
     "@types/ws": "npm:^8.0.0"
+    "@typescript-eslint/eslint-plugin": "npm:^8.0.0"
+    "@typescript-eslint/parser": "npm:^8.0.0"
+    cross-fetch: "npm:^4.0.0"
     es6-promise: "npm:^4.1.1"
+    eslint: "npm:^8.32.0"
+    eslint-config-prettier: "npm:9.1.0"
+    eslint-import-resolver-typescript: "npm:^3.5.3"
+    eslint-plugin-import: "npm:^2.27.5"
+    graphql: "npm:15.9.0"
+    graphql-tag: "npm:2.12.6"
     isomorphic-ws: "npm:^5.0.0"
+    jest: "npm:^29.4.0"
+    jest-environment-jsdom: "npm:^29.4.0"
+    jest-fetch-mock: "npm:^3.0.3"
+    jest-sinon: "npm:1.1.0"
+    jest-websocket-mock: "npm:^2.4.0"
+    mock-socket: "npm:9.2.1"
+    prettier: "npm:2.8.8"
+    rxjs: "npm:7.8.1"
+    sinon: "npm:15.1.0"
+    ts-jest: "npm:^29.0.5"
+    ts-jest-resolver: "npm:^2.0.0"
+    ts-loader: "npm:^9.4.2"
+    typedoc: "npm:0.27.4"
+    typescript: "npm:5.5.4"
+    webpack: "npm:^5.75.0"
+    webpack-cli: "npm:^5.0.1"
     ws: "npm:^8.0.0"
   peerDependencies:
     graphql: ">= 15.5.1"
