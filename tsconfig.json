@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "module": "es2020",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "target": "es2020",
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "outDir": "build",
+    "typeRoots": ["node_modules/@types"],
+    "declaration": true
+  },
+  "paths": {
+    "sdk": ["dist/sdk"],
+    "sdk/*": ["dist/sdk/*"]
+  }
+}

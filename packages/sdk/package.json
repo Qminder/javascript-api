@@ -11,8 +11,7 @@
     "build": "sh ./scripts/build.sh",
     "docs": "sh ./scripts/build-documentation.sh",
     "prepack": "yarn run build",
-    "watch": "tsc -w",
-    "example-new-visitors": "ts-node examples/events/new-visitors.ts"
+    "watch": "tsc -w"
   },
   "keywords": [
     "qminder",
