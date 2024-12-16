@@ -1,6 +1,11 @@
 on:
   - push
   - release
+
+defaults:
+  run:
+    working-directory: ./packages/javascript-api
+
 name: Report code coverage
 jobs:
   code-coverage:
