@@ -7,8 +7,24 @@
     "node": "^20.15.0",
     "yarn": "4.x"
   },
+  "scripts": {
+    "test": "jest",
+    "test-node": "jest --env=node",
+    "lint-eslint": "eslint --ext ts .",
+    "lint-prettier": "prettier --check .",
+    "lint": "yarn lint-eslint && yarn lint-prettier",
+    "format": "prettier --write .",
+    "build": "sh ./scripts/build.sh",
+    "docs": "sh ./scripts/build-documentation.sh",
+    "prepack": "yarn run build",
+    "watch": "tsc -w",
+    "example-new-visitors": "ts-node examples/events/new-visitors.ts"
+  },
+  "devDependencies": {
+    "prettier": "2.8.8"
+  },
   "workspaces": [
     "./packages/*"
   ],
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+  "packageManager": "yarn@4.5.3"
 }

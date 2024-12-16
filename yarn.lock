@@ -6508,7 +6508,6 @@ __metadata:
     jest-sinon: "npm:1.1.0"
     jest-websocket-mock: "npm:^2.4.0"
     mock-socket: "npm:9.2.1"
-    prettier: "npm:2.8.8"
     rxjs: "npm:7.8.1"
     sinon: "npm:15.1.0"
     ts-jest: "npm:^29.0.5"
@@ -6529,6 +6528,8 @@ __metadata:
 "qminder@workspace:.":
   version: 0.0.0-use.local
   resolution: "qminder@workspace:."
+  dependencies:
+    prettier: "npm:2.8.8"
   languageName: unknown
   linkType: soft
 
