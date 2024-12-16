@@ -57,6 +57,7 @@ describe('Temporary API Key Service', function () {
       ['{}', { status: 200 }],
       [JSON.stringify({ key: '12345' }), { status: 200 }],
     );
-    await service.fetchTemporaryApiKey();
+    let temporaryKey = await service.fetchTemporaryApiKey();
+    expect(temporaryKey).toEqual('12345');
   });
 });

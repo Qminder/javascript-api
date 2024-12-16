@@ -57,6 +57,7 @@ export class TemporaryApiKeyService {
           )}`,
         );
       }
+      return key;
     } catch (e) {
       console.error(
         '[Qminder API]: Failed to parse the temporary API key response',
@@ -68,12 +69,7 @@ export class TemporaryApiKeyService {
 
   private async retry(retryCount = 0): Promise<string> {
     const timeOutMs = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-    const timeOutSec = timeOutMs / 1000;
-    console.info(
-      `[Qminder API]: Retrying to fetch API key in ${
-        timeOutSec / 1000
-      } seconds`,
-    );
+    console.info(`[Qminder API]: Retrying to fetch API key in ${timeOutMs} ms`);
     await sleepMs(timeOutMs);
     return this.fetchTemporaryApiKey(retryCount + 1);
   }
