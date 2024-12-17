@@ -1,0 +1,16 @@
+{
+  "name": "qminder-graphql-events-example",
+  "version": "1.0.0",
+  "description": "Example of using GraphQL events",
+  "main": "app.ts",
+  "scripts": {
+    "build": "tsc -p .",
+    "start": "tsc -p . && tsx app.ts"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "5.5.4"
+  },
+  "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
+  "license": "Apache-2.0"
+}
