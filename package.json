@@ -9,7 +9,7 @@
   "scripts": {
     "test": "jest",
     "test-node": "jest --env=node",
-    "lint-eslint": "eslint --ext ts .",
+    "lint-eslint": "yarn workspace qminder-api build && eslint --ext ts .",
     "lint-prettier": "prettier --check .",
     "lint": "yarn lint-eslint && yarn lint-prettier",
     "format": "prettier --write .",
