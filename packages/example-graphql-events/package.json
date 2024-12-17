@@ -4,8 +4,8 @@
   "description": "Example of using GraphQL events",
   "main": "app.ts",
   "scripts": {
-    "build": "tsc -p .",
-    "start": "yarn workspace qminder-api build && yarn build && tsx app.ts",
+    "build": "yarn workspace qminder-api build && tsc -p .",
+    "start": "yarn build && tsx app.ts",
     "example-graphql-events": "yarn start"
   },
   "devDependencies": {
