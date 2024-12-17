@@ -5,7 +5,8 @@
   "main": "app.ts",
   "scripts": {
     "build": "tsc -p .",
-    "start": "tsc -p . && tsx app.ts"
+    "start": "yarn build && tsx app.ts",
+    "example-graphql-events": "yarn start"
   },
   "devDependencies": {
     "tsx": "^4.19.2",

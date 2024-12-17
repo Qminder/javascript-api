@@ -16,7 +16,7 @@
     "docs": "sh ./scripts/build-documentation.sh",
     "prepack": "yarn run build",
     "watch": "tsc -w",
-    "example-graphql-events": "cd packages/example-graphql-events && yarn start"
+    "example-graphql-events": "yarn workspace qminder-graphql-events-example start"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^8.0.0",
