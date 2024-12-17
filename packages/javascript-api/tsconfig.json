@@ -12,7 +12,10 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "outDir": "build",
-    "typeRoots": ["node_modules/@types"],
+    "rootDir": "src",
     "declaration": true
-  }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/*.spec.ts"],
+  "files": ["src/index.ts"]
 }

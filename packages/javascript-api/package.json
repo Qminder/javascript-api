@@ -1,0 +1,82 @@
+{
+  "name": "qminder-api",
+  "version": "13.4.0",
+  "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
+  "scripts": {
+    "test": "jest",
+    "test-node": "jest --env=node",
+    "format": "prettier --write .",
+    "build": "tsc -p .",
+    "docs": "sh ./scripts/build-documentation.sh",
+    "prepack": "yarn run build",
+    "watch": "tsc -w"
+  },
+  "keywords": [
+    "qminder",
+    "api",
+    "websockets",
+    "restful",
+    "queue management"
+  ],
+  "homepage": "https://www.qminder.com/docs/api/",
+  "bugs": "https://github.com/Qminder/javascript-api/issues",
+  "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
+  "license": "Apache-2.0",
+  "type": "module",
+  "engines": {
+    "node": "^20.15.0"
+  },
+  "browserslist": [
+    "last 2 major versions"
+  ],
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js",
+      "default": "./build/index.js"
+    }
+  },
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "repository": "Qminder/javascript-api",
+  "dependencies": {
+    "@types/ws": "^8.0.0",
+    "es6-promise": "^4.1.1",
+    "isomorphic-ws": "^5.0.0",
+    "ws": "^8.0.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.26.0",
+    "@babel/preset-env": "7.26.0",
+    "@types/jest": "29.5.14",
+    "@types/node": "^20.14.15",
+    "@types/sinon": "17.0.3",
+    "cross-fetch": "^4.0.0",
+    "graphql": "15.9.0",
+    "graphql-tag": "2.12.6",
+    "jest": "^29.4.0",
+    "jest-environment-jsdom": "^29.4.0",
+    "jest-fetch-mock": "^3.0.3",
+    "jest-sinon": "1.1.0",
+    "jest-websocket-mock": "^2.4.0",
+    "mock-socket": "9.2.1",
+    "rxjs": "7.8.1",
+    "sinon": "15.1.0",
+    "ts-jest": "^29.0.5",
+    "ts-jest-resolver": "^2.0.0",
+    "ts-loader": "^9.4.2",
+    "typedoc": "0.27.4",
+    "typescript": "5.5.4",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  },
+  "peerDependencies": {
+    "graphql": ">= 15.5.1",
+    "graphql-tag": ">= 2.12.5",
+    "rxjs": ">= 7.8.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  }
+}
