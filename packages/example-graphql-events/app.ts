@@ -40,7 +40,9 @@ async function findFirstLocationId(): Promise<Location> {
 async function listenForTickets() {
   if (!process.env.API_KEY) {
     console.error('Please set API key first by executing "export API_KEY=XXX"');
-    console.error('More information: https://developer.qminder.com/reference/overview');
+    console.error(
+      'More information: https://developer.qminder.com/reference/overview',
+    );
     process.exit(1);
   }
 
