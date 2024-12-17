@@ -280,7 +280,7 @@ export class GraphqlService {
       return;
     }
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
-    console.info('[Qminder API]: Connecting to websocket');
+    console.info('[Qminder API]: Connecting to websocket 111');
     this.fetchTemporaryApiKey()
       .then((temporaryApiKey: string) => {
         this.createSocketConnection(temporaryApiKey);
