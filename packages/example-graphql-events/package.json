@@ -5,7 +5,7 @@
   "main": "app.ts",
   "scripts": {
     "build": "tsc -p .",
-    "start": "yarn build && tsx app.ts",
+    "start": "yarn workspace qminder-api build && yarn build && tsx app.ts",
     "example-graphql-events": "yarn start"
   },
   "devDependencies": {
