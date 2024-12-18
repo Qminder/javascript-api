@@ -5992,10 +5992,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mock-socket@npm:9.2.1":
-  version: 9.2.1
-  resolution: "mock-socket@npm:9.2.1"
-  checksum: 10c0/63a5018d012cff46e22cf1c2c2000b9e2cd87f059136745bbb95c25e3379ae8ffb9ee9fc8f2608ff83e50c94e5376375c73d5e15d76ad1858f54456555d5c79e
+"mock-socket@npm:9.3.1":
+  version: 9.3.1
+  resolution: "mock-socket@npm:9.3.1"
+  checksum: 10c0/0c53baa4acca12ed1ff9bddfdd4bc0cabe0fc96a3ed25a42a00d23b7a111eb6edfc2b44d93aef9a0c93a4a000b4d2d8dcff028488cd2a1e9cc416477ee341ce0
   languageName: node
   linkType: hard
 
@@ -6494,7 +6494,7 @@ __metadata:
     jest-fetch-mock: "npm:^3.0.3"
     jest-sinon: "npm:1.1.0"
     jest-websocket-mock: "npm:^2.4.0"
-    mock-socket: "npm:9.2.1"
+    mock-socket: "npm:9.3.1"
     rxjs: "npm:7.8.1"
     sinon: "npm:15.1.0"
     ts-jest: "npm:^29.0.5"
