@@ -337,9 +337,7 @@ export class GraphqlService {
           this.connectionAttemptsCount,
         );
         this.logger.info(
-          `Waiting for ${timer.toFixed(
-            1,
-          )}ms before reconnecting`,
+          `Waiting for ${timer.toFixed(1)}ms before reconnecting`,
         );
         sleepMs(timer).then(() => {
           this.connectionAttemptsCount += 1;
@@ -493,9 +491,7 @@ export class GraphqlService {
     if (this.isBrowserOnline()) {
       this.logger.warn(`Websocket connection dropped!`);
     } else {
-      this.logger.info(
-        `Websocket connection dropped. We are offline.`,
-      );
+      this.logger.info(`Websocket connection dropped. We are offline.`);
     }
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
