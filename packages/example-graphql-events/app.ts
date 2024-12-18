@@ -43,7 +43,7 @@ async function listenForTickets() {
     console.error(
       'More information: https://developer.qminder.com/reference/overview',
     );
-    process.exit(1);
+    throw new Error('API key is not set');
   }
 
   Qminder.setKey(process.env.API_KEY);
