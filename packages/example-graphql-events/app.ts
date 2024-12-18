@@ -1,4 +1,9 @@
 import { Qminder } from 'qminder-api';
+import gql from 'graphql-tag';
+
+interface LocationsResponse {
+  locations: Location[];
+}
 
 interface Location {
   id: string;
@@ -16,25 +21,26 @@ interface TicketCreatedEvent {
 }
 
 async function findFirstLocationId(): Promise<Location> {
-  const result: any = await Qminder.GraphQL.query(`{
-      locations {
+  let result: LocationsResponse;
+  try {
+    result = await Qminder.GraphQL.query(gql`
+      {
+        locations {
           id
           name
+        }
       }
-  }`);
-
-  if (result.errors) {
-    throw new Error(
-      `Failed to find locations. Errors: ${JSON.stringify(result.errors)}`,
-    );
+    `);
+  } catch (e) {
+    throw new Error(`Failed to find locations. Error: ${JSON.stringify(e)}`);
   }
 
-  if (result.data.locations.length < 1) {
+  if (result.locations.length < 1) {
     throw new Error('Account does not have any locations');
   }
 
-  console.log(`Found ${result.data.locations.length} locations`);
-  return result.data.locations[0];
+  console.log(`Found ${result.locations.length} locations`);
+  return result.locations[0];
 }
 
 async function listenForTickets() {

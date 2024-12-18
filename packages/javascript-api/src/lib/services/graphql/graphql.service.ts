@@ -8,7 +8,6 @@ import WebSocket, { CloseEvent } from 'isomorphic-ws';
 import { Observable, Observer, startWith, Subject } from 'rxjs';
 import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { ConnectionStatus } from '../../model/connection-status.js';
-import { GraphqlResponse } from '../../model/graphql-response.js';
 import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
@@ -149,11 +148,11 @@ export class GraphqlService {
    * @returns a promise that resolves to the query's results, or rejects if the query failed
    * @throws when the 'query' argument is undefined or an empty string
    */
-  query(
-    queryDocument: QueryOrDocument,
+  query<T>(
+    queryDocument: DocumentNode,
     variables?: { [key: string]: any },
-  ): Promise<GraphqlResponse> {
-    const query = queryToString(queryDocument);
+  ): Promise<T> {
+    const query = print(queryDocument);
     if (!query || query.length === 0) {
       throw new Error(
         'GraphQLService query expects a GraphQL query as its first argument',
