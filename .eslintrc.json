@@ -26,6 +26,12 @@
   },
   "overrides": [
     {
+      "files": ["packages/example-graphql-events/*.ts"],
+      "env": {
+        "node": true
+      }
+    },
+    {
       "files": ["*.spec.ts"],
       "env": {
         "jest": true,
