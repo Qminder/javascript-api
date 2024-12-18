@@ -1,5 +1,5 @@
 export class Logger {
-  private prefix = 'Qminder SDK';
+  private prefix = 'QminderSDK';
   private readonly name: string;
 
   constructor(name: string) {
@@ -19,6 +19,6 @@ export class Logger {
   }
 
   private constructStatement(message: string): string {
-    return `[${this.prefix}][${this.name}] ${message}`;
+    return `[${new Date().toISOString()}][${this.prefix}][${this.name}] ${message}`;
   }
 }

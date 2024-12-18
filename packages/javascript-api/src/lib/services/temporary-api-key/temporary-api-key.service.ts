@@ -1,7 +1,9 @@
 import { RequestInit } from '../../model/fetch';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms';
+import { Logger } from '../../util/logger/logger';
 
 export class TemporaryApiKeyService {
+  private logger: Logger = new Logger('TemporaryKey');
   private readonly apiServer: string;
   private readonly permanentApiKey: string;
 
@@ -26,10 +28,10 @@ export class TemporaryApiKeyService {
       response = await fetch(`https://${this.apiServer}/${url}`, body);
     } catch (e) {
       if (this.isBrowserOnline()) {
-        console.warn('[Qminder API]: Failed to fetch temporary API key');
+        this.logger.warn('Failed to fetch temporary API key');
       } else {
-        console.info(
-          '[Qminder API]: Failed to fetch temporary API key. The browser is offline.',
+        this.logger.info(
+          'Failed to fetch temporary API key. The browser is offline.',
         );
       }
       return this.retry(retryCount + 1);
@@ -41,7 +43,7 @@ export class TemporaryApiKeyService {
       );
     }
     if (response.status >= 500) {
-      console.error(
+      this.logger.error(
         `Failed to fetch API key from the server. Status: ${response.status}`,
       );
       return this.retry(retryCount + 1);
@@ -59,17 +61,14 @@ export class TemporaryApiKeyService {
       }
       return key;
     } catch (e) {
-      console.error(
-        '[Qminder API]: Failed to parse the temporary API key response',
-        e,
-      );
+      this.logger.error('Failed to parse the temporary API key response', e);
       return this.retry(retryCount + 1);
     }
   }
 
   private async retry(retryCount = 0): Promise<string> {
     const timeOutMs = Math.min(60000, Math.max(5000, 2 ** retryCount * 1000));
-    console.info(`[Qminder API]: Retrying to fetch API key in ${timeOutMs} ms`);
+    this.logger.info(`Retrying to fetch API key in ${timeOutMs} ms`);
     await sleepMs(timeOutMs);
     return this.fetchTemporaryApiKey(retryCount + 1);
   }
