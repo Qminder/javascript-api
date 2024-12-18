@@ -19,6 +19,8 @@ export class Logger {
   }
 
   private constructStatement(message: string): string {
-    return `[${new Date().toISOString()}][${this.prefix}][${this.name}] ${message}`;
+    return `[${new Date().toISOString()}][${this.prefix}][${
+      this.name
+    }] ${message}`;
   }
 }
