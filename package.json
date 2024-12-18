@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "docs": "sh ./scripts/build-documentation.sh",
     "prepack": "yarn run build",
-    "watch": "tsc -w",
+    "build": "yarn workspace qminder-api build",
+    "watch": "yarn workspace qminder-api watch",
     "example-graphql-events": "yarn workspace qminder-api build && yarn workspace qminder-graphql-events-example start"
   },
   "devDependencies": {
