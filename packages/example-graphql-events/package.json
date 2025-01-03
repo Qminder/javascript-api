@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "tsx": "^4.19.2",
-    "typescript": "5.5.4"
+    "typescript": "5.7.2"
   },
   "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
   "license": "Apache-2.0"
