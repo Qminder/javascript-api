@@ -10,6 +10,7 @@ import {
   extractIdToNumber,
 } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
+import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 
 /**
  * Represents a collection of search criteria for TicketService.count().
@@ -332,7 +333,7 @@ export async function create(
     },
   });
   if (!result.id) {
-    throw new Error('Failed to create a ticket');
+    throw new ResponseValidationError('Response does not contain "id"');
   }
 
   return result;

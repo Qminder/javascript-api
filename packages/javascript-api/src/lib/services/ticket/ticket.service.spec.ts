@@ -4,6 +4,7 @@ import { TicketCreatedResponse } from '../../model/ticket/ticket-created-respons
 import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request';
 import { Qminder } from '../../qminder';
 import { TicketService } from './ticket.service';
+import { ResponseValidationError } from '../../model/errors/response-validation-error';
 
 describe('Ticket service', function () {
   const JON_SNOW = {
@@ -807,7 +808,7 @@ describe('Ticket service', function () {
       };
       await expect(async () => {
         await TicketService.create(request);
-      }).rejects.toThrow(new Error('Failed to create a ticket'));
+      }).rejects.toThrow(new ResponseValidationError('Response does not contain "id"'));
     });
   });
 
