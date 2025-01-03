@@ -4,7 +4,7 @@
   "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
   "license": "Apache-2.0",
   "engines": {
-    "node": "^20.15.0"
+    "node": "^22.0.0"
   },
   "scripts": {
     "test": "jest",
