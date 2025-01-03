@@ -796,6 +796,19 @@ describe('Ticket service', function () {
       });
       expect(res).toEqual(SUCCESSFUL_RESPONSE);
     });
+
+    it('should throw when response does not contain ID', async () => {
+      requestStub.mockResolvedValue({});
+      const request: TicketCreationRequest = {
+        lineId: '41299290',
+        firstName: 'James',
+        lastName: 'Baxter',
+        email: 'foo@bar.com',
+      };
+      await expect(async () => {
+        await TicketService.create(request);
+      }).rejects.toThrow(new Error('Failed to create a ticket'));
+    });
   });
 
   describe('details()', function () {

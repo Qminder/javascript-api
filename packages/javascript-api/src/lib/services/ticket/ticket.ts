@@ -319,18 +319,23 @@ export function count(search: TicketCountCriteria): Promise<number> {
   );
 }
 
-export function create(
+export async function create(
   request: TicketCreationRequest,
 ): Promise<TicketCreatedResponse> {
   const body = JSON.stringify(request);
 
-  return ApiBase.request('tickets', {
+  const result: TicketCreatedResponse = await ApiBase.request('tickets', {
     method: 'POST',
     body,
     headers: {
       'X-Qminder-API-Version': '2020-09-01',
     },
   });
+  if (!result.id) {
+    throw new Error('Failed to create a ticket');
+  }
+
+  return result;
 }
 
 export function details(ticket: IdOrObject<Ticket>): Promise<Ticket> {
