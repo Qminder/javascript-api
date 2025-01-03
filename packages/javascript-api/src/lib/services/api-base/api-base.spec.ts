@@ -436,7 +436,7 @@ describe('ApiBase', () => {
 
     it('throws when no query is passed', () => {
       Qminder.ApiBase.setKey('testing');
-      expect(() => (Qminder.ApiBase.queryGraph as any)()).toThrow();
+      expect(() => (Qminder.ApiBase.queryGraph as any)()).rejects.toThrow();
     });
 
     it('does not throw when no variables are passed', async () => {
@@ -452,7 +452,7 @@ describe('ApiBase', () => {
 
     it('throws when API key is not defined', () => {
       fetchSpy.mockReturnValue(new MockResponse(ME_ID.successfulResponse));
-      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).toThrow();
+      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).rejects.toThrow();
     });
 
     it('sends a correct request', () => {
@@ -464,14 +464,14 @@ describe('ApiBase', () => {
       expect(fetchSpy).toHaveBeenCalledWith(API_URL, ME_ID.expectedFetch);
     });
 
-    it('resolves with the entire response object, not only response data', (done) => {
+    it('resolves with response data', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
       );
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
-        expect(response).toEqual(ME_ID.successfulResponse);
+        expect(response).toEqual(ME_ID.successfulResponse.data);
         done();
       });
     });
@@ -488,18 +488,18 @@ describe('ApiBase', () => {
       );
     });
 
-    it('should resolve with response, even if response has errors', (done) => {
+    it('should resolve with response, even if response has errors', async () => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
       );
 
-      Qminder.ApiBase.queryGraph(ME_ID.request).then(
-        () => done(new Error('Should have errored')),
-        (error: SimpleError) => {
-          expect(error.message).toEqual(VALIDATION_ERROR);
-          done();
-        },
+      expect(async () => {
+        await Qminder.ApiBase.queryGraph(ME_ID.request);
+      }).rejects.toThrow(
+        `Server response is not valid GraphQL response. Response: ${JSON.stringify(
+          ERROR_UNDEFINED_FIELD,
+        )}`,
       );
     });
   });

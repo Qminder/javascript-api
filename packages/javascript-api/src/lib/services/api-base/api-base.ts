@@ -121,7 +121,7 @@ export class ApiBase {
    * @throws when the API key is missing or invalid, or when errors in the
    * response are found
    */
-  static queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
+  static async queryGraph<T>(query: GraphqlQuery): Promise<T> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -136,17 +136,21 @@ export class ApiBase {
       body: JSON.stringify(query),
     };
 
-    return fetch(`https://${this.apiServer}/graphql`, init)
-      .then((response: Response) => response.json())
-      .then((responseJson: any) => {
-        if (responseJson.errorMessage) {
-          throw new Error(responseJson.errorMessage);
-        }
-        if (responseJson.errors && responseJson.errors.length > 0) {
-          throw this.extractGraphQLError(responseJson);
-        }
-        return responseJson as Promise<GraphqlResponse>;
-      });
+    let response = await fetch(`https://${this.apiServer}/graphql`, init);
+    let responseJson = await response.json();
+    if (!responseJson.data && !responseJson.data) {
+      throw new Error(
+        `Server response is not valid GraphQL response. Response: ${JSON.stringify(
+          responseJson,
+        )}`,
+      );
+    }
+
+    let graphQLResponse: GraphqlResponse = responseJson;
+    if (graphQLResponse.errors && graphQLResponse.errors.length > 0) {
+      throw this.extractGraphQLError(graphQLResponse);
+    }
+    return graphQLResponse.data as T;
   }
 
   private static extractError(response: any): Error {
@@ -169,9 +173,7 @@ export class ApiBase {
     return new UnknownError();
   }
 
-  private static extractGraphQLError(response: {
-    errors: GraphQLError[];
-  }): Error {
+  private static extractGraphQLError(response: GraphqlResponse): Error {
     return new SimpleError(
       response.errors.map((error) => error.message).join('\n'),
     );
