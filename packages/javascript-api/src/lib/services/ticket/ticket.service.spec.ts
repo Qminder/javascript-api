@@ -30,7 +30,7 @@ describe('Ticket service', function () {
     };
 
     const ticketsWithMessages = {
-      data: tickets.data.map((each) => ({ ...each, messages: [] })),
+      data: tickets.data.map((each) => ({ ...each, messages: [] as any[] })),
     };
 
     it('searches based on lines', function (done) {
@@ -405,10 +405,6 @@ describe('Ticket service', function () {
         { id: 2, line: 124 },
         { id: 3, line: 125 },
       ],
-    };
-
-    const ticketsWithMessages = {
-      data: tickets.data.map((each) => ({ ...each, messages: [] })),
     };
 
     it('searches based on lines', function (done) {
