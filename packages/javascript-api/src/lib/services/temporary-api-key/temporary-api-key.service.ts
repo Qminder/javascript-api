@@ -1,5 +1,5 @@
-import { RequestInit } from '../../model/fetch';
-import { sleepMs } from '../../util/sleep-ms/sleep-ms';
+import { RequestInit } from '../../model/fetch.js';
+import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 
 export class TemporaryApiKeyService {
   private readonly apiServer: string;
