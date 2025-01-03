@@ -808,7 +808,9 @@ describe('Ticket service', function () {
       };
       await expect(async () => {
         await TicketService.create(request);
-      }).rejects.toThrow(new ResponseValidationError('Response does not contain "id"'));
+      }).rejects.toThrow(
+        new ResponseValidationError('Response does not contain "id"'),
+      );
     });
   });
 
