@@ -21,7 +21,7 @@ export interface GraphqlError {
 export function isErrorResponse<T>(
   response: GraphqlResponse<T>,
 ): response is ErrorResponse {
-  return Object.prototype.hasOwnProperty.call(response, 'error');
+  return Object.prototype.hasOwnProperty.call(response, 'errors');
 }
 
 export function isSuccessResponse<T>(
