@@ -38,8 +38,6 @@ function generateRequestData(query: string, responseData: any): any {
       body: JSON.stringify(queryObject),
     },
     successfulResponse: {
-      statusCode: 200,
-      errors: [],
       data: [responseData],
     },
   };
@@ -48,7 +46,7 @@ function generateRequestData(query: string, responseData: any): any {
 const FAKE_RESPONSE = {
   ok: true,
   json() {
-    return { statusCode: 200 };
+    return {};
   },
 };
 
@@ -494,7 +492,7 @@ describe('ApiBase', () => {
 
     it('should throw an error when response does not contain any data', async () => {
       Qminder.ApiBase.setKey('testing');
-      fetchSpy.mockImplementation(() => Promise.resolve(new MockResponse({})));
+      fetchSpy.mockImplementation(() => Promise.resolve(FAKE_RESPONSE));
 
       expect(async () => {
         await Qminder.ApiBase.queryGraph(ME_ID.request);
