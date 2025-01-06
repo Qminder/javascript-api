@@ -10,6 +10,7 @@ import {
   extractIdToNumber,
 } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
+import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 
 /**
  * Represents a collection of search criteria for TicketService.count().
@@ -319,18 +320,23 @@ export function count(search: TicketCountCriteria): Promise<number> {
   );
 }
 
-export function create(
+export async function create(
   request: TicketCreationRequest,
 ): Promise<TicketCreatedResponse> {
   const body = JSON.stringify(request);
 
-  return ApiBase.request('tickets', {
+  const result: TicketCreatedResponse = await ApiBase.request('tickets', {
     method: 'POST',
     body,
     headers: {
       'X-Qminder-API-Version': '2020-09-01',
     },
   });
+  if (!result.id) {
+    throw new ResponseValidationError('Response does not contain "id"');
+  }
+
+  return result;
 }
 
 export function details(ticket: IdOrObject<Ticket>): Promise<Ticket> {

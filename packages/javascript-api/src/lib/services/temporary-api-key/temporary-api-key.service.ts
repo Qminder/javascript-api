@@ -1,9 +1,9 @@
-import { RequestInit } from '../../model/fetch';
-import { sleepMs } from '../../util/sleep-ms/sleep-ms';
-import { Logger } from '../../util/logger/logger';
+import { RequestInit } from '../../model/fetch.js';
+import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
+import { Logger } from '../../util/logger/logger.js';
 
 export class TemporaryApiKeyService {
-  private logger: Logger = new Logger('TemporaryKey');
+  private logger = new Logger('TemporaryKey');
   private readonly apiServer: string;
   private readonly permanentApiKey: string;
 

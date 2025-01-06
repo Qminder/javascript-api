@@ -12,8 +12,8 @@ import { GraphqlResponse } from '../../model/graphql-response.js';
 import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
-import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service';
-import { Logger } from '../../util/logger/logger';
+import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
+import { Logger } from '../../util/logger/logger.js';
 
 type QueryOrDocument = string | DocumentNode;
 
@@ -86,7 +86,7 @@ const CLIENT_SIDE_CLOSE_EVENT = 1000;
  * trying to import GraphQLService.
  */
 export class GraphqlService {
-  private logger: Logger = new Logger('GraphQL');
+  private logger = new Logger('GraphQL');
   private apiServer: string;
 
   private socket: WebSocket = null;
