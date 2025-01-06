@@ -1,11 +1,14 @@
-export interface GraphqlResponse<T> {
-  /** An array that contains any GraphQL errors. */
-  errors?: GraphqlError[];
-  /** If the data was loaded without any errors, contains the requested object. */
-  data?: T;
+export type GraphqlResponse<T> = SuccessResponse<T> | ErrorResponse;
+
+export interface SuccessResponse<T> {
+  data: T;
 }
 
-interface GraphqlError {
+export interface ErrorResponse {
+  errors: GraphqlError[];
+}
+
+export interface GraphqlError {
   message: string;
   errorType: string;
   validationErrorType?: string;
@@ -13,4 +16,16 @@ interface GraphqlError {
   path?: any;
   extensions?: any;
   locations: { line: number; column: number; sourceName: string }[];
+}
+
+export function isErrorResponse<T>(
+  response: GraphqlResponse<T>,
+): response is ErrorResponse {
+  return Object.prototype.hasOwnProperty.call(response, 'error');
+}
+
+export function isSuccessResponse<T>(
+  response: GraphqlResponse<T>,
+): response is SuccessResponse<T> {
+  return Object.prototype.hasOwnProperty.call(response, 'data');
 }
