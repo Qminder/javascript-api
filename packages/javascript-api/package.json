@@ -1,6 +1,6 @@
 {
   "name": "qminder-api",
-  "version": "13.4.0",
+  "version": "14.0.0",
   "description": "Qminder Javascript API. Makes it easy to leverage Qminder capabilities in your system.",
   "scripts": {
     "test": "jest",
@@ -65,10 +65,10 @@
     "ts-jest": "^29.0.5",
     "ts-jest-resolver": "^2.0.0",
     "ts-loader": "^9.4.2",
-    "typedoc": "0.27.5",
-    "typescript": "5.5.4",
+    "typedoc": "0.27.6",
+    "typescript": "5.7.2",
     "webpack": "^5.75.0",
-    "webpack-cli": "^5.0.1"
+    "webpack-cli": "^6.0.0"
   },
   "peerDependencies": {
     "graphql": ">= 15.5.1",

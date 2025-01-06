@@ -4,6 +4,7 @@ import { TicketCreatedResponse } from '../../model/ticket/ticket-created-respons
 import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request';
 import { Qminder } from '../../qminder';
 import { TicketService } from './ticket.service';
+import { ResponseValidationError } from '../../model/errors/response-validation-error';
 
 describe('Ticket service', function () {
   const JON_SNOW = {
@@ -29,7 +30,7 @@ describe('Ticket service', function () {
     };
 
     const ticketsWithMessages = {
-      data: tickets.data.map((each) => ({ ...each, messages: [] })),
+      data: tickets.data.map((each) => ({ ...each, messages: [] as any[] })),
     };
 
     it('searches based on lines', function (done) {
@@ -404,10 +405,6 @@ describe('Ticket service', function () {
         { id: 2, line: 124 },
         { id: 3, line: 125 },
       ],
-    };
-
-    const ticketsWithMessages = {
-      data: tickets.data.map((each) => ({ ...each, messages: [] })),
     };
 
     it('searches based on lines', function (done) {
@@ -795,6 +792,21 @@ describe('Ticket service', function () {
         method: 'POST',
       });
       expect(res).toEqual(SUCCESSFUL_RESPONSE);
+    });
+
+    it('should throw when response does not contain ID', async () => {
+      requestStub.mockResolvedValue({});
+      const request: TicketCreationRequest = {
+        lineId: '41299290',
+        firstName: 'James',
+        lastName: 'Baxter',
+        email: 'foo@bar.com',
+      };
+      await expect(async () => {
+        await TicketService.create(request);
+      }).rejects.toThrow(
+        new ResponseValidationError('Response does not contain "id"'),
+      );
     });
   });
 
