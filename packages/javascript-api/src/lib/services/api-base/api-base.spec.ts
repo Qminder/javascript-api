@@ -7,6 +7,7 @@ import { ComplexError } from '../../model/errors/complex-error';
 import { SimpleError } from '../../model/errors/simple-error';
 import { UnknownError } from '../../model/errors/unknown-error';
 import { Qminder } from '../../qminder';
+import { ResponseValidationError } from '../../model/errors/response-validation-error';
 
 /**
  * A function that generates an object with the following keys:
@@ -476,19 +477,7 @@ describe('ApiBase', () => {
       });
     });
 
-    it('throws an error when getting errors as response', (done) => {
-      Qminder.ApiBase.setKey('testing');
-      fetchSpy.mockImplementation(() =>
-        Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
-      );
-
-      Qminder.ApiBase.queryGraph(ME_ID.request).then(
-        () => done(new Error('QueryGraph should have thrown an error')),
-        () => done(),
-      );
-    });
-
-    it('should resolve with response, even if response has errors', async () => {
+    it('throws an error when getting errors as response', async () => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
@@ -497,9 +486,22 @@ describe('ApiBase', () => {
       expect(async () => {
         await Qminder.ApiBase.queryGraph(ME_ID.request);
       }).rejects.toThrow(
-        `Server response is not valid GraphQL response. Response: ${JSON.stringify(
-          ERROR_UNDEFINED_FIELD,
-        )}`,
+        new SimpleError(
+          "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
+        ),
+      );
+    });
+
+    it('should throw an error when response does not contain any data', async () => {
+      Qminder.ApiBase.setKey('testing');
+      fetchSpy.mockImplementation(() => Promise.resolve(new MockResponse({})));
+
+      expect(async () => {
+        await Qminder.ApiBase.queryGraph(ME_ID.request);
+      }).rejects.toThrow(
+        new ResponseValidationError(
+          `Server response is not valid GraphQL response. Response: {}`,
+        ),
       );
     });
   });
