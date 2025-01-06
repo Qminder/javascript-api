@@ -143,7 +143,7 @@ export class GraphqlService {
    * });
    * ```
    *
-   * @param query required: the query to send, for example `"{ me { selectedLocation } }"`
+   * @param queryDocument required: the query to send, for example gql`{ me { selectedLocation } }`
    * @param variables optional: additional variables for the query, if variables were used
    * @returns a promise that resolves to the query's results, or rejects if the query failed
    * @throws when the 'query' argument is undefined or an empty string
@@ -153,12 +153,6 @@ export class GraphqlService {
     variables?: { [key: string]: any },
   ): Promise<T> {
     const query = print(queryDocument);
-    if (!query || query.length === 0) {
-      throw new Error(
-        'GraphQLService query expects a GraphQL query as its first argument',
-      );
-    }
-
     const packedQuery = query.replace(/\s\s+/g, ' ').trim();
     const graphqlQuery: GraphqlQuery = {
       query: packedQuery,

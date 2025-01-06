@@ -1,8 +1,8 @@
-export interface GraphqlResponse {
+export interface GraphqlResponse<T> {
   /** An array that contains any GraphQL errors. */
   errors?: GraphqlError[];
   /** If the data was loaded without any errors, contains the requested object. */
-  data?: object;
+  data?: T;
 }
 
 interface GraphqlError {

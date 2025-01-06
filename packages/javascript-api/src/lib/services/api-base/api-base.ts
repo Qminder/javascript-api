@@ -1,9 +1,9 @@
-import { GraphQLError } from 'graphql';
 import { ComplexError } from '../../model/errors/complex-error.js';
 import { SimpleError } from '../../model/errors/simple-error.js';
 import { UnknownError } from '../../model/errors/unknown-error.js';
 import { GraphqlResponse } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
+import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
@@ -137,20 +137,21 @@ export class ApiBase {
     };
 
     let response = await fetch(`https://${this.apiServer}/graphql`, init);
-    let responseJson = await response.json();
-    if (!responseJson.data && !responseJson.data) {
-      throw new Error(
+    let graphQLResponse: GraphqlResponse<T> = await response.json();
+
+    if (graphQLResponse.errors?.length > 0) {
+      throw this.extractGraphQLError(graphQLResponse);
+    }
+
+    if (!graphQLResponse.data) {
+      throw new ResponseValidationError(
         `Server response is not valid GraphQL response. Response: ${JSON.stringify(
-          responseJson,
+          graphQLResponse,
         )}`,
       );
     }
 
-    let graphQLResponse: GraphqlResponse = responseJson;
-    if (graphQLResponse.errors && graphQLResponse.errors.length > 0) {
-      throw this.extractGraphQLError(graphQLResponse);
-    }
-    return graphQLResponse.data as T;
+    return graphQLResponse.data;
   }
 
   private static extractError(response: any): Error {
@@ -173,7 +174,7 @@ export class ApiBase {
     return new UnknownError();
   }
 
-  private static extractGraphQLError(response: GraphqlResponse): Error {
+  private static extractGraphQLError<T>(response: GraphqlResponse<T>): Error {
     return new SimpleError(
       response.errors.map((error) => error.message).join('\n'),
     );
