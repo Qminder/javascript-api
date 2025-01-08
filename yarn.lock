@@ -4562,7 +4562,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql-tag@npm:2.12.6":
+"graphql-tag@npm:2.12.6, graphql-tag@npm:^2.12.6":
   version: 2.12.6
   resolution: "graphql-tag@npm:2.12.6"
   dependencies:
@@ -6767,6 +6767,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "qminder-graphql-events-example@workspace:packages/example-graphql-events"
   dependencies:
+    graphql-tag: "npm:^2.12.6"
     tsx: "npm:^4.19.2"
     typescript: "npm:5.7.2"
   languageName: unknown

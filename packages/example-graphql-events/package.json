@@ -13,5 +13,8 @@
     "typescript": "5.7.2"
   },
   "author": "Qminder <support@qminder.com> (https://www.qminder.com)",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "dependencies": {
+    "graphql-tag": "^2.12.6"
+  }
 }

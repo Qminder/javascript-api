@@ -8,7 +8,14 @@ import { GraphqlService } from '../graphql.service';
 jest.mock('isomorphic-ws', () => jest.fn());
 
 describe('GraphQL service', function () {
-  const ME_ID_REQUEST = '{ me { id } }';
+  const ME_ID_REQUEST = gql`
+    {
+      me {
+        id
+      }
+    }
+  `;
+  const ME_ID_REQUEST_STRING = '{ me { id }\n}';
   const ME_ID_SUCCESS_RESPONSE: any = {
     statusCode: 200,
     data: [
@@ -45,17 +52,17 @@ describe('GraphQL service', function () {
     });
     it('calls ApiBase.queryGraph with the correct parameters', async () => {
       await graphqlService.query(ME_ID_REQUEST);
-      const graphqlQuery = { query: ME_ID_REQUEST };
+      const graphqlQuery = { query: ME_ID_REQUEST_STRING };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
     it('calls ApiBase.queryGraph with both query & variables', async () => {
       const variables = { x: 5, y: 4 };
       await graphqlService.query(ME_ID_REQUEST, variables);
-      const graphqlQuery = { query: ME_ID_REQUEST, variables };
+      const graphqlQuery = { query: ME_ID_REQUEST_STRING, variables };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
     it('collapses whitespace and newlines', async () => {
-      const query = `
+      const query = gql`
         {
           me {
             id
@@ -63,7 +70,7 @@ describe('GraphQL service', function () {
         }
       `;
       await graphqlService.query(query);
-      const graphqlQuery = { query: ME_ID_REQUEST };
+      const graphqlQuery = { query: ME_ID_REQUEST_STRING };
       expect(requestStub.calledWith(graphqlQuery)).toBeTruthy();
     });
 

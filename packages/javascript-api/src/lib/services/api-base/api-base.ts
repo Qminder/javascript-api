@@ -1,9 +1,14 @@
-import { GraphQLError } from 'graphql';
 import { ComplexError } from '../../model/errors/complex-error.js';
 import { SimpleError } from '../../model/errors/simple-error.js';
 import { UnknownError } from '../../model/errors/unknown-error.js';
-import { GraphqlResponse } from '../../model/graphql-response.js';
+import {
+  ErrorResponse,
+  GraphqlResponse,
+  isErrorResponse,
+  isSuccessResponse,
+} from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
+import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
@@ -121,7 +126,7 @@ export class ApiBase {
    * @throws when the API key is missing or invalid, or when errors in the
    * response are found
    */
-  static queryGraph(query: GraphqlQuery): Promise<GraphqlResponse> {
+  static async queryGraph<T>(query: GraphqlQuery): Promise<T> {
     if (!this.apiKey) {
       throw new Error('Please set the API key before making any requests.');
     }
@@ -136,17 +141,21 @@ export class ApiBase {
       body: JSON.stringify(query),
     };
 
-    return fetch(`https://${this.apiServer}/graphql`, init)
-      .then((response: Response) => response.json())
-      .then((responseJson: any) => {
-        if (responseJson.errorMessage) {
-          throw new Error(responseJson.errorMessage);
-        }
-        if (responseJson.errors && responseJson.errors.length > 0) {
-          throw this.extractGraphQLError(responseJson);
-        }
-        return responseJson as Promise<GraphqlResponse>;
-      });
+    let response = await fetch(`https://${this.apiServer}/graphql`, init);
+    let graphQLResponse: GraphqlResponse<T> = await response.json();
+
+    if (isErrorResponse(graphQLResponse)) {
+      throw this.extractGraphQLError(graphQLResponse);
+    }
+    if (isSuccessResponse(graphQLResponse)) {
+      return graphQLResponse.data;
+    }
+
+    throw new ResponseValidationError(
+      `Server response is not valid GraphQL response. Response: ${JSON.stringify(
+        graphQLResponse,
+      )}`,
+    );
   }
 
   private static extractError(response: any): Error {
@@ -169,9 +178,7 @@ export class ApiBase {
     return new UnknownError();
   }
 
-  private static extractGraphQLError(response: {
-    errors: GraphQLError[];
-  }): Error {
+  private static extractGraphQLError(response: ErrorResponse): Error {
     return new SimpleError(
       response.errors.map((error) => error.message).join('\n'),
     );

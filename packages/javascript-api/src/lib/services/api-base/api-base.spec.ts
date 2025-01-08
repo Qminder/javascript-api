@@ -7,6 +7,7 @@ import { ComplexError } from '../../model/errors/complex-error';
 import { SimpleError } from '../../model/errors/simple-error';
 import { UnknownError } from '../../model/errors/unknown-error';
 import { Qminder } from '../../qminder';
+import { ResponseValidationError } from '../../model/errors/response-validation-error';
 
 /**
  * A function that generates an object with the following keys:
@@ -37,8 +38,6 @@ function generateRequestData(query: string, responseData: any): any {
       body: JSON.stringify(queryObject),
     },
     successfulResponse: {
-      statusCode: 200,
-      errors: [],
       data: [responseData],
     },
   };
@@ -47,7 +46,7 @@ function generateRequestData(query: string, responseData: any): any {
 const FAKE_RESPONSE = {
   ok: true,
   json() {
-    return { statusCode: 200 };
+    return {};
   },
 };
 
@@ -436,7 +435,7 @@ describe('ApiBase', () => {
 
     it('throws when no query is passed', () => {
       Qminder.ApiBase.setKey('testing');
-      expect(() => (Qminder.ApiBase.queryGraph as any)()).toThrow();
+      expect(() => (Qminder.ApiBase.queryGraph as any)()).rejects.toThrow();
     });
 
     it('does not throw when no variables are passed', async () => {
@@ -452,7 +451,7 @@ describe('ApiBase', () => {
 
     it('throws when API key is not defined', () => {
       fetchSpy.mockReturnValue(new MockResponse(ME_ID.successfulResponse));
-      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).toThrow();
+      expect(() => Qminder.ApiBase.queryGraph(ME_ID.request)).rejects.toThrow();
     });
 
     it('sends a correct request', () => {
@@ -464,42 +463,43 @@ describe('ApiBase', () => {
       expect(fetchSpy).toHaveBeenCalledWith(API_URL, ME_ID.expectedFetch);
     });
 
-    it('resolves with the entire response object, not only response data', (done) => {
+    it('resolves with response data', (done) => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ME_ID.successfulResponse)),
       );
 
       Qminder.ApiBase.queryGraph(ME_ID.request).then((response) => {
-        expect(response).toEqual(ME_ID.successfulResponse);
+        expect(response).toEqual(ME_ID.successfulResponse.data);
         done();
       });
     });
 
-    it('throws an error when getting errors as response', (done) => {
+    it('throws an error when getting errors as response', async () => {
       Qminder.ApiBase.setKey('testing');
       fetchSpy.mockImplementation(() =>
         Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
       );
 
-      Qminder.ApiBase.queryGraph(ME_ID.request).then(
-        () => done(new Error('QueryGraph should have thrown an error')),
-        () => done(),
+      expect(async () => {
+        await Qminder.ApiBase.queryGraph(ME_ID.request);
+      }).rejects.toThrow(
+        new SimpleError(
+          "Validation error of type FieldUndefined: Field 'x' in type 'Account' is undefined @ 'account/x'",
+        ),
       );
     });
 
-    it('should resolve with response, even if response has errors', (done) => {
+    it('should throw an error when response does not contain any data', async () => {
       Qminder.ApiBase.setKey('testing');
-      fetchSpy.mockImplementation(() =>
-        Promise.resolve(new MockResponse(ERROR_UNDEFINED_FIELD)),
-      );
+      fetchSpy.mockImplementation(() => Promise.resolve(FAKE_RESPONSE));
 
-      Qminder.ApiBase.queryGraph(ME_ID.request).then(
-        () => done(new Error('Should have errored')),
-        (error: SimpleError) => {
-          expect(error.message).toEqual(VALIDATION_ERROR);
-          done();
-        },
+      expect(async () => {
+        await Qminder.ApiBase.queryGraph(ME_ID.request);
+      }).rejects.toThrow(
+        new ResponseValidationError(
+          `Server response is not valid GraphQL response. Response: {}`,
+        ),
       );
     });
   });
