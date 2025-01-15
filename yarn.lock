@@ -4573,10 +4573,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:15.9.0":
-  version: 15.9.0
-  resolution: "graphql@npm:15.9.0"
-  checksum: 10c0/0e93f7138daae07dcb0713ce5e2ae7f8039e911b6180f0170c4929664ec32ab8e690a9ea12be2dc4ab18544f9898989765122f30d2d07d38b0ce2a4c839d29bc
+"graphql@npm:15.10.1":
+  version: 15.10.1
+  resolution: "graphql@npm:15.10.1"
+  checksum: 10c0/8bbf6c1acda84dcff532f2ec492ffb2859d2ffd0c8e0143447c727388c5c3d7cab338143ecbdf61acc1f04227f2e0a8180f26ce9ea280b63a65079c58f6cfa25
   languageName: node
   linkType: hard
 
@@ -6737,7 +6737,7 @@ __metadata:
     "@types/ws": "npm:^8.0.0"
     cross-fetch: "npm:^4.0.0"
     es6-promise: "npm:^4.1.1"
-    graphql: "npm:15.9.0"
+    graphql: "npm:15.10.1"
     graphql-tag: "npm:2.12.6"
     isomorphic-ws: "npm:^5.0.0"
     jest: "npm:^29.4.0"
