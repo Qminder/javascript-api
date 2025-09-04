@@ -397,6 +397,30 @@ describe('ApiBase', () => {
         },
       );
     });
+
+    it('should handle error with complex error in "errors" property', (done) => {
+      Qminder.setKey(API_KEY);
+
+      const response: any = {
+        ok: false,
+        statusCode: 409,
+        errors: { email: 'Email already in use' },
+      };
+
+      fetchSpy.mockReturnValue(new MockResponse(response));
+
+      Qminder.ApiBase.request('TEST').then(
+        () => done(new Error('Should have errored')),
+        (error: ComplexError) => {
+          expect(error.error).toEqual({ email: 'Email already in use' });
+          expect(error.message).toEqual(
+            'Error occurred! Check error property for more information!',
+          );
+          expect(error instanceof ComplexError).toBeTruthy();
+          done();
+        },
+      );
+    });
   });
 
   describe('queryGraph()', () => {
