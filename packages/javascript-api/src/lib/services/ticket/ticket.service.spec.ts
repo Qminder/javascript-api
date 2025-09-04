@@ -1514,10 +1514,10 @@ describe('Ticket service', function () {
       expect(() => (TicketService.removeLabel as any)(12345)).toThrow();
     });
 
-    it('throws an error when the user is missing', function () {
+    it('does not throw an error when the user is missing', function () {
       expect(() =>
         (TicketService.removeLabel as any)(12345, 'LABEL'),
-      ).toThrow();
+      ).not.toThrow();
     });
 
     it('does not throw an error when the user is a number', function () {

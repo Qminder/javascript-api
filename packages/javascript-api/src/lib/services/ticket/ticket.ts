@@ -259,6 +259,11 @@ interface CallNextRequest extends TicketCallRequest {
   lines: string;
 }
 
+interface LabelRemoveRequest {
+  value: string;
+  user?: string;
+}
+
 type TicketCreationResponse = Pick<Ticket, 'id'>;
 
 export function search(search: TicketSearchCriteria): Promise<Array<Ticket>> {
@@ -548,10 +553,10 @@ export function setLabels(
 export function removeLabel(
   ticket: IdOrObject<Ticket>,
   label: string,
-  user: IdOrObject<User>,
+  user?: IdOrObject<User>,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
-  const userId = extractId(user);
+  const userId = user ? extractId(user) : undefined;
 
   if (!ticketId || typeof ticketId !== 'string') {
     throw new Error(ERROR_NO_TICKET_ID);
@@ -561,17 +566,15 @@ export function removeLabel(
     throw new Error('No label given.');
   }
 
-  if (!userId || typeof userId !== 'string') {
-    throw new Error('No user given');
+  const requestBody: LabelRemoveRequest = {
+    value: label,
+  };
+  if (userId) {
+    requestBody.user = userId;
   }
 
-  const body = {
-    value: label,
-    user: userId,
-  };
-
   return ApiBase.request(`v1/tickets/${ticketId}/labels/remove`, {
-    body: body,
+    body: requestBody,
     method: 'POST',
   }).then((response: { result: 'success' }) => response.result);
 }
