@@ -174,6 +174,9 @@ export class ApiBase {
     if (Object.prototype.hasOwnProperty.call(response, 'error')) {
       return new ComplexError(response.error);
     }
+    if (Object.prototype.hasOwnProperty.call(response, 'errors')) {
+      return new ComplexError(response.errors);
+    }
 
     return new UnknownError();
   }
