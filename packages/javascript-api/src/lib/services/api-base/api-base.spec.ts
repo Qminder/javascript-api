@@ -522,7 +522,7 @@ describe('ApiBase', () => {
         await Qminder.ApiBase.queryGraph(ME_ID.request);
       }).rejects.toThrow(
         new ResponseValidationError(
-          `Server response is not valid GraphQL response. Response: {}`,
+          'Error occurred! Could not extract error message!',
         ),
       );
     });
