@@ -185,11 +185,11 @@ export class GraphqlService {
    * }
    * ```
    *
-   * @param query required: the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
+   * @param queryDocument required: the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
    * @returns an RxJS Observable that will push data as
    * @throws when the 'query' argument is undefined or an empty string
    */
-  subscribe(queryDocument: QueryOrDocument): Observable<object> {
+  subscribe<T extends object>(queryDocument: QueryOrDocument): Observable<T> {
     const query = queryToString(queryDocument);
 
     if (!query || query.length === 0) {
@@ -198,7 +198,7 @@ export class GraphqlService {
       );
     }
 
-    return new Observable<object>((observer: Observer<object>) => {
+    return new Observable<T>((observer: Observer<T>) => {
       const id = this.generateOperationId();
       this.subscriptions.push(new Subscription(id, query));
       this.sendMessage(id, MessageType.GQL_START, { query });
