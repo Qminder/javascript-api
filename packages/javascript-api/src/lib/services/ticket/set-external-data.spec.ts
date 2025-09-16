@@ -19,7 +19,7 @@ describe('Ticket.setExternalData', () => {
     const ticketId = '123';
     const provider = 'crm';
     const title = 'Case #42';
-    const data = { foo: 'bar', num: 5 };
+    const data = { fields: [ { type: 'message', content: 'Hello', importance: 'info' }, { type: 'text', title: 'Order', value: '42' }, { type: 'list', title: 'Links', items: [ { title: 'Home', url: 'https://example.com' } ] } ] } as any;
 
     requestStub.resolves({ result: 'success' });
 
