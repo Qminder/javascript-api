@@ -752,7 +752,6 @@ export function forward(
   return ApiBase.request(`v1/tickets/${ticketId}/forward`, { body: body });
 }
 
-
 export function setExternalData(
   ticket: IdOrObject<Ticket>,
   provider: string,
