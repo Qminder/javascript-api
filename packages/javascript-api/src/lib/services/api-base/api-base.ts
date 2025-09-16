@@ -8,7 +8,6 @@ import {
   isSuccessResponse,
 } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
-import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
@@ -151,11 +150,7 @@ export class ApiBase {
       return graphQLResponse.data;
     }
 
-    throw new ResponseValidationError(
-      `Server response is not valid GraphQL response. Response: ${JSON.stringify(
-        graphQLResponse,
-      )}`,
-    );
+    throw this.extractError(graphQLResponse);
   }
 
   private static extractError(response: any): Error {
