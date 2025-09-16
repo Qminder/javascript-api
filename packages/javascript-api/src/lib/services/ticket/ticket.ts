@@ -11,6 +11,7 @@ import {
 } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
 import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
+import { ExternalData } from '../../model/ticket/external-data.js';
 
 /**
  * Represents a collection of search criteria for TicketService.count().
@@ -751,40 +752,6 @@ export function forward(
   return ApiBase.request(`v1/tickets/${ticketId}/forward`, { body: body });
 }
 
-export type ExternalData = {
-  fields?: ExternalDataField[];
-};
-
-export type ExternalDataField =
-  | ExternalMessageField
-  | ExternalTextualField
-  | ExternalListField;
-
-export interface ExternalMessageField {
-  type: 'message';
-  content: string;
-  importance: 'info' | 'warning' | 'error';
-}
-
-export interface ExternalTextualField {
-  type: 'text' | 'email' | 'phoneNumber';
-  title: string;
-  value: string;
-}
-
-export interface ExternalListItem {
-  title: string;
-  text?: string;
-  url?: string;
-  footer?: string;
-  timestamp?: string;
-}
-
-export interface ExternalListField {
-  type: 'list';
-  title: string;
-  items: ExternalListItem[];
-}
 
 export function setExternalData(
   ticket: IdOrObject<Ticket>,
