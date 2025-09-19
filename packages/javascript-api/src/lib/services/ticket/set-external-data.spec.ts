@@ -1,0 +1,56 @@
+import * as sinon from 'sinon';
+import { Qminder } from '../../qminder';
+import { TicketService } from './ticket.service';
+import { ExternalData } from '../../model/ticket/external-data.js';
+
+describe('Ticket.setExternalData', () => {
+  let requestStub: sinon.SinonStub;
+
+  beforeEach(() => {
+    Qminder.setKey('EXAMPLE_API_KEY');
+    Qminder.setServer('api.qminder.com');
+    requestStub = sinon.stub(Qminder.ApiBase, 'request');
+  });
+
+  afterEach(() => {
+    sinon.restore();
+  });
+
+  it('sends POST to v1/tickets/<id>/external with stringified data and returns success', async () => {
+    const ticketId = '123';
+    const provider = 'crm';
+    const title = 'Case #42';
+    const data: ExternalData = {
+      fields: [
+        { type: 'message', content: 'Hello', importance: 'info' },
+        { type: 'text', title: 'Order', value: '42' },
+        {
+          type: 'list',
+          title: 'Links',
+          items: [{ title: 'Home', url: 'https://example.com' }],
+        },
+      ],
+    };
+
+    requestStub.resolves({ result: 'success' });
+
+    const result = await TicketService.setExternalData(
+      ticketId,
+      provider,
+      title,
+      data,
+    );
+
+    expect(result).toBe('success');
+
+    expect(requestStub.calledOnce).toBeTruthy();
+    const [url, options] = requestStub.getCall(0).args as [string, any];
+    expect(url).toBe(`v1/tickets/${ticketId}/external`);
+    expect(options.method).toBe('POST');
+    expect(options.body).toEqual({
+      provider,
+      title,
+      data: JSON.stringify(data),
+    });
+  });
+});

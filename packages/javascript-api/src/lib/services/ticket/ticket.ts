@@ -11,6 +11,7 @@ import {
 } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
 import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
+import { ExternalData } from '../../model/ticket/external-data.js';
 
 /**
  * Represents a collection of search criteria for TicketService.count().
@@ -755,7 +756,7 @@ export function setExternalData(
   ticket: IdOrObject<Ticket>,
   provider: string,
   title: string,
-  data: any,
+  data: ExternalData,
 ): Promise<'success'> {
   const ticketId = extractId(ticket);
 
