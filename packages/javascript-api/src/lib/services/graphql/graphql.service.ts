@@ -5,8 +5,14 @@ import {
   SourceLocation,
 } from 'graphql';
 import WebSocket, { CloseEvent } from 'isomorphic-ws';
-import { Observable, Observer, startWith, Subject } from 'rxjs';
-import { distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  distinctUntilChanged,
+  Observable,
+  Observer,
+  shareReplay,
+} from 'rxjs';
+
 import { ConnectionStatus } from '../../model/connection-status.js';
 import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
@@ -85,25 +91,32 @@ const CLIENT_SIDE_CLOSE_EVENT = 1000;
  * trying to import GraphQLService.
  */
 export class GraphqlService {
-  private logger = new Logger('GraphQL');
+  private readonly logger = new Logger('GraphQL');
   private apiServer: string;
 
   private socket: WebSocket = null;
 
   private connectionStatus: ConnectionStatus;
-  private connectionStatus$ = new Subject<ConnectionStatus>();
 
-  private nextSubscriptionId: number = 1;
+  private readonly connectionStatus$ = new BehaviorSubject<ConnectionStatus>(
+    ConnectionStatus.DISCONNECTED,
+  );
+
+  private nextSubscriptionId = 1;
 
   private subscriptions: Subscription[] = [];
-  private subscriptionObserverMap: { [id: string]: Observer<object> } = {};
-  private subscriptionConnection$: Observable<ConnectionStatus>;
+
+  private readonly subscriptionObserverMap: { [id: string]: Observer<object> } =
+    {};
+
+  private readonly subscriptionConnection$: Observable<ConnectionStatus>;
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
   private pongTimeout: any;
   private pingPongInterval: any;
-  private sendPingWithThisBound = this.sendPing.bind(this);
-  private handleConnectionDropWithThisBound =
+  private readonly sendPingWithThisBound = this.sendPing.bind(this);
+
+  private readonly handleConnectionDropWithThisBound =
     this.handleConnectionDrop.bind(this);
 
   private connectionAttemptsCount = 0;
@@ -112,7 +125,6 @@ export class GraphqlService {
     this.setServer('api.qminder.com');
 
     this.subscriptionConnection$ = this.connectionStatus$.pipe(
-      startWith(ConnectionStatus.CONNECTING),
       distinctUntilChanged(),
       shareReplay(1),
     );
