@@ -41,3 +41,4 @@ build
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
+nohup.out
