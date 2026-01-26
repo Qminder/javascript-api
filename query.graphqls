@@ -1,0 +1,686 @@
+directive @formatTime(pattern: String!) on FIELD_DEFINITION
+
+scalar Date # date-time; yyyy-MM-dd'T'HH:mm:ss.SSS'Z'
+scalar LocalDate # only the date; yyyy-MM-dd
+scalar Duration
+scalar JSON
+scalar Long
+scalar BigDecimal
+scalar Short
+scalar LocalTime
+
+enum PaymentMethod {
+  STRIPE
+  INVOICE
+}
+
+enum PaymentInterval {
+  YEAR
+  MONTH
+  WEEK
+  DAY
+}
+
+type AccountSubscription {
+  plan: String
+  product: String
+  amount: Long
+  paymentInterval: PaymentInterval
+}
+
+type AccountSubscriptions {
+  active: AccountSubscription
+  extras: [AccountSubscription]!
+}
+
+type Billing {
+  subscriptionDescription: String
+  textMessagingAllowed: Boolean!
+  subscription: AccountSubscription
+    @deprecated(reason: "Use subscriptions { active } instead")
+  subscriptions: AccountSubscriptions
+  seats: Int
+}
+
+type Account {
+  id: ID!
+  name: String
+  segment: String
+  created: Date!
+  locations: [Location!]!
+  paymentMethod: PaymentMethod
+  hipaa: Boolean!
+  features: [String!]
+  billing: Billing!
+  trialEnds: Date
+}
+
+type ServiceSettings {
+  appsInstalled: Boolean!
+}
+
+type VisitPlanner {
+  url: String!
+  name: String!
+  description: String
+  notes: String
+  email: String
+  phoneNumber: Long
+  remoteSignIn: Boolean!
+}
+
+type LabelType {
+  id: String!
+  value: String!
+  color: String!
+  firstUsed: Date
+  lastUsed: Date
+  count: Int!
+}
+
+type LocationSettings {
+  areLabelsVisibleInWaitingDrawer: Boolean!
+  areLabelsVisibleInServingDrawer: Boolean!
+}
+
+type Language {
+  code: String!
+  name: String!
+  nativeName: String!
+  primary: Boolean!
+}
+
+type Location {
+  id: ID!
+  name: String!
+  address: String!
+  countryCode: String!
+  country: String!
+  timezone: String!
+  created: Date!
+  latitude: Float!
+  longitude: Float!
+  lines(archived: Boolean): [Line!]!
+  users: [User!]!
+  ipads: [Ipad!]
+  tvs: [TV!]
+  desks: [Desk!]
+  languages: [Language!]
+  selectingDeskMandatory: Boolean
+  smsEnabled: Boolean
+  dynamicLabels: Boolean
+  inputFields(
+    """
+    If omitted or false returns non-deleted input fields in location.
+    If true, returns both deleted and non-deleted input fields in location.
+    """
+    includeDeleted: Boolean
+  ): [InputField]
+  openingHours: JSON @deprecated(reason: "Use openingHours2 instead")
+  openingHours2: OpeningHours
+  openingHoursExceptions: JSON
+    @deprecated(reason: "Use openingHoursExceptions2 instead")
+  openingHoursExceptions2: [OpeningHoursException!]!
+  visitPlanner: VisitPlanner
+  labels: [LabelType!]!
+  settings: LocationSettings!
+  isDemo: Boolean!
+  appointmentSettings: LocationAppointmentSettings
+  isServiceViewLastUsedLineMemorised: Boolean!
+}
+
+type LocationAppointmentSettings {
+  limits: LocationAppointmentLimits!
+  availability: [UserAppointmentsAvailability!]!
+}
+
+type UserAppointmentsAvailability {
+  user: User!
+  location: Location!
+  lines: [Line!]!
+  dailyLimit: Int
+  weeklyHours: Int!
+  weeklySchedule: UserAppointmentsWeeklySchedule!
+  scheduleOverrides: [UserAppointmentsScheduleOverride!]!
+}
+
+type UserAppointmentsWeeklySchedule {
+  monday: UserAppointmentsDailySchedule
+  tuesday: UserAppointmentsDailySchedule
+  wednesday: UserAppointmentsDailySchedule
+  thursday: UserAppointmentsDailySchedule
+  friday: UserAppointmentsDailySchedule
+  saturday: UserAppointmentsDailySchedule
+  sunday: UserAppointmentsDailySchedule
+}
+
+type UserAppointmentsDailySchedule {
+  isAvailable: Boolean!
+  dailySchedule: [UserAppointmentsAvailabilityTimeInterval!]!
+}
+
+type UserAppointmentsScheduleOverride {
+  isAvailable: Boolean!
+  date: LocalDate!
+  dailySchedule: [UserAppointmentsAvailabilityTimeInterval!]!
+}
+
+type UserAppointmentsAvailabilityTimeInterval {
+  availableFrom: LocalTime! @formatTime(pattern: "HH:mm")
+  availableTo: LocalTime! @formatTime(pattern: "HH:mm")
+}
+
+type LocationAppointmentLimits {
+  minNoticeHours: Int!
+  dateRangeDays: Int!
+  maxCountPerVisitor: Int
+}
+
+type OpeningHours {
+  mon: DayOpeningHours
+  tue: DayOpeningHours
+  wed: DayOpeningHours
+  thu: DayOpeningHours
+  fri: DayOpeningHours
+  sat: DayOpeningHours
+  sun: DayOpeningHours
+}
+
+type DayOpeningHours {
+  businessHours: [BusinessHours!]
+  closed: Boolean
+}
+
+type OpeningHoursException {
+  date: LocalDate!
+  closed: Boolean!
+  closedReason: String
+  businessHours: [BusinessHours!]
+}
+
+type BusinessHours {
+  opens: OpeningHoursTime!
+  closes: OpeningHoursTime!
+}
+
+type OpeningHoursTime {
+  hours: Int
+  minutes: Int
+}
+
+type Ipad {
+  id: ID!
+  name: String!
+  online: Boolean!
+  charging: Boolean
+  batteryLevel: Int
+}
+
+type Desk {
+  id: ID!
+  name: String!
+  user: User
+}
+
+type LineTranslation {
+  languageCode: String!
+  name: String
+}
+
+type Line {
+  id: ID!
+  name: String!
+  color: String!
+  disabled: Boolean!
+  archived: Boolean!
+  location: Location!
+  hasActiveTickets: Boolean!
+  hasScheduledTickets: Boolean!
+  translations: [LineTranslation!]!
+  appointmentSettings: LineAppointmentSettings
+}
+
+type LineAppointmentSettings {
+  enabled: Boolean!
+  durationMinutes: Int
+}
+
+type ProfilePicture {
+  medium: String!
+  large: String!
+}
+
+type User {
+  id: ID!
+  email: String
+  firstName: String!
+  lastName: String!
+  created: Date!
+  profilePicture: ProfilePicture
+  picture: String @deprecated(reason: "Use profilePicture")
+  selectedLocation: Location
+  selectedDesk: Desk
+  selectedLines: [Line!]
+  roles: [Role!]
+  lastLoggedIn: Date
+  lastInvited: Date
+  serviceSettings: ServiceSettings
+  deleted: Boolean!
+  deletedAt: Date
+}
+
+type Role {
+  id: ID!
+  type: String!
+  location: Location
+}
+
+type TicketLabel {
+  value: String!
+  color: String!
+}
+
+type Interaction {
+  id: ID!
+  start: Date!
+  end: Date
+  line: Line!
+  desk: Desk
+  user: User
+  waitTime: Duration!
+  serviceTime: Duration
+}
+
+enum TicketStatus {
+  SCHEDULED
+  SCHEDULING_CANCELLED
+  SCHEDULING_CANCELLED_BY_VISITOR
+  SCHEDULING_NOSHOW
+  NEW
+  CANCELLED
+  CANCELLED_BY_CLERK
+  CALLED
+  SERVED
+  NOSHOW
+}
+
+enum MessageType {
+  OUTGOING
+  OUTGOING_AUTOMATED
+  INCOMING
+}
+
+type TicketCreated {
+  date: Date!
+  user: User
+}
+
+type TicketCancelled {
+  date: Date!
+  user: User
+}
+
+enum Sentiment {
+  POSITIVE
+  NEGATIVE
+  NEUTRAL
+  MIXED
+  UNKNOWN
+}
+
+type TicketMessage {
+  id: ID!
+  created: Date!
+  type: MessageType!
+  status: String!
+  statusSetAt: Date!
+  body: String!
+  user: User
+  attachments: [String]!
+  readAt: Date
+  sentiment: Sentiment!
+}
+
+type TicketExternalData {
+  created: Date!
+  provider: String!
+  title: String!
+  data: JSON
+}
+
+type TicketFieldV2 {
+  id: ID!
+  value: String
+  options: [SelectOption!]
+  inputField: InputField
+}
+
+type TicketChange {
+  action: String!
+  value: String
+  previousValue: String
+  field: String
+  url: String
+  color: String
+  user: User
+  line: Line
+}
+
+type TicketAudit {
+  id: ID!
+  created: Date!
+  user: User
+  changes: [TicketChange!]!
+}
+
+type Appointment {
+  startTime: Date!
+  endTime: Date!
+  assignee: User!
+}
+
+type Ticket {
+  id: ID!
+  status: TicketStatus!
+  statusSetAt: Date!
+  statusSetBy: User
+  line: Line!
+  firstName: String
+  lastName: String
+  phoneNumber: Long
+  email: String
+  created: TicketCreated!
+  waitStartedAt: Date
+  cancelled: TicketCancelled
+  assignee: User
+  caller: User
+  fields2: [TicketFieldV2!]!
+  labels: [TicketLabel!]!
+  interactions(filter: InteractionsFilter): [Interaction!]!
+  messages: [TicketMessage!]!
+  connectedTickets: [Ticket!]
+  audits: [TicketAudit!]!
+  external: [TicketExternalData!]!
+  language: Language!
+  appointment: Appointment
+}
+
+input InteractionsFilter {
+  """
+  Indicates whether to include interactions created only during
+  the last service until the ticket was marked as served or no-show.
+  """
+  onlyLastService: Boolean!
+}
+
+type ProductChangeAuthor {
+  id: ID!
+  name: String!
+  profilePicture: String
+}
+
+type ProductChange {
+  id: ID!
+  title: String!
+  body: String!
+  created: Date!
+  author: ProductChangeAuthor!
+  read: Boolean!
+}
+
+type TV {
+  id: ID!
+  name: String!
+  theme: String!
+  layout: String!
+  online: Boolean!
+
+  "TV's settings in JSON format. Contains lines, clearTickets, and notificationViewLineVisible fields"
+  settings: String
+    @deprecated(
+      reason: "use lines, clearTickets, and notificationViewLineVisible instead"
+    )
+
+  "Visitors in selected lines are visible on TV"
+  lines: [Line!]
+
+  """
+  A time when visitor names are cleared from the TV screen.
+  Possible values: afterCalling, afterServing
+  """
+  clearTickets: String
+
+  "The name of the line is displayed on TV when the next visitor is called"
+  notificationViewLineVisible: Boolean
+
+  "In the waiting list the service names are visible for visitors who are waiting"
+  listViewLineVisible: Boolean!
+}
+
+enum OrderableField {
+  ID
+  CREATED
+  END_TIME
+}
+
+enum Direction {
+  ASCENDING
+  DESCENDING
+}
+
+input Order {
+  field: OrderableField!
+  direction: Direction!
+}
+
+type SelectOptionTranslation {
+  languageCode: String!
+  title: String
+}
+
+type SelectOption {
+  id: String
+  title: String
+  color: String
+  translations: [SelectOptionTranslation!]!
+}
+
+enum InputFieldType {
+  PHONE_NUMBER
+  URL
+  SELECT
+  TEXT
+  EMAIL
+  DATE
+  FIRST_NAME
+  LAST_NAME
+  NUMERIC
+}
+
+interface InputFieldConstraints {
+  id: String!
+}
+
+type NumericFieldConstraints implements InputFieldConstraints {
+  id: String!
+  min: BigDecimal
+  max: BigDecimal
+  scale: Short
+}
+
+type InputFieldTranslation {
+  languageCode: String!
+  title: String
+  visitorFacingTitle: String
+}
+
+type InputField {
+  id: String!
+  location: Location!
+  type: InputFieldType!
+  mandatory: Boolean! @deprecated(reason: "Use isMandatoryBeforeAdded instead")
+  isMandatoryBeforeAdded: Boolean!
+  isMandatoryBeforeServed: Boolean!
+  isVisibleInWaitingDrawer: Boolean!
+  isVisibleInServingDrawer: Boolean!
+  showInRemoteSignIn: Boolean!
+  visibleForLines: [Line!]!
+  title: String
+  visitorFacingTitle: String
+  multiSelect: Boolean!
+  options: [SelectOption!]!
+  constraints: InputFieldConstraints
+  translations: [InputFieldTranslation!]!
+  isRequiredInAppointments: Boolean!
+  deleted: Boolean!
+}
+
+interface ChangedTicketField {
+  id: String
+  ticket: Ticket!
+  title: String!
+}
+
+type ChangedUniTicketField implements ChangedTicketField {
+  id: String
+  ticket: Ticket!
+  title: String!
+  value: String
+}
+
+type ChangedMultiTicketField implements ChangedTicketField {
+  id: String
+  ticket: Ticket!
+  title: String!
+  options: [SelectOption!]
+}
+
+type ChangedTicketLabel {
+  ticket: Ticket!
+  labels: [TicketLabel!]!
+}
+
+type MCPClient {
+  name: String!
+}
+
+input AppointmentFilter {
+  start: Date!
+  end: Date!
+  assignee: [ID!]
+}
+
+type Query {
+  account: Account
+  locations: [Location!]!
+  location(id: ID!): Location
+  inputField(id: ID!): InputField
+  ticket(id: ID!): Ticket
+  ticketSearch(
+    locationId: ID!
+    line: [ID!]
+    status: [TicketStatus!]
+    creator: [ID!]
+    minCreated: Date
+    maxCreated: Date
+    limit: Int
+    offset: Int
+    order: Order
+    appointment: AppointmentFilter
+    minWaitStartedAt: Date
+  ): [Ticket!]!
+  myCalledTickets: [Ticket!]!
+  me: User
+  user(id: ID!): User
+  users(ids: [ID!]): [User]
+  allUsers(
+    """
+    If omitted returns active users in account.
+    If provided, returns active users and users deleted after provided date.
+    """
+    includeDeletedFrom: Date
+  ): [User!]!
+
+  productChanges(read: Boolean): [ProductChange!]!
+  TV(id: ID!): TV
+  iPad(id: ID!): Ipad
+  userAppointmentsAvailability(
+    userId: ID!
+    locationId: ID!
+  ): UserAppointmentsAvailability
+  line(id: ID!): Line
+  mcpClient(id: String!): MCPClient
+}
+
+type Subscription {
+  """
+  Notifies when a ticket is created. If locationId is provided, the subscription fires only when tickets are created in
+  that specific location. If locationId is omitted, it fires for all locations the user has access to.
+  Note: Device principals (iPad/TV) must always provide a locationId.
+  """
+  createdTickets(locationId: ID): Ticket!
+  calledTickets(locationId: ID!): Ticket!
+  servedTickets(locationId: ID!): Ticket!
+  changedTickets(locationId: ID!): Ticket!
+  changedTicketFields(locationId: ID!): ChangedTicketField!
+  changedTicketLabels(locationId: ID!): ChangedTicketLabel!
+  cancelledTickets(locationId: ID!): Ticket!
+  recalledTickets(locationId: ID!): Ticket!
+  reorderedTickets(locationId: ID!): Ticket!
+    @deprecated(reason: "Use reorderedTicketsList")
+  reorderedTicketsList(locationId: ID!): [Ticket!]!
+  changedIpads(locationId: ID!): Ipad!
+  deletedIpads(locationId: ID!): Ipad!
+  changedLocation(locationId: ID!): Location!
+
+  """
+  Notifies subscribed TV clients whenever a ticket in a specified
+  location changes status or ticket details changes.
+  """
+  tvTickets(locationId: ID!): [Ticket!]!
+
+  """
+  Notifies a subscribing client whenever a line from the specified location is:
+  - created
+  - updated
+  - enabled
+  - disabled
+  - archived
+  - deleted
+
+  Returns the updated location associated with the changed line.
+  """
+  changedLocationLine(locationId: ID!): Location!
+
+  changedOpeningHours(locationId: ID!): JSON
+    @deprecated(reason: "Use changedOpeningHours2")
+  changedOpeningHours2(locationId: ID!): OpeningHours!
+  changedInputFields(locationId: ID!): [InputField]
+  changedLines(locationId: ID!): Line!
+  changedTV(tvId: ID!): TV
+  deletedTV(tvId: ID!): TV!
+  changedDeskSelection(locationId: ID!): Desk!
+
+  """
+  Notifies when a desk in the given location is updated or a user changes their desk selection.
+  Returns the updated list of desks for the specified location.
+  """
+  changedDesks(locationId: ID!): [Desk]!
+
+  """
+  Notifies whenever all ticket messages are marked as read in a given location.
+  Returns the ticket that had messages marked as read.
+  """
+  markedAllTicketMessagesAsRead(locationId: ID!): Ticket!
+
+  """
+  Notifies whenever a specified ticket appointment changes.
+  """
+  appointmentChanged(ticketId: ID!): Appointment
+
+  """
+  Notifies whenever a specified ticket state changes
+  (e.g. ticket status, label, field, etc. changes)
+  """
+  ticketStateChanged(ticketId: ID!): Ticket!
+}
