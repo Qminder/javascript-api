@@ -886,11 +886,14 @@ describe('Ticket service', function () {
     it('calls the right URL with PATCH when ticket is passed as ID', async function () {
       await TicketService.edit(12345, editedFields);
       expect(
-        requestStub.calledWith('tickets/12345', sinon.match({
-          method: 'PATCH',
-          body: JSON.stringify(editedFields),
-          headers: { 'X-Qminder-API-Version': '2020-09-01' },
-        })),
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({
+            method: 'PATCH',
+            body: JSON.stringify(editedFields),
+            headers: { 'X-Qminder-API-Version': '2020-09-01' },
+          }),
+        ),
       ).toBeTruthy();
     });
 
@@ -898,11 +901,14 @@ describe('Ticket service', function () {
       const ticket = { id: 12345 };
       await TicketService.edit(ticket, editedFields);
       expect(
-        requestStub.calledWith('tickets/12345', sinon.match({
-          method: 'PATCH',
-          body: JSON.stringify(editedFields),
-          headers: { 'X-Qminder-API-Version': '2020-09-01' },
-        })),
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({
+            method: 'PATCH',
+            body: JSON.stringify(editedFields),
+            headers: { 'X-Qminder-API-Version': '2020-09-01' },
+          }),
+        ),
       ).toBeTruthy();
     });
 
@@ -912,9 +918,7 @@ describe('Ticket service', function () {
     });
 
     it('throws when ticket is missing', async function () {
-      await expect(
-        (TicketService.edit as any)(undefined),
-      ).rejects.toThrow();
+      await expect((TicketService.edit as any)(undefined)).rejects.toThrow();
       await expect(
         (TicketService.edit as any)(undefined, { lastName: 'wow' }),
       ).rejects.toThrow();
@@ -927,15 +931,11 @@ describe('Ticket service', function () {
     });
 
     it('throws when ticket is invalid', async function () {
-      await expect(
-        (TicketService.edit as any)('wheeee'),
-      ).rejects.toThrow();
+      await expect((TicketService.edit as any)('wheeee')).rejects.toThrow();
     });
 
     it('throws when ticket is a Ticket object but id is undefined', async function () {
-      await expect(
-        (TicketService.edit as any)({} as any),
-      ).rejects.toThrow();
+      await expect((TicketService.edit as any)({} as any)).rejects.toThrow();
     });
 
     it('allows resetting first name to empty with empty string', async function () {
