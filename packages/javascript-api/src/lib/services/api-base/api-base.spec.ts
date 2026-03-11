@@ -48,6 +48,9 @@ const FAKE_RESPONSE = {
   json() {
     return {};
   },
+  text() {
+    return Promise.resolve('{}');
+  },
 };
 
 /**
@@ -63,10 +66,18 @@ const FAKE_RESPONSE = {
  * the object passed as parameter.
  */
 class MockResponse {
-  constructor(private data: any) {}
+  ok: boolean;
+
+  constructor(private data: any) {
+    this.ok = data.ok !== undefined ? data.ok : true;
+  }
 
   json() {
     return this.data;
+  }
+
+  text() {
+    return Promise.resolve(JSON.stringify(this.data));
   }
 }
 
@@ -135,15 +146,15 @@ describe('ApiBase', () => {
       });
     });
 
-    it('calls the Response.json() function to resolve the JSON', (done) => {
+    it('parses the response text as JSON', (done) => {
       Qminder.setKey(API_KEY);
-      const jsonSpy = sinon.stub(FAKE_RESPONSE, 'json');
-      jsonSpy.onCall(0).resolves({ message: 'Worked' });
+      const textSpy = sinon.stub(FAKE_RESPONSE, 'text');
+      textSpy.onCall(0).resolves(JSON.stringify({ message: 'Worked' }));
 
       Qminder.ApiBase.request('TEST').then((response) => {
-        expect(jsonSpy.called).toBe(true);
+        expect(textSpy.called).toBe(true);
         expect((response as any).message).toBe('Worked');
-        jsonSpy.restore();
+        textSpy.restore();
         done();
       });
     });
@@ -270,6 +281,32 @@ describe('ApiBase', () => {
           done();
         },
       );
+    });
+
+    it('preserves PATCH method when body is present', (done) => {
+      Qminder.setKey(API_KEY);
+
+      Qminder.ApiBase.request('TEST', {
+        method: 'PATCH',
+        body: JSON.stringify({ firstName: 'Jane' }),
+      }).then(() => {
+        expect(fetchSpy.mock.calls[0][1].method).toEqual('PATCH');
+        done();
+      });
+    });
+
+    it('handles empty response body gracefully', async () => {
+      Qminder.setKey(API_KEY);
+
+      fetchSpy.mockReturnValue({
+        ok: true,
+        text() {
+          return Promise.resolve('');
+        },
+      });
+
+      const result = await Qminder.ApiBase.request('TEST');
+      expect(result).toEqual({});
     });
 
     it('sends objects as www-form-urlencoded', (done) => {

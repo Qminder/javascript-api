@@ -237,18 +237,11 @@ export const ERROR_NO_QUEUE_POSITION: string =
 export const ERROR_INVALID_DESK: string =
   'Desk is not a number or Desk object.';
 
-export type TicketEditingParameters = Pick<
-  Ticket,
-  'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email' | 'extra'
-> & { user: IdOrObject<User> };
+type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
 
-/**
- * The format of the HTTP request to send when editing a ticket.
- */
-interface TicketEditingRequest extends TicketCreationRequest {
-  line?: number;
-  user?: number;
-}
+export type TicketEditingParameters = NullablePartial<
+  Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email'>
+> & { languageCode?: string | null };
 
 interface TicketCallRequest {
   user?: number | string;
@@ -350,33 +343,25 @@ export function details(ticket: IdOrObject<Ticket>): Promise<Ticket> {
   return ApiBase.request(`v1/tickets/${ticketId}`) as Promise<Ticket>;
 }
 
-export function edit(
+export async function edit(
   ticket: IdOrObject<Ticket>,
   changes: TicketEditingParameters,
-): Promise<'success'> {
+): Promise<void> {
   const ticketId = extractId(ticket);
 
   if (!changes) {
     throw new Error(ERROR_NO_TICKET_CHANGES);
   }
 
-  const intermediate: any = { ...changes };
+  const body = JSON.stringify(changes);
 
-  if (intermediate.extra) {
-    intermediate.extra = JSON.stringify(intermediate.extra);
-  }
-
-  if (intermediate.user) {
-    intermediate.user = extractId(intermediate.user);
-  } else {
-    delete intermediate.user;
-  }
-
-  const request: TicketEditingRequest = intermediate;
-
-  return ApiBase.request(`v1/tickets/${ticketId}/edit`, { body: request }).then(
-    (response: { result: 'success' }) => response.result,
-  );
+  await ApiBase.request(`tickets/${ticketId}`, {
+    method: 'PATCH',
+    body,
+    headers: {
+      'X-Qminder-API-Version': '2020-09-01',
+    },
+  });
 }
 
 export function call(

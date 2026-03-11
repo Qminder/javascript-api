@@ -86,7 +86,7 @@ export class ApiBase {
     };
 
     if (options?.body) {
-      if (options?.method !== 'PUT') {
+      if (!options?.method || options.method === 'GET') {
         init.method = 'POST';
       }
 
@@ -105,7 +105,8 @@ export class ApiBase {
     }
 
     const response = await fetch(`https://${this.apiServer}/${url}`, init);
-    const parsedResponse = await response.json();
+    const text = await response.text();
+    const parsedResponse = text ? JSON.parse(text) : {};
 
     if (!response.ok) {
       throw this.extractError(parsedResponse);
