@@ -931,9 +931,7 @@ describe('Ticket service', function () {
     });
 
     it('throws when changes is an empty object', async function () {
-      await expect(
-        TicketService.edit(12345, {} as any),
-      ).rejects.toThrow();
+      await expect(TicketService.edit(12345, {} as any)).rejects.toThrow();
     });
 
     it('throws when ticket is invalid', async function () {
