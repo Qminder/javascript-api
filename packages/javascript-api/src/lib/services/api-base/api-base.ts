@@ -106,7 +106,12 @@ export class ApiBase {
 
     const response = await fetch(`https://${this.apiServer}/${url}`, init);
     const text = await response.text();
-    const parsedResponse = text ? JSON.parse(text) : {};
+    let parsedResponse: any;
+    try {
+      parsedResponse = text ? JSON.parse(text) : {};
+    } catch {
+      throw new Error(`Failed to parse response body as JSON: ${text.slice(0, 200)}`);
+    }
 
     if (!response.ok) {
       throw this.extractError(parsedResponse);

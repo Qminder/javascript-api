@@ -930,6 +930,12 @@ describe('Ticket service', function () {
       ).rejects.toThrow();
     });
 
+    it('throws when changes is an empty object', async function () {
+      await expect(
+        TicketService.edit(12345, {} as any),
+      ).rejects.toThrow();
+    });
+
     it('throws when ticket is invalid', async function () {
       await expect((TicketService.edit as any)('wheeee')).rejects.toThrow();
     });

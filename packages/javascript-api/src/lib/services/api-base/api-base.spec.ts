@@ -309,6 +309,21 @@ describe('ApiBase', () => {
       expect(result).toEqual({});
     });
 
+    it('throws a descriptive error for invalid JSON response', async () => {
+      Qminder.setKey(API_KEY);
+
+      fetchSpy.mockReturnValue({
+        ok: true,
+        text() {
+          return Promise.resolve('not valid json');
+        },
+      });
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toThrow(
+        'Failed to parse response body as JSON',
+      );
+    });
+
     it('sends objects as www-form-urlencoded', (done) => {
       Qminder.setKey(API_KEY);
       const url = 'https://api.qminder.com/TEST';

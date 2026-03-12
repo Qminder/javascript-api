@@ -349,7 +349,7 @@ export async function edit(
 ): Promise<void> {
   const ticketId = extractId(ticket);
 
-  if (!changes) {
+  if (!changes || Object.keys(changes).length === 0) {
     throw new Error(ERROR_NO_TICKET_CHANGES);
   }
 
