@@ -4,6 +4,7 @@ import { TicketCreatedResponse } from '../../model/ticket/ticket-created-respons
 import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request';
 import { Qminder } from '../../qminder';
 import { TicketService } from './ticket.service';
+import { TicketEditingParameters } from './ticket';
 import { ResponseValidationError } from '../../model/errors/response-validation-error';
 
 describe('Ticket service', function () {
@@ -872,7 +873,7 @@ describe('Ticket service', function () {
   });
 
   describe('edit()', function () {
-    const editedFields: any = {
+    const editedFields: TicketEditingParameters = {
       line: 11111,
       firstName: 'Johnny',
       lastName: 'Smithicus',
