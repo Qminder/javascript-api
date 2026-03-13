@@ -4,6 +4,7 @@ import { TicketCreatedResponse } from '../../model/ticket/ticket-created-respons
 import { TicketCreationRequest } from '../../model/ticket/ticket-creation-request';
 import { Qminder } from '../../qminder';
 import { TicketService } from './ticket.service';
+import { TicketEditingParameters } from './ticket';
 import { ResponseValidationError } from '../../model/errors/response-validation-error';
 
 describe('Ticket service', function () {
@@ -872,7 +873,7 @@ describe('Ticket service', function () {
   });
 
   describe('edit()', function () {
-    const editedFields: any = {
+    const editedFields: TicketEditingParameters = {
       line: 11111,
       firstName: 'Johnny',
       lastName: 'Smithicus',
@@ -880,163 +881,128 @@ describe('Ticket service', function () {
     };
 
     beforeEach(function () {
-      requestStub.onCall(0).resolves({
-        result: 'success',
-      });
+      requestStub.onCall(0).resolves({});
     });
 
-    it('calls the right URL when ticket is passed as ID', function (done) {
-      TicketService.edit(12345, editedFields).then((response) => {
-        console.log(requestStub.firstCall.args);
-        expect(
-          requestStub.calledWith('v1/tickets/12345/edit', {
-            body: editedFields,
-          }),
-        ).toBeTruthy();
-        expect(response).toBe('success');
-        done();
-      });
-    });
-
-    it('calls the right URL when ticket is passed as a Ticket object', function (done) {
-      const ticket = { id: 12345 };
-      TicketService.edit(ticket, editedFields).then((response) => {
-        console.log(requestStub.firstCall.args);
-        expect(
-          requestStub.calledWith('v1/tickets/12345/edit', {
-            body: editedFields,
-          }),
-        ).toBeTruthy();
-        expect(response).toBe('success');
-        done();
-      });
-    });
-
-    it('throws when ticket is missing', function () {
-      expect(function () {
-        (TicketService.edit as any)(undefined);
-      }).toThrow();
-      expect(function () {
-        (TicketService.edit as any)(undefined, { lastName: 'wow' });
-      }).toThrow();
-    });
-
-    it("throws when there's no changes", function () {
-      expect(function () {
-        TicketService.edit({ id: 12345 }, undefined as any);
-      }).toThrow();
-    });
-
-    it('throws when ticket is invalid', function () {
-      expect(() => (TicketService.edit as any)('wheeee')).toThrow();
-    });
-
-    it('throws when ticket is a Ticket object but id is undefined', function () {
-      expect(() => (TicketService.edit as any)({} as any)).toThrow();
-    });
-
-    it('allows resetting first name to empty with empty string', function () {
-      TicketService.edit(12345, { firstName: '' } as any);
+    it('calls the right URL with PATCH when ticket is passed as ID', async function () {
+      await TicketService.edit(12345, editedFields);
       expect(
         requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { firstName: '' } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('allows resetting last name to empty with empty string', function () {
-      TicketService.edit(12345, { lastName: '' } as any);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { lastName: '' } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('allows resetting email to empty with empty string', function () {
-      TicketService.edit(12345, { email: '' } as any);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { email: '' } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('allows resetting first name to empty with null', function () {
-      TicketService.edit(12345, { firstName: null } as any);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { firstName: null } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('allows resetting last name to empty with null', function () {
-      TicketService.edit(12345, { lastName: null } as any);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { lastName: null } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('allows resetting phone number to empty with null', function () {
-      TicketService.edit(12345, { phoneNumber: null } as any);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { phoneNumber: null } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('allows resetting email to empty with null', function () {
-      TicketService.edit(12345, { email: null } as any);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { email: null } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('sends the User ID if provided', function () {
-      TicketService.edit(12345, { user: 14141, email: null } as any);
-
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
-          sinon.match({ body: { email: null, user: '14141' } }),
-        ),
-      ).toBeTruthy();
-    });
-
-    it('Sends the extras as a JSON array', function () {
-      const changes: any = {
-        phoneNumber: 3185551234,
-        extra: [
-          {
-            title: 'Favorite soup',
-            value: 'Borscht',
-          },
-        ],
-      };
-
-      TicketService.edit(12345, changes);
-      console.log(requestStub.firstCall.args);
-      expect(
-        requestStub.calledWith(
-          'v1/tickets/12345/edit',
+          'tickets/12345',
           sinon.match({
-            body: {
-              extra: JSON.stringify(changes.extra),
-            },
+            method: 'PATCH',
+            body: JSON.stringify(editedFields),
+            headers: { 'X-Qminder-API-Version': '2020-09-01' },
           }),
+        ),
+      ).toBeTruthy();
+    });
+
+    it('calls the right URL when ticket is passed as a Ticket object', async function () {
+      const ticket = { id: 12345 };
+      await TicketService.edit(ticket, editedFields);
+      expect(
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({
+            method: 'PATCH',
+            body: JSON.stringify(editedFields),
+            headers: { 'X-Qminder-API-Version': '2020-09-01' },
+          }),
+        ),
+      ).toBeTruthy();
+    });
+
+    it('returns void on success', async function () {
+      const result = await TicketService.edit(12345, editedFields);
+      expect(result).toBeUndefined();
+    });
+
+    it('throws when ticket is missing', async function () {
+      await expect((TicketService.edit as any)(undefined)).rejects.toThrow();
+      await expect(
+        (TicketService.edit as any)(undefined, { lastName: 'wow' }),
+      ).rejects.toThrow();
+    });
+
+    it('throws when the changes argument is missing', async function () {
+      await expect(
+        TicketService.edit({ id: 12345 }, undefined as any),
+      ).rejects.toThrow();
+    });
+
+    it('throws when changes is an empty object', async function () {
+      await expect(TicketService.edit(12345, {} as any)).rejects.toThrow();
+    });
+
+    it('throws when ticket is invalid', async function () {
+      await expect((TicketService.edit as any)('wheeee')).rejects.toThrow();
+    });
+
+    it('throws when ticket is a Ticket object but id is undefined', async function () {
+      await expect((TicketService.edit as any)({} as any)).rejects.toThrow();
+    });
+
+    it('allows resetting first name to empty with empty string', async function () {
+      await TicketService.edit(12345, { firstName: '' });
+      expect(
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({ body: JSON.stringify({ firstName: '' }) }),
+        ),
+      ).toBeTruthy();
+    });
+
+    it('allows resetting last name to empty with empty string', async function () {
+      await TicketService.edit(12345, { lastName: '' });
+      expect(
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({ body: JSON.stringify({ lastName: '' }) }),
+        ),
+      ).toBeTruthy();
+    });
+
+    it('allows resetting email to empty with empty string', async function () {
+      await TicketService.edit(12345, { email: '' });
+      expect(
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({ body: JSON.stringify({ email: '' }) }),
+        ),
+      ).toBeTruthy();
+    });
+
+    it('preserves null values in JSON body to clear fields', async function () {
+      await TicketService.edit(12345, { firstName: null });
+      const body = JSON.parse(requestStub.firstCall.args[1].body);
+      expect(body.firstName).toBeNull();
+    });
+
+    it('allows resetting last name with null', async function () {
+      await TicketService.edit(12345, { lastName: null });
+      const body = JSON.parse(requestStub.firstCall.args[1].body);
+      expect(body.lastName).toBeNull();
+    });
+
+    it('allows resetting phone number with null', async function () {
+      await TicketService.edit(12345, { phoneNumber: null });
+      const body = JSON.parse(requestStub.firstCall.args[1].body);
+      expect(body.phoneNumber).toBeNull();
+    });
+
+    it('allows resetting email with null', async function () {
+      await TicketService.edit(12345, { email: null });
+      const body = JSON.parse(requestStub.firstCall.args[1].body);
+      expect(body.email).toBeNull();
+    });
+
+    it('sends languageCode when provided', async function () {
+      await TicketService.edit(12345, { languageCode: 'et' });
+      expect(
+        requestStub.calledWith(
+          'tickets/12345',
+          sinon.match({ body: JSON.stringify({ languageCode: 'et' }) }),
         ),
       ).toBeTruthy();
     });

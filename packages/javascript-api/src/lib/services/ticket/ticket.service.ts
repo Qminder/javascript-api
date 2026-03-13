@@ -208,8 +208,11 @@ export const TicketService = {
   /**
    * Edits the ticket.
    *
+   * Calls the following HTTP API: `PATCH /tickets/<ID>`
+   *
    * To edit a ticket, pass the ticket ID to edit, and an object that only includes the keys
-   * that need to be changed.
+   * that need to be changed. Supported fields: `firstName`, `lastName`, `email`, `phoneNumber`,
+   * `line`, and `languageCode`. Set a field to `null` to clear it.
    *
    * ```javascript
    * import { Qminder } from 'qminder-api';
@@ -217,12 +220,11 @@ export const TicketService = {
    * // Edit a ticket's first name
    * const ticket = { id: 12345, firstName: "John", lastName: "Smith" };
    * const changes = { firstName: "Jane" };
-   * const successMessage = await Qminder.Ticket.edit(ticket, changes);
-   * console.log(successMessage === "success"); // true if it worked
+   * await Qminder.Ticket.edit(ticket, changes);
    * ```
    * @param ticket  the ticket to edit, either the Ticket object or the ticket's ID
    * @param changes  an object only including changed properties of the ticket
-   * @returns a Promise that resolves to "success" when editing the ticket worked
+   * @returns a Promise that resolves when editing the ticket succeeded
    * @throws ERROR_NO_TICKET_ID when the ticket ID was undefined or not a number
    * @throws ERROR_NO_TICKET_CHANGES when the ticket changes were undefined
    */
