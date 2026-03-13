@@ -212,7 +212,7 @@ export const TicketService = {
    *
    * To edit a ticket, pass the ticket ID to edit, and an object that only includes the keys
    * that need to be changed. Supported fields: `firstName`, `lastName`, `email`, `phoneNumber`,
-   * `line`, and `languageCode`. Set a field to `null` to clear it.
+   * `line`, and `languageCode`. Set a field to `null` to clear it (except `languageCode`, which is required).
    *
    * ```javascript
    * import { Qminder } from 'qminder-api';

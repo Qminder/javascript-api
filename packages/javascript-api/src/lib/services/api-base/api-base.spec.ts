@@ -295,7 +295,7 @@ describe('ApiBase', () => {
       });
     });
 
-    it('handles empty response body gracefully', async () => {
+    it('throws an error for empty response body', async () => {
       Qminder.setKey(API_KEY);
 
       fetchSpy.mockReturnValue({
@@ -305,8 +305,9 @@ describe('ApiBase', () => {
         },
       });
 
-      const result = await Qminder.ApiBase.request('TEST');
-      expect(result).toEqual({});
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toThrow(
+        'Failed to parse response body as JSON',
+      );
     });
 
     it('throws a descriptive error for invalid JSON response', async () => {

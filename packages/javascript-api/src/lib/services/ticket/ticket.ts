@@ -241,7 +241,7 @@ type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
 
 export type TicketEditingParameters = NullablePartial<
   Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email'>
-> & { languageCode?: string | null };
+> & { languageCode?: string };
 
 interface TicketCallRequest {
   user?: number | string;

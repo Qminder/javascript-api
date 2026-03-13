@@ -924,7 +924,7 @@ describe('Ticket service', function () {
       ).rejects.toThrow();
     });
 
-    it("throws when there's no changes", async function () {
+    it('throws when the changes argument is missing', async function () {
       await expect(
         TicketService.edit({ id: 12345 }, undefined as any),
       ).rejects.toThrow();

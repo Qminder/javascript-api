@@ -106,12 +106,12 @@ export class ApiBase {
 
     const response = await fetch(`https://${this.apiServer}/${url}`, init);
     const text = await response.text();
-    let parsedResponse: any;
+    let parsedResponse: T;
     try {
-      parsedResponse = text ? JSON.parse(text) : {};
+      parsedResponse = JSON.parse(text);
     } catch {
       throw new Error(
-        `Failed to parse response body as JSON: ${text.slice(0, 200)}`,
+        `Failed to parse response body as JSON: ${text}`,
       );
     }
 
