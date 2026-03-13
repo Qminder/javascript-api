@@ -240,7 +240,9 @@ export const ERROR_INVALID_DESK: string =
 type Nullable<T> = { [K in keyof T]: T[K] | null };
 
 export type TicketEditingParameters = Partial<
-  Nullable<Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email'>>
+  Nullable<
+    Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email'>
+  >
 > & { languageCode?: string };
 
 interface TicketCallRequest {

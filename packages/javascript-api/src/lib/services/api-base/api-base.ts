@@ -115,9 +115,7 @@ export class ApiBase {
     try {
       parsedResponse = JSON.parse(text);
     } catch {
-      throw new Error(
-        `Failed to parse response body as JSON: ${text}`,
-      );
+      throw new Error(`Failed to parse response body as JSON: ${text}`);
     }
 
     if (!response.ok) {
