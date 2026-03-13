@@ -237,10 +237,10 @@ export const ERROR_NO_QUEUE_POSITION: string =
 export const ERROR_INVALID_DESK: string =
   'Desk is not a number or Desk object.';
 
-type NullablePartial<T> = { [K in keyof T]?: T[K] | null };
+type Nullable<T> = { [K in keyof T]: T[K] | null };
 
-export type TicketEditingParameters = NullablePartial<
-  Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email'>
+export type TicketEditingParameters = Partial<
+  Nullable<Pick<Ticket, 'line' | 'phoneNumber' | 'firstName' | 'lastName' | 'email'>>
 > & { languageCode?: string };
 
 interface TicketCallRequest {
