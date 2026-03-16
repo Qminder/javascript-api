@@ -86,7 +86,7 @@ export class ApiBase {
     };
 
     if (options?.body) {
-      if (options?.method !== 'PUT') {
+      if (!options.method) {
         init.method = 'POST';
       }
 
@@ -105,7 +105,18 @@ export class ApiBase {
     }
 
     const response = await fetch(`https://${this.apiServer}/${url}`, init);
-    const parsedResponse = await response.json();
+    const text = await response.text();
+
+    if (!text && response.ok) {
+      return {} as T;
+    }
+
+    let parsedResponse: T;
+    try {
+      parsedResponse = JSON.parse(text);
+    } catch {
+      throw new Error(`Failed to parse response body as JSON: ${text}`);
+    }
 
     if (!response.ok) {
       throw this.extractError(parsedResponse);
