@@ -443,7 +443,9 @@ export class GraphqlService {
 
   private sendMessage(id: string, type: MessageType, payload: any) {
     if (this.connectionStatus === ConnectionStatus.CONNECTED) {
-      this.sendRawMessage(JSON.stringify({ id, type, payload }));
+      if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
+        this.handleConnectionDrop();
+      }
     } else {
       this.openSocket();
     }

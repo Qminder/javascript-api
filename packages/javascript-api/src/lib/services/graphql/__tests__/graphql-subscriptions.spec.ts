@@ -377,9 +377,9 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('WebSocket readyState guards', () => {
-    it('drops messages and logs warning when socket is not in OPEN state during subscribe', async () => {
+    it('triggers reconnection when socket is not in OPEN state during sendMessage', async () => {
       const service = fixture.graphqlService as any;
-      const loggerWarnSpy = jest.spyOn(service.logger, 'warn');
+      const handleDropSpy = jest.spyOn(service, 'handleConnectionDrop');
 
       const sub = fixture.triggerSubscription();
       await fixture.handleConnectionInit();
@@ -393,15 +393,13 @@ describe('GraphQL subscriptions', () => {
 
       service.sendMessage('99', 'start', { query: 'subscription { test }' });
 
-      expect(loggerWarnSpy).toHaveBeenCalledWith(
-        'Message dropped: WebSocket is not in OPEN state',
-      );
+      expect(handleDropSpy).toHaveBeenCalled();
       expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
 
       sub.unsubscribe();
     });
 
-    it('sendPing sets pong timeout but does not send when socket is not OPEN', () => {
+    it('sendPing skips sending when socket is not OPEN but still sets pong timeout', () => {
       const service = fixture.graphqlService as any;
       const sendRawSpy = jest.spyOn(service, 'sendRawMessage');
       service.socket = { readyState: 0 };
