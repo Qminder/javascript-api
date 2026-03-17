@@ -386,7 +386,11 @@ export class GraphqlService {
                 type: MessageType.GQL_START,
                 payload,
               });
-              this.sendRawMessage(msg);
+              if (!this.sendRawMessage(msg)) {
+                this.logger.warn(
+                  `Failed to re-subscribe subscription ${subscription.id}: WebSocket not open`,
+                );
+              }
             });
             break;
 
@@ -445,8 +449,13 @@ export class GraphqlService {
     }
   }
 
-  private sendRawMessage(message: any) {
-    this.socket.send(message);
+  private sendRawMessage(message: string): boolean {
+    if (this.socket?.readyState === WebSocket.OPEN) {
+      this.socket.send(message);
+      return true;
+    }
+    this.logger.warn('Message dropped: WebSocket is not in OPEN state');
+    return false;
   }
 
   private generateOperationId(): string {
@@ -480,11 +489,13 @@ export class GraphqlService {
   }
 
   private sendPing(): void {
+    // Always set the pong timeout as a safety net: if the socket is not open,
+    // the timeout will fire and trigger reconnection via handleConnectionDrop.
     this.pongTimeout = setTimeout(
       this.handleConnectionDropWithThisBound,
       PONG_TIMEOUT_IN_MS,
     );
-    if (this.socket) {
+    if (this.socket?.readyState === WebSocket.OPEN) {
       this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
     }
   }

@@ -376,6 +376,85 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
+  describe('WebSocket readyState guards', () => {
+    it('drops messages and logs warning when socket is not in OPEN state during subscribe', async () => {
+      const service = fixture.graphqlService as any;
+      const loggerWarnSpy = jest.spyOn(service.logger, 'warn');
+
+      // Establish a working connection first
+      const sub = fixture.triggerSubscription();
+      await fixture.handleConnectionInit();
+      await fixture.consumeSubscribeMessage();
+
+      // Force socket to CONNECTING state, then attempt a new subscription
+      // which calls sendMessage -> sendRawMessage
+      Object.defineProperty(service.socket, 'readyState', {
+        value: 0,
+        writable: true,
+      });
+      service.connectionStatus = 'CONNECTED'; // force status so sendMessage doesn't bail to openSocket
+
+      service.sendMessage('99', 'start', { query: 'subscription { test }' });
+
+      expect(loggerWarnSpy).toHaveBeenCalledWith(
+        'Message dropped: WebSocket is not in OPEN state',
+      );
+      // Verify server never received the message
+      expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
+
+      sub.unsubscribe();
+    });
+
+    it('sendPing sets pong timeout but does not send when socket is not OPEN', () => {
+      const service = fixture.graphqlService as any;
+      const sendRawSpy = jest.spyOn(service, 'sendRawMessage');
+      service.socket = { readyState: 0 };
+      service.pongTimeout = null;
+
+      service.sendPing();
+
+      // pongTimeout should be set (reconnection safety net)
+      expect(service.pongTimeout).not.toBeNull();
+      // But no ping message should have been sent
+      expect(sendRawSpy).not.toHaveBeenCalled();
+
+      clearTimeout(service.pongTimeout);
+    });
+
+    it('logs warning for each failed re-subscription when socket is not open during connection_ack', async () => {
+      const service = fixture.graphqlService as any;
+      const loggerWarnSpy = jest.spyOn(service.logger, 'warn');
+
+      // Create a real subscription and establish connection
+      const sub1 = fixture.triggerSubscription('subscription { first }');
+      await fixture.handleConnectionInit();
+      await fixture.consumeSubscribeMessage('subscription { first }');
+
+      // Force disconnect and reconnect
+      await fixture.closeWithCode(1001);
+      fixture.openServer();
+      await fixture.waitForConnection();
+      await fixture.consumeInitMessage();
+
+      // Before sending connection_ack, force the socket to non-OPEN
+      Object.defineProperty(service.socket, 'readyState', {
+        value: 0,
+        writable: true,
+      });
+      fixture.sendMessageToClient({ type: 'connection_ack' });
+
+      // Allow message processing
+      await new Promise((r) => setTimeout(r, 10));
+
+      const resubWarnings = loggerWarnSpy.mock.calls.filter((call) =>
+        String(call[0]).includes('Failed to re-subscribe'),
+      );
+      expect(resubWarnings).toHaveLength(1);
+
+      sub1.unsubscribe();
+    });
+  });
+
   function useFakeSetInterval() {
     jest.useFakeTimers({
       doNotFake: [
