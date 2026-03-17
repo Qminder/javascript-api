@@ -374,13 +374,13 @@ export class GraphqlService {
           case MessageType.GQL_CONNECTION_KEEP_ALIVE:
             break;
 
-          case MessageType.GQL_CONNECTION_ACK:
+          case MessageType.GQL_CONNECTION_ACK: {
             this.connectionAttemptsCount = 0;
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             this.logger.info('Connected to websocket');
             this.startConnectionMonitoring();
             let resubscriptionFailed = false;
-            this.subscriptions.forEach((subscription) => {
+            for (const subscription of this.subscriptions) {
               const payload = { query: subscription.query };
               const msg = JSON.stringify({
                 id: subscription.id,
@@ -389,15 +389,17 @@ export class GraphqlService {
               });
               if (!this.sendRawMessage(msg)) {
                 this.logger.warn(
-                  `Failed to re-subscribe subscription ${subscription.id}: WebSocket not open`,
+                  `Failed to re-subscribe ${this.subscriptions.length} subscription(s): WebSocket not open`,
                 );
                 resubscriptionFailed = true;
+                break;
               }
-            });
+            }
             if (resubscriptionFailed) {
               this.handleConnectionDrop();
             }
             break;
+          }
 
           case MessageType.GQL_DATA:
             this.subscriptionObserverMap[message.id]?.next(

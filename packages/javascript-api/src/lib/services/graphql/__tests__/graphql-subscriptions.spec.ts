@@ -385,6 +385,8 @@ describe('GraphQL subscriptions', () => {
       await fixture.handleConnectionInit();
       await fixture.consumeSubscribeMessage();
 
+      // mock-socket doesn't support simulating a half-closed socket,
+      // so we override readyState directly to test the guard
       Object.defineProperty(service.socket, 'readyState', {
         value: 0,
         writable: true,
@@ -426,12 +428,15 @@ describe('GraphQL subscriptions', () => {
       await fixture.waitForConnection();
       await fixture.consumeInitMessage();
 
+      // mock-socket doesn't support simulating a half-closed socket,
+      // so we override readyState directly to test the guard
       Object.defineProperty(service.socket, 'readyState', {
         value: 0,
         writable: true,
       });
       fixture.sendMessageToClient({ type: 'connection_ack' });
 
+      // Allow mock-socket message delivery to settle
       await new Promise((r) => setTimeout(r, 10));
 
       const resubWarnings = loggerWarnSpy.mock.calls.filter((call) =>
