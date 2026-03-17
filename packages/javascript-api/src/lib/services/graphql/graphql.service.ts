@@ -379,6 +379,7 @@ export class GraphqlService {
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             this.logger.info('Connected to websocket');
             this.startConnectionMonitoring();
+            let resubscriptionFailed = false;
             this.subscriptions.forEach((subscription) => {
               const payload = { query: subscription.query };
               const msg = JSON.stringify({
@@ -390,8 +391,12 @@ export class GraphqlService {
                 this.logger.warn(
                   `Failed to re-subscribe subscription ${subscription.id}: WebSocket not open`,
                 );
+                resubscriptionFailed = true;
               }
             });
+            if (resubscriptionFailed) {
+              this.handleConnectionDrop();
+            }
             break;
 
           case MessageType.GQL_DATA:
@@ -444,6 +449,7 @@ export class GraphqlService {
   private sendMessage(id: string, type: MessageType, payload: any) {
     if (this.connectionStatus === ConnectionStatus.CONNECTED) {
       if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
+        this.logger.warn('Message dropped: WebSocket is not in OPEN state');
         this.handleConnectionDrop();
       }
     } else {
@@ -456,7 +462,6 @@ export class GraphqlService {
       this.socket.send(message);
       return true;
     }
-    this.logger.warn('Message dropped: WebSocket is not in OPEN state');
     return false;
   }
 
@@ -491,15 +496,11 @@ export class GraphqlService {
   }
 
   private sendPing(): void {
-    // Always set the pong timeout as a safety net: if the socket is not open,
-    // the timeout will fire and trigger reconnection via handleConnectionDrop.
     this.pongTimeout = setTimeout(
       this.handleConnectionDropWithThisBound,
       PONG_TIMEOUT_IN_MS,
     );
-    if (this.socket?.readyState === WebSocket.OPEN) {
-      this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
-    }
+    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
   private handleConnectionDrop(): void {

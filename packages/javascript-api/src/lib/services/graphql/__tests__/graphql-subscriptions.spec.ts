@@ -389,7 +389,7 @@ describe('GraphQL subscriptions', () => {
         value: 0,
         writable: true,
       });
-      service.connectionStatus = 'CONNECTED';
+      service.connectionStatus = ConnectionStatus.CONNECTED;
 
       service.sendMessage('99', 'start', { query: 'subscription { test }' });
 
@@ -401,20 +401,20 @@ describe('GraphQL subscriptions', () => {
 
     it('sendPing skips sending when socket is not OPEN but still sets pong timeout', () => {
       const service = fixture.graphqlService as any;
-      const sendRawSpy = jest.spyOn(service, 'sendRawMessage');
-      service.socket = { readyState: 0 };
+      service.socket = { readyState: 0, send: jest.fn() };
       service.pongTimeout = null;
 
       service.sendPing();
 
       expect(service.pongTimeout).not.toBeNull();
-      expect(sendRawSpy).not.toHaveBeenCalled();
+      expect(service.socket.send).not.toHaveBeenCalled();
 
       clearTimeout(service.pongTimeout);
     });
 
-    it('logs warning for each failed re-subscription when socket is not open during connection_ack', async () => {
+    it('triggers reconnection when re-subscription fails during connection_ack', async () => {
       const service = fixture.graphqlService as any;
+      const handleDropSpy = jest.spyOn(service, 'handleConnectionDrop');
       const loggerWarnSpy = jest.spyOn(service.logger, 'warn');
 
       const sub1 = fixture.triggerSubscription('subscription { first }');
@@ -438,6 +438,7 @@ describe('GraphQL subscriptions', () => {
         String(call[0]).includes('Failed to re-subscribe'),
       );
       expect(resubWarnings).toHaveLength(1);
+      expect(handleDropSpy).toHaveBeenCalled();
 
       sub1.unsubscribe();
     });
