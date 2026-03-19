@@ -376,6 +376,79 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
+  describe('WebSocket readyState guards', () => {
+    it('triggers reconnection when socket is not in OPEN state during sendMessage', async () => {
+      const service = fixture.graphqlService as any;
+      const handleDropSpy = jest.spyOn(service, 'handleConnectionDrop');
+
+      const sub = fixture.triggerSubscription();
+      await fixture.handleConnectionInit();
+      await fixture.consumeSubscribeMessage();
+
+      // mock-socket doesn't support simulating a half-closed socket,
+      // so we override readyState directly to test the guard
+      Object.defineProperty(service.socket, 'readyState', {
+        value: 0,
+        writable: true,
+      });
+      service.connectionStatus = ConnectionStatus.CONNECTED;
+
+      service.sendMessage('99', 'start', { query: 'subscription { test }' });
+
+      expect(handleDropSpy).toHaveBeenCalled();
+      expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
+
+      sub.unsubscribe();
+    });
+
+    it('sendPing skips sending when socket is not OPEN but still sets pong timeout', () => {
+      const service = fixture.graphqlService as any;
+      service.socket = { readyState: 0, send: jest.fn() };
+      service.pongTimeout = null;
+
+      service.sendPing();
+
+      expect(service.pongTimeout).not.toBeNull();
+      expect(service.socket.send).not.toHaveBeenCalled();
+
+      clearTimeout(service.pongTimeout);
+    });
+
+    it('triggers reconnection when re-subscription fails during connection_ack', async () => {
+      const service = fixture.graphqlService as any;
+      const handleDropSpy = jest.spyOn(service, 'handleConnectionDrop');
+      const loggerWarnSpy = jest.spyOn(service.logger, 'warn');
+
+      const sub1 = fixture.triggerSubscription('subscription { first }');
+      await fixture.handleConnectionInit();
+      await fixture.consumeSubscribeMessage('subscription { first }');
+
+      await fixture.closeWithCode(1001);
+      fixture.openServer();
+      await fixture.waitForConnection();
+      await fixture.consumeInitMessage();
+
+      // mock-socket doesn't support simulating a half-closed socket,
+      // so we override readyState directly to test the guard
+      Object.defineProperty(service.socket, 'readyState', {
+        value: 0,
+        writable: true,
+      });
+      fixture.sendMessageToClient({ type: 'connection_ack' });
+
+      // Allow mock-socket message delivery to settle
+      await new Promise((r) => setTimeout(r, 10));
+
+      const resubWarnings = loggerWarnSpy.mock.calls.filter((call) =>
+        String(call[0]).includes('Failed to re-subscribe'),
+      );
+      expect(resubWarnings).toHaveLength(1);
+      expect(handleDropSpy).toHaveBeenCalled();
+
+      sub1.unsubscribe();
+    });
+  });
+
   function useFakeSetInterval() {
     jest.useFakeTimers({
       doNotFake: [

@@ -374,21 +374,32 @@ export class GraphqlService {
           case MessageType.GQL_CONNECTION_KEEP_ALIVE:
             break;
 
-          case MessageType.GQL_CONNECTION_ACK:
+          case MessageType.GQL_CONNECTION_ACK: {
             this.connectionAttemptsCount = 0;
             this.setConnectionStatus(ConnectionStatus.CONNECTED);
             this.logger.info('Connected to websocket');
             this.startConnectionMonitoring();
-            this.subscriptions.forEach((subscription) => {
+            let resubscriptionFailed = false;
+            for (const subscription of this.subscriptions) {
               const payload = { query: subscription.query };
               const msg = JSON.stringify({
                 id: subscription.id,
                 type: MessageType.GQL_START,
                 payload,
               });
-              this.sendRawMessage(msg);
-            });
+              if (!this.sendRawMessage(msg)) {
+                this.logger.warn(
+                  `Failed to re-subscribe ${this.subscriptions.length} subscription(s): WebSocket not open`,
+                );
+                resubscriptionFailed = true;
+                break;
+              }
+            }
+            if (resubscriptionFailed) {
+              this.handleConnectionDrop();
+            }
             break;
+          }
 
           case MessageType.GQL_DATA:
             this.subscriptionObserverMap[message.id]?.next(
@@ -439,14 +450,21 @@ export class GraphqlService {
 
   private sendMessage(id: string, type: MessageType, payload: any) {
     if (this.connectionStatus === ConnectionStatus.CONNECTED) {
-      this.sendRawMessage(JSON.stringify({ id, type, payload }));
+      if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
+        this.logger.warn('Message dropped: WebSocket is not in OPEN state');
+        this.handleConnectionDrop();
+      }
     } else {
       this.openSocket();
     }
   }
 
-  private sendRawMessage(message: any) {
-    this.socket.send(message);
+  private sendRawMessage(message: string): boolean {
+    if (this.socket?.readyState === WebSocket.OPEN) {
+      this.socket.send(message);
+      return true;
+    }
+    return false;
   }
 
   private generateOperationId(): string {
@@ -484,9 +502,7 @@ export class GraphqlService {
       this.handleConnectionDropWithThisBound,
       PONG_TIMEOUT_IN_MS,
     );
-    if (this.socket) {
-      this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
-    }
+    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
   private handleConnectionDrop(): void {
