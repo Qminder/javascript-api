@@ -1,9 +1,7 @@
 import { Desk } from '../../model/desk.js';
 import { Location } from '../../model/location.js';
-import {
-  OpeningHours,
-  OpeningHoursException,
-} from '../../model/opening-hours.js';
+import { OpeningHours } from '../../model/opening-hours.js';
+import { OpeningHoursException } from '../../model/opening-hours-exception.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
 
