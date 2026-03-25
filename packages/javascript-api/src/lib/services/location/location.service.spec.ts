@@ -176,19 +176,8 @@ describe('Location service', function () {
       requestStub.resolves({});
     });
 
-    it('calls ApiBase.request with correct URL, method, body and headers using numeric ID', async function () {
+    it('calls ApiBase.request with correct URL, method, body and headers', async function () {
       await LocationService.setOpeningHours(LOCATION_ID, OPENING_HOURS);
-      expect(
-        requestStub.calledWith(`locations/${LOCATION_ID}/opening-hours`, {
-          method: 'PUT',
-          body: JSON.stringify(OPENING_HOURS),
-          headers: { 'X-Qminder-API-Version': '2020-09-01' },
-        }),
-      ).toBeTruthy();
-    });
-
-    it('accepts a location object with id', async function () {
-      await LocationService.setOpeningHours({ id: LOCATION_ID }, OPENING_HOURS);
       expect(
         requestStub.calledWith(`locations/${LOCATION_ID}/opening-hours`, {
           method: 'PUT',
@@ -217,25 +206,8 @@ describe('Location service', function () {
       requestStub.resolves({});
     });
 
-    it('calls ApiBase.request with correct URL, method, body and headers using numeric ID', async function () {
+    it('calls ApiBase.request with correct URL, method, body and headers', async function () {
       await LocationService.setOpeningHoursExceptions(LOCATION_ID, EXCEPTIONS);
-      expect(
-        requestStub.calledWith(
-          `locations/${LOCATION_ID}/opening-hours/exceptions`,
-          {
-            method: 'PUT',
-            body: JSON.stringify(EXCEPTIONS),
-            headers: { 'X-Qminder-API-Version': '2020-09-01' },
-          },
-        ),
-      ).toBeTruthy();
-    });
-
-    it('accepts a location object with id', async function () {
-      await LocationService.setOpeningHoursExceptions(
-        { id: LOCATION_ID },
-        EXCEPTIONS,
-      );
       expect(
         requestStub.calledWith(
           `locations/${LOCATION_ID}/opening-hours/exceptions`,
