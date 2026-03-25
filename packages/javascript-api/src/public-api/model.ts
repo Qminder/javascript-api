@@ -14,6 +14,13 @@ export { TicketExtraText } from '../lib/model/ticket/ticket-extra-text.js';
 export { TicketExtraUrl } from '../lib/model/ticket/ticket-extra-url.js';
 export { TicketExtraOption } from '../lib/model/ticket/ticket-extra-option.js';
 export { User } from '../lib/model/user.js';
+export {
+  OpeningHoursTime,
+  OpeningHoursRange,
+  DayOpeningHours,
+  OpeningHours,
+  OpeningHoursException,
+} from '../lib/model/opening-hours.js';
 export { Webhook } from '../lib/model/webhook.js';
 export { SimpleError } from '../lib/model/errors/simple-error.js';
 export { ComplexError } from '../lib/model/errors/complex-error.js';

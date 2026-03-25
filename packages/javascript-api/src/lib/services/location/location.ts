@@ -1,5 +1,9 @@
 import { Desk } from '../../model/desk.js';
 import { Location } from '../../model/location.js';
+import {
+  OpeningHours,
+  OpeningHoursException,
+} from '../../model/opening-hours.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
 
@@ -26,4 +30,28 @@ export function getDesks(location: IdOrObject<Location>): Promise<Desk[]> {
       return response.desks;
     },
   );
+}
+
+export async function setOpeningHours(
+  location: IdOrObject<Location>,
+  openingHours: OpeningHours,
+): Promise<void> {
+  const locationId = extractId(location);
+  await ApiBase.request(`locations/${locationId}/opening-hours`, {
+    method: 'PUT',
+    body: JSON.stringify(openingHours),
+    headers: { 'X-Qminder-API-Version': '2020-09-01' },
+  });
+}
+
+export async function setOpeningHoursExceptions(
+  location: IdOrObject<Location>,
+  exceptions: OpeningHoursException[],
+): Promise<void> {
+  const locationId = extractId(location);
+  await ApiBase.request(`locations/${locationId}/opening-hours/exceptions`, {
+    method: 'PUT',
+    body: JSON.stringify(exceptions),
+    headers: { 'X-Qminder-API-Version': '2020-09-01' },
+  });
 }
