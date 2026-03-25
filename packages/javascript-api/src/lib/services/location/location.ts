@@ -5,6 +5,8 @@ import { OpeningHoursException } from '../../model/opening-hours-exception.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
 
+const V2_HEADERS = { 'X-Qminder-API-Version': '2020-09-01' } as const;
+
 export function list(): Promise<Location[]> {
   return ApiBase.request('v1/locations/').then(
     (locations: { data: Location[] }) => {
@@ -38,7 +40,7 @@ export async function setOpeningHours(
   await ApiBase.request(`locations/${locationId}/opening-hours`, {
     method: 'PUT',
     body: JSON.stringify(openingHours),
-    headers: { 'X-Qminder-API-Version': '2020-09-01' },
+    headers: V2_HEADERS,
   });
 }
 
@@ -50,6 +52,6 @@ export async function setOpeningHoursExceptions(
   await ApiBase.request(`locations/${locationId}/opening-hours/exceptions`, {
     method: 'PUT',
     body: JSON.stringify(exceptions),
-    headers: { 'X-Qminder-API-Version': '2020-09-01' },
+    headers: V2_HEADERS,
   });
 }

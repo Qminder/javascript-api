@@ -168,12 +168,14 @@ describe('Location service', function () {
       wed: {},
       thu: {},
       fri: {},
-      sat: { closed: true },
-      sun: { closed: true },
+      sat: { closed: true as const },
+      sun: { closed: true as const },
     };
 
     beforeEach(function () {
-      requestStub.resolves({});
+      requestStub
+        .withArgs(`locations/${LOCATION_ID}/opening-hours`)
+        .resolves({});
     });
 
     it('calls ApiBase.request with correct URL, method, body and headers', async function () {
@@ -186,11 +188,12 @@ describe('Location service', function () {
         }),
       ).toBeTruthy();
     });
+
   });
 
   describe('setOpeningHoursExceptions()', function () {
     const EXCEPTIONS = [
-      { date: '2020-05-13', closed: true, closedReason: 'Birthday' },
+      { date: '2020-05-13', closed: true as const, closedReason: 'Birthday' },
       {
         date: '2020-12-25',
         businessHours: [
@@ -203,7 +206,9 @@ describe('Location service', function () {
     ];
 
     beforeEach(function () {
-      requestStub.resolves({});
+      requestStub
+        .withArgs(`locations/${LOCATION_ID}/opening-hours/exceptions`)
+        .resolves({});
     });
 
     it('calls ApiBase.request with correct URL, method, body and headers', async function () {
@@ -219,6 +224,7 @@ describe('Location service', function () {
         ),
       ).toBeTruthy();
     });
+
   });
 
   afterEach(function () {
