@@ -188,7 +188,6 @@ describe('Location service', function () {
         }),
       ).toBeTruthy();
     });
-
   });
 
   describe('setOpeningHoursExceptions()', function () {
@@ -224,7 +223,6 @@ describe('Location service', function () {
         ),
       ).toBeTruthy();
     });
-
   });
 
   afterEach(function () {
