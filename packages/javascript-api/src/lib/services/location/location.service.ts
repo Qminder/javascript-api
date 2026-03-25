@@ -84,54 +84,14 @@ export const LocationService = {
   /**
    * Set the weekly opening hours for a location.
    *
-   * Each day can have `businessHours` (array of time ranges), `closed: true`, or
-   * neither (open all day). `businessHours` and `closed` are mutually exclusive.
-   *
    * Calls the following HTTP API: `PUT /locations/<ID>/opening-hours`
-   *
-   * For example:
-   *
-   * ```javascript
-   * import { Qminder } from 'qminder-api';
-   * Qminder.setKey('API_KEY_HERE');
-   *
-   * await Qminder.Location.setOpeningHours(1234, {
-   *   mon: { businessHours: [{ opens: { hours: 9, minutes: 0 }, closes: { hours: 17, minutes: 0 } }] },
-   *   tue: { businessHours: [{ opens: { hours: 9, minutes: 0 }, closes: { hours: 17, minutes: 0 } }] },
-   *   wed: {},
-   *   thu: {},
-   *   fri: {},
-   *   sat: { closed: true },
-   *   sun: { closed: true },
-   * });
-   * ```
-   *
-   * @param location the location or location ID
-   * @param openingHours the weekly opening hours configuration
    */
   setOpeningHours,
 
   /**
    * Set date-specific exceptions to the regular opening hours schedule.
    *
-   * Each exception requires a `date` and exactly one of `closed: true` or `businessHours`.
-   * An optional `closedReason` (max 30 characters) can be provided when closed.
-   *
    * Calls the following HTTP API: `PUT /locations/<ID>/opening-hours/exceptions`
-   *
-   * For example:
-   *
-   * ```javascript
-   * import { Qminder } from 'qminder-api';
-   * Qminder.setKey('API_KEY_HERE');
-   *
-   * await Qminder.Location.setOpeningHoursExceptions(1234, [
-   *   { date: '2020-05-13', closed: true, closedReason: 'Holiday' },
-   * ]);
-   * ```
-   *
-   * @param location the location or location ID
-   * @param exceptions the list of opening hours exceptions
    */
   setOpeningHoursExceptions,
 };
