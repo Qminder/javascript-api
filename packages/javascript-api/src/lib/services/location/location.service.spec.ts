@@ -188,10 +188,7 @@ describe('Location service', function () {
     });
 
     it('accepts a location object with id', async function () {
-      await LocationService.setOpeningHours(
-        { id: LOCATION_ID },
-        OPENING_HOURS,
-      );
+      await LocationService.setOpeningHours({ id: LOCATION_ID }, OPENING_HOURS);
       expect(
         requestStub.calledWith(`locations/${LOCATION_ID}/opening-hours`, {
           method: 'PUT',
