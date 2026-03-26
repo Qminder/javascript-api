@@ -250,7 +250,11 @@ describe('Location service', function () {
         visibleForLines: [{ id: 1 }, { id: 2 }],
         showInRemoteSignIn: false,
         translations: [
-          { languageCode: 'et', title: 'E-posti aadress', visitorFacingTitle: 'Sinu e-post' },
+          {
+            languageCode: 'et',
+            title: 'E-posti aadress',
+            visitorFacingTitle: 'Sinu e-post',
+          },
         ],
       };
 
