@@ -60,9 +60,6 @@ export async function setOpeningHoursExceptions(
 /**
  * Create a new input field for a location.
  *
- * The input field `id` and all `SelectOption` `id` values must be client-generated UUID v4 strings.
- * The `location.id` in the request body identifies which location the field belongs to.
- *
  * Calls the following HTTP API: `POST /input-fields` (with V2 header)
  *
  * @param inputField the input field creation request

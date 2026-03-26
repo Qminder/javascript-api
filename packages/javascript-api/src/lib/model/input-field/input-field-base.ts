@@ -3,7 +3,6 @@ import { LocationRef } from './location-ref.js';
 import { UUID } from '../uuid.js';
 
 export interface InputFieldBase {
-  /** Client-generated UUID for this input field. */
   id: UUID;
   location: LocationRef;
   isMandatoryBeforeAdded: boolean;
