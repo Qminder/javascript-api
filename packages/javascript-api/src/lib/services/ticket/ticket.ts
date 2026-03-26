@@ -10,6 +10,7 @@ import {
   extractIdToNumber,
 } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
+import { V2_HEADERS } from '../v2-headers.js';
 import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 import { ExternalData } from '../../model/ticket/external-data.js';
 
@@ -329,9 +330,7 @@ export async function create(
   const result: TicketCreatedResponse = await ApiBase.request('tickets', {
     method: 'POST',
     body,
-    headers: {
-      'X-Qminder-API-Version': '2020-09-01',
-    },
+    headers: V2_HEADERS,
   });
   if (!result.id) {
     throw new ResponseValidationError('Response does not contain "id"');
@@ -360,9 +359,7 @@ export async function edit(
   await ApiBase.request(`tickets/${ticketId}`, {
     method: 'PATCH',
     body,
-    headers: {
-      'X-Qminder-API-Version': '2020-09-01',
-    },
+    headers: V2_HEADERS,
   });
 }
 

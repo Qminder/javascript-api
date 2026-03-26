@@ -5,8 +5,7 @@ import { OpeningHours } from '../../model/opening-hours.js';
 import { OpeningHoursException } from '../../model/opening-hours-exception.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
-
-const V2_HEADERS = { 'X-Qminder-API-Version': '2020-09-01' } as const;
+import { V2_HEADERS } from '../v2-headers.js';
 
 export function list(): Promise<Location[]> {
   return ApiBase.request('v1/locations/').then(

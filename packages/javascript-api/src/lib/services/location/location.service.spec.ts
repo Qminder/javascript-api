@@ -1,6 +1,7 @@
 import * as sinon from 'sinon';
 import { Desk } from '../../model/desk';
 import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request';
+import { FirstNameFieldCreationRequest } from '../../model/input-field/first-name-field-creation-request';
 import { NumericFieldCreationRequest } from '../../model/input-field/numeric-field-creation-request';
 import { SelectFieldCreationRequest } from '../../model/input-field/select-field-creation-request';
 import { Qminder } from '../../qminder';
@@ -325,6 +326,30 @@ describe('Location service', function () {
         requestStub.calledWith('input-fields', {
           method: 'POST',
           body: JSON.stringify(numericField),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
+      ).toBeTruthy();
+    });
+
+    it('sends a FIRST_NAME field with only base properties', async function () {
+      const firstNameField: FirstNameFieldCreationRequest = {
+        type: 'FIRST_NAME',
+        id: 'f6a7b8c9-d0e1-2345-faba-456789012345',
+        location: { id: LOCATION_ID },
+        isMandatoryBeforeAdded: false,
+        isMandatoryBeforeServed: false,
+        isMandatoryInRemoteSignIn: false,
+        isVisibleInWaitingDrawer: true,
+        isVisibleInServingDrawer: true,
+        visibleForLines: [],
+        showInRemoteSignIn: false,
+      };
+
+      await LocationService.createInputField(firstNameField);
+      expect(
+        requestStub.calledWith('input-fields', {
+          method: 'POST',
+          body: JSON.stringify(firstNameField),
           headers: { 'X-Qminder-API-Version': '2020-09-01' },
         }),
       ).toBeTruthy();

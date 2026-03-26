@@ -38,7 +38,6 @@ export { InputFieldCreationRequest } from '../lib/model/input-field/input-field-
 export { InputFieldBase } from '../lib/model/input-field/input-field-base.js';
 export { LocationRef } from '../lib/model/input-field/location-ref.js';
 export { LineRef } from '../lib/model/input-field/line-ref.js';
-export { InputFieldType } from '../lib/model/input-field/input-field-type.js';
 export { InputFieldTranslation } from '../lib/model/input-field/input-field-translation.js';
 export { SelectOption } from '../lib/model/input-field/select-option.js';
 export { SelectOptionTranslation } from '../lib/model/input-field/select-option-translation.js';
