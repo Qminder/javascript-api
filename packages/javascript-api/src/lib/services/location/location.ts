@@ -1,4 +1,5 @@
 import { Desk } from '../../model/desk.js';
+import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request.js';
 import { Location } from '../../model/location.js';
 import { OpeningHours } from '../../model/opening-hours.js';
 import { OpeningHoursException } from '../../model/opening-hours-exception.js';
@@ -52,6 +53,27 @@ export async function setOpeningHoursExceptions(
   await ApiBase.request(`locations/${locationId}/opening-hours/exceptions`, {
     method: 'PUT',
     body: JSON.stringify(exceptions),
+    headers: V2_HEADERS,
+  });
+}
+
+/**
+ * Create a new input field for a location.
+ *
+ * The input field `id` and all `SelectOption` `id` values must be client-generated UUID v4 strings.
+ * The `location.id` in the request body identifies which location the field belongs to.
+ *
+ * Calls the following HTTP API: `POST /input-fields` (with V2 header)
+ *
+ * @param inputField the input field creation request
+ * @returns a promise that resolves when the input field has been created
+ */
+export async function createInputField(
+  inputField: InputFieldCreationRequest,
+): Promise<void> {
+  await ApiBase.request('input-fields', {
+    method: 'POST',
+    body: JSON.stringify(inputField),
     headers: V2_HEADERS,
   });
 }

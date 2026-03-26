@@ -34,3 +34,20 @@ export {
 export { TicketLabelRequest } from '../lib/model/ticket/ticket-label-request.js';
 export { TicketType } from '../lib/model/ticket/ticket-type.js';
 export { UUID } from '../lib/model/uuid.js';
+export {
+  InputFieldCreationRequest,
+  InputFieldType,
+  InputFieldTranslation,
+  SelectOption,
+  SelectOptionTranslation,
+  NumericFieldConstraints,
+  TextFieldCreationRequest,
+  SelectFieldCreationRequest,
+  EmailFieldCreationRequest,
+  PhoneNumberFieldCreationRequest,
+  FirstNameFieldCreationRequest,
+  LastNameFieldCreationRequest,
+  UrlFieldCreationRequest,
+  DateFieldCreationRequest,
+  NumericFieldCreationRequest,
+} from '../lib/model/input-field/input-field-creation-request.js';
