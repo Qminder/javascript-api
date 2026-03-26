@@ -1,14 +1,16 @@
+import { LineRef } from './line-ref.js';
+import { LocationRef } from './location-ref.js';
 import { UUID } from '../uuid.js';
 
 export interface InputFieldBase {
   /** Client-generated UUID for this input field. */
   id: UUID;
-  location: { id: number };
+  location: LocationRef;
   isMandatoryBeforeAdded: boolean;
   isMandatoryBeforeServed: boolean;
   isMandatoryInRemoteSignIn: boolean;
   isVisibleInWaitingDrawer: boolean;
   isVisibleInServingDrawer: boolean;
-  visibleForLines: { id: number }[];
+  visibleForLines: LineRef[];
   showInRemoteSignIn: boolean;
 }
