@@ -34,20 +34,19 @@ export {
 export { TicketLabelRequest } from '../lib/model/ticket/ticket-label-request.js';
 export { TicketType } from '../lib/model/ticket/ticket-type.js';
 export { UUID } from '../lib/model/uuid.js';
-export {
-  InputFieldCreationRequest,
-  InputFieldType,
-  InputFieldTranslation,
-  SelectOption,
-  SelectOptionTranslation,
-  NumericFieldConstraints,
-  TextFieldCreationRequest,
-  SelectFieldCreationRequest,
-  EmailFieldCreationRequest,
-  PhoneNumberFieldCreationRequest,
-  FirstNameFieldCreationRequest,
-  LastNameFieldCreationRequest,
-  UrlFieldCreationRequest,
-  DateFieldCreationRequest,
-  NumericFieldCreationRequest,
-} from '../lib/model/input-field/input-field-creation-request.js';
+export { InputFieldCreationRequest } from '../lib/model/input-field/input-field-creation-request.js';
+export { InputFieldBase } from '../lib/model/input-field/input-field-base.js';
+export { InputFieldType } from '../lib/model/input-field/input-field-type.js';
+export { InputFieldTranslation } from '../lib/model/input-field/input-field-translation.js';
+export { SelectOption } from '../lib/model/input-field/select-option.js';
+export { SelectOptionTranslation } from '../lib/model/input-field/select-option-translation.js';
+export { NumericFieldConstraints } from '../lib/model/input-field/numeric-field-constraints.js';
+export { TextFieldCreationRequest } from '../lib/model/input-field/text-field-creation-request.js';
+export { SelectFieldCreationRequest } from '../lib/model/input-field/select-field-creation-request.js';
+export { EmailFieldCreationRequest } from '../lib/model/input-field/email-field-creation-request.js';
+export { PhoneNumberFieldCreationRequest } from '../lib/model/input-field/phone-number-field-creation-request.js';
+export { FirstNameFieldCreationRequest } from '../lib/model/input-field/first-name-field-creation-request.js';
+export { LastNameFieldCreationRequest } from '../lib/model/input-field/last-name-field-creation-request.js';
+export { UrlFieldCreationRequest } from '../lib/model/input-field/url-field-creation-request.js';
+export { DateFieldCreationRequest } from '../lib/model/input-field/date-field-creation-request.js';
+export { NumericFieldCreationRequest } from '../lib/model/input-field/numeric-field-creation-request.js';

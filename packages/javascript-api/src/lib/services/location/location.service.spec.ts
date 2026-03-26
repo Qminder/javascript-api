@@ -1,10 +1,8 @@
 import * as sinon from 'sinon';
 import { Desk } from '../../model/desk';
-import {
-  InputFieldCreationRequest,
-  SelectFieldCreationRequest,
-  NumericFieldCreationRequest,
-} from '../../model/input-field/input-field-creation-request';
+import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request';
+import { NumericFieldCreationRequest } from '../../model/input-field/numeric-field-creation-request';
+import { SelectFieldCreationRequest } from '../../model/input-field/select-field-creation-request';
 import { Qminder } from '../../qminder';
 import { LocationService } from './location.service';
 
