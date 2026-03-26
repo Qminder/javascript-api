@@ -1,4 +1,10 @@
-import { details, getDesks, list } from './location.js';
+import {
+  details,
+  getDesks,
+  list,
+  setOpeningHours,
+  setOpeningHoursExceptions,
+} from './location.js';
 
 /**
  * The LocationService allows you to get data about Locations.
@@ -74,4 +80,18 @@ export const LocationService = {
    * @returns a Promise that resolves to the list of desks in this location
    */
   getDesks,
+
+  /**
+   * Set the weekly opening hours for a location.
+   *
+   * Calls the following HTTP API: `PUT /locations/<ID>/opening-hours`
+   */
+  setOpeningHours,
+
+  /**
+   * Set date-specific exceptions to the regular opening hours schedule.
+   *
+   * Calls the following HTTP API: `PUT /locations/<ID>/opening-hours/exceptions`
+   */
+  setOpeningHoursExceptions,
 };

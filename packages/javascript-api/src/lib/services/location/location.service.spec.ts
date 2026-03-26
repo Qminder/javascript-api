@@ -147,6 +147,84 @@ describe('Location service', function () {
     });
   });
 
+  describe('setOpeningHours()', function () {
+    const OPENING_HOURS = {
+      mon: {
+        businessHours: [
+          {
+            opens: { hours: 9, minutes: 0 },
+            closes: { hours: 17, minutes: 30 },
+          },
+        ],
+      },
+      tue: {
+        businessHours: [
+          {
+            opens: { hours: 9, minutes: 0 },
+            closes: { hours: 17, minutes: 30 },
+          },
+        ],
+      },
+      wed: {},
+      thu: {},
+      fri: {},
+      sat: { closed: true as const },
+      sun: { closed: true as const },
+    };
+
+    beforeEach(function () {
+      requestStub
+        .withArgs(`locations/${LOCATION_ID}/opening-hours`)
+        .resolves({});
+    });
+
+    it('calls ApiBase.request with correct URL, method, body and headers', async function () {
+      await LocationService.setOpeningHours(LOCATION_ID, OPENING_HOURS);
+      expect(
+        requestStub.calledWith(`locations/${LOCATION_ID}/opening-hours`, {
+          method: 'PUT',
+          body: JSON.stringify(OPENING_HOURS),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('setOpeningHoursExceptions()', function () {
+    const EXCEPTIONS = [
+      { date: '2020-05-13', closed: true as const, closedReason: 'Birthday' },
+      {
+        date: '2020-12-25',
+        businessHours: [
+          {
+            opens: { hours: 10, minutes: 0 },
+            closes: { hours: 14, minutes: 0 },
+          },
+        ],
+      },
+    ];
+
+    beforeEach(function () {
+      requestStub
+        .withArgs(`locations/${LOCATION_ID}/opening-hours/exceptions`)
+        .resolves({});
+    });
+
+    it('calls ApiBase.request with correct URL, method, body and headers', async function () {
+      await LocationService.setOpeningHoursExceptions(LOCATION_ID, EXCEPTIONS);
+      expect(
+        requestStub.calledWith(
+          `locations/${LOCATION_ID}/opening-hours/exceptions`,
+          {
+            method: 'PUT',
+            body: JSON.stringify(EXCEPTIONS),
+            headers: { 'X-Qminder-API-Version': '2020-09-01' },
+          },
+        ),
+      ).toBeTruthy();
+    });
+  });
+
   afterEach(function () {
     requestStub.restore();
   });
