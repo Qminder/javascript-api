@@ -1,4 +1,5 @@
 import {
+  createInputField,
   details,
   getDesks,
   list,
@@ -94,4 +95,11 @@ export const LocationService = {
    * Calls the following HTTP API: `PUT /locations/<ID>/opening-hours/exceptions`
    */
   setOpeningHoursExceptions,
+
+  /**
+   * Create a new input field for a location.
+   *
+   * Calls the following HTTP API: `POST /input-fields` (with V2 header)
+   */
+  createInputField,
 };
