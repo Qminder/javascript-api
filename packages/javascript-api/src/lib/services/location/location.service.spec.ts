@@ -1,5 +1,9 @@
 import * as sinon from 'sinon';
 import { Desk } from '../../model/desk';
+import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request';
+import { FirstNameFieldCreationRequest } from '../../model/input-field/first-name-field-creation-request';
+import { NumericFieldCreationRequest } from '../../model/input-field/numeric-field-creation-request';
+import { SelectFieldCreationRequest } from '../../model/input-field/select-field-creation-request';
 import { Qminder } from '../../qminder';
 import { LocationService } from './location.service';
 
@@ -221,6 +225,133 @@ describe('Location service', function () {
             headers: { 'X-Qminder-API-Version': '2020-09-01' },
           },
         ),
+      ).toBeTruthy();
+    });
+  });
+
+  describe('createInputField()', function () {
+    beforeEach(function () {
+      requestStub.withArgs('input-fields').resolves({});
+    });
+
+    it('sends a TEXT field with correct URL, method, body and headers', async function () {
+      const textField: InputFieldCreationRequest = {
+        type: 'TEXT',
+        id: 'a1b2c3d4-e5f6-7890-abcd-ef1234567890',
+        location: { id: LOCATION_ID },
+        title: 'Email address',
+        visitorFacingTitle: 'Your email',
+        isMandatoryBeforeAdded: false,
+        isMandatoryBeforeServed: false,
+        isMandatoryInRemoteSignIn: false,
+        isVisibleInWaitingDrawer: true,
+        isVisibleInServingDrawer: true,
+        visibleForLines: [{ id: 1 }, { id: 2 }],
+        showInRemoteSignIn: false,
+        translations: [
+          {
+            languageCode: 'et',
+            title: 'E-posti aadress',
+            visitorFacingTitle: 'Sinu e-post',
+          },
+        ],
+      };
+
+      await LocationService.createInputField(textField);
+      expect(
+        requestStub.calledWith('input-fields', {
+          method: 'POST',
+          body: JSON.stringify(textField),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
+      ).toBeTruthy();
+    });
+
+    it('sends a SELECT field with options', async function () {
+      const selectField: SelectFieldCreationRequest = {
+        type: 'SELECT',
+        id: 'b2c3d4e5-f6a7-8901-bcde-f12345678901',
+        location: { id: LOCATION_ID },
+        title: 'Service type',
+        multiSelect: false,
+        options: [
+          {
+            id: 'c3d4e5f6-a7b8-9012-cdef-123456789012',
+            title: 'Documents',
+            color: '#FF0000',
+            translations: [{ languageCode: 'et', title: 'Dokumendid' }],
+          },
+          {
+            id: 'd4e5f6a7-b8c9-0123-defa-234567890123',
+            title: 'Consultation',
+          },
+        ],
+        isMandatoryBeforeAdded: true,
+        isMandatoryBeforeServed: false,
+        isMandatoryInRemoteSignIn: false,
+        isVisibleInWaitingDrawer: true,
+        isVisibleInServingDrawer: true,
+        visibleForLines: [],
+        showInRemoteSignIn: false,
+      };
+
+      await LocationService.createInputField(selectField);
+      expect(
+        requestStub.calledWith('input-fields', {
+          method: 'POST',
+          body: JSON.stringify(selectField),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
+      ).toBeTruthy();
+    });
+
+    it('sends a NUMERIC field with constraints', async function () {
+      const numericField: NumericFieldCreationRequest = {
+        type: 'NUMERIC',
+        id: 'e5f6a7b8-c9d0-1234-efab-345678901234',
+        location: { id: LOCATION_ID },
+        title: 'Amount',
+        constraints: { min: 0, max: 1000, scale: 2 },
+        isMandatoryBeforeAdded: false,
+        isMandatoryBeforeServed: true,
+        isMandatoryInRemoteSignIn: false,
+        isVisibleInWaitingDrawer: false,
+        isVisibleInServingDrawer: true,
+        visibleForLines: [],
+        showInRemoteSignIn: false,
+      };
+
+      await LocationService.createInputField(numericField);
+      expect(
+        requestStub.calledWith('input-fields', {
+          method: 'POST',
+          body: JSON.stringify(numericField),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
+      ).toBeTruthy();
+    });
+
+    it('sends a FIRST_NAME field with only base properties', async function () {
+      const firstNameField: FirstNameFieldCreationRequest = {
+        type: 'FIRST_NAME',
+        id: 'f6a7b8c9-d0e1-2345-faba-456789012345',
+        location: { id: LOCATION_ID },
+        isMandatoryBeforeAdded: false,
+        isMandatoryBeforeServed: false,
+        isMandatoryInRemoteSignIn: false,
+        isVisibleInWaitingDrawer: true,
+        isVisibleInServingDrawer: true,
+        visibleForLines: [],
+        showInRemoteSignIn: false,
+      };
+
+      await LocationService.createInputField(firstNameField);
+      expect(
+        requestStub.calledWith('input-fields', {
+          method: 'POST',
+          body: JSON.stringify(firstNameField),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
       ).toBeTruthy();
     });
   });

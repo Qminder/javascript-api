@@ -1,11 +1,11 @@
 import { Desk } from '../../model/desk.js';
+import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request.js';
 import { Location } from '../../model/location.js';
 import { OpeningHours } from '../../model/opening-hours.js';
 import { OpeningHoursException } from '../../model/opening-hours-exception.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
 import { ApiBase } from '../api-base/api-base.js';
-
-const V2_HEADERS = { 'X-Qminder-API-Version': '2020-09-01' } as const;
+import { V2_HEADERS } from '../v2-headers.js';
 
 export function list(): Promise<Location[]> {
   return ApiBase.request('v1/locations/').then(
@@ -52,6 +52,16 @@ export async function setOpeningHoursExceptions(
   await ApiBase.request(`locations/${locationId}/opening-hours/exceptions`, {
     method: 'PUT',
     body: JSON.stringify(exceptions),
+    headers: V2_HEADERS,
+  });
+}
+
+export async function createInputField(
+  inputField: InputFieldCreationRequest,
+): Promise<void> {
+  await ApiBase.request('input-fields', {
+    method: 'POST',
+    body: JSON.stringify(inputField),
     headers: V2_HEADERS,
   });
 }
