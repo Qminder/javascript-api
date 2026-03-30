@@ -1,9 +1,12 @@
 import { Line } from '../../model/line.js';
+import { LineCreatedResponse } from '../../model/line/line-created-response.js';
+import { LineCreationRequest } from '../../model/line/line-creation-request.js';
 import { Location } from '../../model/location.js';
 import { extractId, IdOrObject } from '../../util/id-or-object.js';
 import { ApiBase, SuccessResponse } from '../api-base/api-base.js';
+import { V2_HEADERS } from '../v2-headers.js';
+import { ResponseValidationError } from '../../model/errors/response-validation-error.js';
 
-type LineCreateParameters = Partial<Omit<Line, 'id'>> & Pick<Line, 'name'>;
 type LineUpdateParameters = Pick<Line, 'id'> &
   Partial<Pick<Line, 'color' | 'name'>>;
 
@@ -25,10 +28,10 @@ export function details(line: IdOrObject<Line>): Promise<Line> {
   return ApiBase.request(`v1/lines/${lineId}/`);
 }
 
-export function create(
+export async function create(
   location: IdOrObject<Location>,
-  line: LineCreateParameters,
-): Promise<Line> {
+  line: LineCreationRequest,
+): Promise<LineCreatedResponse> {
   const locationId = extractId(location);
   if (!locationId || typeof locationId !== 'string') {
     throw new Error('Location ID invalid or missing.');
@@ -39,10 +42,24 @@ export function create(
   if (!line.name || typeof line.name !== 'string') {
     throw new Error('Cannot create a line without a line name.');
   }
-  return ApiBase.request(`v1/locations/${locationId}/lines`, {
-    body: line,
-    method: 'POST',
-  }) as Promise<Line>;
+  if (!line.color || typeof line.color !== 'string') {
+    throw new Error('Cannot create a line without a color.');
+  }
+
+  const result: LineCreatedResponse = await ApiBase.request(
+    `locations/${locationId}/lines`,
+    {
+      method: 'POST',
+      body: JSON.stringify(line),
+      headers: V2_HEADERS,
+    },
+  );
+
+  if (!result.id) {
+    throw new ResponseValidationError('Response does not contain "id"');
+  }
+
+  return result;
 }
 
 export function update(line: LineUpdateParameters): Promise<SuccessResponse> {

@@ -58,20 +58,24 @@ export const LineService = {
   details,
 
   /**
-   * Create a new Line and return its details.
+   * Create a new Line and return its ID.
    *
    * Calls the following HTTP API: `POST /locations/<ID>/lines`
    *
    * For example:
    *
    * ```javascript
-   * const line: Line = await Qminder.Line.create(950, { name: 'Priority Service' });
-   * console.log(line.id); // 1425
+   * const response = await Qminder.Line.create(950, {
+   *   name: 'Priority Service',
+   *   color: 'TEAL',
+   *   translations: [{ languageCode: 'et', name: 'Eelisteenindus' }],
+   *   appointmentSettings: { enabled: true, duration: 30 },
+   * });
+   * console.log(response.id); // "1425"
    * ```
    * @param location the location to add the line under
-   * @param line the parameters of the new line - must include the line name
-   * @returns a Promise that resolves to a new Line object, created according
-   * to the parameters.
+   * @param line the parameters of the new line - must include name and color
+   * @returns a Promise that resolves to a LineCreatedResponse containing the new line's ID.
    */
   create,
 
