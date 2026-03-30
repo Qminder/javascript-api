@@ -100,7 +100,7 @@ describe('Line service', function () {
         name: 'Priority Service',
         color: 'VIOLET',
         disabled: true,
-        translations: [{ languageCode: 'et', name: 'Eelisteenindus' }],
+        translations: [{ languageCode: 'fr', name: 'Service Prioritaire' }],
         appointmentSettings: { enabled: true, duration: 30 },
       };
       await LineService.create(LOCATION_ID, request);

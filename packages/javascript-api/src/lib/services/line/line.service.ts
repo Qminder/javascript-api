@@ -68,7 +68,7 @@ export const LineService = {
    * const response = await Qminder.Line.create(950, {
    *   name: 'Priority Service',
    *   color: 'TEAL',
-   *   translations: [{ languageCode: 'et', name: 'Eelisteenindus' }],
+   *   translations: [{ languageCode: 'fr', name: 'Service Prioritaire' }],
    *   appointmentSettings: { enabled: true, duration: 30 },
    * });
    * console.log(response.id); // "1425"
