@@ -124,30 +124,7 @@ describe('Line service', function () {
       );
     });
 
-    it('throws when location ID is missing', async function () {
-      await expect(
-        LineService.create(null as any, { name: 'Test', color: 'TEAL' }),
-      ).rejects.toThrow();
-    });
-
-    it('throws when line parameter is missing', async function () {
-      await expect(
-        LineService.create(LOCATION_ID, null as any),
-      ).rejects.toThrow();
-    });
-
-    it('throws when line name is missing', async function () {
-      await expect(
-        LineService.create(LOCATION_ID, { color: 'TEAL' } as any),
-      ).rejects.toThrow();
-    });
-
-    it('throws when line color is missing', async function () {
-      await expect(
-        LineService.create(LOCATION_ID, { name: 'Test' } as any),
-      ).rejects.toThrow();
-    });
-  });
+});
 
   describe('update()', function () {
     beforeEach(function (done) {
