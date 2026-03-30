@@ -84,13 +84,14 @@ describe('Line service', function () {
         color: 'TEAL',
       };
       const result = await LineService.create(LOCATION_ID, request);
-      expect(
-        requestStub.calledWith(`locations/${LOCATION_ID}/lines`, {
+      expect(requestStub.firstCall.args).toEqual([
+        `locations/${LOCATION_ID}/lines`,
+        {
           method: 'POST',
           body: JSON.stringify(request),
           headers: { 'X-Qminder-API-Version': '2020-09-01' },
-        }),
-      ).toBeTruthy();
+        },
+      ]);
       expect(result).toEqual(SUCCESSFUL_RESPONSE);
     });
 
@@ -104,13 +105,14 @@ describe('Line service', function () {
         appointmentSettings: { enabled: true, duration: 30 },
       };
       await LineService.create(LOCATION_ID, request);
-      expect(
-        requestStub.calledWith(`locations/${LOCATION_ID}/lines`, {
+      expect(requestStub.firstCall.args).toEqual([
+        `locations/${LOCATION_ID}/lines`,
+        {
           method: 'POST',
           body: JSON.stringify(request),
           headers: { 'X-Qminder-API-Version': '2020-09-01' },
-        }),
-      ).toBeTruthy();
+        },
+      ]);
     });
 
     it('throws when response does not contain id', async function () {
@@ -123,8 +125,7 @@ describe('Line service', function () {
         new ResponseValidationError('Response does not contain "id"'),
       );
     });
-
-});
+  });
 
   describe('update()', function () {
     beforeEach(function (done) {
