@@ -99,7 +99,7 @@ export const LocationService = {
   /**
    * Create a new input field for a location.
    *
-   * Calls the following HTTP API: `POST /input-fields` (with V2 header)
+   * Calls the following HTTP API: `POST /input-fields`
    */
   createInputField,
 };

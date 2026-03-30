@@ -56,14 +56,6 @@ export async function setOpeningHoursExceptions(
   });
 }
 
-/**
- * Create a new input field for a location.
- *
- * Calls the following HTTP API: `POST /input-fields` (with V2 header)
- *
- * @param inputField the input field creation request
- * @returns a promise that resolves when the input field has been created
- */
 export async function createInputField(
   inputField: InputFieldCreationRequest,
 ): Promise<void> {

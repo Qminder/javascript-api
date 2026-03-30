@@ -35,7 +35,6 @@ export { TicketLabelRequest } from '../lib/model/ticket/ticket-label-request.js'
 export { TicketType } from '../lib/model/ticket/ticket-type.js';
 export { UUID } from '../lib/model/uuid.js';
 export { InputFieldCreationRequest } from '../lib/model/input-field/input-field-creation-request.js';
-export { InputFieldBase } from '../lib/model/input-field/input-field-base.js';
 export { LocationRef } from '../lib/model/input-field/location-ref.js';
 export { LineRef } from '../lib/model/input-field/line-ref.js';
 export { InputFieldTranslation } from '../lib/model/input-field/input-field-translation.js';
