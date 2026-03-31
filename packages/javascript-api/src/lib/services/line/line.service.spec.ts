@@ -1,5 +1,7 @@
 import * as sinon from 'sinon';
 import { Line } from '../../model/line';
+import { LineCreationRequest } from '../../model/line/line-creation-request';
+import { ResponseValidationError } from '../../model/errors/response-validation-error';
 import { Qminder } from '../../qminder';
 import { LineService } from './line.service';
 
@@ -69,6 +71,59 @@ describe('Line service', function () {
       for (let i = 0; i < correctColors.length; i++) {
         expect(colors[i]).toBe(correctColors[i]);
       }
+    });
+  });
+
+  describe('create()', function () {
+    const SUCCESSFUL_RESPONSE = { id: '12345' };
+
+    it('sends the request to the correct URL with JSON body and version headers', async function () {
+      requestStub.resolves(SUCCESSFUL_RESPONSE);
+      const request: LineCreationRequest = {
+        name: 'Priority Service',
+        color: 'TEAL',
+      };
+      const result = await LineService.create(LOCATION_ID, request);
+      expect(requestStub.firstCall.args).toEqual([
+        `locations/${LOCATION_ID}/lines`,
+        {
+          method: 'POST',
+          body: JSON.stringify(request),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        },
+      ]);
+      expect(result).toEqual(SUCCESSFUL_RESPONSE);
+    });
+
+    it('sends optional fields when provided', async function () {
+      requestStub.resolves(SUCCESSFUL_RESPONSE);
+      const request: LineCreationRequest = {
+        name: 'Priority Service',
+        color: 'VIOLET',
+        disabled: true,
+        translations: [{ languageCode: 'fr', name: 'Service Prioritaire' }],
+        appointmentSettings: { enabled: true, duration: 30 },
+      };
+      await LineService.create(LOCATION_ID, request);
+      expect(requestStub.firstCall.args).toEqual([
+        `locations/${LOCATION_ID}/lines`,
+        {
+          method: 'POST',
+          body: JSON.stringify(request),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        },
+      ]);
+    });
+
+    it('throws when response does not contain id', async function () {
+      requestStub.resolves({});
+      const request: LineCreationRequest = {
+        name: 'Priority Service',
+        color: 'TEAL',
+      };
+      await expect(LineService.create(LOCATION_ID, request)).rejects.toThrow(
+        new ResponseValidationError('Response does not contain "id"'),
+      );
     });
   });
 
