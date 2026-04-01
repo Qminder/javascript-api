@@ -112,8 +112,8 @@ export class GraphqlService {
   private readonly subscriptionConnection$: Observable<ConnectionStatus>;
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
-  private pongTimeout: any;
-  private pingPongInterval: any;
+  private pongTimeout: ReturnType<typeof setTimeout> | undefined;
+  private pingPongInterval: ReturnType<typeof setInterval> | undefined;
   private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
   private readonly handleConnectionDropWithThisBound =
