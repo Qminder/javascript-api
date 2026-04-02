@@ -312,7 +312,10 @@ describe('Location service', function () {
 
     it('throws when latitude is missing', async function () {
       await expect(
-        LocationService.create({ ...VALID_REQUEST, latitude: undefined as any }),
+        LocationService.create({
+          ...VALID_REQUEST,
+          latitude: undefined as any,
+        }),
       ).rejects.toThrow('Cannot create a location without a valid latitude.');
     });
 
