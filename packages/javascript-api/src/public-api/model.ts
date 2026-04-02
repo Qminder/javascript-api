@@ -11,6 +11,8 @@ export { LineAppointmentSettings } from '../lib/model/line/line-appointment-sett
 export { LineCreationRequest } from '../lib/model/line/line-creation-request.js';
 export { LineCreatedResponse } from '../lib/model/line/line-created-response.js';
 export { Location } from '../lib/model/location.js';
+export { LocationCreationRequest } from '../lib/model/location/location-creation-request.js';
+export { LocationCreatedResponse } from '../lib/model/location/location-created-response.js';
 export { TicketExtra } from '../lib/model/ticket/ticket-extra.js';
 export { TicketLabel } from '../lib/model/ticket/ticket-label.js';
 export { Ticket } from '../lib/model/ticket/ticket.js';
