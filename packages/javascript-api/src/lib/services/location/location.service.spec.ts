@@ -1,9 +1,11 @@
 import * as sinon from 'sinon';
 import { Desk } from '../../model/desk';
+import { ResponseValidationError } from '../../model/errors/response-validation-error';
 import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request';
 import { FirstNameFieldCreationRequest } from '../../model/input-field/first-name-field-creation-request';
 import { NumericFieldCreationRequest } from '../../model/input-field/numeric-field-creation-request';
 import { SelectFieldCreationRequest } from '../../model/input-field/select-field-creation-request';
+import { LocationCreationRequest } from '../../model/location/location-creation-request';
 import { Qminder } from '../../qminder';
 import { LocationService } from './location.service';
 
@@ -226,6 +228,136 @@ describe('Location service', function () {
           },
         ),
       ).toBeTruthy();
+    });
+  });
+
+  describe('create()', function () {
+    const SUCCESSFUL_RESPONSE = { id: '12345' };
+    const VALID_REQUEST: LocationCreationRequest = {
+      name: 'Main Office',
+      latitude: 59.4297,
+      longitude: 24.8149,
+      address: '123 Main St',
+      country: 'EE',
+    };
+
+    it('sends the request to the correct URL with JSON body and version headers', async function () {
+      requestStub.resolves(SUCCESSFUL_RESPONSE);
+      const result = await LocationService.create(VALID_REQUEST);
+      expect(requestStub.firstCall.args).toEqual([
+        'locations',
+        {
+          method: 'POST',
+          body: JSON.stringify(VALID_REQUEST),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        },
+      ]);
+      expect(result).toEqual(SUCCESSFUL_RESPONSE);
+    });
+
+    it('sends optional fields when provided', async function () {
+      requestStub.resolves(SUCCESSFUL_RESPONSE);
+      const request: LocationCreationRequest = {
+        ...VALID_REQUEST,
+        openingHours: {
+          regular: {
+            mon: {
+              businessHours: [
+                {
+                  opens: { hours: 9, minutes: 0 },
+                  closes: { hours: 17, minutes: 0 },
+                },
+              ],
+            },
+            tue: {},
+            wed: {},
+            thu: {},
+            fri: {},
+            sat: { closed: true as const },
+            sun: { closed: true as const },
+          },
+        },
+        inputFields: [],
+        languages: ['en', 'et'],
+      };
+      await LocationService.create(request);
+      expect(requestStub.firstCall.args).toEqual([
+        'locations',
+        {
+          method: 'POST',
+          body: JSON.stringify(request),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        },
+      ]);
+    });
+
+    it('throws ResponseValidationError when response does not contain id', async function () {
+      requestStub.resolves({});
+      await expect(LocationService.create(VALID_REQUEST)).rejects.toThrow(
+        new ResponseValidationError('Response does not contain "id"'),
+      );
+    });
+
+    it('throws when request is missing', async function () {
+      await expect(LocationService.create(null as any)).rejects.toThrow(
+        'Location creation request invalid or missing.',
+      );
+    });
+
+    it('throws when name is missing', async function () {
+      await expect(
+        LocationService.create({ ...VALID_REQUEST, name: '' }),
+      ).rejects.toThrow('Cannot create a location without a name.');
+    });
+
+    it('throws when latitude is missing', async function () {
+      await expect(
+        LocationService.create({ ...VALID_REQUEST, latitude: undefined as any }),
+      ).rejects.toThrow('Cannot create a location without a valid latitude.');
+    });
+
+    it('throws when latitude is NaN', async function () {
+      await expect(
+        LocationService.create({ ...VALID_REQUEST, latitude: NaN }),
+      ).rejects.toThrow('Cannot create a location without a valid latitude.');
+    });
+
+    it('throws when longitude is missing', async function () {
+      await expect(
+        LocationService.create({
+          ...VALID_REQUEST,
+          longitude: undefined as any,
+        }),
+      ).rejects.toThrow('Cannot create a location without a valid longitude.');
+    });
+
+    it('throws when longitude is NaN', async function () {
+      await expect(
+        LocationService.create({ ...VALID_REQUEST, longitude: NaN }),
+      ).rejects.toThrow('Cannot create a location without a valid longitude.');
+    });
+
+    it('throws when address is missing', async function () {
+      await expect(
+        LocationService.create({ ...VALID_REQUEST, address: '' }),
+      ).rejects.toThrow('Cannot create a location without an address.');
+    });
+
+    it('throws when country is missing', async function () {
+      await expect(
+        LocationService.create({ ...VALID_REQUEST, country: '' }),
+      ).rejects.toThrow('Cannot create a location without a country.');
+    });
+
+    it('accepts latitude 0 and longitude 0 as valid coordinates', async function () {
+      requestStub.resolves(SUCCESSFUL_RESPONSE);
+      const request: LocationCreationRequest = {
+        ...VALID_REQUEST,
+        latitude: 0,
+        longitude: 0,
+      };
+      const result = await LocationService.create(request);
+      expect(result).toEqual(SUCCESSFUL_RESPONSE);
     });
   });
 
