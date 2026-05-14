@@ -268,12 +268,22 @@ export class GraphqlService {
     return new Observable((subscriber) => {
       const messageId = `${++this.subcriptionsCount}`;
       this.subscriptions.push({ messageId, query });
-      this.sendMessage(messageId, MessageType.GQL_START, { query });
+
+      this.sendMessage(messageId, MessageType.GQL_START, { query }).catch(
+        (error: Error) => {
+          this.logger.error('Failed to start subscription: ', error);
+        },
+      );
+
       this.messageSubscribers.set(messageId, subscriber);
 
       return () => {
         if (this.messageSubscribers.has(messageId)) {
-          this.sendMessage(messageId, MessageType.GQL_STOP, null);
+          this.sendMessage(messageId, MessageType.GQL_STOP, null).catch(
+            (error) => {
+              this.logger.error('Failed to stop subscription: ', error);
+            },
+          );
         }
 
         this.cleanUpSubscription(messageId);
@@ -412,10 +422,14 @@ export class GraphqlService {
 
         this.logger.info(`Reconnect socket in ${timer.toFixed(0)}ms`);
 
-        sleepMs(timer).then(() => {
-          this.connectionAttemptsCount++;
-          this.openSocket();
-        });
+        sleepMs(timer)
+          .then(async () => {
+            this.connectionAttemptsCount++;
+            return await this.openSocket();
+          })
+          .catch((error: Error) => {
+            this.logger.error('Failed to reconnect socket: ', error);
+          });
       }
 
       if (this.connectionStatus === ConnectionStatus.CONNECTING) {
@@ -475,7 +489,12 @@ export class GraphqlService {
           }
 
           if (resubscriptionFailed) {
-            this.handleConnectionDrop();
+            this.handleConnectionDrop().catch((error) => {
+              this.logger.error(
+                'Failed to handle connection drop after resubscription failure: ',
+                error,
+              );
+            });
           }
 
           break;
@@ -597,10 +616,11 @@ export class GraphqlService {
   }
 
   private sendPing(): void {
-    this.pongTimeout = setTimeout(
-      () => this.handleConnectionDrop(),
-      PONG_TIMEOUT_IN_MS,
-    );
+    this.pongTimeout = setTimeout(() => {
+      this.handleConnectionDrop().catch((error) => {
+        this.logger.error('Failed to handle pong connection drop: ', error);
+      });
+    }, PONG_TIMEOUT_IN_MS);
 
     this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
