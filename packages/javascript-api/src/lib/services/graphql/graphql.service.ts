@@ -66,7 +66,6 @@ enum MessageType {
   GQL_ERROR = 'error',
 }
 
-const ERRORED_SUBSCRIPTIONS_RETRY_DELAY_MS = 5 /* seconds */ * 1000; /* ms */
 const PONG_TIMEOUT_IN_MS = 12000;
 const PING_PONG_INTERVAL_IN_MS = 20000;
 
@@ -109,6 +108,8 @@ export class GraphqlService {
   private erroredSubscriptionsRetryTimeout: ReturnType<
     typeof setTimeout
   > | null = null;
+
+  private erroredSubscriptionsRetryCount = 0;
 
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
@@ -356,9 +357,7 @@ export class GraphqlService {
           this.connectionAttemptsCount,
         );
 
-        this.logger.info(
-          `Waiting for ${timer.toFixed(1)}ms before reconnecting`,
-        );
+        this.logger.info(`Reconnect socket in ${timer.toFixed(1)}ms`);
 
         sleepMs(timer).then(() => {
           this.connectionAttemptsCount++;
@@ -396,6 +395,7 @@ export class GraphqlService {
           this.connectionAttemptsCount = 0;
 
           this.clearErroredSubscriptionsRetry();
+          this.erroredSubscriptionsRetryCount = 0;
           this.erroredSubscriptionsMessageIds.clear();
           this.haveAnySubscriptionsErrored$.next(false);
 
@@ -430,6 +430,13 @@ export class GraphqlService {
         }
 
         case MessageType.GQL_DATA:
+          if (
+            this.erroredSubscriptionsMessageIds.delete(message.id) &&
+            !this.erroredSubscriptionsMessageIds.size
+          ) {
+            this.haveAnySubscriptionsErrored$.next(false);
+          }
+
           this.messageSubscribers.get(message.id)?.next(message.payload.data);
           break;
 
@@ -567,10 +574,16 @@ export class GraphqlService {
   }
 
   private scheduleErroredSubscriptionsRetry(): void {
+    const delay = calculateRandomizedExponentialBackoffTime(
+      this.erroredSubscriptionsRetryCount++,
+    );
+
+    this.logger.info(`Retry errored subscriptions in ${delay.toFixed(0)}ms`);
+
     this.erroredSubscriptionsRetryTimeout = setTimeout(() => {
       this.retryErroredSubscriptions();
       this.erroredSubscriptionsRetryTimeout = null;
-    }, ERRORED_SUBSCRIPTIONS_RETRY_DELAY_MS);
+    }, delay);
   }
 
   private retryErroredSubscriptions(): void {
@@ -591,9 +604,6 @@ export class GraphqlService {
         }),
       );
     }
-
-    this.erroredSubscriptionsMessageIds.clear();
-    this.haveAnySubscriptionsErrored$.next(false);
   }
 
   /**
