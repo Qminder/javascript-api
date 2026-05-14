@@ -158,9 +158,6 @@ export class GraphqlService {
   private pingPongInterval: any;
   private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
-  private readonly handleConnectionDropWithThisBound =
-    this.handleConnectionDrop.bind(this);
-
   private connectionAttemptsCount = 0;
 
   constructor() {
@@ -400,7 +397,7 @@ export class GraphqlService {
           this.connectionAttemptsCount,
         );
 
-        this.logger.info(`Reconnect socket in ${timer.toFixed(1)}ms`);
+        this.logger.info(`Reconnect socket in ${timer.toFixed(0)}ms`);
 
         sleepMs(timer).then(() => {
           this.connectionAttemptsCount++;
@@ -582,9 +579,10 @@ export class GraphqlService {
 
   private sendPing(): void {
     this.pongTimeout = setTimeout(
-      this.handleConnectionDropWithThisBound,
+      () => this.handleConnectionDrop(),
       PONG_TIMEOUT_IN_MS,
     );
+
     this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
