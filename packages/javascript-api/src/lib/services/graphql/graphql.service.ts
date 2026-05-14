@@ -8,9 +8,14 @@ import WebSocket, { CloseEvent } from 'isomorphic-ws';
 import {
   BehaviorSubject,
   distinctUntilChanged,
+  map,
   Observable,
+  scan,
   shareReplay,
+  startWith,
+  Subject,
   Subscriber,
+  take,
 } from 'rxjs';
 
 import { ConnectionStatus } from '../../model/connection-status.js';
@@ -102,8 +107,44 @@ export class GraphqlService {
 
   private readonly subscriptionConnection$: Observable<ConnectionStatus>;
 
-  private readonly haveAnySubscriptionsErrored$ = new BehaviorSubject(false);
-  private readonly erroredSubscriptionsMessageIds = new Set<string>();
+  private readonly erroredSubscriptionsAction$ = new Subject<
+    | {
+        readonly type: 'add';
+        readonly messageId: string;
+      }
+    | {
+        readonly type: 'remove';
+        readonly messageId: string;
+      }
+    | {
+        readonly type: 'clear';
+      }
+  >();
+
+  private readonly erroredSubscriptionsMessageIds$ =
+    this.erroredSubscriptionsAction$.pipe(
+      scan((messageIds, action) => {
+        const result = new Set(messageIds);
+
+        switch (action.type) {
+          case 'add':
+            return result.add(action.messageId);
+          case 'remove':
+            result.delete(action.messageId);
+            return result;
+          case 'clear':
+            return new Set();
+        }
+      }, new Set<string>()),
+      startWith(new Set<string>()),
+      shareReplay(1),
+    );
+
+  private readonly haveAnySubscriptionsErrored$ =
+    this.erroredSubscriptionsMessageIds$.pipe(
+      map(({ size }) => !!size),
+      distinctUntilChanged(),
+    );
 
   private erroredSubscriptionsRetryTimeout: ReturnType<
     typeof setTimeout
@@ -129,6 +170,8 @@ export class GraphqlService {
       distinctUntilChanged(),
       shareReplay(1),
     );
+
+    this.erroredSubscriptionsMessageIds$.subscribe();
   }
 
   /**
@@ -272,7 +315,7 @@ export class GraphqlService {
    * Emits `false` if all errored subscriptions have been successfully retried.
    */
   haveAnySubscriptionsErrored(): Observable<boolean> {
-    return this.haveAnySubscriptionsErrored$.pipe(distinctUntilChanged());
+    return this.haveAnySubscriptionsErrored$;
   }
 
   /**
@@ -284,16 +327,16 @@ export class GraphqlService {
   }
 
   private cleanUpSubscription(messageId: string): void {
-    this.erroredSubscriptionsMessageIds.delete(messageId);
+    this.erroredSubscriptionsAction$.next({
+      type: 'remove',
+      messageId,
+    });
+
     this.messageSubscribers.delete(messageId);
 
     this.subscriptions = this.subscriptions.filter(
       (subscription) => subscription.messageId !== messageId,
     );
-
-    if (!this.erroredSubscriptionsMessageIds.size) {
-      this.haveAnySubscriptionsErrored$.next(false);
-    }
   }
 
   private async openSocket(): Promise<void> {
@@ -396,8 +439,7 @@ export class GraphqlService {
 
           this.clearErroredSubscriptionsRetry();
           this.erroredSubscriptionsRetryCount = 0;
-          this.erroredSubscriptionsMessageIds.clear();
-          this.haveAnySubscriptionsErrored$.next(false);
+          this.erroredSubscriptionsAction$.next({ type: 'clear' });
 
           this.setConnectionStatus(ConnectionStatus.CONNECTED);
           this.logger.info('Connected to websocket');
@@ -430,12 +472,10 @@ export class GraphqlService {
         }
 
         case MessageType.GQL_DATA:
-          if (
-            this.erroredSubscriptionsMessageIds.delete(message.id) &&
-            !this.erroredSubscriptionsMessageIds.size
-          ) {
-            this.haveAnySubscriptionsErrored$.next(false);
-          }
+          this.erroredSubscriptionsAction$.next({
+            type: 'remove',
+            messageId: message.id,
+          });
 
           this.messageSubscribers.get(message.id)?.next(message.payload.data);
           break;
@@ -456,8 +496,10 @@ export class GraphqlService {
             `GraphQL subscription error: ${JSON.stringify(message)}`,
           );
 
-          this.erroredSubscriptionsMessageIds.add(message.id);
-          this.haveAnySubscriptionsErrored$.next(true);
+          this.erroredSubscriptionsAction$.next({
+            type: 'add',
+            messageId: message.id,
+          });
 
           if (!this.erroredSubscriptionsRetryTimeout) {
             this.scheduleErroredSubscriptionsRetry();
@@ -587,23 +629,27 @@ export class GraphqlService {
   }
 
   private retryErroredSubscriptions(): void {
-    for (const messageId of this.erroredSubscriptionsMessageIds) {
-      const subscription = this.subscriptions.find(
-        (subscription) => subscription.messageId === messageId,
-      );
+    this.erroredSubscriptionsMessageIds$
+      .pipe(take(1))
+      .subscribe((messageIds) => {
+        for (const messageId of messageIds) {
+          const subscription = this.subscriptions.find(
+            (subscription) => subscription.messageId === messageId,
+          );
 
-      if (!subscription) {
-        continue;
-      }
+          if (!subscription) {
+            continue;
+          }
 
-      this.sendRawMessage(
-        JSON.stringify({
-          id: subscription.messageId,
-          type: MessageType.GQL_START,
-          payload: { query: subscription.query },
-        }),
-      );
-    }
+          this.sendRawMessage(
+            JSON.stringify({
+              id: subscription.messageId,
+              type: MessageType.GQL_START,
+              payload: { query: subscription.query },
+            }),
+          );
+        }
+      });
   }
 
   /**
