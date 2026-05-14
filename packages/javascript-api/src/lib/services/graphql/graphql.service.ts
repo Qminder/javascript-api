@@ -9,28 +9,16 @@ import {
   BehaviorSubject,
   distinctUntilChanged,
   Observable,
-  Observer,
   shareReplay,
+  Subscriber,
 } from 'rxjs';
 
 import { ConnectionStatus } from '../../model/connection-status.js';
+import { Logger } from '../../util/logger/logger.js';
 import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized-exponential-backoff/randomized-exponential-backoff.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
-import { Logger } from '../../util/logger/logger.js';
-
-type QueryOrDocument = string | DocumentNode;
-
-function queryToString(query: QueryOrDocument): string {
-  if (typeof query === 'string') {
-    return query;
-  }
-  if (query.kind === 'Document') {
-    return print(query);
-  }
-  throw new Error('queryToString: query must be a string or a DocumentNode');
-}
 
 export interface QminderGraphQLError {
   message: string;
@@ -51,14 +39,9 @@ interface OperationMessage<T = object> {
   };
 }
 
-class Subscription {
-  id: string;
-  query: string;
-
-  constructor(id: string, query: string) {
-    this.id = id;
-    this.query = query;
-  }
+interface Subscription {
+  readonly messageId: string;
+  readonly query: string;
 }
 
 enum MessageType {
@@ -79,6 +62,7 @@ enum MessageType {
 
 const PONG_TIMEOUT_IN_MS = 12000;
 const PING_PONG_INTERVAL_IN_MS = 20000;
+const SUBSCRIBER_RETRY_DELAY_MS = 5000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -102,14 +86,21 @@ export class GraphqlService {
     ConnectionStatus.DISCONNECTED,
   );
 
-  private nextSubscriptionId = 1;
+  private nextMessageId = 1;
 
   private subscriptions: Subscription[] = [];
 
-  private readonly subscriptionObserverMap: { [id: string]: Observer<object> } =
-    {};
+  private readonly messageSubscribers = new Map<
+    string,
+    Subscriber<Record<string, any>>
+  >();
 
   private readonly subscriptionConnection$: Observable<ConnectionStatus>;
+
+  private readonly hasSubscriberErrored$ = new BehaviorSubject(false);
+  private readonly failedSubscribers = new Set<string>();
+
+  private subscriberRetryTimeout: ReturnType<typeof setTimeout> | null = null;
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
   private pongTimeout: any;
@@ -198,25 +189,30 @@ export class GraphqlService {
    * ```
    *
    * @param queryDocument required: the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
-   * @returns an RxJS Observable that will push data as
-   * @throws when the 'query' argument is undefined or an empty string
+   * @returns an RxJS Observable that will push data
+   * @throws when the 'queryDocument' argument is an empty string
    */
-  subscribe<T extends object>(queryDocument: QueryOrDocument): Observable<T> {
-    const query = queryToString(queryDocument);
+  subscribe<T extends Record<string, any>>(
+    queryDocument: string | DocumentNode,
+  ): Observable<T> {
+    const query =
+      typeof queryDocument === 'string' ? queryDocument : print(queryDocument);
 
-    if (!query || query.length === 0) {
+    if (!query) {
       throw new Error(
         'GraphQLService query expects a GraphQL query as its first argument',
       );
     }
 
-    return new Observable<T>((observer: Observer<T>) => {
-      const id = this.generateOperationId();
-      this.subscriptions.push(new Subscription(id, query));
-      this.sendMessage(id, MessageType.GQL_START, { query });
-      this.subscriptionObserverMap[id] = observer;
+    return new Observable((subscriber) => {
+      const messageId = `${this.nextMessageId++}`;
+      this.subscriptions.push({ messageId, query });
+      this.sendMessage(messageId, MessageType.GQL_START, { query });
+      this.messageSubscribers.set(messageId, subscriber);
 
-      return () => this.stopSubscription(id);
+      return () => {
+        this.removeSubscriber(messageId);
+      };
     });
   }
 
@@ -259,6 +255,13 @@ export class GraphqlService {
   }
 
   /**
+   * Emits `false` if errored subscriptions are successfully retried
+   */
+  hasSubscriberErrored(): Observable<boolean> {
+    return this.hasSubscriberErrored$.pipe(distinctUntilChanged());
+  }
+
+  /**
    * Set the WebSocket hostname the GraphQL service uses.
    * @hidden
    */
@@ -266,19 +269,28 @@ export class GraphqlService {
     this.apiServer = apiServer;
   }
 
-  private stopSubscription(id: string) {
-    this.sendMessage(id, MessageType.GQL_STOP, null);
-    this.cleanupSubscription(id);
+  private removeSubscriber(messageId: string): void {
+    if (this.messageSubscribers.has(messageId)) {
+      this.sendMessage(messageId, MessageType.GQL_STOP, null);
+    }
+
+    this.cleanUpSubscription(messageId);
   }
 
-  private cleanupSubscription(id: string) {
-    delete this.subscriptionObserverMap[id];
-    this.subscriptions = this.subscriptions.filter((sub) => {
-      return sub.id !== id;
-    });
+  private cleanUpSubscription(messageId: string): void {
+    this.messageSubscribers.delete(messageId);
+    this.failedSubscribers.delete(messageId);
+
+    this.subscriptions = this.subscriptions.filter(
+      ({ messageId: id }) => id !== messageId,
+    );
+
+    if (!this.failedSubscribers.size) {
+      this.hasSubscriberErrored$.next(false);
+    }
   }
 
-  private openSocket() {
+  private async openSocket(): Promise<void> {
     if (
       [ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
         this.connectionStatus,
@@ -286,26 +298,23 @@ export class GraphqlService {
     ) {
       return;
     }
+
     this.setConnectionStatus(ConnectionStatus.CONNECTING);
     this.logger.info('Connecting to websocket');
-    this.fetchTemporaryApiKey()
-      .then((temporaryApiKey: string) => {
-        this.createSocketConnection(temporaryApiKey);
-      })
-      .catch((e) => {
-        throw e;
-      });
+
+    const temporaryApiKey = await this.getTemporaryApiKey();
+    this.createSocketConnection(temporaryApiKey);
   }
 
-  private async fetchTemporaryApiKey(): Promise<string> {
-    return this.temporaryApiKeyService.fetchTemporaryApiKey();
+  private async getTemporaryApiKey(): Promise<string> {
+    return await this.temporaryApiKeyService.fetchTemporaryApiKey();
   }
 
   private getServerUrl(temporaryApiKey: string): string {
     return `wss://${this.apiServer}:443/graphql/subscription?rest-api-key=${temporaryApiKey}`;
   }
 
-  private createSocketConnection(temporaryApiKey: string) {
+  private createSocketConnection(temporaryApiKey: string): void {
     if (this.socket) {
       this.socket.onclose = null;
       this.socket.onmessage = null;
@@ -314,9 +323,10 @@ export class GraphqlService {
       this.socket.close();
       this.socket = null;
     }
-    this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
+    this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
     const socket = this.socket;
+
     socket.onopen = () => {
       this.sendRawMessage(
         JSON.stringify({
@@ -327,7 +337,7 @@ export class GraphqlService {
       );
     };
 
-    socket.onclose = (event: CloseEvent) => {
+    socket.onclose = (event) => {
       this.logger.warn('WebSocket connection closed:', {
         code: event.code,
         reason: event.reason,
@@ -337,15 +347,18 @@ export class GraphqlService {
       this.socket = null;
 
       this.clearPingMonitoring();
+
       if (this.shouldRetry(event)) {
         const timer = calculateRandomizedExponentialBackoffTime(
           this.connectionAttemptsCount,
         );
+
         this.logger.info(
           `Waiting for ${timer.toFixed(1)}ms before reconnecting`,
         );
+
         sleepMs(timer).then(() => {
-          this.connectionAttemptsCount += 1;
+          this.connectionAttemptsCount++;
           this.openSocket();
         });
       }
@@ -358,104 +371,133 @@ export class GraphqlService {
     };
 
     socket.onerror = () => {
-      const message = 'Websocket error occurred!';
       if (this.isBrowserOnline()) {
-        this.logger.error(message);
+        this.logger.error('Websocket error occurred!');
       } else {
-        this.logger.info(message);
+        this.logger.info('Websocket error occurred!');
       }
     };
 
-    socket.onmessage = (rawMessage: { data: WebSocket.Data }) => {
-      if (typeof rawMessage.data === 'string') {
-        const message: OperationMessage = JSON.parse(rawMessage.data);
+    socket.onmessage = (event) => {
+      if (typeof event.data !== 'string') {
+        return;
+      }
 
-        switch (message.type) {
-          case MessageType.GQL_CONNECTION_KEEP_ALIVE:
-            break;
+      const message: OperationMessage = JSON.parse(event.data);
 
-          case MessageType.GQL_CONNECTION_ACK: {
-            this.connectionAttemptsCount = 0;
-            this.setConnectionStatus(ConnectionStatus.CONNECTED);
-            this.logger.info('Connected to websocket');
-            this.startConnectionMonitoring();
-            let resubscriptionFailed = false;
-            for (const subscription of this.subscriptions) {
-              const payload = { query: subscription.query };
-              const msg = JSON.stringify({
-                id: subscription.id,
-                type: MessageType.GQL_START,
-                payload,
-              });
-              if (!this.sendRawMessage(msg)) {
-                this.logger.warn(
-                  `Failed to re-subscribe ${this.subscriptions.length} subscription(s): WebSocket not open`,
-                );
-                resubscriptionFailed = true;
-                break;
-              }
+      switch (message.type) {
+        case MessageType.GQL_CONNECTION_KEEP_ALIVE:
+          break;
+
+        case MessageType.GQL_CONNECTION_ACK: {
+          this.connectionAttemptsCount = 0;
+
+          this.clearSubscriberRetry();
+          this.failedSubscribers.clear();
+          this.hasSubscriberErrored$.next(false);
+
+          this.setConnectionStatus(ConnectionStatus.CONNECTED);
+          this.logger.info('Connected to websocket');
+          this.startConnectionMonitoring();
+
+          let resubscriptionFailed = false;
+
+          for (const { messageId, query } of this.subscriptions) {
+            const msg = JSON.stringify({
+              id: messageId,
+              type: MessageType.GQL_START,
+              payload: { query },
+            });
+
+            if (!this.sendRawMessage(msg)) {
+              this.logger.warn(
+                `Failed to re-subscribe ${this.subscriptions.length} subscription(s): WebSocket not open`,
+              );
+
+              resubscriptionFailed = true;
+              break;
             }
-            if (resubscriptionFailed) {
-              this.handleConnectionDrop();
-            }
-            break;
           }
 
-          case MessageType.GQL_DATA:
-            this.subscriptionObserverMap[message.id]?.next(
-              message.payload.data,
+          if (resubscriptionFailed) {
+            this.handleConnectionDrop();
+          }
+
+          break;
+        }
+
+        case MessageType.GQL_DATA:
+          this.messageSubscribers.get(message.id)?.next(message.payload.data);
+          break;
+
+        case MessageType.GQL_COMPLETE: {
+          const subscriber: Subscriber<Record<string, any>> | undefined =
+            this.messageSubscribers.get(message.id);
+
+          this.cleanUpSubscription(message.id);
+          subscriber?.complete();
+
+          break;
+        }
+
+        case MessageType.GQL_PONG:
+          clearTimeout(this.pongTimeout);
+          break;
+
+        case MessageType.GQL_ERROR:
+          this.logger.warn(
+            `GraphQL subscription error: ${JSON.stringify(message)}`,
+          );
+
+          this.failedSubscribers.add(message.id);
+          this.hasSubscriberErrored$.next(true);
+
+          if (!this.subscriberRetryTimeout) {
+            this.scheduleSubscriberRetry();
+          }
+
+          break;
+
+        default: {
+          const subscriber = this.messageSubscribers.get(message.id);
+          if (!subscriber) {
+            return;
+          }
+
+          this.cleanUpSubscription(message.id);
+
+          if (message.payload?.data) {
+            subscriber.error(message.payload.data);
+            return;
+          }
+
+          if (message.payload?.errors?.length) {
+            subscriber.error(
+              new Error(
+                message.payload.errors.map(({ message }) => message).join('; '),
+              ),
             );
-            break;
-
-          case MessageType.GQL_COMPLETE:
-            this.subscriptionObserverMap[message.id]?.complete();
-            break;
-
-          case MessageType.GQL_PONG:
-            clearTimeout(this.pongTimeout);
-            break;
-
-          case MessageType.GQL_ERROR:
-            this.subscriptionObserverMap[message.id]?.error(
-              message.payload.errors,
-            );
-            this.cleanupSubscription(message.id);
-            break;
-
-          default:
-            if (message.payload && message.payload.data) {
-              this.subscriptionObserverMap[message.id]?.error(
-                message.payload.data,
-              );
-            } else if (
-              message.payload.errors &&
-              message.payload.errors.length > 0
-            ) {
-              this.subscriptionObserverMap[message.id]?.error(
-                message.payload.errors,
-              );
-            }
+          }
         }
       }
     };
   }
 
-  private shouldRetry(event: CloseEvent) {
-    if (event.code !== CLIENT_SIDE_CLOSE_EVENT) {
-      return true;
-    }
-
-    return Object.entries(this.subscriptionObserverMap).length > 0;
+  private shouldRetry(event: CloseEvent): boolean {
+    return (
+      event.code !== CLIENT_SIDE_CLOSE_EVENT || !!this.messageSubscribers.size
+    );
   }
 
-  private sendMessage(id: string, type: MessageType, payload: any) {
-    if (this.connectionStatus === ConnectionStatus.CONNECTED) {
-      if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
-        this.logger.warn('Message dropped: WebSocket is not in OPEN state');
-        this.handleConnectionDrop();
-      }
-    } else {
+  private sendMessage(id: string, type: MessageType, payload: any): void {
+    if (this.connectionStatus !== ConnectionStatus.CONNECTED) {
       this.openSocket();
+      return;
+    }
+
+    if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
+      this.logger.warn('Message dropped: WebSocket is not in OPEN state');
+      this.handleConnectionDrop();
     }
   }
 
@@ -464,16 +506,11 @@ export class GraphqlService {
       this.socket.send(message);
       return true;
     }
+
     return false;
   }
 
-  private generateOperationId(): string {
-    const currentId = `${this.nextSubscriptionId}`;
-    this.nextSubscriptionId += 1;
-    return currentId;
-  }
-
-  private setConnectionStatus(status: ConnectionStatus) {
+  private setConnectionStatus(status: ConnectionStatus): void {
     this.connectionStatus = status;
     this.connectionStatus$.next(status);
   }
@@ -509,11 +546,13 @@ export class GraphqlService {
     if (this.connectionStatus === ConnectionStatus.CONNECTING) {
       return;
     }
+
     if (this.isBrowserOnline()) {
       this.logger.warn(`Websocket connection dropped!`);
     } else {
       this.logger.info(`Websocket connection dropped. We are offline.`);
     }
+
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
 
@@ -525,14 +564,47 @@ export class GraphqlService {
     clearInterval(this.pingPongInterval);
   }
 
+  private clearSubscriberRetry(): void {
+    clearTimeout(this.subscriberRetryTimeout);
+    this.subscriberRetryTimeout = null;
+  }
+
+  private scheduleSubscriberRetry(): void {
+    this.subscriberRetryTimeout = setTimeout(() => {
+      this.subscriberRetryTimeout = null;
+      this.retryFailedSubscribers();
+    }, SUBSCRIBER_RETRY_DELAY_MS);
+  }
+
+  private retryFailedSubscribers(): void {
+    const subscribers = [...this.failedSubscribers];
+
+    this.failedSubscribers.clear();
+    this.hasSubscriberErrored$.next(false);
+
+    for (const messageId of subscribers) {
+      const subscription = this.subscriptions.find(
+        (subscription) => subscription.messageId === messageId,
+      );
+
+      if (!subscription) {
+        continue;
+      }
+
+      this.sendRawMessage(
+        JSON.stringify({
+          id: subscription.messageId,
+          type: MessageType.GQL_START,
+          payload: { query: subscription.query },
+        }),
+      );
+    }
+  }
+
   /**
-   * Returns the online status of the browser.
-   * In the non-browser environment (NodeJS) this always returns true.
+   * In a non-browser environment (NodeJS) returns true.
    */
   private isBrowserOnline(): boolean {
-    if (typeof navigator === 'undefined') {
-      return true;
-    }
-    return navigator.onLine;
+    return typeof navigator === 'undefined' || navigator.onLine;
   }
 }
