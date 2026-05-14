@@ -200,7 +200,7 @@ export class GraphqlService {
    *
    * @param queryOrDocumentNode the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
    * @returns an RxJS Observable that will push data
-   * @throws when the 'queryDocument' argument is an empty string
+   * @throws when the `queryDocument` argument is an empty string
    */
   subscribe<T extends Record<string, any>>(
     queryOrDocumentNode: string | DocumentNode,
