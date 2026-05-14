@@ -71,6 +71,7 @@ enum MessageType {
   GQL_ERROR = 'error',
 }
 
+const ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 3;
 const PONG_TIMEOUT_IN_MS = 12000;
 const PING_PONG_INTERVAL_IN_MS = 20000;
 
@@ -250,7 +251,7 @@ export class GraphqlService {
    * @returns a RxJS Observable that will push data
    * @throws when the `queryDocument` argument is an empty string
    *
-   * Retries errored subscriptions (doesn't throw) with exponential backoff.
+   * Retries errored subscriptions up to 3 times with exponential backoff. Afterwards throws an error.
    *
    * To get notified when any subscriptions have errored, use the {@link haveAnySubscriptionsErrored} method.
    */
@@ -510,8 +511,14 @@ export class GraphqlService {
             messageId: message.id,
           });
 
-          if (!this.erroredSubscriptionsRetryTimeout) {
+          if (
+            this.erroredSubscriptionsRetryCount <
+              ERRORED_SUBSCRIPTIONS_RETRY_LIMIT &&
+            !this.erroredSubscriptionsRetryTimeout
+          ) {
             this.scheduleErroredSubscriptionsRetry();
+          } else if (!this.erroredSubscriptionsRetryTimeout) {
+            this.failErroredSubscriptions();
           }
 
           break;
@@ -626,16 +633,36 @@ export class GraphqlService {
   }
 
   private scheduleErroredSubscriptionsRetry(): void {
-    const delay = calculateRandomizedExponentialBackoffTime(
-      this.erroredSubscriptionsRetryCount++,
-    );
-
+    const retryCount = this.erroredSubscriptionsRetryCount + 1;
+    const delay = calculateRandomizedExponentialBackoffTime(retryCount);
     this.logger.info(`Retry errored subscriptions in ${delay.toFixed(0)}ms`);
 
     this.erroredSubscriptionsRetryTimeout = setTimeout(() => {
       this.retryErroredSubscriptions();
+      this.erroredSubscriptionsRetryCount = retryCount;
       this.erroredSubscriptionsRetryTimeout = null;
     }, delay);
+  }
+
+  private failErroredSubscriptions(): void {
+    this.logger.error(
+      `Errored subscriptions retry limit (${ERRORED_SUBSCRIPTIONS_RETRY_LIMIT}) reached, giving up`,
+    );
+
+    this.erroredSubscriptionsMessageIds$
+      .pipe(take(1))
+      .subscribe((messageIds) => {
+        for (const messageId of messageIds) {
+          const subscriber = this.messageSubscribers.get(messageId);
+          this.cleanUpSubscription(messageId);
+
+          subscriber?.error(
+            new Error(
+              `Subscription failed after ${this.erroredSubscriptionsRetryCount} retries`,
+            ),
+          );
+        }
+      });
   }
 
   private retryErroredSubscriptions(): void {
