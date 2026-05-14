@@ -218,12 +218,11 @@ export class GraphqlService {
       this.messageSubscribers.set(messageId, subscriber);
 
       return () => {
-        this.sendMessage(messageId, MessageType.GQL_STOP, null);
-        this.cleanUpSubscription(messageId);
-
-        if (!this.erroredSubscriptionsMessageIds.size) {
-          this.haveAnySubscriptionsErrored$.next(false);
+        if (this.messageSubscribers.has(messageId)) {
+          this.sendMessage(messageId, MessageType.GQL_STOP, null);
         }
+
+        this.cleanUpSubscription(messageId);
       };
     });
   }
@@ -290,6 +289,10 @@ export class GraphqlService {
     this.subscriptions = this.subscriptions.filter(
       (subscription) => subscription.messageId !== messageId,
     );
+
+    if (!this.erroredSubscriptionsMessageIds.size) {
+      this.haveAnySubscriptionsErrored$.next(false);
+    }
   }
 
   private async openSocket(): Promise<void> {
@@ -431,8 +434,9 @@ export class GraphqlService {
           break;
 
         case MessageType.GQL_COMPLETE: {
-          this.messageSubscribers.get(message.id)?.complete();
+          const subscriber = this.messageSubscribers.get(message.id);
           this.cleanUpSubscription(message.id);
+          subscriber?.complete();
           break;
         }
 
@@ -461,11 +465,11 @@ export class GraphqlService {
           }
 
           if (message.payload?.data) {
+            this.cleanUpSubscription(message.id);
             subscriber.error(message.payload.data);
-            this.cleanUpSubscription(message.id);
           } else if (message.payload?.errors?.length) {
-            subscriber.error(message.payload.errors);
             this.cleanUpSubscription(message.id);
+            subscriber.error(message.payload.errors);
           }
         }
       }
