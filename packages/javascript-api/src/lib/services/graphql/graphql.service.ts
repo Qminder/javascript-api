@@ -223,24 +223,36 @@ export class GraphqlService {
   /**
    * Subscribe to Qminder Events API using GraphQL.
    *
-   * For example
+   * @example
+   *
+   * Be notified of any created tickets
    *
    * ```javascript
    * import { Qminder } from 'qminder-api';
-   * // 1. Be notified of any created tickets
-   * try {
-   *     const observable = Qminder.GraphQL.subscribe("subscription { createdTickets(locationId: 123) { id firstName } }")
    *
-   *     observable.subscribe(data => console.log(data));
-   *     // => { createdTickets: { id: '12', firstName: 'Marta' } }
+   * try {
+   *   Qminder.GraphQL.subscribe(`
+   *     subscription {
+   *       createdTickets(locationId: 123) {
+   *         id
+   *         firstName
+   *       }
+   *     }
+   *   `).subscribe((data) => {
+   *     console.log(data); // { createdTickets: { id: '12', firstName: 'Marta' } }
+   *   });
    * } catch (error) {
    *     console.error(error);
    * }
    * ```
    *
    * @param queryOrDocumentNode the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
-   * @returns an RxJS Observable that will push data
+   * @returns a RxJS Observable that will push data
    * @throws when the `queryDocument` argument is an empty string
+   *
+   * Retries errored subscriptions (doesn't throw) with exponential backoff.
+   *
+   * To get notified when any subscriptions have errored, use the {@link haveAnySubscriptionsErrored} method.
    */
   subscribe<T extends Record<string, any>>(
     queryOrDocumentNode: string | DocumentNode,
