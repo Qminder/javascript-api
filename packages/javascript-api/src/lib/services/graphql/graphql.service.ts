@@ -20,6 +20,12 @@ import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
 
+function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
+  return typeof queryOrDocumentNode === 'string'
+    ? queryOrDocumentNode
+    : print(queryOrDocumentNode);
+}
+
 export interface QminderGraphQLError {
   message: string;
   errorType?: string | null;
@@ -30,12 +36,12 @@ export interface QminderGraphQLError {
   path?: (string | number)[] | null;
 }
 
-interface OperationMessage<T = object> {
-  id?: string;
-  type: MessageType;
-  payload?: {
-    data?: T | null;
-    errors?: QminderGraphQLError[];
+interface Message {
+  readonly id?: string;
+  readonly type: MessageType;
+  readonly payload?: {
+    readonly data?: Record<string, any> | null;
+    readonly errors?: QminderGraphQLError[];
   };
 }
 
@@ -60,9 +66,9 @@ enum MessageType {
   GQL_ERROR = 'error',
 }
 
+const ERRORED_SUBSCRIPTIONS_RETRY_DELAY_MS = 5 /* seconds */ * 1000; /* ms */
 const PONG_TIMEOUT_IN_MS = 12000;
 const PING_PONG_INTERVAL_IN_MS = 20000;
-const SUBSCRIBER_RETRY_DELAY_MS = 5000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -86,7 +92,7 @@ export class GraphqlService {
     ConnectionStatus.DISCONNECTED,
   );
 
-  private nextMessageId = 1;
+  private subcriptionsCount = 0;
 
   private subscriptions: Subscription[] = [];
 
@@ -97,10 +103,13 @@ export class GraphqlService {
 
   private readonly subscriptionConnection$: Observable<ConnectionStatus>;
 
-  private readonly hasSubscriberErrored$ = new BehaviorSubject(false);
-  private readonly failedSubscribers = new Set<string>();
+  private readonly haveAnySubscriptionsErrored$ = new BehaviorSubject(false);
+  private readonly erroredSubscriptionsMessageIds = new Set<string>();
 
-  private subscriberRetryTimeout: ReturnType<typeof setTimeout> | null = null;
+  private erroredSubscriptionsRetryTimeout: ReturnType<
+    typeof setTimeout
+  > | null = null;
+
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
   private pongTimeout: any;
@@ -188,16 +197,14 @@ export class GraphqlService {
    * }
    * ```
    *
-   * @param queryDocument required: the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
+   * @param queryOrDocumentNode the GraphQL query to send, for example `"subscription { createdTickets(locationId: 123) { id firstName } }"`
    * @returns an RxJS Observable that will push data
    * @throws when the 'queryDocument' argument is an empty string
    */
   subscribe<T extends Record<string, any>>(
-    queryDocument: string | DocumentNode,
+    queryOrDocumentNode: string | DocumentNode,
   ): Observable<T> {
-    const query =
-      typeof queryDocument === 'string' ? queryDocument : print(queryDocument);
-
+    const query = parseQuery(queryOrDocumentNode);
     if (!query) {
       throw new Error(
         'GraphQLService query expects a GraphQL query as its first argument',
@@ -205,13 +212,18 @@ export class GraphqlService {
     }
 
     return new Observable((subscriber) => {
-      const messageId = `${this.nextMessageId++}`;
+      const messageId = `${++this.subcriptionsCount}`;
       this.subscriptions.push({ messageId, query });
       this.sendMessage(messageId, MessageType.GQL_START, { query });
       this.messageSubscribers.set(messageId, subscriber);
 
       return () => {
-        this.removeSubscriber(messageId);
+        this.sendMessage(messageId, MessageType.GQL_STOP, null);
+        this.cleanUpSubscription(messageId);
+
+        if (!this.erroredSubscriptionsMessageIds.size) {
+          this.haveAnySubscriptionsErrored$.next(false);
+        }
       };
     });
   }
@@ -223,13 +235,13 @@ export class GraphqlService {
    * There is no need to call this method in order for data transfer to work. The `subscribe()` method also initializes
    * a websocket connection before proceeding.
    */
-  openPendingWebSocket(): void {
+  async openPendingWebSocket(): Promise<void> {
     if (
       ![ConnectionStatus.CONNECTING, ConnectionStatus.CONNECTED].includes(
         this.connectionStatus,
       )
     ) {
-      this.openSocket();
+      await this.openSocket();
     }
   }
 
@@ -239,7 +251,7 @@ export class GraphqlService {
    * This method is automatically called when doing Qminder.setKey().
    * @hidden
    */
-  setKey(apiKey: string) {
+  setKey(apiKey: string): void {
     this.temporaryApiKeyService = new TemporaryApiKeyService(
       this.apiServer,
       apiKey,
@@ -255,39 +267,29 @@ export class GraphqlService {
   }
 
   /**
-   * Emits `false` if errored subscriptions are successfully retried
+   * Have any GraphQL subscriptions been rejected by the server.
+   *
+   * Emits `false` if all errored subscriptions have been successfully retried.
    */
-  hasSubscriberErrored(): Observable<boolean> {
-    return this.hasSubscriberErrored$.pipe(distinctUntilChanged());
+  haveAnySubscriptionsErrored(): Observable<boolean> {
+    return this.haveAnySubscriptionsErrored$.pipe(distinctUntilChanged());
   }
 
   /**
    * Set the WebSocket hostname the GraphQL service uses.
    * @hidden
    */
-  setServer(apiServer: string) {
+  setServer(apiServer: string): void {
     this.apiServer = apiServer;
   }
 
-  private removeSubscriber(messageId: string): void {
-    if (this.messageSubscribers.has(messageId)) {
-      this.sendMessage(messageId, MessageType.GQL_STOP, null);
-    }
-
-    this.cleanUpSubscription(messageId);
-  }
-
   private cleanUpSubscription(messageId: string): void {
+    this.erroredSubscriptionsMessageIds.delete(messageId);
     this.messageSubscribers.delete(messageId);
-    this.failedSubscribers.delete(messageId);
 
     this.subscriptions = this.subscriptions.filter(
-      ({ messageId: id }) => id !== messageId,
+      (subscription) => subscription.messageId !== messageId,
     );
-
-    if (!this.failedSubscribers.size) {
-      this.hasSubscriberErrored$.next(false);
-    }
   }
 
   private async openSocket(): Promise<void> {
@@ -325,9 +327,8 @@ export class GraphqlService {
     }
 
     this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
-    const socket = this.socket;
 
-    socket.onopen = () => {
+    this.socket.onopen = () => {
       this.sendRawMessage(
         JSON.stringify({
           id: undefined,
@@ -337,7 +338,7 @@ export class GraphqlService {
       );
     };
 
-    socket.onclose = (event) => {
+    this.socket.onclose = (event) => {
       this.logger.warn('WebSocket connection closed:', {
         code: event.code,
         reason: event.reason,
@@ -345,7 +346,6 @@ export class GraphqlService {
 
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
-
       this.clearPingMonitoring();
 
       if (this.shouldRetry(event)) {
@@ -370,7 +370,7 @@ export class GraphqlService {
       }
     };
 
-    socket.onerror = () => {
+    this.socket.onerror = () => {
       if (this.isBrowserOnline()) {
         this.logger.error('Websocket error occurred!');
       } else {
@@ -378,12 +378,12 @@ export class GraphqlService {
       }
     };
 
-    socket.onmessage = (event) => {
+    this.socket.onmessage = (event) => {
       if (typeof event.data !== 'string') {
         return;
       }
 
-      const message: OperationMessage = JSON.parse(event.data);
+      const message: Message = JSON.parse(event.data);
 
       switch (message.type) {
         case MessageType.GQL_CONNECTION_KEEP_ALIVE:
@@ -392,9 +392,9 @@ export class GraphqlService {
         case MessageType.GQL_CONNECTION_ACK: {
           this.connectionAttemptsCount = 0;
 
-          this.clearSubscriberRetry();
-          this.failedSubscribers.clear();
-          this.hasSubscriberErrored$.next(false);
+          this.clearErroredSubscriptionsRetry();
+          this.erroredSubscriptionsMessageIds.clear();
+          this.haveAnySubscriptionsErrored$.next(false);
 
           this.setConnectionStatus(ConnectionStatus.CONNECTED);
           this.logger.info('Connected to websocket');
@@ -431,12 +431,8 @@ export class GraphqlService {
           break;
 
         case MessageType.GQL_COMPLETE: {
-          const subscriber: Subscriber<Record<string, any>> | undefined =
-            this.messageSubscribers.get(message.id);
-
+          this.messageSubscribers.get(message.id)?.complete();
           this.cleanUpSubscription(message.id);
-          subscriber?.complete();
-
           break;
         }
 
@@ -449,11 +445,11 @@ export class GraphqlService {
             `GraphQL subscription error: ${JSON.stringify(message)}`,
           );
 
-          this.failedSubscribers.add(message.id);
-          this.hasSubscriberErrored$.next(true);
+          this.erroredSubscriptionsMessageIds.add(message.id);
+          this.haveAnySubscriptionsErrored$.next(true);
 
-          if (!this.subscriberRetryTimeout) {
-            this.scheduleSubscriberRetry();
+          if (!this.erroredSubscriptionsRetryTimeout) {
+            this.scheduleErroredSubscriptionsRetry();
           }
 
           break;
@@ -464,19 +460,12 @@ export class GraphqlService {
             return;
           }
 
-          this.cleanUpSubscription(message.id);
-
           if (message.payload?.data) {
             subscriber.error(message.payload.data);
-            return;
-          }
-
-          if (message.payload?.errors?.length) {
-            subscriber.error(
-              new Error(
-                message.payload.errors.map(({ message }) => message).join('; '),
-              ),
-            );
+            this.cleanUpSubscription(message.id);
+          } else if (message.payload?.errors?.length) {
+            subscriber.error(message.payload.errors);
+            this.cleanUpSubscription(message.id);
           }
         }
       }
@@ -489,15 +478,19 @@ export class GraphqlService {
     );
   }
 
-  private sendMessage(id: string, type: MessageType, payload: any): void {
+  private async sendMessage(
+    id: string,
+    type: MessageType,
+    payload: Record<string, unknown> | null,
+  ): Promise<void> {
     if (this.connectionStatus !== ConnectionStatus.CONNECTED) {
-      this.openSocket();
+      await this.openSocket();
       return;
     }
 
     if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
       this.logger.warn('Message dropped: WebSocket is not in OPEN state');
-      this.handleConnectionDrop();
+      await this.handleConnectionDrop();
     }
   }
 
@@ -542,7 +535,7 @@ export class GraphqlService {
     this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
   }
 
-  private handleConnectionDrop(): void {
+  private async handleConnectionDrop(): Promise<void> {
     if (this.connectionStatus === ConnectionStatus.CONNECTING) {
       return;
     }
@@ -556,7 +549,7 @@ export class GraphqlService {
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
 
-    this.openSocket();
+    await this.openSocket();
   }
 
   private clearPingMonitoring(): void {
@@ -564,25 +557,20 @@ export class GraphqlService {
     clearInterval(this.pingPongInterval);
   }
 
-  private clearSubscriberRetry(): void {
-    clearTimeout(this.subscriberRetryTimeout);
-    this.subscriberRetryTimeout = null;
+  private clearErroredSubscriptionsRetry(): void {
+    clearTimeout(this.erroredSubscriptionsRetryTimeout ?? undefined);
+    this.erroredSubscriptionsRetryTimeout = null;
   }
 
-  private scheduleSubscriberRetry(): void {
-    this.subscriberRetryTimeout = setTimeout(() => {
-      this.subscriberRetryTimeout = null;
-      this.retryFailedSubscribers();
-    }, SUBSCRIBER_RETRY_DELAY_MS);
+  private scheduleErroredSubscriptionsRetry(): void {
+    this.erroredSubscriptionsRetryTimeout = setTimeout(() => {
+      this.retryErroredSubscriptions();
+      this.erroredSubscriptionsRetryTimeout = null;
+    }, ERRORED_SUBSCRIPTIONS_RETRY_DELAY_MS);
   }
 
-  private retryFailedSubscribers(): void {
-    const subscribers = [...this.failedSubscribers];
-
-    this.failedSubscribers.clear();
-    this.hasSubscriberErrored$.next(false);
-
-    for (const messageId of subscribers) {
+  private retryErroredSubscriptions(): void {
+    for (const messageId of this.erroredSubscriptionsMessageIds) {
       const subscription = this.subscriptions.find(
         (subscription) => subscription.messageId === messageId,
       );
@@ -599,10 +587,13 @@ export class GraphqlService {
         }),
       );
     }
+
+    this.erroredSubscriptionsMessageIds.clear();
+    this.haveAnySubscriptionsErrored$.next(false);
   }
 
   /**
-   * In a non-browser environment (NodeJS) returns true.
+   * In a non-browser environment (NodeJS) returns `true`.
    */
   private isBrowserOnline(): boolean {
     return typeof navigator === 'undefined' || navigator.onLine;
