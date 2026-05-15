@@ -40,12 +40,12 @@ export class GraphQLSubscriptionsFixture {
     return (this.graphqlService as any).subscriptions.length;
   }
 
-  getGraphqlServiceSubscriptionObserverMapSize(): number {
-    return Object.keys(this.getGraphqlServiceSubscriptionObserverMap()).length;
+  getMessageSubscribersSize(): number {
+    return (this.graphqlService as any).messageSubscribers.size;
   }
 
-  getGraphqlServiceSubscriptionObserverMap(): Record<string, Observer<object>> {
-    return (this.graphqlService as any).subscriptionObserverMap;
+  hasMessageSubscriber(id: string): boolean {
+    return (this.graphqlService as any).messageSubscribers.has(id);
   }
 
   async waitForConnection() {
@@ -125,6 +125,7 @@ export class GraphQLSubscriptionsFixture {
   }
 
   async cleanup() {
+    (this.graphqlService as any).clearSubscriptionRetry();
     WS.clean();
     await this.server.closed;
   }
