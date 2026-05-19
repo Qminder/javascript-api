@@ -1,9 +1,10 @@
 /* eslint-env jest */
 
-import { DocumentNode } from 'graphql';
+import { DocumentNode, print } from 'graphql';
 import WS from 'jest-websocket-mock';
 import { DeserializedMessage } from 'jest-websocket-mock/lib/websocket';
-import { lastValueFrom, Observer, Subscription, take } from 'rxjs';
+import { lastValueFrom, Observer, Subscriber, Subscription, take } from 'rxjs';
+
 import { ConnectionStatus } from '../../../model/connection-status';
 import { GraphqlService } from '../graphql.service';
 
@@ -23,7 +24,7 @@ export class GraphQLSubscriptionsFixture {
       .mockReturnValue(SERVER_URL);
 
     jest
-      .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
+      .spyOn(this.graphqlService as any, 'getTemporaryApiKey')
       .mockResolvedValue(DUMMY_API_KEY);
   }
 
@@ -40,12 +41,16 @@ export class GraphQLSubscriptionsFixture {
     return (this.graphqlService as any).subscriptions.length;
   }
 
-  getMessageSubscribersSize(): number {
-    return (this.graphqlService as any).messageSubscribers.size;
+  getMessagesSubscribers(): Map<string, Subscriber<Record<string, any>>> {
+    return this.graphqlService['messagesSubscribers'];
   }
 
-  hasMessageSubscriber(id: string): boolean {
-    return (this.graphqlService as any).messageSubscribers.has(id);
+  getSubscribedMessagesCount(): number {
+    return this.graphqlService['messagesSubscribers'].size;
+  }
+
+  hasMessageSubscribers(messageId: string): boolean {
+    return this.graphqlService['messagesSubscribers'].has(messageId);
   }
 
   async waitForConnection() {
@@ -103,7 +108,7 @@ export class GraphQLSubscriptionsFixture {
     expect(await this.server.nextMessage).toEqual({
       id: '1',
       type: 'start',
-      payload: { query },
+      payload: { query: typeof query === 'string' ? query : print(query) },
     });
   }
 
@@ -125,7 +130,6 @@ export class GraphQLSubscriptionsFixture {
   }
 
   async cleanup() {
-    (this.graphqlService as any).clearSubscriptionRetry();
     WS.clean();
     await this.server.closed;
   }

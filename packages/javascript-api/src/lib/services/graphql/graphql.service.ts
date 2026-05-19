@@ -103,7 +103,7 @@ export class GraphqlService {
 
   private subscriptions: Subscription[] = [];
 
-  private readonly messageSubscribers = new Map<
+  private readonly messagesSubscribers = new Map<
     string,
     Subscriber<Record<string, any>>
   >();
@@ -281,10 +281,10 @@ export class GraphqlService {
         },
       );
 
-      this.messageSubscribers.set(messageId, subscriber);
+      this.messagesSubscribers.set(messageId, subscriber);
 
       return () => {
-        if (this.messageSubscribers.has(messageId)) {
+        if (this.messagesSubscribers.has(messageId)) {
           this.sendMessage(messageId, MessageType.GQL_STOP, null).catch(
             (error) => {
               this.logger.error('Failed to stop subscription: ', error);
@@ -358,7 +358,7 @@ export class GraphqlService {
   }
 
   private cleanUpSubscription(messageId: string): void {
-    this.messageSubscribers.delete(messageId);
+    this.messagesSubscribers.delete(messageId);
 
     this.subscriptions = this.subscriptions.filter(
       (subscription) => subscription.messageId !== messageId,
@@ -512,11 +512,11 @@ export class GraphqlService {
             messageId: message.id,
           });
 
-          this.messageSubscribers.get(message.id)?.next(message.payload.data);
+          this.messagesSubscribers.get(message.id)?.next(message.payload.data);
           break;
 
         case MessageType.GQL_COMPLETE: {
-          const subscriber = this.messageSubscribers.get(message.id);
+          const subscriber = this.messagesSubscribers.get(message.id);
           this.cleanUpSubscription(message.id);
           subscriber?.complete();
           break;
@@ -551,7 +551,7 @@ export class GraphqlService {
           break;
 
         default: {
-          const subscriber = this.messageSubscribers.get(message.id);
+          const subscriber = this.messagesSubscribers.get(message.id);
           if (!subscriber) {
             return;
           }
@@ -570,7 +570,7 @@ export class GraphqlService {
 
   private shouldRetry(event: CloseEvent): boolean {
     return (
-      event.code !== CLIENT_SIDE_CLOSE_EVENT || !!this.messageSubscribers.size
+      event.code !== CLIENT_SIDE_CLOSE_EVENT || !!this.messagesSubscribers.size
     );
   }
 
@@ -691,7 +691,7 @@ export class GraphqlService {
       .pipe(take(1))
       .subscribe((messageIds) => {
         for (const messageId of messageIds) {
-          const subscriber = this.messageSubscribers.get(messageId);
+          const subscriber = this.messagesSubscribers.get(messageId);
           this.cleanUpSubscription(messageId);
 
           subscriber?.error(
