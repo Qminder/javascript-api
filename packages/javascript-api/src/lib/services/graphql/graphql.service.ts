@@ -531,9 +531,15 @@ export class GraphqlService {
           break;
 
         case MessageType.GQL_COMPLETE: {
+          this.retryableErroredSubscriptionsAction$.next({
+            type: 'remove',
+            messageId: message.id,
+          });
+
           const subscriber = this.messagesSubscribers.get(message.id);
           this.cleanUpSubscription(message.id);
           subscriber?.complete();
+
           break;
         }
 
