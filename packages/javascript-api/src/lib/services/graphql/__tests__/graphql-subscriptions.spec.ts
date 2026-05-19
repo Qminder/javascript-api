@@ -372,7 +372,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('error', () => {
-    it(`shouldn't error the subscription`, async () => {
+    it(`shouldn't error subscriptions before retrying`, async () => {
       const subscriptionErrorSpy = jest.fn();
 
       const query = gql`
@@ -402,7 +402,7 @@ describe('GraphQL subscriptions', () => {
       subscription.unsubscribe();
     });
 
-    it(`shouldn't clean up the subscription`, async () => {
+    it(`shouldn't clean up subscriptions before retrying`, async () => {
       const query = gql`
         subscription {
           name
@@ -428,7 +428,7 @@ describe('GraphQL subscriptions', () => {
       subscription.unsubscribe();
     });
 
-    it(`shouldn't drop connection`, async () => {
+    it(`shouldn't drop socket connection`, async () => {
       const connectionDropSpy = jest.spyOn(
         fixture.graphqlService as any,
         'handleConnectionDrop',
@@ -703,7 +703,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('haveAnySubscriptionsErrored', () => {
-    it(`should emit 'true' if subscription errors`, async () => {
+    it(`should emit 'true' if any subscriptions error`, async () => {
       const query = gql`
         subscription {
           name
@@ -733,7 +733,7 @@ describe('GraphQL subscriptions', () => {
       subscription.unsubscribe();
     });
 
-    it('should clear errored subscriptions with a delay after successful retry', async () => {
+    it('should clear errored subscriptions with a delay after successful batch retry', async () => {
       jest.useFakeTimers();
 
       const query = gql`
