@@ -111,7 +111,7 @@ export class GraphqlService {
     ConnectionStatus.DISCONNECTED,
   );
 
-  private subcriptionsCount = 0;
+  private subscriptionsCount = 0;
 
   private subscriptions: Subscription[] = [];
 
@@ -285,7 +285,7 @@ export class GraphqlService {
     }
 
     return new Observable((subscriber) => {
-      const messageId = `${++this.subcriptionsCount}`;
+      const messageId = `${++this.subscriptionsCount}`;
       this.subscriptions.push({ messageId, query });
 
       this.sendMessage(messageId, MessageType.GQL_START, { query }).catch(
