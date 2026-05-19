@@ -821,7 +821,7 @@ describe('GraphQL subscriptions', () => {
       jest.useRealTimers();
     });
 
-    it('should error retryable subscriptions after 3 failed retries', async () => {
+    it('should error retryable subscriptions after 5 failed retries', async () => {
       jest.useFakeTimers();
 
       const subscriptionErrorSpy = jest.fn();
@@ -865,6 +865,9 @@ describe('GraphQL subscriptions', () => {
       await fixture.consumePingMessage();
       fixture.sendMessageToClient({ type: 'pong' });
 
+      // Prevent ping-pong interval from interfering with retry timer advances
+      clearInterval(fixture.graphqlService['pingPongInterval']);
+
       const sendErrorMessages = (): void => {
         [{ messageId: '1' }, { messageId: '2' }].forEach(({ messageId }) => {
           fixture.server.send({
@@ -885,11 +888,11 @@ describe('GraphQL subscriptions', () => {
 
       sendErrorMessages();
 
-      for (let retryCount = 0; retryCount < 3; retryCount++) {
+      for (let retryCount = 0; retryCount < 5; retryCount++) {
         // Wait for retry
         await jest.advanceTimersToNextTimerAsync();
 
-        // mock-socket delivers client→server messages via setTimeout(4)
+        // mock-socket delivers client → server messages via setTimeout(4)
         await jest.advanceTimersByTimeAsync(10);
 
         sendErrorMessages();
@@ -897,13 +900,13 @@ describe('GraphQL subscriptions', () => {
 
       expect(subscriptionErrorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: 'Subscription failed after 3 retries',
+          message: 'Subscription failed after 5 retries',
         }),
       );
 
       expect(subscription2ErrorSpy).toHaveBeenCalledWith(
         expect.objectContaining({
-          message: 'Subscription failed after 3 retries',
+          message: 'Subscription failed after 5 retries',
         }),
       );
 
@@ -913,7 +916,7 @@ describe('GraphQL subscriptions', () => {
       jest.useRealTimers();
     });
 
-    it('should clean up retryable errored subscriptions after 3 failed retries', async () => {
+    it('should clean up retryable errored subscriptions after 5 failed retries', async () => {
       jest.useFakeTimers();
 
       const query = gql`
@@ -953,6 +956,9 @@ describe('GraphQL subscriptions', () => {
       await fixture.consumePingMessage();
       fixture.sendMessageToClient({ type: 'pong' });
 
+      // Prevent ping-pong interval from interfering with retry timer advances
+      clearInterval(fixture.graphqlService['pingPongInterval']);
+
       const sendErrorMessages = (): void => {
         [{ messageId: '1' }, { messageId: '2' }].forEach(({ messageId }) => {
           fixture.server.send({
@@ -975,7 +981,7 @@ describe('GraphQL subscriptions', () => {
 
       expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1', '2']);
 
-      for (let retryCount = 0; retryCount < 3; retryCount++) {
+      for (let retryCount = 0; retryCount < 5; retryCount++) {
         // Wait for retry
         await jest.advanceTimersToNextTimerAsync();
 
