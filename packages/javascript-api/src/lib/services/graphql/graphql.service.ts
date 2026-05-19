@@ -86,7 +86,7 @@ const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 5;
 // To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
 const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 1_000;
 
-const PONG_TIMEOUT_IN_MS = 10_000;
+const PONG_TIMEOUT_IN_MS = 12_000;
 const PING_PONG_INTERVAL_IN_MS = 20_000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
