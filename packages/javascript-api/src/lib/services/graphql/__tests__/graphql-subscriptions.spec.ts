@@ -334,62 +334,6 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
-  it(`should retry errored subscriptions if socket reconnects`, async () => {
-    const subscription1 = fixture.triggerSubscription(gql`
-      subscription {
-        name
-      }
-    `);
-
-    const subscription2 = fixture.triggerSubscription(gql`
-      subscription {
-        name2
-      }
-    `);
-
-    await fixture.handleConnectionInit();
-
-    fixture.server.send({
-      id: '1',
-      type: 'error',
-      payload: {
-        data: null,
-        errors: ['The maximum subscription limit of 100 has been reached'],
-      },
-    });
-
-    fixture.server.send({
-      id: '2',
-      type: 'error',
-      payload: {
-        data: null,
-        errors: ['The maximum subscription limit of 100 has been reached'],
-      },
-    });
-
-    await fixture.closeWithCode(1001);
-
-    fixture.openServer();
-    await fixture.handleConnectionInit();
-
-    expect(await fixture.getNextMessage()).toEqual(
-      expect.objectContaining({
-        id: '1',
-        type: 'start',
-      }),
-    );
-
-    expect(await fixture.getNextMessage()).toEqual(
-      expect.objectContaining({
-        id: '2',
-        type: 'start',
-      }),
-    );
-
-    subscription1.unsubscribe();
-    subscription2.unsubscribe();
-  });
-
   it(`should send GQL_STOP for errored subscription if it's unsubscribed`, async () => {
     const query = gql`
       subscription {
@@ -467,6 +411,66 @@ describe('GraphQL subscriptions', () => {
     expect(fixture.getMessagesSubscribers().size).toBe(0);
   });
 
+  describe('GQL_CONNECTION_ACK', () => {
+    it('should retry errored subscriptions', async () => {
+      const subscription1 = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      const subscription2 = fixture.triggerSubscription(gql`
+        subscription {
+          name2
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: ['The maximum subscription limit of 100 has been reached'],
+        },
+      });
+
+      fixture.server.send({
+        id: '2',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: ['The maximum subscription limit of 100 has been reached'],
+        },
+      });
+
+      expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1', '2']);
+
+      await fixture.closeWithCode(1001);
+
+      fixture.openServer();
+      await fixture.handleConnectionInit();
+
+      expect(await fixture.getNextMessage()).toEqual(
+        expect.objectContaining({
+          id: '1',
+          type: 'start',
+        }),
+      );
+
+      expect(await fixture.getNextMessage()).toEqual(
+        expect.objectContaining({
+          id: '2',
+          type: 'start',
+        }),
+      );
+
+      subscription1.unsubscribe();
+      subscription2.unsubscribe();
+    });
+  });
+
   describe('GQL_DATA', () => {
     it('should send data to subscriber', async () => {
       const subscriptionNextSpy = jest.fn();
@@ -495,7 +499,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('GQL_COMPLETE', () => {
-    it(`should complete subscription`, async () => {
+    it('should complete subscription', async () => {
       const subscriptionCompleteSpy = jest.fn();
 
       const subscription = fixture.triggerSubscription(
@@ -519,7 +523,7 @@ describe('GraphQL subscriptions', () => {
       subscription.unsubscribe();
     });
 
-    it(`should clean up subscription`, async () => {
+    it('should clean up subscription', async () => {
       const subscription = fixture.triggerSubscription(gql`
         subscription {
           name
