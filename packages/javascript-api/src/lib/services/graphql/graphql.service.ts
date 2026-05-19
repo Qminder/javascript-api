@@ -495,7 +495,7 @@ export class GraphqlService {
           }
 
           if (resubscriptionFailed) {
-            this.handleConnectionDrop().catch((error) => {
+            this.handleConnectionDrop().catch((error: Error) => {
               this.logger.error(
                 'Failed to handle connection drop after resubscription failure: ',
                 error,
@@ -625,7 +625,7 @@ export class GraphqlService {
 
   private sendPing(): void {
     this.pongTimeout = setTimeout(() => {
-      this.handleConnectionDrop().catch((error) => {
+      this.handleConnectionDrop().catch((error: Error) => {
         this.logger.error('Failed to handle pong connection drop: ', error);
       });
     }, PONG_TIMEOUT_IN_MS);
