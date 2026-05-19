@@ -72,8 +72,10 @@ enum MessageType {
 }
 
 const ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 3;
-const PONG_TIMEOUT_IN_MS = 12000;
-const PING_PONG_INTERVAL_IN_MS = 20000;
+// To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
+const ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 500;
+const PONG_TIMEOUT_IN_MS = 12_000;
+const PING_PONG_INTERVAL_IN_MS = 20_000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -148,6 +150,10 @@ export class GraphqlService {
     );
 
   private erroredSubscriptionsRetryTimeout: ReturnType<
+    typeof setTimeout
+  > | null = null;
+
+  private erroredSubscriptionsSuccessTimeout: ReturnType<
     typeof setTimeout
   > | null = null;
 
@@ -251,7 +257,7 @@ export class GraphqlService {
    * @returns a RxJS Observable that will push data
    * @throws when the `queryDocument` argument is an empty string
    *
-   * Retries errored subscriptions up to 3 times with exponential backoff. Afterwards throws an error.
+   * Retries errored subscriptions up to 3 times. Afterwards throws an error.
    *
    * To get notified when any subscriptions have errored, use the {@link haveAnySubscriptionsErrored} method.
    */
@@ -284,6 +290,11 @@ export class GraphqlService {
               this.logger.error('Failed to stop subscription: ', error);
             },
           );
+
+          this.erroredSubscriptionsAction$.next({
+            type: 'remove',
+            messageId,
+          });
         }
 
         this.cleanUpSubscription(messageId);
@@ -347,11 +358,6 @@ export class GraphqlService {
   }
 
   private cleanUpSubscription(messageId: string): void {
-    this.erroredSubscriptionsAction$.next({
-      type: 'remove',
-      messageId,
-    });
-
     this.messageSubscribers.delete(messageId);
 
     this.subscriptions = this.subscriptions.filter(
@@ -461,7 +467,7 @@ export class GraphqlService {
         case MessageType.GQL_CONNECTION_ACK: {
           this.connectionAttemptsCount = 0;
 
-          this.clearErroredSubscriptionsRetry();
+          this.clearErroredSubscriptionsTimeouts();
           this.erroredSubscriptionsRetryCount = 0;
           this.erroredSubscriptionsAction$.next({ type: 'clear' });
 
@@ -524,6 +530,8 @@ export class GraphqlService {
           this.logger.warn(
             `GraphQL subscription error: ${JSON.stringify(message)}`,
           );
+
+          this.clearErroredSubscriptionsSuccessTimeout();
 
           this.erroredSubscriptionsAction$.next({
             type: 'add',
@@ -647,9 +655,16 @@ export class GraphqlService {
     clearInterval(this.pingPongInterval);
   }
 
-  private clearErroredSubscriptionsRetry(): void {
+  private clearErroredSubscriptionsTimeouts(): void {
     clearTimeout(this.erroredSubscriptionsRetryTimeout ?? undefined);
     this.erroredSubscriptionsRetryTimeout = null;
+
+    this.clearErroredSubscriptionsSuccessTimeout();
+  }
+
+  private clearErroredSubscriptionsSuccessTimeout(): void {
+    clearTimeout(this.erroredSubscriptionsSuccessTimeout ?? undefined);
+    this.erroredSubscriptionsSuccessTimeout = null;
   }
 
   private scheduleErroredSubscriptionsRetry(): void {
@@ -709,6 +724,12 @@ export class GraphqlService {
             }),
           );
         }
+
+        this.erroredSubscriptionsSuccessTimeout = setTimeout(() => {
+          this.erroredSubscriptionsAction$.next({ type: 'clear' });
+          this.erroredSubscriptionsRetryCount = 0;
+          this.erroredSubscriptionsSuccessTimeout = null;
+        }, ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS);
       });
   }
 
