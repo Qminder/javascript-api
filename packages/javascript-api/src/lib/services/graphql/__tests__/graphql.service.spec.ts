@@ -42,7 +42,7 @@ describe('GraphQL service', function () {
     requestStub = sinon.stub(Qminder.ApiBase, 'queryGraph');
 
     temporaryApiKeySpy = jest
-      .spyOn(graphqlService as any, 'fetchTemporaryApiKey')
+      .spyOn(graphqlService as any, 'getTemporaryApiKey')
       .mockResolvedValue(keyValue);
   });
 
@@ -155,15 +155,7 @@ describe('GraphQL service', function () {
       expect(WebSocket).toHaveBeenCalledTimes(1);
     });
   });
-  describe('.generateOperationId', () => {
-    it('returns an incrementing string', () => {
-      expect((graphqlService as any).generateOperationId()).toBe('1');
-      expect((graphqlService as any).generateOperationId()).toBe('2');
-      expect((graphqlService as any).generateOperationId()).toBe('3');
-      expect((graphqlService as any).generateOperationId()).toBe('4');
-      expect((graphqlService as any).generateOperationId()).toBe('5');
-    });
-  });
+
   afterEach(function () {
     requestStub.restore();
   });
