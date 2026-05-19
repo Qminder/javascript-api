@@ -71,9 +71,20 @@ enum MessageType {
   GQL_ERROR = 'error',
 }
 
-const ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 3;
+const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 3;
 // To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
-const ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 500;
+const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 500;
+
+const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
+  'BAD_REQUEST',
+  'FIELD_NOT_FOUND',
+  'INVALID_ARGUMENT',
+  'InvalidSyntax',
+  'NOT_FOUND',
+  'PERMISSION_DENIED',
+  'ValidationError',
+] as const;
+
 const PONG_TIMEOUT_IN_MS = 12_000;
 const PING_PONG_INTERVAL_IN_MS = 20_000;
 
@@ -110,7 +121,7 @@ export class GraphqlService {
 
   private readonly subscriptionConnection$: Observable<ConnectionStatus>;
 
-  private readonly erroredSubscriptionsAction$ = new Subject<
+  private readonly retryableErroredSubscriptionsAction$ = new Subject<
     | {
         readonly type: 'add';
         readonly messageId: string;
@@ -124,8 +135,8 @@ export class GraphqlService {
       }
   >();
 
-  private readonly erroredSubscriptionsMessageIds$ =
-    this.erroredSubscriptionsAction$.pipe(
+  private readonly retryableErroredSubscriptionsMessageIds$ =
+    this.retryableErroredSubscriptionsAction$.pipe(
       scan((messageIds, action) => {
         const result = new Set(messageIds);
 
@@ -143,21 +154,21 @@ export class GraphqlService {
       shareReplay(1),
     );
 
-  private readonly haveAnySubscriptionsErrored$ =
-    this.erroredSubscriptionsMessageIds$.pipe(
+  private readonly haveAnyRetryableSubscriptionsErrored$ =
+    this.retryableErroredSubscriptionsMessageIds$.pipe(
       map(({ size }) => !!size),
       distinctUntilChanged(),
     );
 
-  private erroredSubscriptionsRetryTimeout: ReturnType<
+  private retryableErroredSubscriptionsRetryTimeout: ReturnType<
     typeof setTimeout
   > | null = null;
 
-  private erroredSubscriptionsSuccessTimeout: ReturnType<
+  private retryableErroredSubscriptionsSuccessTimeout: ReturnType<
     typeof setTimeout
   > | null = null;
 
-  private erroredSubscriptionsRetryCount = 0;
+  private retryableErroredSubscriptionsRetryCount = 0;
 
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
@@ -175,7 +186,7 @@ export class GraphqlService {
       shareReplay(1),
     );
 
-    this.erroredSubscriptionsMessageIds$.subscribe();
+    this.retryableErroredSubscriptionsMessageIds$.subscribe();
   }
 
   /**
@@ -257,9 +268,11 @@ export class GraphqlService {
    * @returns a RxJS Observable that will push data
    * @throws when the `queryDocument` argument is an empty string
    *
-   * Retries errored subscriptions up to 3 times. Afterwards throws an error.
+   * Retries retryable errored subscriptions up to 3 times. Afterwards throws an error.
    *
-   * To get notified when any subscriptions have errored, use the {@link haveAnySubscriptionsErrored} method.
+   * To get notified when any retryable subscriptions have errored, use the {@link haveAnyRetryableSubscriptionsErrored} method.
+   *
+   * @see {@link NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES | non-retryable subscription error types}
    */
   subscribe<T extends Record<string, any>>(
     queryOrDocumentNode: string | DocumentNode,
@@ -291,7 +304,7 @@ export class GraphqlService {
             },
           );
 
-          this.erroredSubscriptionsAction$.next({
+          this.retryableErroredSubscriptionsAction$.next({
             type: 'remove',
             messageId,
           });
@@ -341,12 +354,14 @@ export class GraphqlService {
   }
 
   /**
-   * Have any GraphQL subscriptions been rejected by the server.
+   * Have any retryable GraphQL subscriptions been rejected by the server.
    *
-   * Emits `false` if all errored subscriptions have been successfully retried.
+   * Emits `false` if all retryable errored subscriptions have been successfully retried.
+   *
+   * @see {@link NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES | non-retryable subscription error types}
    */
-  haveAnySubscriptionsErrored(): Observable<boolean> {
-    return this.haveAnySubscriptionsErrored$;
+  haveAnyRetryableSubscriptionsErrored(): Observable<boolean> {
+    return this.haveAnyRetryableSubscriptionsErrored$;
   }
 
   /**
@@ -468,8 +483,8 @@ export class GraphqlService {
           this.connectionAttemptsCount = 0;
 
           this.clearErroredSubscriptionsTimeouts();
-          this.erroredSubscriptionsRetryCount = 0;
-          this.erroredSubscriptionsAction$.next({ type: 'clear' });
+          this.retryableErroredSubscriptionsRetryCount = 0;
+          this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
 
           this.setConnectionStatus(ConnectionStatus.CONNECTED);
           this.logger.info('Connected to websocket');
@@ -507,7 +522,7 @@ export class GraphqlService {
         }
 
         case MessageType.GQL_DATA:
-          this.erroredSubscriptionsAction$.next({
+          this.retryableErroredSubscriptionsAction$.next({
             type: 'remove',
             messageId: message.id,
           });
@@ -526,29 +541,52 @@ export class GraphqlService {
           clearTimeout(this.pongTimeout);
           break;
 
-        case MessageType.GQL_ERROR:
+        case MessageType.GQL_ERROR: {
+          const errors = message.payload?.errors ?? [];
+
+          if (this.isAnySubscriptionErrorNonRetryable(errors)) {
+            this.logger.error(
+              `Non-retryable GraphQL subscription error: ${JSON.stringify(
+                message,
+              )}`,
+            );
+
+            // May have been retryable before
+            this.retryableErroredSubscriptionsAction$.next({
+              type: 'remove',
+              messageId: message.id,
+            });
+
+            const subscriber = this.messagesSubscribers.get(message.id);
+            this.cleanUpSubscription(message.id);
+            subscriber?.error(errors);
+
+            break;
+          }
+
           this.logger.warn(
-            `GraphQL subscription error: ${JSON.stringify(message)}`,
+            `Retryable GraphQL subscription error: ${JSON.stringify(message)}`,
           );
 
           this.clearErroredSubscriptionsSuccessTimeout();
 
-          this.erroredSubscriptionsAction$.next({
+          this.retryableErroredSubscriptionsAction$.next({
             type: 'add',
             messageId: message.id,
           });
 
           if (
-            this.erroredSubscriptionsRetryCount <
-              ERRORED_SUBSCRIPTIONS_RETRY_LIMIT &&
-            !this.erroredSubscriptionsRetryTimeout
+            this.retryableErroredSubscriptionsRetryCount <
+              RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT &&
+            !this.retryableErroredSubscriptionsRetryTimeout
           ) {
             this.scheduleErroredSubscriptionsRetry();
-          } else if (!this.erroredSubscriptionsRetryTimeout) {
+          } else if (!this.retryableErroredSubscriptionsRetryTimeout) {
             this.failErroredSubscriptions();
           }
 
           break;
+        }
 
         default: {
           const subscriber = this.messagesSubscribers.get(message.id);
@@ -656,38 +694,50 @@ export class GraphqlService {
   }
 
   private clearErroredSubscriptionsTimeouts(): void {
-    clearTimeout(this.erroredSubscriptionsRetryTimeout ?? undefined);
-    this.erroredSubscriptionsRetryTimeout = null;
+    clearTimeout(this.retryableErroredSubscriptionsRetryTimeout ?? undefined);
+    this.retryableErroredSubscriptionsRetryTimeout = null;
 
     this.clearErroredSubscriptionsSuccessTimeout();
   }
 
   private clearErroredSubscriptionsSuccessTimeout(): void {
-    clearTimeout(this.erroredSubscriptionsSuccessTimeout ?? undefined);
-    this.erroredSubscriptionsSuccessTimeout = null;
+    clearTimeout(this.retryableErroredSubscriptionsSuccessTimeout ?? undefined);
+    this.retryableErroredSubscriptionsSuccessTimeout = null;
+  }
+
+  private isAnySubscriptionErrorNonRetryable(
+    errors: QminderGraphQLError[],
+  ): boolean {
+    return errors
+      .filter((error) => error.errorType)
+      .some(({ errorType }) =>
+        (
+          NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES as unknown as string[]
+        ).includes(errorType),
+      );
   }
 
   private scheduleErroredSubscriptionsRetry(): void {
-    const retryCount = this.erroredSubscriptionsRetryCount + 1;
+    const retryCount = this.retryableErroredSubscriptionsRetryCount + 1;
     const delay = calculateRandomizedExponentialBackoffTime(retryCount);
 
     this.logger.info(
       `Retry (${retryCount}) errored subscriptions in ${delay.toFixed(0)}ms`,
     );
 
-    this.erroredSubscriptionsRetryTimeout = setTimeout(() => {
+    this.retryableErroredSubscriptionsRetryTimeout = setTimeout(() => {
       this.retryErroredSubscriptions();
-      this.erroredSubscriptionsRetryCount = retryCount;
-      this.erroredSubscriptionsRetryTimeout = null;
+      this.retryableErroredSubscriptionsRetryCount = retryCount;
+      this.retryableErroredSubscriptionsRetryTimeout = null;
     }, delay);
   }
 
   private failErroredSubscriptions(): void {
     this.logger.error(
-      `Errored subscriptions retry limit (${ERRORED_SUBSCRIPTIONS_RETRY_LIMIT}) reached, giving up`,
+      `Errored subscriptions retry limit (${RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT}) reached, giving up`,
     );
 
-    this.erroredSubscriptionsMessageIds$
+    this.retryableErroredSubscriptionsMessageIds$
       .pipe(take(1))
       .subscribe((messageIds) => {
         for (const messageId of messageIds) {
@@ -696,7 +746,7 @@ export class GraphqlService {
 
           subscriber?.error(
             new Error(
-              `Subscription failed after ${this.erroredSubscriptionsRetryCount} retries`,
+              `Subscription failed after ${this.retryableErroredSubscriptionsRetryCount} retries`,
             ),
           );
         }
@@ -704,7 +754,7 @@ export class GraphqlService {
   }
 
   private retryErroredSubscriptions(): void {
-    this.erroredSubscriptionsMessageIds$
+    this.retryableErroredSubscriptionsMessageIds$
       .pipe(take(1))
       .subscribe((messageIds) => {
         for (const messageId of messageIds) {
@@ -725,11 +775,11 @@ export class GraphqlService {
           );
         }
 
-        this.erroredSubscriptionsSuccessTimeout = setTimeout(() => {
-          this.erroredSubscriptionsAction$.next({ type: 'clear' });
-          this.erroredSubscriptionsRetryCount = 0;
-          this.erroredSubscriptionsSuccessTimeout = null;
-        }, ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS);
+        this.retryableErroredSubscriptionsSuccessTimeout = setTimeout(() => {
+          this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
+          this.retryableErroredSubscriptionsRetryCount = 0;
+          this.retryableErroredSubscriptionsSuccessTimeout = null;
+        }, RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS);
       });
   }
 

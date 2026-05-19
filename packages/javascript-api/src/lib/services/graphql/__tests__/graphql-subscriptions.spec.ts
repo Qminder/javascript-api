@@ -335,7 +335,7 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
-  it(`should send GQL_STOP for errored subscription if it's unsubscribed`, async () => {
+  it(`should send GQL_STOP for retryable errored subscription if it's unsubscribed`, async () => {
     const query = gql`
       subscription {
         name
@@ -389,7 +389,7 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
-  it(`should clean up errored subscription if it's unsubscribed`, async () => {
+  it(`should clean up retryable errored subscription if it's unsubscribed`, async () => {
     const subscription = fixture.triggerSubscription(gql`
       subscription {
         name
@@ -419,7 +419,7 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('GQL_CONNECTION_ACK', () => {
-    it('should retry errored subscriptions', async () => {
+    it('should retry retryable errored subscriptions', async () => {
       const subscription = fixture.triggerSubscription(gql`
         subscription {
           name
@@ -566,7 +566,96 @@ describe('GraphQL subscriptions', () => {
   });
 
   describe('GQL_ERROR', () => {
-    it('should not error subscriptions before retrying', async () => {
+    it.each([
+      'BAD_REQUEST',
+      'FIELD_NOT_FOUND',
+      'INVALID_ARGUMENT',
+      'InvalidSyntax',
+      'NOT_FOUND',
+      'PERMISSION_DENIED',
+      'ValidationError',
+    ])(
+      'should immediately error non-retryable subscriptions (errorType: %s)',
+      async (errorType) => {
+        const subscriptionErrorSpy = jest.fn();
+
+        const subscription = fixture.triggerSubscription(
+          gql`
+            subscription {
+              name
+            }
+          `,
+          { error: subscriptionErrorSpy },
+        );
+
+        await fixture.handleConnectionInit();
+
+        fixture.server.send({
+          id: '1',
+          type: 'error',
+          payload: {
+            errors: [
+              {
+                message: 'error',
+                errorType,
+              },
+            ] satisfies QminderGraphQLError[],
+          },
+        });
+
+        expect(subscriptionErrorSpy).toHaveBeenCalledWith([
+          {
+            message: 'error',
+            errorType,
+          },
+        ]);
+
+        subscription.unsubscribe();
+      },
+    );
+
+    it.each([
+      'BAD_REQUEST',
+      'FIELD_NOT_FOUND',
+      'INVALID_ARGUMENT',
+      'InvalidSyntax',
+      'NOT_FOUND',
+      'PERMISSION_DENIED',
+      'ValidationError',
+    ])(
+      'should clean up non-retryable subscriptions (errorType: %s)',
+      async (errorType) => {
+        const subscription = fixture.triggerSubscription(
+          gql`
+            subscription {
+              name
+            }
+          `,
+          { error: () => {} },
+        );
+
+        await fixture.handleConnectionInit();
+
+        fixture.server.send({
+          id: '1',
+          type: 'error',
+          payload: {
+            errors: [
+              {
+                message: 'error',
+                errorType,
+              },
+            ] satisfies QminderGraphQLError[],
+          },
+        });
+
+        expect(fixture.getMessagesSubscribers().size).toBe(0);
+
+        subscription.unsubscribe();
+      },
+    );
+
+    it('should not immediately error retryable subscriptions', async () => {
       const subscriptionErrorSpy = jest.fn();
 
       const subscription = fixture.triggerSubscription(
@@ -657,7 +746,7 @@ describe('GraphQL subscriptions', () => {
       subscription.unsubscribe();
     });
 
-    it('should retry errored subscriptions after delay', async () => {
+    it('should retry retryable errored subscriptions after delay', async () => {
       jest.useFakeTimers();
 
       const query = gql`
@@ -732,7 +821,7 @@ describe('GraphQL subscriptions', () => {
       jest.useRealTimers();
     });
 
-    it('should error subscriptions after 3 failed retries', async () => {
+    it('should error retryable subscriptions after 3 failed retries', async () => {
       jest.useFakeTimers();
 
       const subscriptionErrorSpy = jest.fn();
@@ -824,7 +913,7 @@ describe('GraphQL subscriptions', () => {
       jest.useRealTimers();
     });
 
-    it('should clean up errored subscriptions after 3 failed retries', async () => {
+    it('should clean up retryable errored subscriptions after 3 failed retries', async () => {
       jest.useFakeTimers();
 
       const query = gql`
@@ -1005,8 +1094,8 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  describe('haveAnySubscriptionsErrored', () => {
-    it(`should emit 'true' if any subscriptions have errored`, async () => {
+  describe('haveAnyRetryableSubscriptionsErrored', () => {
+    it(`should emit 'true' if any retryable subscriptions have errored`, async () => {
       const subscription = fixture.triggerSubscription(gql`
         subscription {
           name
@@ -1029,7 +1118,7 @@ describe('GraphQL subscriptions', () => {
       });
 
       const haveAnySubscriptionsErrored = await firstValueFrom(
-        fixture.graphqlService.haveAnySubscriptionsErrored(),
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
       );
 
       expect(haveAnySubscriptionsErrored).toBe(true);
@@ -1037,7 +1126,7 @@ describe('GraphQL subscriptions', () => {
       subscription.unsubscribe();
     });
 
-    it('should clear errored subscriptions with a delay after successful batch retry', async () => {
+    it('should clear retryable errored subscriptions with a delay after successful batch retry', async () => {
       jest.useFakeTimers();
 
       const query = gql`
@@ -1081,7 +1170,7 @@ describe('GraphQL subscriptions', () => {
       await jest.advanceTimersByTimeAsync(0);
 
       const haveAnySubscriptionsErroredBeforeRetry = await firstValueFrom(
-        fixture.graphqlService.haveAnySubscriptionsErrored(),
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
       );
 
       expect(haveAnySubscriptionsErroredBeforeRetry).toBe(true);
@@ -1090,7 +1179,7 @@ describe('GraphQL subscriptions', () => {
       await jest.advanceTimersByTimeAsync(7_000);
 
       const haveAnySubscriptionsErroredAfterRetry = await firstValueFrom(
-        fixture.graphqlService.haveAnySubscriptionsErrored(),
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
       );
 
       expect(haveAnySubscriptionsErroredAfterRetry).toBe(false);
@@ -1100,7 +1189,7 @@ describe('GraphQL subscriptions', () => {
       jest.useRealTimers();
     });
 
-    it(`should emit 'true' if there are errored subscriptions but socket reconnects`, async () => {
+    it(`should emit 'true' if there are retryable errored subscriptions but socket reconnects`, async () => {
       const subscription = fixture.triggerSubscription(gql`
         subscription {
           name
@@ -1123,7 +1212,7 @@ describe('GraphQL subscriptions', () => {
       });
 
       const haveAnySubscriptionsErroredBeforeReconnect = await firstValueFrom(
-        fixture.graphqlService.haveAnySubscriptionsErrored(),
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
       );
 
       expect(haveAnySubscriptionsErroredBeforeReconnect).toBe(true);
@@ -1134,7 +1223,7 @@ describe('GraphQL subscriptions', () => {
       await fixture.handleConnectionInit();
 
       const haveAnySubscriptionsErroredAfterReconnect = await firstValueFrom(
-        fixture.graphqlService.haveAnySubscriptionsErrored(),
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
       );
 
       expect(haveAnySubscriptionsErroredAfterReconnect).toBe(false);
