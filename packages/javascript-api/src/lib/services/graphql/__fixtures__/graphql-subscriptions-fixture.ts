@@ -104,9 +104,10 @@ export class GraphQLSubscriptionsFixture {
 
   async consumeSubscribeMessage(
     query: DocumentNode | string = 'subscription { baba }',
+    { id }: { readonly id: string } = { id: '1' },
   ) {
     expect(await this.server.nextMessage).toEqual({
-      id: '1',
+      id,
       type: 'start',
       payload: { query: typeof query === 'string' ? query : print(query) },
     });
