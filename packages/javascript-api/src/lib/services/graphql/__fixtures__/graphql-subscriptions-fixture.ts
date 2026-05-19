@@ -45,14 +45,6 @@ export class GraphQLSubscriptionsFixture {
     return this.graphqlService['messagesSubscribers'];
   }
 
-  getSubscribedMessagesCount(): number {
-    return this.graphqlService['messagesSubscribers'].size;
-  }
-
-  hasMessageSubscribers(messageId: string): boolean {
-    return this.graphqlService['messagesSubscribers'].has(messageId);
-  }
-
   async waitForConnection() {
     await this.server.connected;
   }
