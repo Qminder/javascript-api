@@ -442,7 +442,8 @@ describe('GraphQL subscriptions', () => {
             data: null,
             errors: [
               {
-                message: 'The maximum subscription limit of 100 has been reached',
+                message:
+                  'The maximum subscription limit of 100 has been reached',
               },
             ] satisfies QminderGraphQLError[],
           },
@@ -700,7 +701,8 @@ describe('GraphQL subscriptions', () => {
             data: null,
             errors: [
               {
-                message: 'The maximum subscription limit of 100 has been reached',
+                message:
+                  'The maximum subscription limit of 100 has been reached',
               },
             ] satisfies QminderGraphQLError[],
           },
@@ -783,7 +785,8 @@ describe('GraphQL subscriptions', () => {
               data: null,
               errors: [
                 {
-                  message: 'The maximum subscription limit of 100 has been reached',
+                  message:
+                    'The maximum subscription limit of 100 has been reached',
                 },
               ] satisfies QminderGraphQLError[],
             },
@@ -870,7 +873,8 @@ describe('GraphQL subscriptions', () => {
               data: null,
               errors: [
                 {
-                  message: 'The maximum subscription limit of 100 has been reached',
+                  message:
+                    'The maximum subscription limit of 100 has been reached',
                 },
               ] satisfies QminderGraphQLError[],
             },
