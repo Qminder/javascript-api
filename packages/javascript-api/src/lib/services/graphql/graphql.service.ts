@@ -81,10 +81,10 @@ const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
   'ValidationError',
 ] as const;
 
-const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 5;
+const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 3;
 
 // To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
-const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 1_000;
+const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 500;
 
 const PONG_TIMEOUT_IN_MS = 12_000;
 const PING_PONG_INTERVAL_IN_MS = 20_000;
@@ -268,7 +268,7 @@ export class GraphqlService {
    * @returns a RxJS Observable that will push data
    * @throws when the `queryDocument` argument is an empty string
    *
-   * Retries retryable errored subscriptions up to 5 times. Afterwards throws an error.
+   * Retries retryable errored subscriptions up to 3 times. Afterwards throws an error.
    *
    * To get notified when any retryable subscriptions have errored, use the {@link haveAnyRetryableSubscriptionsErrored} method.
    *
