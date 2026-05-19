@@ -5,6 +5,7 @@ import { firstValueFrom } from 'rxjs';
 
 import { ConnectionStatus } from '../../../model/connection-status';
 import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
+import { QminderGraphQLError } from '../graphql.service';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../../util/sleep-ms/sleep-ms', () => ({
@@ -351,7 +352,11 @@ describe('GraphQL subscriptions', () => {
       type: 'error',
       payload: {
         data: null,
-        errors: ['The maximum subscription limit of 100 has been reached'],
+        errors: [
+          {
+            message: 'The maximum subscription limit of 100 has been reached',
+          },
+        ] satisfies QminderGraphQLError[],
       },
     });
 
@@ -398,7 +403,11 @@ describe('GraphQL subscriptions', () => {
       type: 'error',
       payload: {
         data: null,
-        errors: ['The maximum subscription limit of 100 has been reached'],
+        errors: [
+          {
+            message: 'The maximum subscription limit of 100 has been reached',
+          },
+        ] satisfies QminderGraphQLError[],
       },
     });
 
@@ -431,7 +440,11 @@ describe('GraphQL subscriptions', () => {
           type: 'error',
           payload: {
             data: null,
-            errors: ['The maximum subscription limit of 100 has been reached'],
+            errors: [
+              {
+                message: 'The maximum subscription limit of 100 has been reached',
+              },
+            ] satisfies QminderGraphQLError[],
           },
         });
       });
@@ -571,11 +584,15 @@ describe('GraphQL subscriptions', () => {
         type: 'error',
         payload: {
           data: null,
-          errors: ['The maximum subscription limit of 100 has been reached'],
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
         },
       });
 
-      expect(subscriptionErrorSpy).not.toHaveBeenCalledTimes(1);
+      expect(subscriptionErrorSpy).not.toHaveBeenCalled();
 
       subscription.unsubscribe();
     });
@@ -594,7 +611,11 @@ describe('GraphQL subscriptions', () => {
         type: 'error',
         payload: {
           data: null,
-          errors: ['The maximum subscription limit of 100 has been reached'],
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
         },
       });
 
@@ -622,11 +643,15 @@ describe('GraphQL subscriptions', () => {
         type: 'error',
         payload: {
           data: null,
-          errors: ['The maximum subscription limit of 100 has been reached'],
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
         },
       });
 
-      expect(connectionDropSpy).not.toHaveBeenCalledTimes(1);
+      expect(connectionDropSpy).not.toHaveBeenCalled();
 
       subscription.unsubscribe();
     });
@@ -673,7 +698,11 @@ describe('GraphQL subscriptions', () => {
           type: 'error',
           payload: {
             data: null,
-            errors: ['The maximum subscription limit of 100 has been reached'],
+            errors: [
+              {
+                message: 'The maximum subscription limit of 100 has been reached',
+              },
+            ] satisfies QminderGraphQLError[],
           },
         });
       });
@@ -753,8 +782,10 @@ describe('GraphQL subscriptions', () => {
             payload: {
               data: null,
               errors: [
-                'The maximum subscription limit of 100 has been reached',
-              ],
+                {
+                  message: 'The maximum subscription limit of 100 has been reached',
+                },
+              ] satisfies QminderGraphQLError[],
             },
           });
         });
@@ -838,8 +869,10 @@ describe('GraphQL subscriptions', () => {
             payload: {
               data: null,
               errors: [
-                'The maximum subscription limit of 100 has been reached',
-              ],
+                {
+                  message: 'The maximum subscription limit of 100 has been reached',
+                },
+              ] satisfies QminderGraphQLError[],
             },
           });
         });
@@ -932,7 +965,9 @@ describe('GraphQL subscriptions', () => {
       fixture.sendMessageToClient({
         id: '1',
         type: 'unknown',
-        payload: { errors: [{ message: 'error' }] },
+        payload: {
+          errors: [{ message: 'error' }] satisfies QminderGraphQLError[],
+        },
       });
 
       expect(subscriptionErrorSpy).toHaveBeenCalledWith([{ message: 'error' }]);
@@ -955,7 +990,9 @@ describe('GraphQL subscriptions', () => {
       fixture.sendMessageToClient({
         id: '1',
         type: 'unknown',
-        payload: { errors: [{ message: 'error' }] },
+        payload: {
+          errors: [{ message: 'error' }] satisfies QminderGraphQLError[],
+        },
       });
 
       expect(fixture.getMessagesSubscribers().size).toBe(0);
@@ -979,7 +1016,11 @@ describe('GraphQL subscriptions', () => {
         type: 'error',
         payload: {
           data: null,
-          errors: ['The maximum subscription limit of 100 has been reached'],
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
         },
       });
 
@@ -1024,7 +1065,11 @@ describe('GraphQL subscriptions', () => {
         type: 'error',
         payload: {
           data: null,
-          errors: ['The maximum subscription limit of 100 has been reached'],
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
         },
       });
 
@@ -1065,7 +1110,11 @@ describe('GraphQL subscriptions', () => {
         type: 'error',
         payload: {
           data: null,
-          errors: ['The maximum subscription limit of 100 has been reached'],
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
         },
       });
 
