@@ -371,7 +371,90 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
-  describe('error', () => {
+  it(`should send GQL_STOP for errored subscription if it's unsubscribed`, async () => {
+    const query = gql`
+      subscription {
+        name
+      }
+    `;
+
+    const subscription = fixture.triggerSubscription(query);
+
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage(query);
+
+    fixture.server.send({
+      id: '1',
+      type: 'error',
+      payload: {
+        data: null,
+        errors: ['The maximum subscription limit of 100 has been reached'],
+      },
+    });
+
+    expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1']);
+
+    subscription.unsubscribe();
+
+    expect(await fixture.getNextMessage()).toEqual(
+      expect.objectContaining({
+        id: '1',
+        type: 'stop',
+      }),
+    );
+  });
+
+  it(`should not send GQL_STOP for subscription if it has been cleaned up`, async () => {
+    const query = gql`
+      subscription {
+        name
+      }
+    `;
+
+    const subscription = fixture.triggerSubscription(query);
+
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage(query);
+
+    fixture.server.send({
+      id: '1',
+      type: 'complete',
+    });
+
+    expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
+
+    subscription.unsubscribe();
+  });
+
+  it(`should clean up errored subscription if it's unsubscribed`, async () => {
+    const query = gql`
+      subscription {
+        name
+      }
+    `;
+
+    const subscription = fixture.triggerSubscription(query);
+
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage(query);
+
+    fixture.server.send({
+      id: '1',
+      type: 'error',
+      payload: {
+        data: null,
+        errors: ['The maximum subscription limit of 100 has been reached'],
+      },
+    });
+
+    expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1']);
+
+    subscription.unsubscribe();
+
+    expect([...fixture.getMessagesSubscribers().keys()]).toHaveLength(0);
+  });
+
+  describe('GQL_ERROR', () => {
     it(`shouldn't error subscriptions before retrying`, async () => {
       const subscriptionErrorSpy = jest.fn();
 
@@ -630,7 +713,7 @@ describe('GraphQL subscriptions', () => {
     });
   });
 
-  describe('complete', () => {
+  describe('GQL_COMPLETE', () => {
     it(`should complete subscription`, async () => {
       const subscriptionCompleteSpy = jest.fn();
 
