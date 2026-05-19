@@ -268,7 +268,7 @@ export class GraphqlService {
    * @returns a RxJS Observable that will push data
    * @throws when the `queryDocument` argument is an empty string
    *
-   * Retries retryable errored subscriptions up to 3 times. Afterwards throws an error.
+   * Retries retryable errored subscriptions up to 5 times. Afterwards throws an error.
    *
    * To get notified when any retryable subscriptions have errored, use the {@link haveAnyRetryableSubscriptionsErrored} method.
    *
