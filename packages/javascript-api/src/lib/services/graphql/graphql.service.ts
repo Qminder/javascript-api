@@ -71,10 +71,6 @@ enum MessageType {
   GQL_ERROR = 'error',
 }
 
-const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 3;
-// To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
-const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 500;
-
 const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
   'BAD_REQUEST',
   'FIELD_NOT_FOUND',
@@ -85,8 +81,13 @@ const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
   'ValidationError',
 ] as const;
 
-const PONG_TIMEOUT_IN_MS = 12_000;
-const PING_PONG_INTERVAL_IN_MS = 20_000;
+const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 5;
+
+// To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
+const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 1_000;
+
+const PONG_TIMEOUT_IN_MS = 2_000;
+const PING_PONG_INTERVAL_IN_MS = 2_000;
 
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
@@ -174,7 +175,6 @@ export class GraphqlService {
 
   private pongTimeout: any;
   private pingPongInterval: any;
-  private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
   private connectionAttemptsCount = 0;
 
@@ -654,16 +654,20 @@ export class GraphqlService {
   }
 
   private monitorWithPingPong(): void {
-    this.pingPongInterval = setInterval(
-      this.sendPingWithThisBound,
-      PING_PONG_INTERVAL_IN_MS,
-    );
+    this.pingPongInterval = setInterval(() => {
+      this.sendPing();
+    }, PING_PONG_INTERVAL_IN_MS);
   }
 
   private monitorWithOfflineEvent(): void {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('offline', this.sendPingWithThisBound);
-      window.addEventListener('offline', this.sendPingWithThisBound);
+      window.removeEventListener('offline', () => {
+        this.sendPing();
+      });
+
+      window.addEventListener('offline', () => {
+        this.sendPing();
+      });
     }
   }
 
