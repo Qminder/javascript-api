@@ -1,4 +1,5 @@
 import {
+  create,
   createInputField,
   details,
   getDesks,
@@ -22,6 +23,28 @@ import {
  * ```
  */
 export const LocationService = {
+  /**
+   * Create a new Location and return its ID.
+   *
+   * Calls the following HTTP API: `POST /locations`
+   *
+   * For example:
+   *
+   * ```javascript
+   * const response = await Qminder.Location.create({
+   *   name: 'Main Office',
+   *   latitude: 59.4297,
+   *   longitude: 24.8149,
+   *   address: '123 Main St',
+   *   country: 'EE',
+   * });
+   * console.log(response.id); // "12345"
+   * ```
+   * @param request the parameters of the new location
+   * @returns a Promise that resolves to a LocationCreatedResponse containing the new location's ID.
+   */
+  create,
+
   /**
    * List all locations the API key has access to.
    * The API key belongs to a particular account and has access to all locations of the account.
