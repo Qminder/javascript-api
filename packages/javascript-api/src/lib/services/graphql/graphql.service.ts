@@ -533,7 +533,7 @@ export class GraphqlService {
             messageId: message.id,
           });
 
-          this.messagesSubscribers.get(message.id)?.next(message.payload.data);
+          this.messagesSubscribers.get(message.id)?.next(message.payload?.data);
           break;
 
         case MessageType.GQL_COMPLETE: {
