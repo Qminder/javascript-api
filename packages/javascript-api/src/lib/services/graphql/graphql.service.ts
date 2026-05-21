@@ -26,9 +26,15 @@ import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
 
 function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
-  return typeof queryOrDocumentNode === 'string'
-    ? queryOrDocumentNode
-    : print(queryOrDocumentNode);
+  if (typeof queryOrDocumentNode === 'string') {
+    return queryOrDocumentNode;
+  }
+
+  if (queryOrDocumentNode.kind === 'Document') {
+    return print(queryOrDocumentNode);
+  }
+
+  throw new Error('queryOrDocumentNode must be a string or a DocumentNode');
 }
 
 export interface QminderGraphQLError {
