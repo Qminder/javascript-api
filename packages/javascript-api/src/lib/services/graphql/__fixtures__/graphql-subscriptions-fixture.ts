@@ -1,9 +1,10 @@
 /* eslint-env jest */
 
-import { DocumentNode } from 'graphql';
+import { DocumentNode, print } from 'graphql';
 import WS from 'jest-websocket-mock';
 import { DeserializedMessage } from 'jest-websocket-mock/lib/websocket';
-import { lastValueFrom, Observer, Subscription, take } from 'rxjs';
+import { lastValueFrom, Observer, Subscriber, Subscription, take } from 'rxjs';
+
 import { ConnectionStatus } from '../../../model/connection-status';
 import { GraphqlService } from '../graphql.service';
 
@@ -23,7 +24,7 @@ export class GraphQLSubscriptionsFixture {
       .mockReturnValue(SERVER_URL);
 
     jest
-      .spyOn(this.graphqlService as any, 'fetchTemporaryApiKey')
+      .spyOn(this.graphqlService as any, 'getTemporaryApiKey')
       .mockResolvedValue(DUMMY_API_KEY);
   }
 
@@ -40,12 +41,8 @@ export class GraphQLSubscriptionsFixture {
     return (this.graphqlService as any).subscriptions.length;
   }
 
-  getGraphqlServiceSubscriptionObserverMapSize(): number {
-    return Object.keys(this.getGraphqlServiceSubscriptionObserverMap()).length;
-  }
-
-  getGraphqlServiceSubscriptionObserverMap(): Record<string, Observer<object>> {
-    return (this.graphqlService as any).subscriptionObserverMap;
+  getMessagesSubscribers(): Map<string, Subscriber<Record<string, any>>> {
+    return this.graphqlService['messagesSubscribers'];
   }
 
   async waitForConnection() {
@@ -99,11 +96,12 @@ export class GraphQLSubscriptionsFixture {
 
   async consumeSubscribeMessage(
     query: DocumentNode | string = 'subscription { baba }',
+    { id }: { readonly id: string } = { id: '1' },
   ) {
     expect(await this.server.nextMessage).toEqual({
-      id: '1',
+      id,
       type: 'start',
-      payload: { query },
+      payload: { query: typeof query === 'string' ? query : print(query) },
     });
   }
 

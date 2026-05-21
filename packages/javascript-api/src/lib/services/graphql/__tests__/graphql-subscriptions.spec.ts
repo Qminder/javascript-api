@@ -1,7 +1,8 @@
 import gql from 'graphql-tag';
 import fetchMock from 'jest-fetch-mock';
 import { WebSocket } from 'mock-socket';
-import { Subscriber } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+
 import { ConnectionStatus } from '../../../model/connection-status';
 import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
 import { QminderGraphQLError } from '../graphql.service';
@@ -96,24 +97,23 @@ describe('GraphQL subscriptions', () => {
   });
 
   it('cleans up internal state when unsubscribing', async () => {
-    // start the test with an empty observer-map
-    expect(fixture.getGraphqlServiceSubscriptionObserverMapSize()).toBe(0);
+    expect(fixture.getMessagesSubscribers().size).toBe(0);
+
     const subscription = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
     await fixture.consumeSubscribeMessage();
-    // the observer map should equal { "1": Subscriber => spy }
-    expect(fixture.getGraphqlServiceSubscriptionObserverMap()).toEqual({
-      '1': expect.any(Subscriber),
-    });
 
-    // unsubscribing should clean up
+    expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1']);
+
     subscription.unsubscribe();
     await fixture.consumeAnyMessage();
-    expect(fixture.getGraphqlServiceSubscriptionObserverMapSize()).toBe(0);
+
+    expect(fixture.getMessagesSubscribers().size).toBe(0);
   });
 
   it('when receiving a published message for a subscription that does not exist anymore, it does not throw', async () => {
-    expect(fixture.getGraphqlServiceSubscriptionObserverMapSize()).toBe(0);
+    expect(fixture.getMessagesSubscribers().size).toBe(0);
+
     const subscription = fixture.triggerSubscription();
 
     await fixture.handleConnectionInit();
@@ -150,7 +150,7 @@ describe('GraphQL subscriptions', () => {
   it('when the server does not reply to ping message, reconnects', async () => {
     const reconnectSpy = jest.spyOn(
       fixture.graphqlService as any,
-      'handleConnectionDropWithThisBound',
+      'handleConnectionDrop',
     );
     jest.useFakeTimers();
     const subscription = fixture.triggerSubscription();
@@ -175,7 +175,7 @@ describe('GraphQL subscriptions', () => {
   it('handles multiple consecutive connect/ping/timeout cycles gracefully', async () => {
     const reconnectSpy = jest.spyOn(
       fixture.graphqlService as any,
-      'handleConnectionDropWithThisBound',
+      'handleConnectionDrop',
     );
     jest.useFakeTimers();
     const subscription = fixture.triggerSubscription();
@@ -221,7 +221,7 @@ describe('GraphQL subscriptions', () => {
   it('when the server replies to ping message, does not reconnect', async () => {
     const reconnectSpy = jest.spyOn(
       fixture.graphqlService as any,
-      'handleConnectionDropWithThisBound',
+      'handleConnectionDrop',
     );
     jest.useFakeTimers();
     const subscription = fixture.triggerSubscription();
@@ -335,45 +335,907 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
-  it('error messages are propagated to the subscriber', async () => {
-    const ERRORS: QminderGraphQLError[] = [
-      {
-        message:
-          "Invalid Syntax : offending token 'createdTickets' at line 1 column 1",
-        sourcePreview:
-          'createdTickets(locationId: 673) {\n' +
-          '            id\n' +
-          '            firstName\n' +
-          '            lastName\n',
-        offendingToken: 'createdTickets',
-        locations: [],
-        errorType: 'InvalidSyntax',
-        extensions: null,
-        path: null,
-      },
-    ];
-    const errorSpy = jest.fn();
-    const subscription = fixture.triggerSubscription('subscription { baba }', {
-      error: errorSpy,
-    });
+  it(`should send GQL_STOP for retryable errored subscription if it's unsubscribed`, async () => {
+    const query = gql`
+      subscription {
+        name
+      }
+    `;
+
+    const subscription = fixture.triggerSubscription(query);
+
     await fixture.handleConnectionInit();
-    await fixture.consumeSubscribeMessage();
+    await fixture.consumeSubscribeMessage(query);
+
     fixture.server.send({
       id: '1',
       type: 'error',
       payload: {
         data: null,
-        errors: ERRORS,
+        errors: [
+          {
+            message: 'The maximum subscription limit of 100 has been reached',
+          },
+        ] satisfies QminderGraphQLError[],
       },
     });
 
-    expect(errorSpy).toHaveBeenCalledWith(ERRORS);
-    // Cleans up as well
-    expect(
-      (fixture.graphqlService as any).subscriptionObserverMap['1'],
-    ).toBeUndefined();
+    subscription.unsubscribe();
+
+    expect(await fixture.getNextMessage()).toEqual(
+      expect.objectContaining({
+        id: '1',
+        type: 'stop',
+      }),
+    );
+  });
+
+  it(`should not send GQL_STOP for subscription if it has been cleaned up`, async () => {
+    const subscription = fixture.triggerSubscription(gql`
+      subscription {
+        name
+      }
+    `);
+
+    await fixture.handleConnectionInit();
+
+    fixture.server.send({
+      id: '1',
+      type: 'complete',
+    });
+
+    expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
 
     subscription.unsubscribe();
+  });
+
+  it(`should clean up retryable errored subscription if it's unsubscribed`, async () => {
+    const subscription = fixture.triggerSubscription(gql`
+      subscription {
+        name
+      }
+    `);
+
+    await fixture.handleConnectionInit();
+
+    fixture.server.send({
+      id: '1',
+      type: 'error',
+      payload: {
+        data: null,
+        errors: [
+          {
+            message: 'The maximum subscription limit of 100 has been reached',
+          },
+        ] satisfies QminderGraphQLError[],
+      },
+    });
+
+    expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1']);
+
+    subscription.unsubscribe();
+
+    expect(fixture.getMessagesSubscribers().size).toBe(0);
+  });
+
+  describe('GQL_CONNECTION_ACK', () => {
+    it('should retry retryable errored subscriptions', async () => {
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      const subscription2 = fixture.triggerSubscription(gql`
+        subscription {
+          name2
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      [{ messageId: '1' }, { messageId: '2' }].forEach(({ messageId }) => {
+        fixture.server.send({
+          id: messageId,
+          type: 'error',
+          payload: {
+            data: null,
+            errors: [
+              {
+                message:
+                  'The maximum subscription limit of 100 has been reached',
+              },
+            ] satisfies QminderGraphQLError[],
+          },
+        });
+      });
+
+      await fixture.closeWithCode(1001);
+
+      fixture.openServer();
+      await fixture.handleConnectionInit();
+
+      expect(await fixture.getNextMessage()).toEqual(
+        expect.objectContaining({
+          id: '1',
+          type: 'start',
+        }),
+      );
+
+      expect(await fixture.getNextMessage()).toEqual(
+        expect.objectContaining({
+          id: '2',
+          type: 'start',
+        }),
+      );
+
+      subscription.unsubscribe();
+      subscription2.unsubscribe();
+    });
+  });
+
+  describe('GQL_DATA', () => {
+    it('should send data to subscriber', async () => {
+      const subscriptionNextSpy = jest.fn();
+
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { next: subscriptionNextSpy },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'data',
+        payload: { data: { id: '1' } },
+      });
+
+      expect(subscriptionNextSpy).toHaveBeenCalledWith({ id: '1' });
+
+      subscription.unsubscribe();
+    });
+  });
+
+  describe('GQL_COMPLETE', () => {
+    it('should complete subscription', async () => {
+      const subscriptionCompleteSpy = jest.fn();
+
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { complete: subscriptionCompleteSpy },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'complete',
+      });
+
+      expect(subscriptionCompleteSpy).toHaveBeenCalledTimes(1);
+
+      subscription.unsubscribe();
+    });
+
+    it('should clean up subscription', async () => {
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'complete',
+      });
+
+      expect(fixture.getMessagesSubscribers().size).toBe(0);
+
+      subscription.unsubscribe();
+    });
+
+    it('should not send GQL_STOP if subscription completes', async () => {
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'complete',
+      });
+
+      expect(fixture.server.messagesToConsume.pendingItems).toHaveLength(0);
+
+      subscription.unsubscribe();
+    });
+  });
+
+  describe('GQL_ERROR', () => {
+    it.each([
+      'BAD_REQUEST',
+      'FIELD_NOT_FOUND',
+      'INVALID_ARGUMENT',
+      'InvalidSyntax',
+      'NOT_FOUND',
+      'PERMISSION_DENIED',
+      'ValidationError',
+    ])(
+      'should immediately error non-retryable subscriptions (errorType: %s)',
+      async (errorType) => {
+        const subscriptionErrorSpy = jest.fn();
+
+        const subscription = fixture.triggerSubscription(
+          gql`
+            subscription {
+              name
+            }
+          `,
+          { error: subscriptionErrorSpy },
+        );
+
+        await fixture.handleConnectionInit();
+
+        fixture.server.send({
+          id: '1',
+          type: 'error',
+          payload: {
+            errors: [
+              {
+                message: 'error',
+                errorType,
+              },
+            ] satisfies QminderGraphQLError[],
+          },
+        });
+
+        expect(subscriptionErrorSpy).toHaveBeenCalledWith([
+          {
+            message: 'error',
+            errorType,
+          },
+        ]);
+
+        subscription.unsubscribe();
+      },
+    );
+
+    it.each([
+      'BAD_REQUEST',
+      'FIELD_NOT_FOUND',
+      'INVALID_ARGUMENT',
+      'InvalidSyntax',
+      'NOT_FOUND',
+      'PERMISSION_DENIED',
+      'ValidationError',
+    ])(
+      'should clean up non-retryable subscriptions (errorType: %s)',
+      async (errorType) => {
+        const subscription = fixture.triggerSubscription(
+          gql`
+            subscription {
+              name
+            }
+          `,
+          { error: () => {} },
+        );
+
+        await fixture.handleConnectionInit();
+
+        fixture.server.send({
+          id: '1',
+          type: 'error',
+          payload: {
+            errors: [
+              {
+                message: 'error',
+                errorType,
+              },
+            ] satisfies QminderGraphQLError[],
+          },
+        });
+
+        expect(fixture.getMessagesSubscribers().size).toBe(0);
+
+        subscription.unsubscribe();
+      },
+    );
+
+    it('should not immediately error retryable subscriptions', async () => {
+      const subscriptionErrorSpy = jest.fn();
+
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { error: subscriptionErrorSpy },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
+        },
+      });
+
+      expect(subscriptionErrorSpy).not.toHaveBeenCalled();
+
+      subscription.unsubscribe();
+    });
+
+    it('should not clean up subscriptions before retrying', async () => {
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
+        },
+      });
+
+      expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1']);
+
+      subscription.unsubscribe();
+    });
+
+    it('should not drop socket connection', async () => {
+      const connectionDropSpy = jest.spyOn(
+        fixture.graphqlService as any,
+        'handleConnectionDrop',
+      );
+
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
+        },
+      });
+
+      expect(connectionDropSpy).not.toHaveBeenCalled();
+
+      subscription.unsubscribe();
+    });
+
+    it('should retry retryable errored subscriptions after delay', async () => {
+      jest.useFakeTimers();
+
+      const query = gql`
+        subscription {
+          name
+        }
+      `;
+
+      const subscription = fixture.triggerSubscription(query);
+
+      const query2 = gql`
+        subscription {
+          name2
+        }
+      `;
+
+      const subscription2 = fixture.triggerSubscription(query2);
+
+      // Wait for temporary api key
+      await jest.runAllTimersAsync();
+
+      await fixture.handleConnectionInit();
+
+      // Send subscriptions start messages
+      await jest.runOnlyPendingTimersAsync();
+
+      await fixture.consumeSubscribeMessage(query, { id: '1' });
+      await fixture.consumeSubscribeMessage(query2, { id: '2' });
+
+      // Send ping message
+      await jest.advanceTimersToNextTimerAsync();
+
+      await fixture.consumePingMessage();
+      fixture.sendMessageToClient({ type: 'pong' });
+
+      [{ messageId: '1' }, { messageId: '2' }].forEach(({ messageId }) => {
+        fixture.server.send({
+          id: messageId,
+          type: 'error',
+          payload: {
+            data: null,
+            errors: [
+              {
+                message:
+                  'The maximum subscription limit of 100 has been reached',
+              },
+            ] satisfies QminderGraphQLError[],
+          },
+        });
+      });
+
+      // Wait for retry
+      await jest.advanceTimersByTimeAsync(7_000);
+
+      expect(await fixture.getNextMessage()).toEqual(
+        expect.objectContaining({
+          id: '1',
+          type: 'start',
+        }),
+      );
+
+      expect(await fixture.getNextMessage()).toEqual(
+        expect.objectContaining({
+          id: '2',
+          type: 'start',
+        }),
+      );
+
+      subscription.unsubscribe();
+      subscription2.unsubscribe();
+
+      jest.useRealTimers();
+    });
+
+    it('should error retryable subscriptions after 5 failed retries', async () => {
+      jest.useFakeTimers();
+
+      const subscriptionErrorSpy = jest.fn();
+
+      const query = gql`
+        subscription {
+          name
+        }
+      `;
+
+      const subscription = fixture.triggerSubscription(query, {
+        error: subscriptionErrorSpy,
+      });
+
+      const query2 = gql`
+        subscription {
+          name2
+        }
+      `;
+
+      const subscription2ErrorSpy = jest.fn();
+
+      const subscription2 = fixture.triggerSubscription(query2, {
+        error: subscription2ErrorSpy,
+      });
+
+      // Wait for temporary api key
+      await jest.runAllTimersAsync();
+
+      await fixture.handleConnectionInit();
+
+      // Send subscriptions start messages
+      await jest.runOnlyPendingTimersAsync();
+
+      await fixture.consumeSubscribeMessage(query, { id: '1' });
+      await fixture.consumeSubscribeMessage(query2, { id: '2' });
+
+      // Send ping message
+      await jest.advanceTimersToNextTimerAsync();
+
+      await fixture.consumePingMessage();
+      fixture.sendMessageToClient({ type: 'pong' });
+
+      // Prevent ping-pong interval from interfering with retry timer advances
+      clearInterval(fixture.graphqlService['pingPongInterval']);
+
+      const sendErrorMessages = (): void => {
+        [{ messageId: '1' }, { messageId: '2' }].forEach(({ messageId }) => {
+          fixture.server.send({
+            id: messageId,
+            type: 'error',
+            payload: {
+              data: null,
+              errors: [
+                {
+                  message:
+                    'The maximum subscription limit of 100 has been reached',
+                },
+              ] satisfies QminderGraphQLError[],
+            },
+          });
+        });
+      };
+
+      sendErrorMessages();
+
+      for (let retryCount = 0; retryCount < 5; retryCount++) {
+        // Wait for retry
+        await jest.advanceTimersToNextTimerAsync();
+
+        // mock-socket delivers client → server messages via setTimeout(4)
+        await jest.advanceTimersByTimeAsync(10);
+
+        sendErrorMessages();
+      }
+
+      expect(subscriptionErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Subscription failed after 5 retries',
+        }),
+      );
+
+      expect(subscription2ErrorSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          message: 'Subscription failed after 5 retries',
+        }),
+      );
+
+      subscription.unsubscribe();
+      subscription2.unsubscribe();
+
+      jest.useRealTimers();
+    });
+
+    it('should clean up retryable errored subscriptions after 5 failed retries', async () => {
+      jest.useFakeTimers();
+
+      const query = gql`
+        subscription {
+          name
+        }
+      `;
+
+      const subscription = fixture.triggerSubscription(query, {
+        error: () => {},
+      });
+
+      const query2 = gql`
+        subscription {
+          name2
+        }
+      `;
+
+      const subscription2 = fixture.triggerSubscription(query2, {
+        error: () => {},
+      });
+
+      // Wait for temporary api key
+      await jest.runAllTimersAsync();
+
+      await fixture.handleConnectionInit();
+
+      // Send subscriptions start messages
+      await jest.runOnlyPendingTimersAsync();
+
+      await fixture.consumeSubscribeMessage(query, { id: '1' });
+      await fixture.consumeSubscribeMessage(query2, { id: '2' });
+
+      // Send ping message
+      await jest.advanceTimersToNextTimerAsync();
+
+      await fixture.consumePingMessage();
+      fixture.sendMessageToClient({ type: 'pong' });
+
+      // Prevent ping-pong interval from interfering with retry timer advances
+      clearInterval(fixture.graphqlService['pingPongInterval']);
+
+      const sendErrorMessages = (): void => {
+        [{ messageId: '1' }, { messageId: '2' }].forEach(({ messageId }) => {
+          fixture.server.send({
+            id: messageId,
+            type: 'error',
+            payload: {
+              data: null,
+              errors: [
+                {
+                  message:
+                    'The maximum subscription limit of 100 has been reached',
+                },
+              ] satisfies QminderGraphQLError[],
+            },
+          });
+        });
+      };
+
+      sendErrorMessages();
+
+      expect([...fixture.getMessagesSubscribers().keys()]).toEqual(['1', '2']);
+
+      for (let retryCount = 0; retryCount < 5; retryCount++) {
+        // Wait for retry
+        await jest.advanceTimersToNextTimerAsync();
+
+        // mock-socket delivers client → server messages via setTimeout(4)
+        await jest.advanceTimersByTimeAsync(10);
+
+        sendErrorMessages();
+      }
+
+      expect(fixture.getMessagesSubscribers().size).toBe(0);
+
+      subscription.unsubscribe();
+      subscription2.unsubscribe();
+
+      jest.useRealTimers();
+    });
+
+    it(`should error subscription if server sends unknown message (has data)`, async () => {
+      const subscriptionErrorSpy = jest.fn();
+
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { error: subscriptionErrorSpy },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'unknown',
+        payload: { data: { unknown: 'unknown' } },
+      });
+
+      expect(subscriptionErrorSpy).toHaveBeenCalledWith({ unknown: 'unknown' });
+
+      subscription.unsubscribe();
+    });
+
+    it(`should clean up subscription if server sends unknown message (has data)`, async () => {
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { error: () => {} },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'unknown',
+        payload: { data: { unknown: 'unknown' } },
+      });
+
+      expect(fixture.getMessagesSubscribers().size).toBe(0);
+
+      subscription.unsubscribe();
+    });
+
+    it(`should error subscription if server sends unknown message (has errors)`, async () => {
+      const subscriptionErrorSpy = jest.fn();
+
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { error: subscriptionErrorSpy },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'unknown',
+        payload: {
+          errors: [{ message: 'error' }] satisfies QminderGraphQLError[],
+        },
+      });
+
+      expect(subscriptionErrorSpy).toHaveBeenCalledWith([{ message: 'error' }]);
+
+      subscription.unsubscribe();
+    });
+
+    it(`should clean up subscription if server sends unknown message (has errors)`, async () => {
+      const subscription = fixture.triggerSubscription(
+        gql`
+          subscription {
+            name
+          }
+        `,
+        { error: () => {} },
+      );
+
+      await fixture.handleConnectionInit();
+
+      fixture.sendMessageToClient({
+        id: '1',
+        type: 'unknown',
+        payload: {
+          errors: [{ message: 'error' }] satisfies QminderGraphQLError[],
+        },
+      });
+
+      expect(fixture.getMessagesSubscribers().size).toBe(0);
+
+      subscription.unsubscribe();
+    });
+  });
+
+  describe('haveAnyRetryableSubscriptionsErrored', () => {
+    it(`should emit 'true' if any retryable subscriptions have errored`, async () => {
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
+        },
+      });
+
+      const haveAnySubscriptionsErrored = await firstValueFrom(
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
+      );
+
+      expect(haveAnySubscriptionsErrored).toBe(true);
+
+      subscription.unsubscribe();
+    });
+
+    it('should clear retryable errored subscriptions with a delay after successful batch retry', async () => {
+      jest.useFakeTimers();
+
+      const query = gql`
+        subscription {
+          name
+        }
+      `;
+
+      const subscription = fixture.triggerSubscription(query);
+
+      // Wait for temporary api key
+      await jest.runAllTimersAsync();
+
+      await fixture.handleConnectionInit();
+
+      // Send subscriptions start messages
+      await jest.runOnlyPendingTimersAsync();
+
+      await fixture.consumeSubscribeMessage(query);
+
+      // Send ping message
+      await jest.advanceTimersToNextTimerAsync();
+
+      await fixture.consumePingMessage();
+      fixture.sendMessageToClient({ type: 'pong' });
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
+        },
+      });
+
+      // Get latest haveAnySubscriptionsErrored state
+      await jest.advanceTimersByTimeAsync(0);
+
+      const haveAnySubscriptionsErroredBeforeRetry = await firstValueFrom(
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
+      );
+
+      expect(haveAnySubscriptionsErroredBeforeRetry).toBe(true);
+
+      // Wait for retry
+      await jest.advanceTimersByTimeAsync(7_000);
+
+      const haveAnySubscriptionsErroredAfterRetry = await firstValueFrom(
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
+      );
+
+      expect(haveAnySubscriptionsErroredAfterRetry).toBe(false);
+
+      subscription.unsubscribe();
+
+      jest.useRealTimers();
+    });
+
+    it(`should emit 'true' if there are retryable errored subscriptions but socket reconnects`, async () => {
+      const subscription = fixture.triggerSubscription(gql`
+        subscription {
+          name
+        }
+      `);
+
+      await fixture.handleConnectionInit();
+
+      fixture.server.send({
+        id: '1',
+        type: 'error',
+        payload: {
+          data: null,
+          errors: [
+            {
+              message: 'The maximum subscription limit of 100 has been reached',
+            },
+          ] satisfies QminderGraphQLError[],
+        },
+      });
+
+      const haveAnySubscriptionsErroredBeforeReconnect = await firstValueFrom(
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
+      );
+
+      expect(haveAnySubscriptionsErroredBeforeReconnect).toBe(true);
+
+      await fixture.closeWithCode(1001);
+
+      fixture.openServer();
+      await fixture.handleConnectionInit();
+
+      const haveAnySubscriptionsErroredAfterReconnect = await firstValueFrom(
+        fixture.graphqlService.haveAnyRetryableSubscriptionsErrored(),
+      );
+
+      expect(haveAnySubscriptionsErroredAfterReconnect).toBe(false);
+
+      subscription.unsubscribe();
+    });
   });
 
   describe('WebSocket readyState guards', () => {
