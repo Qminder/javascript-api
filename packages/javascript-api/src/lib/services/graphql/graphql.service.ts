@@ -181,6 +181,7 @@ export class GraphqlService {
 
   private pongTimeout: any;
   private pingPongInterval: any;
+  private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
   private connectionAttemptsCount = 0;
 
@@ -667,13 +668,8 @@ export class GraphqlService {
 
   private monitorWithOfflineEvent(): void {
     if (typeof window !== 'undefined') {
-      window.removeEventListener('offline', () => {
-        this.sendPing();
-      });
-
-      window.addEventListener('offline', () => {
-        this.sendPing();
-      });
+      window.removeEventListener('offline', this.sendPingWithThisBound);
+      window.addEventListener('offline', this.sendPingWithThisBound);
     }
   }
 
