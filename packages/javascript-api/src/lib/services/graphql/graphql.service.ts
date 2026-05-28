@@ -37,14 +37,14 @@ function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   throw new Error('queryOrDocumentNode must be a string or a DocumentNode');
 }
 
-export interface QminderGraphQLError {
-  message: string;
-  errorType?: string | null;
-  extensions?: GraphQLErrorExtensions | null;
-  sourcePreview?: string | null;
-  offendingToken?: string | null;
-  locations?: SourceLocation[] | null;
-  path?: (string | number)[] | null;
+interface QminderGraphQLError {
+  readonly message: string;
+  readonly errorType?: string | null;
+  readonly extensions?: GraphQLErrorExtensions | null;
+  readonly sourcePreview?: string | null;
+  readonly offendingToken?: string | null;
+  readonly locations?: SourceLocation[] | null;
+  readonly path?: (string | number)[] | null;
 }
 
 interface Message {
@@ -756,11 +756,12 @@ export class GraphqlService {
           const subscriber = this.messagesSubscribers.get(messageId);
           this.cleanUpSubscription(messageId);
 
-          subscriber?.error(
-            new Error(
-              `Subscription failed after ${this.retryableErroredSubscriptionsRetryCount} retries`,
-            ),
-          );
+          subscriber?.error([
+            {
+              message: `Subscription failed after ${this.retryableErroredSubscriptionsRetryCount} retries`,
+              errorType: 'ERROR',
+            },
+          ] satisfies QminderGraphQLError[]);
         }
       });
   }
