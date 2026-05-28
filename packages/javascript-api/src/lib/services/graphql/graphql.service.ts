@@ -37,7 +37,7 @@ function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   throw new Error('queryOrDocumentNode must be a string or a DocumentNode');
 }
 
-interface QminderGraphQLError {
+export interface QminderGraphQLError {
   readonly message: string;
   readonly errorType?: string | null;
   readonly extensions?: GraphQLErrorExtensions | null;
