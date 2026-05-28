@@ -898,17 +898,23 @@ describe('GraphQL subscriptions', () => {
         sendErrorMessages();
       }
 
-      expect(subscriptionErrorSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(subscriptionErrorSpy).toHaveBeenCalledWith<
+        [QminderGraphQLError[]]
+      >([
+        {
           message: 'Subscription failed after 5 retries',
-        }),
-      );
+          errorType: 'ERROR',
+        },
+      ] satisfies QminderGraphQLError[]);
 
-      expect(subscription2ErrorSpy).toHaveBeenCalledWith(
-        expect.objectContaining({
+      expect(subscription2ErrorSpy).toHaveBeenCalledWith<
+        [QminderGraphQLError[]]
+      >([
+        {
           message: 'Subscription failed after 5 retries',
-        }),
-      );
+          errorType: 'ERROR',
+        },
+      ]);
 
       subscription.unsubscribe();
       subscription2.unsubscribe();
