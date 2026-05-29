@@ -901,19 +901,13 @@ describe('GraphQL subscriptions', () => {
       expect(subscriptionErrorSpy).toHaveBeenCalledWith<
         [QminderGraphQLError[]]
       >([
-        {
-          message: 'Subscription failed after 5 retries',
-          errorType: 'ERROR',
-        },
-      ] satisfies QminderGraphQLError[]);
+        { message: 'The maximum subscription limit of 100 has been reached' },
+      ]);
 
       expect(subscription2ErrorSpy).toHaveBeenCalledWith<
         [QminderGraphQLError[]]
       >([
-        {
-          message: 'Subscription failed after 5 retries',
-          errorType: 'ERROR',
-        },
+        { message: 'The maximum subscription limit of 100 has been reached' },
       ]);
 
       subscription.unsubscribe();

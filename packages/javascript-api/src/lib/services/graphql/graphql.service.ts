@@ -132,6 +132,7 @@ export class GraphqlService {
     | {
         readonly type: 'add';
         readonly messageId: string;
+        readonly errors: QminderGraphQLError[];
       }
     | {
         readonly type: 'remove';
@@ -142,27 +143,27 @@ export class GraphqlService {
       }
   >();
 
-  private readonly retryableErroredSubscriptionsMessageIds$ =
+  private readonly retryableErroredSubscriptions$ =
     this.retryableErroredSubscriptionsAction$.pipe(
-      scan((messageIds, action) => {
-        const result = new Set(messageIds);
+      scan((subscriptions, action) => {
+        const result = new Map(subscriptions);
 
         switch (action.type) {
           case 'add':
-            return result.add(action.messageId);
+            return result.set(action.messageId, action.errors);
           case 'remove':
             result.delete(action.messageId);
             return result;
           case 'clear':
-            return new Set();
+            return new Map<string, QminderGraphQLError[]>();
         }
-      }, new Set<string>()),
-      startWith(new Set<string>()),
+      }, new Map<string, QminderGraphQLError[]>()),
+      startWith(new Map<string, QminderGraphQLError[]>()),
       shareReplay(1),
     );
 
   private readonly haveAnyRetryableSubscriptionsErrored$ =
-    this.retryableErroredSubscriptionsMessageIds$.pipe(
+    this.retryableErroredSubscriptions$.pipe(
       map(({ size }) => !!size),
       distinctUntilChanged(),
     );
@@ -193,7 +194,7 @@ export class GraphqlService {
       shareReplay(1),
     );
 
-    this.retryableErroredSubscriptionsMessageIds$.subscribe();
+    this.retryableErroredSubscriptions$.subscribe();
   }
 
   /**
@@ -586,6 +587,7 @@ export class GraphqlService {
           this.retryableErroredSubscriptionsAction$.next({
             type: 'add',
             messageId: message.id,
+            errors,
           });
 
           if (
@@ -746,29 +748,27 @@ export class GraphqlService {
 
   private failErroredSubscriptions(): void {
     this.logger.error(
-      `Errored subscriptions retry limit (${RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT}) reached, giving up`,
+      `Errored subscriptions retry limit (${RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT}) reached. Giving up after ${this.retryableErroredSubscriptionsRetryCount} retries`,
     );
 
-    this.retryableErroredSubscriptionsMessageIds$
+    this.retryableErroredSubscriptions$
       .pipe(take(1))
-      .subscribe((messageIds) => {
-        for (const messageId of messageIds) {
+      .subscribe((subscriptions) => {
+        for (const [messageId, errors] of subscriptions) {
           const subscriber = this.messagesSubscribers.get(messageId);
           this.cleanUpSubscription(messageId);
 
-          subscriber?.error([
-            {
-              message: `Subscription failed after ${this.retryableErroredSubscriptionsRetryCount} retries`,
-              errorType: 'ERROR',
-            },
-          ] satisfies QminderGraphQLError[]);
+          subscriber?.error(errors);
         }
       });
   }
 
   private retryErroredSubscriptions(): void {
-    this.retryableErroredSubscriptionsMessageIds$
-      .pipe(take(1))
+    this.retryableErroredSubscriptions$
+      .pipe(
+        take(1),
+        map((subscriptions) => subscriptions.keys()),
+      )
       .subscribe((messageIds) => {
         for (const messageId of messageIds) {
           const subscription = this.subscriptions.find(
