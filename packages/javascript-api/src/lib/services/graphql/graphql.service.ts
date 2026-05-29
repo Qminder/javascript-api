@@ -736,7 +736,9 @@ export class GraphqlService {
     const delay = calculateRandomizedExponentialBackoffTime(retryCount);
 
     this.logger.info(
-      `Retry (${retryCount}) errored subscriptions in ${delay.toFixed(0)}ms`,
+      `Retry (retry count: ${retryCount}) errored subscriptions in ${delay.toFixed(
+        0,
+      )}ms`,
     );
 
     this.retryableErroredSubscriptionsRetryTimeout = setTimeout(() => {
