@@ -185,8 +185,10 @@ export class GraphqlService {
   private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
   private offlineSince: number | null = null;
-  private readonly handleBrowserOfflineBound = this.handleBrowserOffline.bind(this);
-  private readonly handleBrowserOnlineBound = this.handleBrowserOnline.bind(this);
+  private readonly handleBrowserOfflineBound =
+    this.handleBrowserOffline.bind(this);
+  private readonly handleBrowserOnlineBound =
+    this.handleBrowserOnline.bind(this);
 
   private connectionAttemptsCount = 0;
 
