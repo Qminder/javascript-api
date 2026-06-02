@@ -184,6 +184,10 @@ export class GraphqlService {
   private pingPongInterval: any;
   private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
+  private offlineSince: number | null = null;
+  private readonly handleBrowserOfflineBound = this.handleBrowserOffline.bind(this);
+  private readonly handleBrowserOnlineBound = this.handleBrowserOnline.bind(this);
+
   private connectionAttemptsCount = 0;
 
   constructor() {
@@ -488,8 +492,6 @@ export class GraphqlService {
           break;
 
         case MessageType.GQL_CONNECTION_ACK: {
-          this.connectionAttemptsCount = 0;
-
           this.clearErroredSubscriptionsTimeouts();
           this.retryableErroredSubscriptionsRetryCount = 0;
           this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
@@ -553,6 +555,7 @@ export class GraphqlService {
 
         case MessageType.GQL_PONG:
           clearTimeout(this.pongTimeout);
+          this.connectionAttemptsCount = 0;
           break;
 
         case MessageType.GQL_ERROR: {
@@ -663,6 +666,7 @@ export class GraphqlService {
   }
 
   private monitorWithPingPong(): void {
+    clearInterval(this.pingPongInterval);
     this.pingPongInterval = setInterval(() => {
       this.sendPing();
     }, PING_PONG_INTERVAL_IN_MS);
@@ -672,10 +676,33 @@ export class GraphqlService {
     if (typeof window !== 'undefined') {
       window.removeEventListener('offline', this.sendPingWithThisBound);
       window.addEventListener('offline', this.sendPingWithThisBound);
+
+      window.removeEventListener('offline', this.handleBrowserOfflineBound);
+      window.addEventListener('offline', this.handleBrowserOfflineBound);
+
+      window.removeEventListener('online', this.handleBrowserOnlineBound);
+      window.addEventListener('online', this.handleBrowserOnlineBound);
     }
   }
 
+  private handleBrowserOffline(): void {
+    this.offlineSince = Date.now();
+    this.logger.warn('Browser went offline');
+  }
+
+  private handleBrowserOnline(): void {
+    if (this.offlineSince === null) {
+      this.logger.warn('Browser came back online');
+      return;
+    }
+
+    const offlineDurationMs = Date.now() - this.offlineSince;
+    this.offlineSince = null;
+    this.logger.warn('Browser came back online', { offlineDurationMs });
+  }
+
   private sendPing(): void {
+    clearTimeout(this.pongTimeout);
     this.pongTimeout = setTimeout(() => {
       this.handleConnectionDrop().catch((error: Error) => {
         this.logger.error('Failed to handle pong connection drop: ', error);
@@ -696,9 +723,13 @@ export class GraphqlService {
       this.logger.info(`Websocket connection dropped. We are offline.`);
     }
 
+    if (this.socket) {
+      this.socket.close();
+      return;
+    }
+
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
-
     await this.openSocket();
   }
 
