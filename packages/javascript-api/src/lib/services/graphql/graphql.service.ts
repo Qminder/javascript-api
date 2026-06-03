@@ -185,9 +185,9 @@ export class GraphqlService {
   private readonly sendPingWithThisBound = this.sendPing.bind(this);
 
   private offlineSince: number | null = null;
-  private readonly handleBrowserOfflineBound =
+  private readonly handleBrowserOfflineWithThisBound =
     this.handleBrowserOffline.bind(this);
-  private readonly handleBrowserOnlineBound =
+  private readonly handleBrowserOnlineWithThisBound =
     this.handleBrowserOnline.bind(this);
 
   private connectionAttemptsCount = 0;
@@ -679,11 +679,20 @@ export class GraphqlService {
       window.removeEventListener('offline', this.sendPingWithThisBound);
       window.addEventListener('offline', this.sendPingWithThisBound);
 
-      window.removeEventListener('offline', this.handleBrowserOfflineBound);
-      window.addEventListener('offline', this.handleBrowserOfflineBound);
+      window.removeEventListener(
+        'offline',
+        this.handleBrowserOfflineWithThisBound,
+      );
+      window.addEventListener(
+        'offline',
+        this.handleBrowserOfflineWithThisBound,
+      );
 
-      window.removeEventListener('online', this.handleBrowserOnlineBound);
-      window.addEventListener('online', this.handleBrowserOnlineBound);
+      window.removeEventListener(
+        'online',
+        this.handleBrowserOnlineWithThisBound,
+      );
+      window.addEventListener('online', this.handleBrowserOnlineWithThisBound);
     }
   }
 
