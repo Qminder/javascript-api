@@ -80,17 +80,18 @@ describe('GraphQL reconnect resilience', () => {
   it('should log how long the browser was offline when it comes back online', () => {
     const service = fixture.graphqlService as any;
     const warnSpy = jest.spyOn(service.logger, 'warn');
-    service.monitorWithOnlineOfflineEvents();
+    let now = 1000;
+    const nowSpy = jest.spyOn(Date, 'now').mockImplementation(() => now);
 
-    jest.useFakeTimers();
-    window.dispatchEvent(new Event('offline'));
-    jest.advanceTimersByTime(5000);
-    window.dispatchEvent(new Event('online'));
-    jest.useRealTimers();
+    service.handleBrowserOffline();
+    now = 6000;
+    service.handleBrowserOnline();
 
     expect(warnSpy).toHaveBeenCalledWith('Browser came back online', {
       offlineDurationMs: 5000,
     });
+
+    nowSpy.mockRestore();
   });
 
   it('should clear the previous pong timeout before arming a new one', () => {
