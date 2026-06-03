@@ -24,7 +24,7 @@ describe('GraphQL reconnect resilience', () => {
     await fixture.cleanup();
   });
 
-  it('escalates reconnect backoff across repeated unstable connections', async () => {
+  it('should escalate reconnect backoff across repeated unstable connections', async () => {
     const sub = fixture.triggerSubscription();
 
     for (let cycle = 0; cycle < 3; cycle++) {
@@ -41,7 +41,7 @@ describe('GraphQL reconnect resilience', () => {
     sub.unsubscribe();
   });
 
-  it('does not leak ping intervals when the connection monitor restarts', async () => {
+  it('should not leak ping intervals when the connection monitor restarts', async () => {
     const setIntervalSpy = jest.spyOn(global, 'setInterval');
     const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
 
@@ -60,7 +60,7 @@ describe('GraphQL reconnect resilience', () => {
     sub.unsubscribe();
   });
 
-  it('reconnects through backoff after a pong timeout, not immediately', async () => {
+  it('should reconnect through backoff after a pong timeout, not immediately', async () => {
     jest.useFakeTimers();
     const sub = fixture.triggerSubscription();
     await jest.runAllTimersAsync();
@@ -80,7 +80,7 @@ describe('GraphQL reconnect resilience', () => {
     sub.unsubscribe();
   });
 
-  it('logs how long the browser was offline when it comes back online', () => {
+  it('should log how long the browser was offline when it comes back online', () => {
     const service = fixture.graphqlService as any;
     const warnSpy = jest.spyOn(service.logger, 'warn');
 
@@ -95,7 +95,7 @@ describe('GraphQL reconnect resilience', () => {
     });
   });
 
-  it('clears the previous pong timeout before arming a new one', () => {
+  it('should clear the previous pong timeout before arming a new one', () => {
     const service = fixture.graphqlService as any;
     service.socket = { send: jest.fn() };
 
