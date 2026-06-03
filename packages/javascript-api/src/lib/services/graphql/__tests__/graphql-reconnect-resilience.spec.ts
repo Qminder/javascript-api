@@ -21,9 +21,7 @@ describe('GraphQL reconnect resilience', () => {
   });
 
   afterEach(async () => {
-    jest.useRealTimers();
     await fixture.cleanup();
-    jest.restoreAllMocks();
   });
 
   it('escalates reconnect backoff across repeated unstable connections', async () => {
