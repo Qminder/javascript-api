@@ -697,6 +697,9 @@ export class GraphqlService {
   }
 
   private handleBrowserOffline(): void {
+    if (this.offlineSince !== null) {
+      return;
+    }
     this.offlineSince = Date.now();
     this.logger.warn('Browser went offline');
   }
