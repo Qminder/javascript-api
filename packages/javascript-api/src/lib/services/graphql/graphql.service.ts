@@ -737,11 +737,6 @@ export class GraphqlService {
       this.logger.info(`Websocket connection dropped. We are offline.`);
     }
 
-    if (this.socket) {
-      this.socket.close();
-      return;
-    }
-
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
     await this.openSocket();
