@@ -83,6 +83,7 @@ describe('GraphQL reconnect resilience', () => {
   it('should log how long the browser was offline when it comes back online', () => {
     const service = fixture.graphqlService as any;
     const warnSpy = jest.spyOn(service.logger, 'warn');
+    service.monitorWithOfflineEvent();
 
     jest.useFakeTimers();
     window.dispatchEvent(new Event('offline'));
@@ -99,12 +100,15 @@ describe('GraphQL reconnect resilience', () => {
     const service = fixture.graphqlService as any;
     service.socket = { send: jest.fn() };
 
+    const setTimeoutSpy = jest.spyOn(global, 'setTimeout');
     service.sendPing();
     const firstPongTimeout = service.pongTimeout;
 
     const clearTimeoutSpy = jest.spyOn(global, 'clearTimeout');
     service.sendPing();
 
-    expect(clearTimeoutSpy).toHaveBeenCalledWith(firstPongTimeout);
+    expect(clearTimeoutSpy).toHaveBeenCalledWith(
+      setTimeoutSpy.mock.results[0].value,
+    );
   });
 });
