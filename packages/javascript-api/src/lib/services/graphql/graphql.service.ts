@@ -664,7 +664,7 @@ export class GraphqlService {
 
   private startConnectionMonitoring(): void {
     this.monitorWithPingPong();
-    this.monitorWithOfflineEvent();
+    this.monitorWithOnlineOfflineEvents();
   }
 
   private monitorWithPingPong(): void {
@@ -674,7 +674,7 @@ export class GraphqlService {
     }, PING_PONG_INTERVAL_IN_MS);
   }
 
-  private monitorWithOfflineEvent(): void {
+  private monitorWithOnlineOfflineEvents(): void {
     if (typeof window !== 'undefined') {
       window.removeEventListener('offline', this.sendPingWithThisBound);
       window.addEventListener('offline', this.sendPingWithThisBound);

@@ -80,7 +80,7 @@ describe('GraphQL reconnect resilience', () => {
   it('should log how long the browser was offline when it comes back online', () => {
     const service = fixture.graphqlService as any;
     const warnSpy = jest.spyOn(service.logger, 'warn');
-    service.monitorWithOfflineEvent();
+    service.monitorWithOnlineOfflineEvents();
 
     jest.useFakeTimers();
     window.dispatchEvent(new Event('offline'));
