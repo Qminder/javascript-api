@@ -85,9 +85,9 @@ describe('GraphQL reconnect resilience', () => {
     const warnSpy = jest.spyOn(service.logger, 'warn');
 
     jest.useFakeTimers();
-    service.handleBrowserOffline();
+    window.dispatchEvent(new Event('offline'));
     jest.advanceTimersByTime(5000);
-    service.handleBrowserOnline();
+    window.dispatchEvent(new Event('online'));
     jest.useRealTimers();
 
     expect(warnSpy).toHaveBeenCalledWith('Browser came back online', {
