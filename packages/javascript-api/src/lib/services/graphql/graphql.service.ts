@@ -703,7 +703,7 @@ export class GraphqlService {
 
   private handleBrowserOnline(): void {
     if (this.offlineSince === null) {
-      this.logger.warn('Browser came back online');
+      this.logger.warn('Browser came online');
       return;
     }
 
