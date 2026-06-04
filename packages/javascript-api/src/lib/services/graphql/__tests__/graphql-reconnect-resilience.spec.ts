@@ -42,8 +42,8 @@ describe('GraphQL reconnect resilience', () => {
   });
 
   it('should not leak ping intervals when the connection monitor restarts', async () => {
-    const service = fixture.graphqlService as any;
-    const monitorWithPingPongSpy = jest.spyOn(service, 'monitorWithPingPong');
+    const setIntervalSpy = jest.spyOn(global, 'setInterval');
+    const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
 
     const sub = fixture.triggerSubscription();
     await fixture.handleConnectionInit();
@@ -52,7 +52,10 @@ describe('GraphQL reconnect resilience', () => {
     fixture.sendMessageToClient({ type: 'connection_ack' });
     await fixture.consumeSubscribeMessage();
 
-    expect(monitorWithPingPongSpy).toHaveBeenCalledTimes(2);
+    const armedIds = setIntervalSpy.mock.results.map((result) => result.value);
+    const clearedIds = clearIntervalSpy.mock.calls.map((call) => call[0]);
+    const liveIntervals = armedIds.filter((id) => !clearedIds.includes(id));
+    expect(liveIntervals).toHaveLength(1);
 
     sub.unsubscribe();
   });
