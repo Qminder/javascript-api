@@ -98,6 +98,12 @@ const PING_PONG_INTERVAL_IN_MS = 20_000;
 // https://www.w3.org/TR/websockets/#concept-websocket-close-fail
 const CLIENT_SIDE_CLOSE_EVENT = 1000;
 
+// Once the WebSocket has failed to establish this many times in a row, the reconnect
+// loop backs off to a slow interval instead of minting a new temporary API key on
+// every fast retry. A successful connection resets the counter.
+const MAX_FAILED_HANDSHAKES = 5;
+const BLOCKED_RETRY_INTERVAL_MS = 5 * 60 * 1000;
+
 /**
  * A service that lets the user query Qminder API via GraphQL statements.
  * Queries and subscriptions are supported. There is no support for mutations.
@@ -191,6 +197,10 @@ export class GraphqlService {
     this.handleBrowserOnline.bind(this);
 
   private connectionAttemptsCount = 0;
+
+  // Consecutive WebSocket closes that happened before the connection was ever
+  // established. Reset to 0 on a successful GQL_CONNECTION_ACK.
+  private consecutiveFailedHandshakes = 0;
 
   constructor() {
     this.setServer('api.qminder.com');
@@ -446,14 +456,32 @@ export class GraphqlService {
         reason: event.reason,
       });
 
+      // Capture this before the status is overwritten below: a close while still
+      // CONNECTING means the connection never established.
+      const closedBeforeEstablished =
+        this.connectionStatus === ConnectionStatus.CONNECTING;
+
       this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
       this.socket = null;
       this.clearPingMonitoring();
 
-      if (this.shouldRetry(event)) {
-        const timer = calculateRandomizedExponentialBackoffTime(
-          this.connectionAttemptsCount,
+      if (closedBeforeEstablished) {
+        this.consecutiveFailedHandshakes++;
+        this.logger.error(
+          `Received socket close event before a connection was established! Close code: ${event.code}`,
         );
+      }
+
+      if (this.shouldRetry(event)) {
+        // After repeated failures to establish, back off to a slow interval so we
+        // stop creating a temporary API key on every retry. Recovers on its own:
+        // a successful connection resets consecutiveFailedHandshakes.
+        const timer =
+          this.consecutiveFailedHandshakes >= MAX_FAILED_HANDSHAKES
+            ? BLOCKED_RETRY_INTERVAL_MS
+            : calculateRandomizedExponentialBackoffTime(
+                this.connectionAttemptsCount,
+              );
 
         this.logger.info(`Reconnect socket in ${timer.toFixed(0)}ms`);
 
@@ -465,12 +493,6 @@ export class GraphqlService {
           .catch((error: Error) => {
             this.logger.error('Failed to reconnect socket: ', error);
           });
-      }
-
-      if (this.connectionStatus === ConnectionStatus.CONNECTING) {
-        this.logger.error(
-          `Received socket close event before a connection was established! Close code: ${event.code}`,
-        );
       }
     };
 
@@ -497,6 +519,9 @@ export class GraphqlService {
           this.clearErroredSubscriptionsTimeouts();
           this.retryableErroredSubscriptionsRetryCount = 0;
           this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
+
+          // Connection established — clear the blocked back-off.
+          this.consecutiveFailedHandshakes = 0;
 
           this.setConnectionStatus(ConnectionStatus.CONNECTED);
           this.logger.info('Connected to websocket');
