@@ -122,7 +122,7 @@ export class GraphQLSubscriptionsFixture {
     await this.server.nextMessage;
   }
 
-  async cleanup() {
+  async cleanup(): Promise<void> {
     this.teardownService();
     WS.clean();
     await this.server.closed;
