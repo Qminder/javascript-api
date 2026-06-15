@@ -123,7 +123,7 @@ export class GraphQLSubscriptionsFixture {
   }
 
   async cleanup(): Promise<void> {
-    this.teardownService();
+    this.tearDownService();
     WS.clean();
     await this.server.closed;
   }
