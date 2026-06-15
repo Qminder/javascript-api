@@ -36,11 +36,10 @@ describe('GraphQL blocked-WebSocket back-off', () => {
     // Each cycle: connect, never ACK, close before the connection is established.
     for (let i = 0; i < MAX_FAILED_HANDSHAKES; i++) {
       await fixture.waitForConnection();
-      await fixture.getNextMessage(); // consume connection_init
+      await fixture.consumeInitMessage();
       await fixture.closeWithCode(1001);
       fixture.openServer();
     }
-    await new Promise((resolve) => setTimeout(resolve, 20));
 
     expect(service.consecutiveFailedHandshakes).toBeGreaterThanOrEqual(
       MAX_FAILED_HANDSHAKES,
