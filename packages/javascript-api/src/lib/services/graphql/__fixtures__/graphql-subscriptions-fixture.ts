@@ -147,21 +147,4 @@ export class GraphQLSubscriptionsFixture {
 
     this.graphqlService['clearPingMonitoring']();
   }
-    const service = this.graphqlService as any;
-
-    service.openSocket = () => Promise.resolve();
-
-    if (service.socket) {
-      service.socket.onopen = null;
-      service.socket.onmessage = null;
-      service.socket.onerror = null;
-      service.socket.onclose = null;
-      if (typeof service.socket.close === 'function') {
-        service.socket.close();
-      }
-      service.socket = null;
-    }
-
-    service.clearPingMonitoring();
-  }
 }
