@@ -483,7 +483,7 @@ export class GraphqlService {
         if (isBlocked) {
           this.logger.warn(
             `Handshake failed ${this.consecutiveFailedHandshakes} times in a row; ` +
-              `backing off to ${BLOCKED_RETRY_INTERVAL_MS}ms to stop creating temporary API keys on every retry.`,
+              `slowing down reconnect attempts to ${BLOCKED_RETRY_INTERVAL_MS}ms.`,
           );
         }
 
