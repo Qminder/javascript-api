@@ -468,7 +468,8 @@ export class GraphqlService {
       if (closedBeforeEstablished) {
         this.consecutiveFailedHandshakes++;
         this.logger.error(
-          `Received socket close event before a connection was established! Close code: ${event.code}`,
+          `Received socket close event before a connection was established! ` +
+            `Close code: ${event.code} (consecutive failed handshakes: ${this.consecutiveFailedHandshakes})`,
         );
       }
 
@@ -476,12 +477,21 @@ export class GraphqlService {
         // After repeated failures to establish, back off to a slow interval so we
         // stop creating a temporary API key on every retry. Recovers on its own:
         // a successful connection resets consecutiveFailedHandshakes.
-        const timer =
-          this.consecutiveFailedHandshakes >= MAX_FAILED_HANDSHAKES
-            ? BLOCKED_RETRY_INTERVAL_MS
-            : calculateRandomizedExponentialBackoffTime(
-                this.connectionAttemptsCount,
-              );
+        const isBlocked =
+          this.consecutiveFailedHandshakes >= MAX_FAILED_HANDSHAKES;
+
+        if (isBlocked) {
+          this.logger.warn(
+            `Handshake failed ${this.consecutiveFailedHandshakes} times in a row; ` +
+              `backing off to ${BLOCKED_RETRY_INTERVAL_MS}ms to stop creating temporary API keys on every retry.`,
+          );
+        }
+
+        const timer = isBlocked
+          ? BLOCKED_RETRY_INTERVAL_MS
+          : calculateRandomizedExponentialBackoffTime(
+              this.connectionAttemptsCount,
+            );
 
         this.logger.info(`Reconnect socket in ${timer.toFixed(0)}ms`);
 
