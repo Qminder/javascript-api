@@ -128,7 +128,25 @@ export class GraphQLSubscriptionsFixture {
     await this.server.closed;
   }
 
-  private teardownService() {
+  private tearDownService(): void {
+    this.graphqlService['openSocket'] = () => Promise.resolve();
+
+    const socket = this.graphqlService['socket'];
+    if (socket) {
+      socket.onopen = null;
+      socket.onmessage = null;
+      socket.onerror = null;
+      socket.onclose = null;
+
+      if (typeof socket.close === 'function') {
+        socket.close();
+      }
+
+      this.graphqlService['socket'] = null;
+    }
+
+    this.graphqlService['clearPingMonitoring']();
+  }
     const service = this.graphqlService as any;
 
     service.openSocket = () => Promise.resolve();
