@@ -3,9 +3,15 @@ import { Desk } from '../../model/desk';
 import { InputFieldCreationRequest } from '../../model/input-field/input-field-creation-request';
 import { FirstNameFieldCreationRequest } from '../../model/input-field/first-name-field-creation-request';
 import { NumericFieldCreationRequest } from '../../model/input-field/numeric-field-creation-request';
+import { AttachmentFieldCreationRequest } from '../../model/input-field/attachment-field-creation-request';
 import { SelectFieldCreationRequest } from '../../model/input-field/select-field-creation-request';
 import { Qminder } from '../../qminder';
 import { LocationService } from './location.service';
+import {
+  AllowedFileTypeGroups,
+  AllowMode,
+  FileTypeGroup,
+} from '../../model/input-field/attachment-field-constraints';
 
 describe('Location service', function () {
   const LOCATIONS = [
@@ -326,6 +332,38 @@ describe('Location service', function () {
         requestStub.calledWith('input-fields', {
           method: 'POST',
           body: JSON.stringify(numericField),
+          headers: { 'X-Qminder-API-Version': '2020-09-01' },
+        }),
+      ).toBeTruthy();
+    });
+
+    it('sends an ATTACHMENT field with constraints', async function () {
+      const attachmentField: AttachmentFieldCreationRequest = {
+        type: 'ATTACHMENT',
+        id: '3fcf43c4-2dc3-46bf-be7b-4e52350e2ce4 ',
+        location: { id: LOCATION_ID },
+        title: 'Amount',
+        constraints: {
+          maxNumberOfFiles: 10,
+          allowedFileTypeGroups: {
+            mode: AllowMode.ONLY,
+            groups: [FileTypeGroup.IMAGES],
+          },
+        },
+        isMandatoryBeforeAdded: false,
+        isMandatoryBeforeServed: true,
+        isMandatoryInRemoteSignIn: false,
+        isVisibleInWaitingDrawer: false,
+        isVisibleInServingDrawer: true,
+        visibleForLines: [],
+        showInRemoteSignIn: false,
+      };
+
+      await LocationService.createInputField(attachmentField);
+      expect(
+        requestStub.calledWith('input-fields', {
+          method: 'POST',
+          body: JSON.stringify(attachmentField),
           headers: { 'X-Qminder-API-Version': '2020-09-01' },
         }),
       ).toBeTruthy();

@@ -7,6 +7,7 @@ import { PhoneNumberFieldCreationRequest } from './phone-number-field-creation-r
 import { SelectFieldCreationRequest } from './select-field-creation-request.js';
 import { TextFieldCreationRequest } from './text-field-creation-request.js';
 import { UrlFieldCreationRequest } from './url-field-creation-request.js';
+import { AttachmentFieldCreationRequest } from './attachment-field-creation-request';
 
 /**
  * A discriminated union of all input field creation request types.
@@ -21,4 +22,5 @@ export type InputFieldCreationRequest =
   | LastNameFieldCreationRequest
   | UrlFieldCreationRequest
   | DateFieldCreationRequest
-  | NumericFieldCreationRequest;
+  | NumericFieldCreationRequest
+  | AttachmentFieldCreationRequest;
