@@ -27,4 +27,4 @@ jobs:
       - name: Build Library
         run: yarn build
       - name: Publish package to NPM
-        run: yarn npm publish
+        run: npm publish
