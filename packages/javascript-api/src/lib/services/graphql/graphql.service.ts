@@ -774,6 +774,15 @@ export class GraphqlService {
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
+
+    const timer = calculateRandomizedExponentialBackoffTime(
+      this.connectionAttemptsCount,
+    );
+
+    this.connectionAttemptsCount++;
+    this.logger.info(`Reconnect socket after drop in ${timer.toFixed(0)}ms`);
+
+    await sleepMs(timer);
     await this.openSocket();
   }
 
