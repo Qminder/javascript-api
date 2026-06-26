@@ -429,14 +429,7 @@ export class GraphqlService {
   }
 
   private createSocketConnection(temporaryApiKey: string): void {
-    if (this.socket) {
-      this.socket.onclose = null;
-      this.socket.onmessage = null;
-      this.socket.onopen = null;
-      this.socket.onerror = null;
-      this.socket.close();
-      this.socket = null;
-    }
+    this.tearDownSocket();
 
     this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
@@ -774,7 +767,31 @@ export class GraphqlService {
 
     this.setConnectionStatus(ConnectionStatus.DISCONNECTED);
     this.clearPingMonitoring();
+
+    // Tear down the old socket before sleeping so its onclose handler can't fire
+    // a second, parallel reconnect during the backoff window.
+    this.tearDownSocket();
+
+    const timer = calculateRandomizedExponentialBackoffTime(
+      this.connectionAttemptsCount,
+    );
+
+    this.connectionAttemptsCount++;
+    this.logger.info(`Reconnect socket after drop in ${timer.toFixed(0)}ms`);
+
+    await sleepMs(timer);
     await this.openSocket();
+  }
+
+  private tearDownSocket(): void {
+    if (this.socket) {
+      this.socket.onclose = null;
+      this.socket.onmessage = null;
+      this.socket.onopen = null;
+      this.socket.onerror = null;
+      this.socket.close();
+      this.socket = null;
+    }
   }
 
   private clearPingMonitoring(): void {

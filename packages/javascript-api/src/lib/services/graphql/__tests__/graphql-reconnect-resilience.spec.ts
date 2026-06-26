@@ -1,11 +1,13 @@
 import { WebSocket } from 'mock-socket';
 
+import { ConnectionStatus } from '../../../model/connection-status';
 import { GraphQLSubscriptionsFixture } from '../__fixtures__/graphql-subscriptions-fixture';
 import * as backoff from '../../../util/randomized-exponential-backoff/randomized-exponential-backoff';
+import * as sleep from '../../../util/sleep-ms/sleep-ms';
 
 jest.mock('isomorphic-ws', () => WebSocket);
 jest.mock('../../../util/sleep-ms/sleep-ms', () => ({
-  sleepMs: () => new Promise((resolve) => setTimeout(resolve, 4)),
+  sleepMs: jest.fn(() => new Promise((resolve) => setTimeout(resolve, 4))),
 }));
 
 describe('GraphQL reconnect resilience', () => {
@@ -39,6 +41,88 @@ describe('GraphQL reconnect resilience', () => {
 
     await fixture.handleConnectionInit();
     sub.unsubscribe();
+  });
+
+  it('should back off using the attempt counter when a connection drops after ACK', async () => {
+    const service = fixture.graphqlService as any;
+    service.connectionStatus = ConnectionStatus.CONNECTED;
+    service.connectionAttemptsCount = 2;
+
+    const openSocketSpy = jest
+      .spyOn(service, 'openSocket')
+      .mockResolvedValue(undefined);
+
+    await service.handleConnectionDrop();
+
+    expect(backoffSpy).toHaveBeenCalledWith(2);
+    expect(service.connectionAttemptsCount).toBe(3);
+    expect(openSocketSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should defer the reconnect until the backoff delay elapses', async () => {
+    const service = fixture.graphqlService as any;
+    service.connectionStatus = ConnectionStatus.CONNECTED;
+
+    const sleepMs = sleep.sleepMs as jest.Mock;
+    sleepMs.mockClear();
+    let resolveSleep: () => void;
+    sleepMs.mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        resolveSleep = resolve;
+      }),
+    );
+
+    const openSocketSpy = jest
+      .spyOn(service, 'openSocket')
+      .mockResolvedValue(undefined);
+
+    const dropPromise = service.handleConnectionDrop();
+
+    // The backoff is armed, but the reconnect must wait for it to elapse.
+    expect(sleepMs).toHaveBeenCalledTimes(1);
+    expect(openSocketSpy).not.toHaveBeenCalled();
+
+    resolveSleep();
+    await dropPromise;
+
+    expect(openSocketSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should tear down the old socket before the backoff sleep so its onclose cannot reconnect', async () => {
+    const service = fixture.graphqlService as any;
+    service.connectionStatus = ConnectionStatus.CONNECTED;
+
+    const closeSpy = jest.fn();
+    const staleSocket: Partial<WebSocket> = {
+      onclose: () => {},
+      onmessage: () => {},
+      onopen: () => {},
+      onerror: () => {},
+      close: closeSpy,
+    };
+    service.socket = staleSocket;
+
+    const sleepMs = sleep.sleepMs as jest.Mock;
+    sleepMs.mockClear();
+    let resolveSleep: () => void;
+    sleepMs.mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        resolveSleep = resolve;
+      }),
+    );
+
+    jest.spyOn(service, 'openSocket').mockResolvedValue(undefined);
+
+    const dropPromise = service.handleConnectionDrop();
+
+    // The socket is detached and closed before the backoff window begins, so a
+    // late onclose can't start a second, parallel reconnect.
+    expect(closeSpy).toHaveBeenCalledTimes(1);
+    expect(staleSocket.onclose).toBeNull();
+    expect(service.socket).toBeNull();
+
+    resolveSleep();
+    await dropPromise;
   });
 
   it('should not leak ping intervals when the connection monitor restarts', async () => {
