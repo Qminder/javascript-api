@@ -88,6 +88,43 @@ describe('GraphQL reconnect resilience', () => {
     expect(openSocketSpy).toHaveBeenCalledTimes(1);
   });
 
+  it('should tear down the old socket before the backoff sleep so its onclose cannot reconnect', async () => {
+    const service = fixture.graphqlService as any;
+    service.connectionStatus = ConnectionStatus.CONNECTED;
+
+    const closeSpy = jest.fn();
+    const staleSocket = {
+      onclose: () => {},
+      onmessage: () => {},
+      onopen: () => {},
+      onerror: () => {},
+      close: closeSpy,
+    };
+    service.socket = staleSocket;
+
+    const sleepMs = sleep.sleepMs as jest.Mock;
+    sleepMs.mockClear();
+    let resolveSleep: () => void;
+    sleepMs.mockReturnValueOnce(
+      new Promise<void>((resolve) => {
+        resolveSleep = resolve;
+      }),
+    );
+
+    jest.spyOn(service, 'openSocket').mockResolvedValue(undefined);
+
+    const dropPromise = service.handleConnectionDrop();
+
+    // The socket is detached and closed before the backoff window begins, so a
+    // late onclose can't start a second, parallel reconnect.
+    expect(closeSpy).toHaveBeenCalledTimes(1);
+    expect(staleSocket.onclose).toBeNull();
+    expect(service.socket).toBeNull();
+
+    resolveSleep();
+    await dropPromise;
+  });
+
   it('should not leak ping intervals when the connection monitor restarts', async () => {
     const setIntervalSpy = jest.spyOn(global, 'setInterval');
     const clearIntervalSpy = jest.spyOn(global, 'clearInterval');
