@@ -429,7 +429,7 @@ export class GraphqlService {
   }
 
   private createSocketConnection(temporaryApiKey: string): void {
-    this.teardownSocket();
+    this.tearDownSocket();
 
     this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
@@ -770,7 +770,7 @@ export class GraphqlService {
 
     // Tear down the old socket before sleeping so its onclose handler can't fire
     // a second, parallel reconnect during the backoff window.
-    this.teardownSocket();
+    this.tearDownSocket();
 
     const timer = calculateRandomizedExponentialBackoffTime(
       this.connectionAttemptsCount,
@@ -783,7 +783,7 @@ export class GraphqlService {
     await this.openSocket();
   }
 
-  private teardownSocket(): void {
+  private tearDownSocket(): void {
     if (this.socket) {
       this.socket.onclose = null;
       this.socket.onmessage = null;

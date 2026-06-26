@@ -93,7 +93,7 @@ describe('GraphQL reconnect resilience', () => {
     service.connectionStatus = ConnectionStatus.CONNECTED;
 
     const closeSpy = jest.fn();
-    const staleSocket = {
+    const staleSocket: Partial<WebSocket> = {
       onclose: () => {},
       onmessage: () => {},
       onopen: () => {},
