@@ -1,9 +1,4 @@
-import {
-  DocumentNode,
-  GraphQLErrorExtensions,
-  print,
-  SourceLocation,
-} from 'graphql';
+import { DocumentNode, print } from 'graphql';
 import WebSocket, { CloseEvent } from 'isomorphic-ws';
 import {
   BehaviorSubject,
@@ -24,6 +19,12 @@ import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
+import {
+  isNonRetryableSubscriptionError,
+  QminderGraphQLError,
+} from './graphql-error.js';
+
+export type { QminderGraphQLError } from './graphql-error.js';
 
 function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   if (typeof queryOrDocumentNode === 'string') {
@@ -35,16 +36,6 @@ function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   }
 
   throw new Error('queryOrDocumentNode must be a string or a DocumentNode');
-}
-
-export interface QminderGraphQLError {
-  readonly message: string;
-  readonly errorType?: string | null;
-  readonly extensions?: GraphQLErrorExtensions | null;
-  readonly sourcePreview?: string | null;
-  readonly offendingToken?: string | null;
-  readonly locations?: SourceLocation[] | null;
-  readonly path?: (string | number)[] | null;
 }
 
 interface Message {
@@ -76,16 +67,6 @@ enum MessageType {
   GQL_PONG = 'pong',
   GQL_ERROR = 'error',
 }
-
-const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
-  'BAD_REQUEST',
-  'FIELD_NOT_FOUND',
-  'INVALID_ARGUMENT',
-  'InvalidSyntax',
-  'NOT_FOUND',
-  'PERMISSION_DENIED',
-  'ValidationError',
-] as const;
 
 const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 5;
 
@@ -591,7 +572,7 @@ export class GraphqlService {
         case MessageType.GQL_ERROR: {
           const errors = message.payload?.errors ?? [];
 
-          if (this.isAnySubscriptionErrorNonRetryable(errors)) {
+          if (isNonRetryableSubscriptionError(errors)) {
             this.logger.error(
               `Non-retryable GraphQL subscription error: ${JSON.stringify(
                 message,
@@ -809,18 +790,6 @@ export class GraphqlService {
   private clearErroredSubscriptionsSuccessTimeout(): void {
     clearTimeout(this.retryableErroredSubscriptionsSuccessTimeout ?? undefined);
     this.retryableErroredSubscriptionsSuccessTimeout = null;
-  }
-
-  private isAnySubscriptionErrorNonRetryable(
-    errors: QminderGraphQLError[],
-  ): boolean {
-    return errors
-      .filter((error) => error.errorType)
-      .some(({ errorType }) =>
-        (
-          NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES as unknown as string[]
-        ).includes(errorType),
-      );
   }
 
   private scheduleErroredSubscriptionsRetry(): void {
