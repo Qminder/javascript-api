@@ -1,21 +1,11 @@
-import {
-  DocumentNode,
-  GraphQLErrorExtensions,
-  print,
-  SourceLocation,
-} from 'graphql';
+import { DocumentNode, print } from 'graphql';
 import WebSocket, { CloseEvent } from 'isomorphic-ws';
 import {
   BehaviorSubject,
   distinctUntilChanged,
-  map,
   Observable,
-  scan,
   shareReplay,
-  startWith,
-  Subject,
   Subscriber,
-  take,
 } from 'rxjs';
 
 import { ConnectionStatus } from '../../model/connection-status.js';
@@ -24,6 +14,10 @@ import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
+import { QminderGraphQLError } from './graphql-error.js';
+import { RetryableSubscriptionErrorPolicy } from './retryable-subscription-error-policy.js';
+
+export type { QminderGraphQLError } from './graphql-error.js';
 
 function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   if (typeof queryOrDocumentNode === 'string') {
@@ -35,16 +29,6 @@ function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   }
 
   throw new Error('queryOrDocumentNode must be a string or a DocumentNode');
-}
-
-export interface QminderGraphQLError {
-  readonly message: string;
-  readonly errorType?: string | null;
-  readonly extensions?: GraphQLErrorExtensions | null;
-  readonly sourcePreview?: string | null;
-  readonly offendingToken?: string | null;
-  readonly locations?: SourceLocation[] | null;
-  readonly path?: (string | number)[] | null;
 }
 
 interface Message {
@@ -76,21 +60,6 @@ enum MessageType {
   GQL_PONG = 'pong',
   GQL_ERROR = 'error',
 }
-
-const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
-  'BAD_REQUEST',
-  'FIELD_NOT_FOUND',
-  'INVALID_ARGUMENT',
-  'InvalidSyntax',
-  'NOT_FOUND',
-  'PERMISSION_DENIED',
-  'ValidationError',
-] as const;
-
-const RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT = 5;
-
-// To avoid haveAnySubscriptionsErrored returning 'false' temporarily if retrying errored subscriptions fails.
-const RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS = 500;
 
 const PONG_TIMEOUT_IN_MS = 12_000;
 const PING_PONG_INTERVAL_IN_MS = 20_000;
@@ -134,55 +103,10 @@ export class GraphqlService {
 
   private readonly subscriptionConnection$: Observable<ConnectionStatus>;
 
-  private readonly retryableErroredSubscriptionsAction$ = new Subject<
-    | {
-        readonly type: 'add';
-        readonly messageId: string;
-        readonly errors: QminderGraphQLError[];
-      }
-    | {
-        readonly type: 'remove';
-        readonly messageId: string;
-      }
-    | {
-        readonly type: 'clear';
-      }
-  >();
-
-  private readonly retryableErroredSubscriptions$ =
-    this.retryableErroredSubscriptionsAction$.pipe(
-      scan((subscriptions, action) => {
-        const result = new Map(subscriptions);
-
-        switch (action.type) {
-          case 'add':
-            return result.set(action.messageId, action.errors);
-          case 'remove':
-            result.delete(action.messageId);
-            return result;
-          case 'clear':
-            return new Map<string, QminderGraphQLError[]>();
-        }
-      }, new Map<string, QminderGraphQLError[]>()),
-      startWith(new Map<string, QminderGraphQLError[]>()),
-      shareReplay(1),
-    );
-
-  private readonly haveAnyRetryableSubscriptionsErrored$ =
-    this.retryableErroredSubscriptions$.pipe(
-      map(({ size }) => !!size),
-      distinctUntilChanged(),
-    );
-
-  private retryableErroredSubscriptionsRetryTimeout: ReturnType<
-    typeof setTimeout
-  > | null = null;
-
-  private retryableErroredSubscriptionsSuccessTimeout: ReturnType<
-    typeof setTimeout
-  > | null = null;
-
-  private retryableErroredSubscriptionsRetryCount = 0;
+  private readonly errorPolicy = new RetryableSubscriptionErrorPolicy({
+    retry: (messageId) => this.retrySubscription(messageId),
+    fail: (messageId, errors) => this.failSubscription(messageId, errors),
+  });
 
   private temporaryApiKeyService: TemporaryApiKeyService | undefined;
 
@@ -209,8 +133,6 @@ export class GraphqlService {
       distinctUntilChanged(),
       shareReplay(1),
     );
-
-    this.retryableErroredSubscriptions$.subscribe();
   }
 
   /**
@@ -328,10 +250,7 @@ export class GraphqlService {
             },
           );
 
-          this.retryableErroredSubscriptionsAction$.next({
-            type: 'remove',
-            messageId,
-          });
+          this.errorPolicy.forget(messageId);
         }
 
         this.cleanUpSubscription(messageId);
@@ -385,7 +304,7 @@ export class GraphqlService {
    * @see {@link NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES | non-retryable subscription error types}
    */
   haveAnyRetryableSubscriptionsErrored(): Observable<boolean> {
-    return this.haveAnyRetryableSubscriptionsErrored$;
+    return this.errorPolicy.haveAnyErrored$;
   }
 
   /**
@@ -519,9 +438,7 @@ export class GraphqlService {
           break;
 
         case MessageType.GQL_CONNECTION_ACK: {
-          this.clearErroredSubscriptionsTimeouts();
-          this.retryableErroredSubscriptionsRetryCount = 0;
-          this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
+          this.errorPolicy.reset();
 
           // Connection established — clear the blocked back-off.
           this.consecutiveFailedHandshakes = 0;
@@ -562,19 +479,13 @@ export class GraphqlService {
         }
 
         case MessageType.GQL_DATA:
-          this.retryableErroredSubscriptionsAction$.next({
-            type: 'remove',
-            messageId: message.id,
-          });
+          this.errorPolicy.forget(message.id);
 
           this.messagesSubscribers.get(message.id)?.next(message.payload?.data);
           break;
 
         case MessageType.GQL_COMPLETE: {
-          this.retryableErroredSubscriptionsAction$.next({
-            type: 'remove',
-            messageId: message.id,
-          });
+          this.errorPolicy.forget(message.id);
 
           const subscriber = this.messagesSubscribers.get(message.id);
           this.cleanUpSubscription(message.id);
@@ -590,49 +501,7 @@ export class GraphqlService {
 
         case MessageType.GQL_ERROR: {
           const errors = message.payload?.errors ?? [];
-
-          if (this.isAnySubscriptionErrorNonRetryable(errors)) {
-            this.logger.error(
-              `Non-retryable GraphQL subscription error: ${JSON.stringify(
-                message,
-              )}`,
-            );
-
-            // May have been retryable before
-            this.retryableErroredSubscriptionsAction$.next({
-              type: 'remove',
-              messageId: message.id,
-            });
-
-            const subscriber = this.messagesSubscribers.get(message.id);
-            this.cleanUpSubscription(message.id);
-            subscriber?.error(errors);
-
-            break;
-          }
-
-          this.logger.warn(
-            `Retryable GraphQL subscription error: ${JSON.stringify(message)}`,
-          );
-
-          this.clearErroredSubscriptionsSuccessTimeout();
-
-          this.retryableErroredSubscriptionsAction$.next({
-            type: 'add',
-            messageId: message.id,
-            errors,
-          });
-
-          if (
-            this.retryableErroredSubscriptionsRetryCount <
-              RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT &&
-            !this.retryableErroredSubscriptionsRetryTimeout
-          ) {
-            this.scheduleErroredSubscriptionsRetry();
-          } else if (!this.retryableErroredSubscriptionsRetryTimeout) {
-            this.failErroredSubscriptions();
-          }
-
+          this.errorPolicy.recordError(message.id, errors);
           break;
         }
 
@@ -799,95 +668,33 @@ export class GraphqlService {
     clearInterval(this.pingPongInterval);
   }
 
-  private clearErroredSubscriptionsTimeouts(): void {
-    clearTimeout(this.retryableErroredSubscriptionsRetryTimeout ?? undefined);
-    this.retryableErroredSubscriptionsRetryTimeout = null;
+  /** Re-issue a subscription that the error policy decided to retry. */
+  private retrySubscription(messageId: string): void {
+    const subscription = this.subscriptions.find(
+      (subscription) => subscription.messageId === messageId,
+    );
 
-    this.clearErroredSubscriptionsSuccessTimeout();
+    if (!subscription) {
+      return;
+    }
+
+    this.sendRawMessage(
+      JSON.stringify({
+        id: subscription.messageId,
+        type: MessageType.GQL_START,
+        payload: { query: subscription.query },
+      }),
+    );
   }
 
-  private clearErroredSubscriptionsSuccessTimeout(): void {
-    clearTimeout(this.retryableErroredSubscriptionsSuccessTimeout ?? undefined);
-    this.retryableErroredSubscriptionsSuccessTimeout = null;
-  }
-
-  private isAnySubscriptionErrorNonRetryable(
+  /** Surface a terminal error to the subscriber and stop tracking it. */
+  private failSubscription(
+    messageId: string,
     errors: QminderGraphQLError[],
-  ): boolean {
-    return errors
-      .filter((error) => error.errorType)
-      .some(({ errorType }) =>
-        (
-          NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES as unknown as string[]
-        ).includes(errorType),
-      );
-  }
-
-  private scheduleErroredSubscriptionsRetry(): void {
-    const retryCount = this.retryableErroredSubscriptionsRetryCount + 1;
-    const delay = calculateRandomizedExponentialBackoffTime(retryCount);
-
-    this.logger.info(
-      `Retry (retry count: ${retryCount}) errored subscriptions in ${delay.toFixed(
-        0,
-      )}ms`,
-    );
-
-    this.retryableErroredSubscriptionsRetryTimeout = setTimeout(() => {
-      this.retryErroredSubscriptions();
-      this.retryableErroredSubscriptionsRetryCount = retryCount;
-      this.retryableErroredSubscriptionsRetryTimeout = null;
-    }, delay);
-  }
-
-  private failErroredSubscriptions(): void {
-    this.logger.error(
-      `Errored subscriptions retry limit (${RETRYABLE_ERRORED_SUBSCRIPTIONS_RETRY_LIMIT}) reached. Giving up after ${this.retryableErroredSubscriptionsRetryCount} retries`,
-    );
-
-    this.retryableErroredSubscriptions$
-      .pipe(take(1))
-      .subscribe((subscriptions) => {
-        for (const [messageId, errors] of subscriptions) {
-          const subscriber = this.messagesSubscribers.get(messageId);
-          this.cleanUpSubscription(messageId);
-
-          subscriber?.error(errors);
-        }
-      });
-  }
-
-  private retryErroredSubscriptions(): void {
-    this.retryableErroredSubscriptions$
-      .pipe(
-        take(1),
-        map((subscriptions) => subscriptions.keys()),
-      )
-      .subscribe((messageIds) => {
-        for (const messageId of messageIds) {
-          const subscription = this.subscriptions.find(
-            (subscription) => subscription.messageId === messageId,
-          );
-
-          if (!subscription) {
-            continue;
-          }
-
-          this.sendRawMessage(
-            JSON.stringify({
-              id: subscription.messageId,
-              type: MessageType.GQL_START,
-              payload: { query: subscription.query },
-            }),
-          );
-        }
-
-        this.retryableErroredSubscriptionsSuccessTimeout = setTimeout(() => {
-          this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
-          this.retryableErroredSubscriptionsRetryCount = 0;
-          this.retryableErroredSubscriptionsSuccessTimeout = null;
-        }, RETRYABLE_ERRORED_SUBSCRIPTIONS_SUCCEEDED_DELAY_MS);
-      });
+  ): void {
+    const subscriber = this.messagesSubscribers.get(messageId);
+    this.cleanUpSubscription(messageId);
+    subscriber?.error(errors);
   }
 
   /**
