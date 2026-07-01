@@ -55,3 +55,5 @@ export { LastNameFieldCreationRequest } from '../lib/model/input-field/last-name
 export { UrlFieldCreationRequest } from '../lib/model/input-field/url-field-creation-request.js';
 export { DateFieldCreationRequest } from '../lib/model/input-field/date-field-creation-request.js';
 export { NumericFieldCreationRequest } from '../lib/model/input-field/numeric-field-creation-request.js';
+export { AttachmentFieldConstraints } from '../lib/model/input-field/attachment-field-constraints.js';
+export { AttachmentFieldCreationRequest } from '../lib/model/input-field/attachment-field-creation-request.js';
