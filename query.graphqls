@@ -33,25 +33,42 @@ type AccountSubscriptions {
   extras: [AccountSubscription]!
 }
 
+enum ServiceAnalystBillingState {
+  PAYING
+  ON_TRIAL
+  TRIAL_ENDED
+  TRIAL_ELIGIBLE
+  NOT_ELIGIBLE
+}
+
+type ServiceAnalystBilling {
+  state: ServiceAnalystBillingState!
+  eligibleForTrial: Boolean!
+  trialEndsAt: LocalDate
+  trialStartedAt: LocalDate
+  payingSince: LocalDate
+}
+
 type Billing {
   subscriptionDescription: String
-  textMessagingAllowed: Boolean!
   subscription: AccountSubscription
     @deprecated(reason: "Use subscriptions { active } instead")
   subscriptions: AccountSubscriptions
   seats: Int
+  serviceAnalyst: ServiceAnalystBilling
 }
 
 type Account {
   id: ID!
-  name: String
-  segment: String
+  name: String # This is set in CC by customer success agent. It should not be displayed to client
+  segment: String # This is set in CC by customer success agent. It should not be displayed to client
   created: Date!
   locations: [Location!]!
   paymentMethod: PaymentMethod
   hipaa: Boolean!
   features: [String!]
   billing: Billing!
+  textMessagingAllowed: Boolean!
   trialEnds: Date
 }
 
@@ -65,7 +82,7 @@ type VisitPlanner {
   description: String
   notes: String
   email: String
-  phoneNumber: Long
+  phoneNumber: String
   remoteSignIn: Boolean!
 }
 
@@ -81,6 +98,7 @@ type LabelType {
 type LocationSettings {
   areLabelsVisibleInWaitingDrawer: Boolean!
   areLabelsVisibleInServingDrawer: Boolean!
+  isServiceClarityEnabled: Boolean!
 }
 
 type Language {
@@ -123,10 +141,25 @@ type Location {
   openingHoursExceptions2: [OpeningHoursException!]!
   visitPlanner: VisitPlanner
   labels: [LabelType!]!
+  """
+  Free-form labels applied to the location (e.g. `hub`, `branch`, `testing-only`),
+  used to group and analyse locations by type. Distinct from `labels`, which are ticket label types.
+  """
+  locationLabels: [String!]!
   settings: LocationSettings!
   isDemo: Boolean!
   appointmentSettings: LocationAppointmentSettings
   isServiceViewLastUsedLineMemorised: Boolean!
+  workflows: [Workflow!]!
+}
+
+type Workflow {
+  id: ID!
+  name: String!
+  usesLlm: Boolean!
+  viewCount: Int!
+  definition: JSON!
+  updatedAt: Date!
 }
 
 type LocationAppointmentSettings {
@@ -267,12 +300,18 @@ type User {
   serviceSettings: ServiceSettings
   deleted: Boolean!
   deletedAt: Date
+  scopes: [ScopeGrant!]!
 }
 
 type Role {
   id: ID!
   type: String!
   location: Location
+}
+
+type ScopeGrant {
+  scope: String!
+  locationId: ID
 }
 
 type TicketLabel {
@@ -352,6 +391,7 @@ type TicketFieldV2 {
   id: ID!
   value: String
   options: [SelectOption!]
+  attachments: [TicketAttachment!]
   inputField: InputField
 }
 
@@ -379,6 +419,15 @@ type Appointment {
   assignee: User!
 }
 
+type TicketClarity {
+  thinking: Boolean!
+  items: [ClarityItem!]!
+}
+
+type ClarityItem {
+  text: String!
+}
+
 type Ticket {
   id: ID!
   status: TicketStatus!
@@ -403,6 +452,7 @@ type Ticket {
   external: [TicketExternalData!]!
   language: Language!
   appointment: Appointment
+  clarity: TicketClarity!
 }
 
 input InteractionsFilter {
@@ -485,6 +535,13 @@ type SelectOption {
   translations: [SelectOptionTranslation!]!
 }
 
+type TicketAttachment {
+  id: String!
+  fileName: String!
+  sizeBytes: Long!
+  mimeType: String!
+}
+
 enum InputFieldType {
   PHONE_NUMBER
   URL
@@ -495,6 +552,7 @@ enum InputFieldType {
   FIRST_NAME
   LAST_NAME
   NUMERIC
+  ATTACHMENT
 }
 
 interface InputFieldConstraints {
@@ -506,6 +564,18 @@ type NumericFieldConstraints implements InputFieldConstraints {
   min: BigDecimal
   max: BigDecimal
   scale: Short
+}
+
+type AttachmentFieldConstraints implements InputFieldConstraints {
+  id: String!
+  maxNumberOfFiles: Int!
+  allowedFileTypeGroups: AllowedFileTypeGroups!
+  resolvedAllowedMimeTypes: [String!]
+}
+
+type AllowedFileTypeGroups {
+  mode: String!
+  groups: [String!]
 }
 
 type InputFieldTranslation {
@@ -553,6 +623,7 @@ type ChangedMultiTicketField implements ChangedTicketField {
   ticket: Ticket!
   title: String!
   options: [SelectOption!]
+  attachments: [TicketAttachment!]
 }
 
 type ChangedTicketLabel {
@@ -683,4 +754,9 @@ type Subscription {
   (e.g. ticket status, label, field, etc. changes)
   """
   ticketStateChanged(ticketId: ID!): Ticket!
+
+  """
+  Notifies whenever Service Clarity results change for a specified ticket.
+  """
+  clarityChanged(ticketId: ID!): TicketClarity!
 }
