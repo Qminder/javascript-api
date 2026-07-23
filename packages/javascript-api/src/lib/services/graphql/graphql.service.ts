@@ -1,9 +1,4 @@
-import {
-  DocumentNode,
-  GraphQLErrorExtensions,
-  print,
-  SourceLocation,
-} from 'graphql';
+import { DocumentNode, print } from 'graphql';
 import WebSocket, { CloseEvent } from 'isomorphic-ws';
 import {
   BehaviorSubject,
@@ -24,6 +19,13 @@ import { calculateRandomizedExponentialBackoffTime } from '../../util/randomized
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
+import {
+  LegacySubscriptionProtocol,
+  QminderGraphQLError,
+  SubscriptionProtocol,
+} from './subscription-protocol.js';
+
+export type { QminderGraphQLError } from './subscription-protocol.js';
 
 function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   if (typeof queryOrDocumentNode === 'string') {
@@ -37,44 +39,9 @@ function parseQuery(queryOrDocumentNode: string | DocumentNode): string {
   throw new Error('queryOrDocumentNode must be a string or a DocumentNode');
 }
 
-export interface QminderGraphQLError {
-  readonly message: string;
-  readonly errorType?: string | null;
-  readonly extensions?: GraphQLErrorExtensions | null;
-  readonly sourcePreview?: string | null;
-  readonly offendingToken?: string | null;
-  readonly locations?: SourceLocation[] | null;
-  readonly path?: (string | number)[] | null;
-}
-
-interface Message {
-  readonly id?: string;
-  readonly type: MessageType;
-  readonly payload?: {
-    readonly data?: Record<string, any> | null;
-    readonly errors?: QminderGraphQLError[];
-  };
-}
-
 interface Subscription {
   readonly messageId: string;
   readonly query: string;
-}
-
-enum MessageType {
-  // To Server
-  GQL_CONNECTION_INIT = 'connection_init',
-  GQL_START = 'start',
-  GQL_STOP = 'stop',
-  GQL_PING = 'ping',
-
-  // From Server
-  GQL_CONNECTION_ACK = 'connection_ack',
-  GQL_DATA = 'data',
-  GQL_CONNECTION_KEEP_ALIVE = 'ka',
-  GQL_COMPLETE = 'complete',
-  GQL_PONG = 'pong',
-  GQL_ERROR = 'error',
 }
 
 const NON_RETRYABLE_SUBSCRIPTION_ERROR_TYPES = [
@@ -113,6 +80,8 @@ const BLOCKED_RETRY_INTERVAL_MS = 5 * 60 * 1000;
  */
 export class GraphqlService {
   private readonly logger = new Logger('GraphQL');
+  private readonly protocol: SubscriptionProtocol =
+    new LegacySubscriptionProtocol();
   private apiServer: string;
 
   private socket: WebSocket = null;
@@ -312,17 +281,17 @@ export class GraphqlService {
       const messageId = `${++this.subscriptionsCount}`;
       this.subscriptions.push({ messageId, query });
 
-      this.sendMessage(messageId, MessageType.GQL_START, { query }).catch(
-        (error: Error) => {
-          this.logger.error('Failed to start subscription: ', error);
-        },
-      );
+      this.sendMessage(
+        this.protocol.serializeSubscribe(messageId, query),
+      ).catch((error: Error) => {
+        this.logger.error('Failed to start subscription: ', error);
+      });
 
       this.messagesSubscribers.set(messageId, subscriber);
 
       return () => {
         if (this.messagesSubscribers.has(messageId)) {
-          this.sendMessage(messageId, MessageType.GQL_STOP, null).catch(
+          this.sendMessage(this.protocol.serializeUnsubscribe(messageId)).catch(
             (error) => {
               this.logger.error('Failed to stop subscription: ', error);
             },
@@ -434,13 +403,7 @@ export class GraphqlService {
     this.socket = new WebSocket(this.getServerUrl(temporaryApiKey));
 
     this.socket.onopen = () => {
-      this.sendRawMessage(
-        JSON.stringify({
-          id: undefined,
-          type: MessageType.GQL_CONNECTION_INIT,
-          payload: null,
-        }),
-      );
+      this.sendRawMessage(this.protocol.serializeConnectionInit());
     };
 
     this.socket.onclose = (event) => {
@@ -512,13 +475,13 @@ export class GraphqlService {
         return;
       }
 
-      const message: Message = JSON.parse(event.data);
+      const message = this.protocol.parseIncomingMessage(event.data);
 
       switch (message.type) {
-        case MessageType.GQL_CONNECTION_KEEP_ALIVE:
+        case 'keep-alive':
           break;
 
-        case MessageType.GQL_CONNECTION_ACK: {
+        case 'connection-ack': {
           this.clearErroredSubscriptionsTimeouts();
           this.retryableErroredSubscriptionsRetryCount = 0;
           this.retryableErroredSubscriptionsAction$.next({ type: 'clear' });
@@ -533,11 +496,7 @@ export class GraphqlService {
           let resubscriptionFailed = false;
 
           for (const { messageId, query } of this.subscriptions) {
-            const msg = JSON.stringify({
-              id: messageId,
-              type: MessageType.GQL_START,
-              payload: { query },
-            });
+            const msg = this.protocol.serializeSubscribe(messageId, query);
 
             if (!this.sendRawMessage(msg)) {
               this.logger.warn(
@@ -561,16 +520,16 @@ export class GraphqlService {
           break;
         }
 
-        case MessageType.GQL_DATA:
+        case 'data':
           this.retryableErroredSubscriptionsAction$.next({
             type: 'remove',
             messageId: message.id,
           });
 
-          this.messagesSubscribers.get(message.id)?.next(message.payload?.data);
+          this.messagesSubscribers.get(message.id)?.next(message.data);
           break;
 
-        case MessageType.GQL_COMPLETE: {
+        case 'complete': {
           this.retryableErroredSubscriptionsAction$.next({
             type: 'remove',
             messageId: message.id,
@@ -583,13 +542,13 @@ export class GraphqlService {
           break;
         }
 
-        case MessageType.GQL_PONG:
+        case 'pong':
           clearTimeout(this.pongTimeout);
           this.connectionAttemptsCount = 0;
           break;
 
-        case MessageType.GQL_ERROR: {
-          const errors = message.payload?.errors ?? [];
+        case 'subscription-error': {
+          const errors = message.errors;
 
           if (this.isAnySubscriptionErrorNonRetryable(errors)) {
             this.logger.error(
@@ -636,19 +595,24 @@ export class GraphqlService {
           break;
         }
 
-        default: {
+        case 'unrecognized': {
           const subscriber = this.messagesSubscribers.get(message.id);
           if (!subscriber) {
             return;
           }
 
-          if (message.payload?.data) {
+          if (message.data) {
             this.cleanUpSubscription(message.id);
-            subscriber.error(message.payload.data);
-          } else if (message.payload?.errors?.length) {
+            subscriber.error(message.data);
+          } else if (message.errors?.length) {
             this.cleanUpSubscription(message.id);
-            subscriber.error(message.payload.errors);
+            subscriber.error(message.errors);
           }
+          break;
+        }
+        default: {
+          const exhaustiveCheck: never = message;
+          return exhaustiveCheck;
         }
       }
     };
@@ -660,17 +624,13 @@ export class GraphqlService {
     );
   }
 
-  private async sendMessage(
-    id: string,
-    type: MessageType,
-    payload: Record<string, unknown> | null,
-  ): Promise<void> {
+  private async sendMessage(message: string): Promise<void> {
     if (this.connectionStatus !== ConnectionStatus.CONNECTED) {
       await this.openSocket();
       return;
     }
 
-    if (!this.sendRawMessage(JSON.stringify({ id, type, payload }))) {
+    if (!this.sendRawMessage(message)) {
       this.logger.warn('Message dropped: WebSocket is not in OPEN state');
       await this.handleConnectionDrop();
     }
@@ -751,7 +711,7 @@ export class GraphqlService {
       });
     }, PONG_TIMEOUT_IN_MS);
 
-    this.sendRawMessage(JSON.stringify({ type: MessageType.GQL_PING }));
+    this.sendRawMessage(this.protocol.serializePing());
   }
 
   private async handleConnectionDrop(): Promise<void> {
@@ -874,11 +834,10 @@ export class GraphqlService {
           }
 
           this.sendRawMessage(
-            JSON.stringify({
-              id: subscription.messageId,
-              type: MessageType.GQL_START,
-              payload: { query: subscription.query },
-            }),
+            this.protocol.serializeSubscribe(
+              subscription.messageId,
+              subscription.query,
+            ),
           );
         }
 
