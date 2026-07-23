@@ -613,7 +613,7 @@ export class GraphqlService {
         default: {
           const exhaustiveCheck: never = message;
           return exhaustiveCheck;
-        }        
+        }
       }
     };
   }
