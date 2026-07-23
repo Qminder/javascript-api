@@ -608,7 +608,12 @@ export class GraphqlService {
             this.cleanUpSubscription(message.id);
             subscriber.error(message.errors);
           }
+          break;
         }
+        default: {
+          const exhaustiveCheck: never = message;
+          return exhaustiveCheck;
+        }        
       }
     };
   }
