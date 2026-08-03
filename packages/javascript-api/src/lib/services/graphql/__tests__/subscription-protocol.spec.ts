@@ -32,6 +32,10 @@ describe('LegacySubscriptionProtocol', () => {
     it('serializes ping without id and payload', () => {
       expect(JSON.parse(protocol.serializePing())).toEqual({ type: 'ping' });
     });
+
+    it('serializes pong without id and payload', () => {
+      expect(JSON.parse(protocol.serializePong())).toEqual({ type: 'pong' });
+    });
   });
 
   describe('incoming frames', () => {
@@ -45,6 +49,12 @@ describe('LegacySubscriptionProtocol', () => {
       expect(
         protocol.parseIncomingMessage('{"type":"connection_ack"}'),
       ).toEqual({ type: 'connection-ack' });
+    });
+
+    it('parses a server-sent ping', () => {
+      expect(protocol.parseIncomingMessage('{"type":"ping"}')).toEqual({
+        type: 'ping',
+      });
     });
 
     it('parses pong', () => {

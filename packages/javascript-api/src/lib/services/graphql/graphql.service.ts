@@ -542,6 +542,12 @@ export class GraphqlService {
           break;
         }
 
+        case 'ping':
+          // The protocol requires the receiving party to answer a ping as soon
+          // as possible. Only the newer endpoint pings us; the legacy one never does.
+          this.sendRawMessage(this.protocol.serializePong());
+          break;
+
         case 'pong':
           clearTimeout(this.pongTimeout);
           this.connectionAttemptsCount = 0;
