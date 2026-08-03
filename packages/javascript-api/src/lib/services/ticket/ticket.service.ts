@@ -170,6 +170,11 @@ export const TicketService = {
    *            'ed74eaa9-78ab-4cb7-9b91-26e0673ed70e'
    *          ]
    *       },
+   *       // Attachment fields are set with "attachmentIds" key
+   *       attachmentIds: [
+   *            '84c40725-e80a-4281-aa9a-9db252373f16',
+   *            'ed74eaa9-78ab-4cb7-9b91-26e0673ed70e'
+   *          ]
    *     ],
    *     labels: [
    *       { value: 'from website' }

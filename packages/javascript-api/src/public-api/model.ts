@@ -35,6 +35,7 @@ export {
   InputFieldRequest,
   ValueInputFieldRequest,
   OptionIdsInputFieldRequest,
+  AttachmentIdsInputFieldRequest,
 } from '../lib/model/ticket/input-field-request.js';
 export { TicketLabelRequest } from '../lib/model/ticket/ticket-label-request.js';
 export { TicketType } from '../lib/model/ticket/ticket-type.js';
