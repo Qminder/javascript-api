@@ -245,6 +245,19 @@ describe('GraphQL subscriptions', () => {
     subscription.unsubscribe();
   });
 
+  it('replies with a pong when the server sends a ping', async () => {
+    const subscription = fixture.triggerSubscription();
+
+    await fixture.handleConnectionInit();
+    await fixture.consumeSubscribeMessage();
+
+    fixture.sendMessageToClient({ type: 'ping' });
+
+    expect(await fixture.getNextMessage()).toEqual({ type: 'pong' });
+
+    subscription.unsubscribe();
+  });
+
   it('when the server sends an error, it will reconnect and subscribe again', async () => {
     const subscription = fixture.triggerSubscription();
     useFakeSetInterval();

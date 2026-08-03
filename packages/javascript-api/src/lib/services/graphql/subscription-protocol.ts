@@ -17,6 +17,7 @@ export interface QminderGraphQLError {
 export type IncomingSubscriptionMessage =
   | { readonly type: 'connection-ack' }
   | { readonly type: 'keep-alive' }
+  | { readonly type: 'ping' }
   | { readonly type: 'pong' }
   | {
       readonly type: 'data';
@@ -45,6 +46,7 @@ export interface SubscriptionProtocol {
   serializeSubscribe(id: string, query: string): string;
   serializeUnsubscribe(id: string): string;
   serializePing(): string;
+  serializePong(): string;
   parseIncomingMessage(data: string): IncomingSubscriptionMessage;
 }
 
@@ -106,6 +108,10 @@ export class LegacySubscriptionProtocol implements SubscriptionProtocol {
     return JSON.stringify({ type: LegacyMessageType.GQL_PING });
   }
 
+  serializePong(): string {
+    return JSON.stringify({ type: LegacyMessageType.GQL_PONG });
+  }
+
   parseIncomingMessage(data: string): IncomingSubscriptionMessage {
     const message: LegacyMessage = JSON.parse(data);
 
@@ -115,6 +121,9 @@ export class LegacySubscriptionProtocol implements SubscriptionProtocol {
 
       case LegacyMessageType.GQL_CONNECTION_ACK:
         return { type: 'connection-ack' };
+
+      case LegacyMessageType.GQL_PING:
+        return { type: 'ping' };
 
       case LegacyMessageType.GQL_PONG:
         return { type: 'pong' };

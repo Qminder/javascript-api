@@ -542,6 +542,10 @@ export class GraphqlService {
           break;
         }
 
+        case 'ping':
+          this.sendRawMessage(this.protocol.serializePong());
+          break;
+
         case 'pong':
           clearTimeout(this.pongTimeout);
           this.connectionAttemptsCount = 0;
