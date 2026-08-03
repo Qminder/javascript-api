@@ -46,10 +46,6 @@ export interface SubscriptionProtocol {
   serializeSubscribe(id: string, query: string): string;
   serializeUnsubscribe(id: string): string;
   serializePing(): string;
-  /**
-   * A `pong` answering a `ping` from the server. The `graphql-transport-ws`
-   * protocol requires the receiving party to answer a ping as soon as possible.
-   */
   serializePong(): string;
   parseIncomingMessage(data: string): IncomingSubscriptionMessage;
 }
