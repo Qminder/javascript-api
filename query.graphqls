@@ -336,7 +336,7 @@ enum TicketStatus {
   SCHEDULING_CANCELLED_BY_VISITOR
   SCHEDULING_NOSHOW
   NEW
-  CANCELLED
+  CANCELLED @deprecated(reason: "Legacy status. Use CANCELLED_BY_CLERK.")
   CANCELLED_BY_CLERK
   CALLED
   SERVED
@@ -426,6 +426,7 @@ type TicketClarity {
 
 type ClarityItem {
   text: String!
+  type: String!
 }
 
 type Ticket {
@@ -535,11 +536,20 @@ type SelectOption {
   translations: [SelectOptionTranslation!]!
 }
 
+type TicketAttachmentThumbnail {
+  sizeBytes: Long!
+  mimeType: String!
+  width: Int!
+  height: Int!
+  url: String!
+}
+
 type TicketAttachment {
   id: String!
   fileName: String!
   sizeBytes: Long!
   mimeType: String!
+  thumbnail: TicketAttachmentThumbnail
 }
 
 enum InputFieldType {
