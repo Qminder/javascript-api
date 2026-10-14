@@ -6,7 +6,11 @@ jest.mock('../../util/sleep-ms/sleep-ms', () => ({
 }));
 
 describe('Temporary API Key Service', function () {
-  const service = new TemporaryApiKeyService('api.qminder.com', 'initialkey');
+  const service = new TemporaryApiKeyService(
+    () => 'api.qminder.com',
+    async () => ({ 'X-Qminder-REST-API-Key': 'initialkey' }),
+    false,
+  );
 
   beforeEach(async () => {
     fetchMock.enableMocks();
@@ -19,8 +23,9 @@ describe('Temporary API Key Service', function () {
     fetchMock.mockRestore();
   });
 
-  it('fetches temporary API key', () => {
-    service.fetchTemporaryApiKey();
+  it('fetches temporary API key', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({ key: '12345' }));
+    await service.fetchTemporaryApiKey();
 
     expect(fetch).toHaveBeenCalledTimes(1);
     expect(fetch).toHaveBeenCalledWith(
@@ -30,6 +35,68 @@ describe('Temporary API Key Service', function () {
         method: 'POST',
         mode: 'cors',
       },
+    );
+  });
+
+  it('fetches the temporary API key with the given authentication headers', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({ key: '12345' }));
+    const tokenService = new TemporaryApiKeyService(
+      () => 'api.qminder.com',
+      async () => ({ Authorization: 'Bearer token-1' }),
+      true,
+    );
+
+    await expect(tokenService.fetchTemporaryApiKey()).resolves.toBe('12345');
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.qminder.com/graphql/connection-key',
+      {
+        headers: { Authorization: 'Bearer token-1' },
+        method: 'POST',
+        mode: 'cors',
+      },
+    );
+  });
+
+  it('asks for refreshed authentication headers when server responds with 401', async () => {
+    fetchMock.mockResponses(
+      ['{}', { status: 401 }],
+      [JSON.stringify({ key: '12345' }), { status: 200 }],
+    );
+    const getAuthHeaders = jest.fn(async (forceRefresh: boolean) => ({
+      Authorization: forceRefresh ? 'Bearer new-token' : 'Bearer old-token',
+    }));
+    const tokenService = new TemporaryApiKeyService(
+      () => 'api.qminder.com',
+      getAuthHeaders,
+      true,
+    );
+
+    await expect(tokenService.fetchTemporaryApiKey()).resolves.toBe('12345');
+
+    expect(getAuthHeaders).toHaveBeenNthCalledWith(1, false);
+    expect(getAuthHeaders).toHaveBeenNthCalledWith(2, true);
+    const authorizations = (fetch as jest.Mock).mock.calls.map(
+      (call) => call[1].headers.Authorization,
+    );
+    expect(authorizations).toEqual(['Bearer old-token', 'Bearer new-token']);
+  });
+
+  it('reads the API server for each request', async () => {
+    fetchMock.mockResponseOnce(JSON.stringify({ key: '12345' }));
+    let server = 'api.qminder.com';
+    const tokenService = new TemporaryApiKeyService(
+      () => server,
+      async () => ({ 'X-Qminder-REST-API-Key': 'initialkey' }),
+      false,
+    );
+
+    server = 'local.api.qminder.com';
+    await tokenService.fetchTemporaryApiKey();
+
+    expect(fetch).toHaveBeenCalledWith(
+      'https://local.api.qminder.com/graphql/connection-key',
+      expect.anything(),
     );
   });
 

@@ -1,31 +1,48 @@
-import { RequestInit } from '../../model/fetch.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { Logger } from '../../util/logger/logger.js';
+import {
+  AuthHeadersProvider,
+  sendWithRefreshOnUnauthorized,
+} from '../auth-headers.js';
 
 export class TemporaryApiKeyService {
   private logger = new Logger('TemporaryKey');
-  private readonly apiServer: string;
-  private readonly permanentApiKey: string;
+  private readonly getApiServer: () => string;
+  private readonly getAuthHeaders: AuthHeadersProvider;
+  private readonly canRefreshAuthHeaders: boolean;
 
-  constructor(apiServer: string, permanentApiKey: string) {
-    this.apiServer = apiServer;
-    this.permanentApiKey = permanentApiKey;
+  /**
+   * @param getApiServer gives the domain name of the API server. It is called for each request, because
+   * the server can be set after the authentication.
+   * @param getAuthHeaders gives the authentication headers of the request
+   * @param canRefreshAuthHeaders whether `getAuthHeaders` gives other headers when it is asked to refresh,
+   * which an API key does not
+   */
+  constructor(
+    getApiServer: () => string,
+    getAuthHeaders: AuthHeadersProvider,
+    canRefreshAuthHeaders: boolean,
+  ) {
+    this.getApiServer = getApiServer;
+    this.getAuthHeaders = getAuthHeaders;
+    this.canRefreshAuthHeaders = canRefreshAuthHeaders;
   }
 
   async fetchTemporaryApiKey(retryCount = 0): Promise<string> {
-    const url = 'graphql/connection-key';
-    const body: RequestInit = {
-      method: 'POST',
-      mode: 'cors',
-      headers: {
-        'X-Qminder-REST-API-Key': this.permanentApiKey,
-      },
-    };
+    const url = `https://${this.getApiServer()}/graphql/connection-key`;
 
     let response: Response;
 
     try {
-      response = await fetch(`https://${this.apiServer}/${url}`, body);
+      response = await sendWithRefreshOnUnauthorized(
+        async (forceRefresh) =>
+          fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            headers: await this.getAuthHeaders(forceRefresh),
+          }),
+        this.canRefreshAuthHeaders,
+      );
     } catch (e) {
       if (this.isBrowserOnline()) {
         this.logger.warn('Failed to fetch temporary API key');
