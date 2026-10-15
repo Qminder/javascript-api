@@ -20,6 +20,11 @@ import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { ApiBase, GraphqlQuery } from '../api-base/api-base.js';
 import { TemporaryApiKeyService } from '../temporary-api-key/temporary-api-key.service.js';
 import {
+  AccessTokenProvider,
+  AuthHeadersProvider,
+  bearerAuthorizationHeaders,
+} from '../auth-headers.js';
+import {
   LegacySubscriptionProtocol,
   QminderGraphQLError,
   SubscriptionProtocol,
@@ -153,7 +158,9 @@ export class GraphqlService {
 
   private retryableErroredSubscriptionsRetryCount = 0;
 
-  private temporaryApiKeyService: TemporaryApiKeyService | undefined;
+  private authentication:
+    | { getAuthHeaders: AuthHeadersProvider; canRefresh: boolean }
+    | undefined;
 
   private pongTimeout: any;
   private pingPongInterval: any;
@@ -332,10 +339,23 @@ export class GraphqlService {
    * @hidden
    */
   setKey(apiKey: string): void {
-    this.temporaryApiKeyService = new TemporaryApiKeyService(
-      this.apiServer,
-      apiKey,
-    );
+    this.authentication = {
+      getAuthHeaders: async () => ({ 'X-Qminder-REST-API-Key': apiKey }),
+      canRefresh: false,
+    };
+  }
+
+  /**
+   * Initialize the subscription connection with an access token provider, instead of an API key.
+   * This method is automatically called when doing Qminder.setAccessTokenProvider().
+   * @hidden
+   */
+  setAccessTokenProvider(provider: AccessTokenProvider): void {
+    this.authentication = {
+      getAuthHeaders: (forceRefresh) =>
+        bearerAuthorizationHeaders(provider, forceRefresh),
+      canRefresh: true,
+    };
   }
 
   /**
@@ -390,7 +410,16 @@ export class GraphqlService {
   }
 
   private async getTemporaryApiKey(): Promise<string> {
-    return await this.temporaryApiKeyService.fetchTemporaryApiKey();
+    if (!this.authentication) {
+      throw new Error('Please set the API key before making any requests.');
+    }
+
+    // The server is read when the key is requested, so setServer can be called after the authentication.
+    return await new TemporaryApiKeyService(
+      () => this.apiServer,
+      this.authentication.getAuthHeaders,
+      this.authentication.canRefresh,
+    ).fetchTemporaryApiKey();
   }
 
   private getServerUrl(temporaryApiKey: string): string {
