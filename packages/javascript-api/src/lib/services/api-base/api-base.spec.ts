@@ -89,6 +89,7 @@ describe('ApiBase', () => {
     // Manual reset for ApiBase - Karma doesn't reload the environment between tests.
     (Qminder.ApiBase as any).initialized = false;
     (Qminder.ApiBase as any).apiKey = undefined;
+    (Qminder.ApiBase as any).accessTokenProvider = undefined;
     (Qminder.ApiBase as any).apiServer = 'api.qminder.com';
 
     fetchSpy = jest.spyOn(global, 'fetch');
@@ -115,6 +116,143 @@ describe('ApiBase', () => {
     it('stores the API key', () => {
       Qminder.ApiBase.setKey('testing');
       expect((Qminder.ApiBase as any).apiKey).toBe('testing');
+    });
+  });
+
+  describe('setAccessTokenProvider()', () => {
+    beforeEach(() => {
+      fetchSpy.mockReturnValue(FAKE_RESPONSE);
+    });
+
+    it('sends the token as a Bearer token and not the API key', async () => {
+      Qminder.setAccessTokenProvider(() => 'token-1');
+      await Qminder.ApiBase.request('TEST');
+      expect(fetchSpy).toHaveBeenCalledWith('https://api.qminder.com/TEST', {
+        headers: { Authorization: 'Bearer token-1' },
+        method: 'GET',
+        mode: 'cors',
+      });
+    });
+
+    it('calls the provider for every request', async () => {
+      let count = 0;
+      Qminder.setAccessTokenProvider(async () => `token-${++count}`);
+      await Qminder.ApiBase.request('TEST');
+      await Qminder.ApiBase.request('TEST');
+      const authorizations = fetchSpy.mock.calls.map(
+        (call: any) => call[1].headers.Authorization,
+      );
+      expect(authorizations).toEqual(['Bearer token-1', 'Bearer token-2']);
+    });
+
+    it('sends the token with GraphQL queries', async () => {
+      Qminder.setAccessTokenProvider(() => 'token-1');
+      fetchSpy.mockReturnValue({
+        ok: true,
+        json: () => ({ data: { me: { id: '1' } } }),
+      });
+      await Qminder.ApiBase.queryGraph({ query: '{ me { id } }' });
+      const headers = fetchSpy.mock.lastCall[1].headers;
+      expect(headers.Authorization).toBe('Bearer token-1');
+      expect(headers['X-Qminder-REST-API-Key']).toBeUndefined();
+    });
+
+    it('gives the provider a context that does not force a refresh', async () => {
+      const provider = jest.fn().mockReturnValue('token-1');
+      Qminder.setAccessTokenProvider(provider);
+
+      await Qminder.ApiBase.request('TEST');
+
+      expect(provider).toHaveBeenCalledWith({ forceRefresh: false });
+    });
+
+    it('sends the request once more with a refreshed token when the response is 401', async () => {
+      const provider = jest.fn(({ forceRefresh }) =>
+        forceRefresh ? 'new-token' : 'old-token',
+      );
+      Qminder.setAccessTokenProvider(provider);
+      fetchSpy
+        .mockReturnValueOnce({
+          ok: false,
+          status: 401,
+          text: () => Promise.resolve('{"errorMessage":"JWT is invalid"}'),
+        })
+        .mockReturnValueOnce(FAKE_RESPONSE);
+
+      await Qminder.ApiBase.request('TEST');
+
+      expect(provider).toHaveBeenNthCalledWith(1, { forceRefresh: false });
+      expect(provider).toHaveBeenNthCalledWith(2, { forceRefresh: true });
+      const authorizations = fetchSpy.mock.calls.map(
+        (call: any) => call[1].headers.Authorization,
+      );
+      expect(authorizations).toEqual(['Bearer old-token', 'Bearer new-token']);
+    });
+
+    it('does not send the request more than once more', async () => {
+      Qminder.setAccessTokenProvider(() => 'token-1');
+      fetchSpy.mockReturnValue({
+        ok: false,
+        status: 401,
+        text: () => Promise.resolve('{"errorMessage":"JWT is invalid"}'),
+      });
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toMatchObject({
+        status: 401,
+      });
+
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+    });
+
+    it('sends a GraphQL query once more with a refreshed token when the response is 401', async () => {
+      const provider = jest.fn(({ forceRefresh }) =>
+        forceRefresh ? 'new-token' : 'old-token',
+      );
+      Qminder.setAccessTokenProvider(provider);
+      fetchSpy
+        .mockReturnValueOnce({
+          ok: false,
+          status: 401,
+          json: () => Promise.resolve({ errorMessage: 'JWT is invalid' }),
+        })
+        .mockReturnValueOnce({
+          ok: true,
+          status: 200,
+          json: () => Promise.resolve({ data: { me: { id: '1' } } }),
+        });
+
+      await expect(
+        Qminder.ApiBase.queryGraph({ query: '{ me { id } }' }),
+      ).resolves.toEqual({ me: { id: '1' } });
+
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy.mock.calls[1][1].headers.Authorization).toBe(
+        'Bearer new-token',
+      );
+    });
+
+    it('does not send the request again with an API key when the response is 401', async () => {
+      Qminder.setKey(API_KEY);
+      fetchSpy.mockReturnValue({
+        ok: false,
+        status: 401,
+        text: () => Promise.resolve('{"errorMessage":"Please authenticate"}'),
+      });
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toThrow();
+
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('is replaced by setKey()', async () => {
+      Qminder.setAccessTokenProvider(() => 'token-1');
+      Qminder.setKey(API_KEY);
+      await Qminder.ApiBase.request('TEST');
+      expect(fetchSpy.mock.lastCall[1]).toEqual({
+        headers: { 'X-Qminder-REST-API-Key': 'testing' },
+        method: 'GET',
+        mode: 'cors',
+      });
     });
   });
 
@@ -577,6 +715,50 @@ describe('ApiBase', () => {
           'Error occurred! Could not extract error message!',
         ),
       );
+    });
+  });
+
+  describe('errors', () => {
+    beforeEach(() => {
+      Qminder.setKey(API_KEY);
+    });
+
+    it('should have the HTTP status of the response', async () => {
+      fetchSpy.mockReturnValue({
+        ok: false,
+        status: 404,
+        text: () => Promise.resolve('{"message":"Not found"}'),
+      });
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toMatchObject({
+        message: 'Not found',
+        status: 404,
+      });
+    });
+
+    it('should read the errorMessage of api-gateway', async () => {
+      fetchSpy.mockReturnValue({
+        ok: false,
+        status: 401,
+        text: () => Promise.resolve('{"errorMessage":"JWT is invalid"}'),
+      });
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toMatchObject({
+        message: 'JWT is invalid',
+        status: 401,
+      });
+    });
+
+    it('should have the HTTP status for a GraphQL response', async () => {
+      fetchSpy.mockReturnValue({
+        ok: false,
+        status: 429,
+        json: () => Promise.resolve({ errorMessage: 'Too many requests' }),
+      });
+
+      await expect(
+        Qminder.ApiBase.queryGraph({ query: '{ me { id } }' }),
+      ).rejects.toMatchObject({ message: 'Too many requests', status: 429 });
     });
   });
 });

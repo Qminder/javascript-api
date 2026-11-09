@@ -17,6 +17,8 @@ The Qminder Javascript API can be installed from npm:
 
 ### Usage
 
+#### Authentication
+
 You can use Qminder API by importing it with the node.js module system.
 
     // CommonJS / Node.js
@@ -32,6 +34,18 @@ Qminder account. You can get the access token from your account's
 [Integration settings][integration].
 
     Qminder.setKey('API Key');
+
+If your application has short-lived OAuth access tokens instead of an API key, give the library a
+function that returns the current token. It is called before every request and every WebSocket
+connection, so it can return a refreshed token. It replaces `setKey`.
+
+    Qminder.setAccessTokenProvider(async ({ forceRefresh }) =>
+      forceRefresh ? await refreshAccessToken() : await getAccessToken(),
+    );
+
+When the API answers `401`, the library calls the provider with `forceRefresh: true` and sends the
+request once more. The provider must then return a new token, also when its current token has not
+expired.
 
 Check out the Qminder API reference for various API methods. The services (TicketService,
 UserService, LineService, LocationService) will be of interest.

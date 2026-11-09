@@ -8,6 +8,11 @@ import {
   isSuccessResponse,
 } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
+import {
+  AccessTokenProvider,
+  bearerAuthorizationHeaders,
+  sendWithRefreshOnUnauthorized,
+} from '../auth-headers.js';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
@@ -38,7 +43,12 @@ export class ApiBase {
    * Stores the Qminder API key.
    * @private
    */
-  private static apiKey: string;
+  private static apiKey: string | undefined;
+  /**
+   * Gives the access token that is sent as a Bearer token, instead of the API key.
+   * @private
+   */
+  private static accessTokenProvider: AccessTokenProvider | undefined;
   /**
    * Keeps track of the API server's name.
    * @private
@@ -51,6 +61,18 @@ export class ApiBase {
    */
   static setKey(key: string) {
     this.apiKey = key;
+    this.accessTokenProvider = undefined;
+  }
+
+  /**
+   * Authenticate the requests with a Bearer access token, instead of an API key.
+   * The provider is called before every request, so it can return a refreshed token.
+   * When the API answers 401, the request is sent once more with a token that the provider
+   * is asked to refresh.
+   */
+  static setAccessTokenProvider(provider: AccessTokenProvider) {
+    this.accessTokenProvider = provider;
+    this.apiKey = undefined;
   }
 
   /**
@@ -72,16 +94,11 @@ export class ApiBase {
     url: string,
     options?: RequestInitWithMethodRequired,
   ): Promise<T> {
-    if (!this.apiKey) {
-      throw new Error('Please set the API key before making any requests.');
-    }
-
     const init: RequestInit = {
       method: options?.method || 'GET',
       mode: 'cors',
       headers: {
         ...options?.headers,
-        'X-Qminder-REST-API-Key': this.apiKey,
       },
     };
 
@@ -104,7 +121,7 @@ export class ApiBase {
       }
     }
 
-    const response = await fetch(`https://${this.apiServer}/${url}`, init);
+    const response = await this.send(`https://${this.apiServer}/${url}`, init);
     const text = await response.text();
 
     if (!text && response.ok) {
@@ -119,7 +136,7 @@ export class ApiBase {
     }
 
     if (!response.ok) {
-      throw this.extractError(parsedResponse);
+      throw this.withStatus(this.extractError(parsedResponse), response.status);
     }
 
     return parsedResponse;
@@ -137,31 +154,72 @@ export class ApiBase {
    * response are found
    */
   static async queryGraph<T>(query: GraphqlQuery): Promise<T> {
-    if (!this.apiKey) {
-      throw new Error('Please set the API key before making any requests.');
-    }
-
     const init: RequestInit = {
       method: 'POST',
       headers: {
-        'X-Qminder-REST-API-Key': this.apiKey,
         'Content-Type': 'application/json',
       },
       mode: 'cors',
       body: JSON.stringify(query),
     };
 
-    let response = await fetch(`https://${this.apiServer}/graphql`, init);
+    let response = await this.send(`https://${this.apiServer}/graphql`, init);
     let graphQLResponse: GraphqlResponse<T> = await response.json();
 
     if (isErrorResponse(graphQLResponse)) {
-      throw this.extractGraphQLError(graphQLResponse);
+      throw this.withStatus(
+        this.extractGraphQLError(graphQLResponse),
+        response.status,
+      );
     }
     if (isSuccessResponse(graphQLResponse)) {
       return graphQLResponse.data;
     }
 
-    throw this.extractError(graphQLResponse);
+    throw this.withStatus(this.extractError(graphQLResponse), response.status);
+  }
+
+  /**
+   * Sends the request with the authentication of the library.
+   * When the API answers 401 and the access token provider is in use, sends it once more with a new token.
+   */
+  private static send(url: string, init: RequestInit): Promise<Response> {
+    return sendWithRefreshOnUnauthorized(async (forceRefresh) => {
+      const auth = this.getAuthHeaders(forceRefresh);
+      // Awaits only for a promise, so that a request with an API key starts at once.
+      const authHeaders = auth instanceof Promise ? await auth : auth;
+
+      return fetch(url, {
+        ...init,
+        headers: { ...init.headers, ...authHeaders },
+      });
+    }, this.accessTokenProvider !== undefined);
+  }
+
+  /**
+   * Returns the headers at once for an API key, so the request starts without a delay.
+   * Returns a promise only when the access token provider must be called.
+   */
+  private static getAuthHeaders(
+    forceRefresh: boolean,
+  ): Record<string, string> | Promise<Record<string, string>> {
+    if (this.accessTokenProvider) {
+      return bearerAuthorizationHeaders(this.accessTokenProvider, forceRefresh);
+    }
+
+    if (!this.apiKey) {
+      throw new Error('Please set the API key before making any requests.');
+    }
+
+    return { 'X-Qminder-REST-API-Key': this.apiKey };
+  }
+
+  private static withStatus<E extends Error & { status?: number }>(
+    error: E,
+    status: number,
+  ): E {
+    error.status = status;
+    return error;
   }
 
   private static extractError(response: any): Error {
@@ -171,6 +229,11 @@ export class ApiBase {
 
     if (response.developerMessage) {
       return new SimpleError(response.developerMessage);
+    }
+
+    // The body of an error of api-gateway, for example `{ "errorMessage": "JWT is invalid" }`
+    if (response.errorMessage) {
+      return new SimpleError(response.errorMessage);
     }
 
     if (typeof response.error === 'string') {
