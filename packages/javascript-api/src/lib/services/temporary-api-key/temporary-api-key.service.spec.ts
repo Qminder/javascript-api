@@ -1,15 +1,19 @@
 import { TemporaryApiKeyService } from './temporary-api-key.service';
 import fetchMock from 'jest-fetch-mock';
+import { ApiBase } from '../api-base/api-base';
 
 jest.mock('../../util/sleep-ms/sleep-ms', () => ({
   sleepMs: () => new Promise((resolve) => setTimeout(resolve, 4)),
 }));
 
 describe('Temporary API Key Service', function () {
-  const service = new TemporaryApiKeyService('api.qminder.com', 'initialkey');
+  const service = new TemporaryApiKeyService('api.qminder.com');
 
   beforeEach(async () => {
     fetchMock.enableMocks();
+    ApiBase.setKey('initialkey');
+    ApiBase.setAccessTokenProvider(undefined);
+    ApiBase.setAccessTokenInvalidator(undefined);
 
     jest.spyOn(global.console, 'info').mockImplementation();
     jest.spyOn(global.console, 'error').mockImplementation();
@@ -59,5 +63,57 @@ describe('Temporary API Key Service', function () {
     );
     let temporaryKey = await service.fetchTemporaryApiKey();
     expect(temporaryKey).toEqual('12345');
+  });
+
+  it('fetches temporary API key with the bearer token when an access token provider is set', async () => {
+    ApiBase.setAccessTokenProvider(() => Promise.resolve('access-token'));
+    fetchMock.mockResponseOnce(JSON.stringify({ key: '12345' }));
+
+    await expect(service.fetchTemporaryApiKey()).resolves.toEqual('12345');
+    expect(fetch).toHaveBeenCalledWith(
+      'https://api.qminder.com/graphql/connection-key',
+      {
+        headers: { Authorization: 'Bearer access-token' },
+        method: 'POST',
+        mode: 'cors',
+      },
+    );
+  });
+
+  it('invalidates the rejected access token and fetches with a new one after 401', async () => {
+    const invalidator = jest.fn();
+    ApiBase.setAccessTokenProvider(
+      jest
+        .fn()
+        .mockResolvedValueOnce('token-1')
+        .mockResolvedValueOnce('token-2'),
+    );
+    ApiBase.setAccessTokenInvalidator(invalidator);
+    fetchMock.mockResponses(
+      ['{}', { status: 401 }],
+      [JSON.stringify({ key: '12345' }), { status: 200 }],
+    );
+
+    await expect(service.fetchTemporaryApiKey()).resolves.toEqual('12345');
+    expect(invalidator).toHaveBeenCalledWith('token-1');
+  });
+
+  it('does not try again when the new access token is also rejected with 401', async () => {
+    ApiBase.setAccessTokenProvider(() => Promise.resolve('access-token'));
+    fetchMock.mockResponse('{}', { status: 401 });
+
+    await expect(service.fetchTemporaryApiKey()).rejects.toThrow(
+      'access token was rejected',
+    );
+    expect(fetch).toHaveBeenCalledTimes(2);
+  });
+
+  it('throws without retrying when no API key or access token provider is set', async () => {
+    (ApiBase as any).apiKey = undefined;
+
+    await expect(service.fetchTemporaryApiKey()).rejects.toThrow(
+      'Please set the API key',
+    );
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

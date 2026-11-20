@@ -1,4 +1,8 @@
-import { ApiBase } from './services/api-base/api-base.js';
+import {
+  AccessTokenInvalidator,
+  AccessTokenProvider,
+  ApiBase,
+} from './services/api-base/api-base.js';
 import { DeviceService } from './services/device/device.service.js';
 import { GraphqlService } from './services/graphql/graphql.service.js';
 import { LineService } from './services/line/line.service.js';
@@ -20,7 +24,24 @@ export class Qminder {
 
   public static setKey(key: string): void {
     ApiBase.setKey(key);
-    this.GraphQL.setKey(key);
+  }
+
+  /**
+   * @hidden
+   */
+  public static setAccessTokenProvider(
+    provider: AccessTokenProvider | undefined,
+  ): void {
+    ApiBase.setAccessTokenProvider(provider);
+  }
+
+  /**
+   * @hidden
+   */
+  public static setAccessTokenInvalidator(
+    invalidator: AccessTokenInvalidator | undefined,
+  ): void {
+    ApiBase.setAccessTokenInvalidator(invalidator);
   }
 
   public static setServer(server: string): void {

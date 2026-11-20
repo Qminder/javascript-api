@@ -1,15 +1,14 @@
 import { RequestInit } from '../../model/fetch.js';
 import { sleepMs } from '../../util/sleep-ms/sleep-ms.js';
 import { Logger } from '../../util/logger/logger.js';
+import { ApiBase } from '../api-base/api-base.js';
 
 export class TemporaryApiKeyService {
   private logger = new Logger('TemporaryKey');
   private readonly apiServer: string;
-  private readonly permanentApiKey: string;
 
-  constructor(apiServer: string, permanentApiKey: string) {
+  constructor(apiServer: string) {
     this.apiServer = apiServer;
-    this.permanentApiKey = permanentApiKey;
   }
 
   async fetchTemporaryApiKey(retryCount = 0): Promise<string> {
@@ -17,15 +16,17 @@ export class TemporaryApiKeyService {
     const body: RequestInit = {
       method: 'POST',
       mode: 'cors',
-      headers: {
-        'X-Qminder-REST-API-Key': this.permanentApiKey,
-      },
     };
+
+    ApiBase.assertAuthConfigured();
 
     let response: Response;
 
     try {
-      response = await fetch(`https://${this.apiServer}/${url}`, body);
+      response = await ApiBase.fetchWithAuth(
+        `https://${this.apiServer}/${url}`,
+        body,
+      );
     } catch (e) {
       if (this.isBrowserOnline()) {
         this.logger.warn('Failed to fetch temporary API key');
@@ -40,6 +41,11 @@ export class TemporaryApiKeyService {
     if (response.status === 403) {
       throw new Error(
         'Provided API key is invalid. Unable to fetch temporary key',
+      );
+    }
+    if (response.status === 401) {
+      throw new Error(
+        'Provided access token was rejected. Unable to fetch temporary key',
       );
     }
     if (response.status >= 500) {
