@@ -153,8 +153,6 @@ export class GraphqlService {
 
   private retryableErroredSubscriptionsRetryCount = 0;
 
-  private temporaryApiKeyService: TemporaryApiKeyService | undefined;
-
   private pongTimeout: any;
   private pingPongInterval: any;
   private readonly sendPingWithThisBound = this.sendPing.bind(this);
@@ -326,16 +324,11 @@ export class GraphqlService {
   }
 
   /**
-   * Initialize the EventsService by setting the API key.
-   * When the API key is set, the socket can be opened.
-   * This method is automatically called when doing Qminder.setKey().
+   * Set the API key. Same as Qminder.setKey().
    * @hidden
    */
   setKey(apiKey: string): void {
-    this.temporaryApiKeyService = new TemporaryApiKeyService(
-      this.apiServer,
-      apiKey,
-    );
+    ApiBase.setKey(apiKey);
   }
 
   /**
@@ -390,7 +383,9 @@ export class GraphqlService {
   }
 
   private async getTemporaryApiKey(): Promise<string> {
-    return await this.temporaryApiKeyService.fetchTemporaryApiKey();
+    return await new TemporaryApiKeyService(
+      this.apiServer,
+    ).fetchTemporaryApiKey();
   }
 
   private getServerUrl(temporaryApiKey: string): string {
