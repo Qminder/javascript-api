@@ -1,8 +1,6 @@
-import {
-  AccessTokenInvalidator,
-  AccessTokenProvider,
-  ApiBase,
-} from './services/api-base/api-base.js';
+import { AccessTokenInvalidator } from './model/access-token-invalidator.js';
+import { AccessTokenProvider } from './model/access-token-provider.js';
+import { ApiBase } from './services/api-base/api-base.js';
 import { DeviceService } from './services/device/device.service.js';
 import { GraphqlService } from './services/graphql/graphql.service.js';
 import { LineService } from './services/line/line.service.js';

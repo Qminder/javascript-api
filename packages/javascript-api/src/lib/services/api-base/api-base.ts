@@ -8,17 +8,8 @@ import {
   isSuccessResponse,
 } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
-
-/**
- * Resolves with an access token that is sent to the Qminder API as a bearer token.
- * Called before every request, so it should cache the access token.
- */
-export type AccessTokenProvider = () => Promise<string>;
-
-/**
- * Called with an access token that the Qminder API rejected.
- */
-export type AccessTokenInvalidator = (rejectedToken: string) => void;
+import { AccessTokenProvider } from '../../model/access-token-provider.js';
+import { AccessTokenInvalidator } from '../../model/access-token-invalidator.js';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
@@ -217,9 +208,6 @@ export class ApiBase {
     );
   }
 
-  /**
-   * Throws when neither an API key nor an access token provider has been set.
-   */
   static assertAuthConfigured(): void {
     if (!this.apiKey && !this.accessTokenProvider) {
       throw new Error(
@@ -230,12 +218,8 @@ export class ApiBase {
 
   /**
    * Sends a fetch() request with the authentication headers added.
-   *
-   * When an access token provider is set, the access token is sent as a bearer token and the API
-   * key is not used. When the server rejects the access token with 401, the access token
-   * invalidator is called with it and the request is retried once with a new access token.
-   *
-   * Otherwise the API key is sent. In that case fetch() is called synchronously.
+   * When an access token provider is set, the access token is sent as a bearer token and the API key is not used.
+   * Otherwise the API key is sent.
    */
   static async fetchWithAuth(
     url: string,
