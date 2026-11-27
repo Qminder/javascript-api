@@ -89,6 +89,8 @@ describe('ApiBase', () => {
     // Manual reset for ApiBase - Karma doesn't reload the environment between tests.
     (Qminder.ApiBase as any).initialized = false;
     (Qminder.ApiBase as any).apiKey = undefined;
+    (Qminder.ApiBase as any).accessTokenProvider = undefined;
+    (Qminder.ApiBase as any).accessTokenInvalidator = undefined;
     (Qminder.ApiBase as any).apiServer = 'api.qminder.com';
 
     fetchSpy = jest.spyOn(global, 'fetch');
@@ -470,6 +472,154 @@ describe('ApiBase', () => {
           );
           expect(error instanceof ComplexError).toBeTruthy();
           done();
+        },
+      );
+    });
+  });
+
+  describe('access token provider', () => {
+    const jsonResponse = (status: number, body: object = {}) => ({
+      ok: status >= 200 && status < 300,
+      status,
+      json: () => Promise.resolve(body),
+      text: () => Promise.resolve(JSON.stringify(body)),
+    });
+
+    let provider: jest.Mock<Promise<string>, []>;
+    let invalidator: jest.Mock<void, [string]>;
+
+    beforeEach(() => {
+      provider = jest
+        .fn<Promise<string>, []>()
+        .mockResolvedValueOnce('token-1')
+        .mockResolvedValueOnce('token-2');
+      invalidator = jest.fn<void, [string]>();
+    });
+
+    it('does not throw when only an access token provider is set', async () => {
+      fetchSpy.mockResolvedValue(jsonResponse(200, { id: 1 }));
+      Qminder.setAccessTokenProvider(provider);
+
+      await expect(Qminder.ApiBase.request('TEST')).resolves.toEqual({ id: 1 });
+    });
+
+    it('sends the access token as a bearer token instead of the API key', async () => {
+      fetchSpy.mockResolvedValue(jsonResponse(200));
+      Qminder.setKey(API_KEY);
+      Qminder.setAccessTokenProvider(provider);
+
+      await Qminder.ApiBase.request('TEST', { headers: { 'X-Custom': '1' } });
+
+      expect(fetchSpy).toHaveBeenCalledWith('https://api.qminder.com/TEST', {
+        headers: { 'X-Custom': '1', Authorization: 'Bearer token-1' },
+        method: 'GET',
+        mode: 'cors',
+      });
+    });
+
+    it('uses the API key again when the access token provider is removed', async () => {
+      fetchSpy.mockResolvedValue(jsonResponse(200));
+      Qminder.setAccessTokenProvider(provider);
+      Qminder.setKey(API_KEY);
+      Qminder.setAccessTokenProvider(undefined);
+
+      await Qminder.ApiBase.request('TEST');
+
+      expect(provider).not.toHaveBeenCalled();
+      expect(fetchSpy.mock.calls[0][1].headers).toEqual({
+        'X-Qminder-REST-API-Key': API_KEY,
+      });
+    });
+
+    it('invalidates the rejected access token and retries once with a new one after 401', async () => {
+      fetchSpy
+        .mockResolvedValueOnce(jsonResponse(401, { message: 'Expired' }))
+        .mockResolvedValueOnce(jsonResponse(200, { id: 1 }));
+      Qminder.setAccessTokenProvider(provider);
+      Qminder.setAccessTokenInvalidator(invalidator);
+
+      const response = await Qminder.ApiBase.request('TEST', {
+        body: { a: 1 },
+      });
+
+      expect(response).toEqual({ id: 1 });
+      expect(invalidator).toHaveBeenCalledTimes(1);
+      expect(invalidator).toHaveBeenCalledWith('token-1');
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(fetchSpy.mock.calls[1][1]).toEqual({
+        method: 'POST',
+        mode: 'cors',
+        body: 'a=1',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          Authorization: 'Bearer token-2',
+        },
+      });
+    });
+
+    it('does not retry more than once', async () => {
+      fetchSpy.mockResolvedValue(jsonResponse(401, { message: 'Expired' }));
+      Qminder.setAccessTokenProvider(provider);
+      Qminder.setAccessTokenInvalidator(invalidator);
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toThrow(
+        new SimpleError('Expired'),
+      );
+      expect(fetchSpy).toHaveBeenCalledTimes(2);
+      expect(invalidator).toHaveBeenCalledTimes(1);
+    });
+
+    it('retries after 401 without an access token invalidator', async () => {
+      fetchSpy
+        .mockResolvedValueOnce(jsonResponse(401, { message: 'Expired' }))
+        .mockResolvedValueOnce(jsonResponse(200, { id: 1 }));
+      Qminder.setAccessTokenProvider(provider);
+
+      await expect(Qminder.ApiBase.request('TEST')).resolves.toEqual({ id: 1 });
+    });
+
+    it('does not retry after 403', async () => {
+      fetchSpy.mockResolvedValue(jsonResponse(403, { message: 'Forbidden' }));
+      Qminder.setAccessTokenProvider(provider);
+      Qminder.setAccessTokenInvalidator(invalidator);
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toThrow(
+        new SimpleError('Forbidden'),
+      );
+      expect(fetchSpy).toHaveBeenCalledTimes(1);
+      expect(invalidator).not.toHaveBeenCalled();
+    });
+
+    it('rejects when the access token provider rejects', async () => {
+      Qminder.setAccessTokenProvider(() => Promise.reject(new Error('Nope')));
+
+      await expect(Qminder.ApiBase.request('TEST')).rejects.toThrow('Nope');
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('sends GraphQL queries with the bearer token and retries after 401', async () => {
+      fetchSpy
+        .mockResolvedValueOnce(jsonResponse(401, { message: 'Expired' }))
+        .mockResolvedValueOnce(jsonResponse(200, { data: { me: { id: 1 } } }));
+      Qminder.setAccessTokenProvider(provider);
+      Qminder.setAccessTokenInvalidator(invalidator);
+
+      const response = await Qminder.ApiBase.queryGraph({
+        query: '{ me { id } }',
+      });
+
+      expect(response).toEqual({ me: { id: 1 } });
+      expect(invalidator).toHaveBeenCalledWith('token-1');
+      expect(fetchSpy).toHaveBeenLastCalledWith(
+        'https://api.qminder.com/graphql',
+        {
+          method: 'POST',
+          mode: 'cors',
+          body: JSON.stringify({ query: '{ me { id } }' }),
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer token-2',
+          },
         },
       );
     });

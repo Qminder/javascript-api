@@ -8,6 +8,8 @@ import {
   isSuccessResponse,
 } from '../../model/graphql-response.js';
 import { RequestInit } from '../../model/fetch.js';
+import { AccessTokenProvider } from '../../model/access-token-provider.js';
+import { AccessTokenInvalidator } from '../../model/access-token-invalidator.js';
 
 type RequestInitWithMethodRequired = Pick<RequestInit, 'method' | 'headers'> & {
   body?: string | File | object;
@@ -34,11 +36,14 @@ export interface SuccessResponse {
  * @hidden
  */
 export class ApiBase {
+  private static accessTokenProvider: AccessTokenProvider | undefined;
+  private static accessTokenInvalidator: AccessTokenInvalidator | undefined;
+
   /**
    * Stores the Qminder API key.
    * @private
    */
-  private static apiKey: string;
+  private static apiKey: string | undefined;
   /**
    * Keeps track of the API server's name.
    * @private
@@ -51,6 +56,16 @@ export class ApiBase {
    */
   static setKey(key: string) {
     this.apiKey = key;
+  }
+
+  static setAccessTokenProvider(provider: AccessTokenProvider | undefined) {
+    this.accessTokenProvider = provider;
+  }
+
+  static setAccessTokenInvalidator(
+    invalidator: AccessTokenInvalidator | undefined,
+  ) {
+    this.accessTokenInvalidator = invalidator;
   }
 
   /**
@@ -72,16 +87,13 @@ export class ApiBase {
     url: string,
     options?: RequestInitWithMethodRequired,
   ): Promise<T> {
-    if (!this.apiKey) {
-      throw new Error('Please set the API key before making any requests.');
-    }
+    this.assertAuthConfigured();
 
     const init: RequestInit = {
       method: options?.method || 'GET',
       mode: 'cors',
       headers: {
         ...options?.headers,
-        'X-Qminder-REST-API-Key': this.apiKey,
       },
     };
 
@@ -104,7 +116,10 @@ export class ApiBase {
       }
     }
 
-    const response = await fetch(`https://${this.apiServer}/${url}`, init);
+    const response = await this.fetchWithAuth(
+      `https://${this.apiServer}/${url}`,
+      init,
+    );
     const text = await response.text();
 
     if (!text && response.ok) {
@@ -137,21 +152,21 @@ export class ApiBase {
    * response are found
    */
   static async queryGraph<T>(query: GraphqlQuery): Promise<T> {
-    if (!this.apiKey) {
-      throw new Error('Please set the API key before making any requests.');
-    }
+    this.assertAuthConfigured();
 
     const init: RequestInit = {
       method: 'POST',
       headers: {
-        'X-Qminder-REST-API-Key': this.apiKey,
         'Content-Type': 'application/json',
       },
       mode: 'cors',
       body: JSON.stringify(query),
     };
 
-    let response = await fetch(`https://${this.apiServer}/graphql`, init);
+    let response = await this.fetchWithAuth(
+      `https://${this.apiServer}/graphql`,
+      init,
+    );
     let graphQLResponse: GraphqlResponse<T> = await response.json();
 
     if (isErrorResponse(graphQLResponse)) {
@@ -191,5 +206,57 @@ export class ApiBase {
     return new SimpleError(
       response.errors.map((error) => error.message).join('\n'),
     );
+  }
+
+  static assertAuthConfigured(): void {
+    if (!this.apiKey && !this.accessTokenProvider) {
+      throw new Error(
+        'Please set the API key or an access token provider before making any requests.',
+      );
+    }
+  }
+
+  /**
+   * Sends a fetch() request with the authentication headers added.
+   * When an access token provider is set, the access token is sent as a bearer token and the API key is not used.
+   * Otherwise the API key is sent.
+   */
+  static async fetchWithAuth(
+    url: string,
+    init: RequestInit,
+  ): Promise<Response> {
+    this.assertAuthConfigured();
+
+    const provider = this.accessTokenProvider;
+    if (!provider) {
+      return fetch(
+        url,
+        this.withHeaders(init, { 'X-Qminder-REST-API-Key': this.apiKey }),
+      );
+    }
+
+    const accessToken = await provider();
+    const response = await fetch(url, this.withBearerToken(init, accessToken));
+    if (response.status !== 401) {
+      return response;
+    }
+
+    this.accessTokenInvalidator?.(accessToken);
+    const newAccessToken = await provider();
+    return fetch(url, this.withBearerToken(init, newAccessToken));
+  }
+
+  private static withBearerToken(
+    init: RequestInit,
+    accessToken: string,
+  ): RequestInit {
+    return this.withHeaders(init, { Authorization: `Bearer ${accessToken}` });
+  }
+
+  private static withHeaders(
+    init: RequestInit,
+    headers: Record<string, string>,
+  ): RequestInit {
+    return { ...init, headers: { ...init.headers, ...headers } };
   }
 }
